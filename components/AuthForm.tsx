@@ -162,22 +162,10 @@ function validate(): boolean {
 
         // Bei aktivierter E-Mail-Bestätigung: keine Session bis zur Bestätigung.
         // Das Profil wird per DB-Trigger aus user_metadata erstellt.
+        // Weiterleitung zur Bestätigungsseite mit Angabe der E-Mail-Adresse.
         if (!data.session) {
-          setSubmitError(null);
-          setSubmitSuccess(
-            "Registrierung erfolgreich! Bitte bestätige deine E-Mail-Adresse – wir haben dir einen Link geschickt. Prüfe auch deinen Spam-Ordner."
-          );
-          setErrors({});
-          setEmail("");
-          setNick("");
-          setPassword("");
-          setConfirmPassword("");
-          setGender("");
-          setRole("");
-          setDateOfBirth("");
-          setAcceptAge(false);
-          setAcceptPrivacy(false);
-          setLoading(false);
+          const emailParam = encodeURIComponent(email.trim());
+          router.push(`/register/check-email?email=${emailParam}`);
           return;
         }
 
