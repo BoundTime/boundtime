@@ -31,6 +31,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   const isRegister = mode === "register";
 
@@ -69,6 +70,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     }
     setErrors(next);
     setSubmitError(null);
+    setSubmitSuccess(null);
     return Object.keys(next).length === 0;
   }
 
@@ -78,6 +80,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
     setLoading(true);
     setSubmitError(null);
+    setSubmitSuccess(null);
 
     const supabase = createClient();
 
@@ -94,24 +97,36 @@ export function AuthForm({ mode }: AuthFormProps) {
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: {
+              nick: nickTrim,
+              gender: gender as "Mann" | "Frau" | "Divers",
+              role: role as "Dom" | "Sub" | "Switcher",
+              date_of_birth: dateOfBirth || null,
+            },
+          },
         });
         if (error) throw error;
         if (!data.user) throw new Error("Registrierung fehlgeschlagen.");
 
-        const { error: profileError } = await supabase.from("profiles").insert({
-          id: data.user.id,
-          nick: nickTrim,
-          gender: gender as "Mann" | "Frau" | "Divers",
-          role: role as "Dom" | "Sub" | "Switcher",
-          date_of_birth: dateOfBirth || null,
-        });
-        if (profileError) {
-          if (profileError.code === "23505") {
-            setSubmitError("Dieser Nick ist inzwischen vergeben. Bitte wähle einen anderen.");
-          } else {
-            throw profileError;
-          }
+        // Bei aktivierter E-Mail-Bestätigung: keine Session bis zur Bestätigung.
+        // Das Profil wird per DB-Trigger aus user_metadata erstellt.
+        if (!data.session) {
+          setSubmitError(null);
+          setSubmitSuccess(
+            "Registrierung erfolgreich! Bitte bestätige deine E-Mail-Adresse – wir haben dir einen Link geschickt. Prüfe auch deinen Spam-Ordner."
+          );
+          setErrors({});
+          setEmail("");
+          setNick("");
+          setPassword("");
+          setConfirmPassword("");
+          setGender("");
+          setRole("");
+          setDateOfBirth("");
+          setAcceptAge(false);
+          setAcceptPrivacy(false);
           setLoading(false);
           return;
         }
@@ -128,7 +143,30 @@ export function AuthForm({ mode }: AuthFormProps) {
         router.refresh();
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Ein Fehler ist aufgetreten.";
+      let message = "Ein Fehler ist aufgetreten.";
+      if (err instanceof Error) {
+        message = err.message;
+      } else if (err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string") {
+        message = (err as { message: string }).message;
+      }
+      // Häufige Supabase-Fehler auf Deutsch (case-insensitive)
+      const m = message.toLowerCase();
+      if (m.includes("user already registered") || m.includes("already been registered"))
+        message = "Diese E-Mail-Adresse ist bereits registriert. Bitte melde dich an oder nutze Passwort vergessen.";
+      else if (m.includes("invalid login credentials"))
+        message = "E-Mail oder Passwort ist falsch.";
+      else if (m.includes("rate limit") || m.includes("email rate limit"))
+        message = "Zu viele E-Mails in kurzer Zeit. Bitte warte einige Minuten und versuche es erneut.";
+      else if (m.includes("signup requires") || m.includes("valid password"))
+        message = "Bitte gib ein gültiges Passwort ein (mindestens 8 Zeichen).";
+      else if (m.includes("unable to validate email") || m.includes("validate email"))
+        message = "Die E-Mail-Adresse konnte nicht validiert werden. Bitte prüfe die Schreibweise.";
+      else if (m.includes("email not confirmed"))
+        message = "Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben.";
+      else if (m.includes("forbidden") || m.includes("403"))
+        message = "Zugriff verweigert. Bitte versuche es später erneut.";
+      else if (m.includes("fetch failed") || m.includes("network"))
+        message = "Verbindungsproblem. Bitte prüfe deine Internetverbindung.";
       setSubmitError(message);
     } finally {
       setLoading(false);
@@ -144,6 +182,11 @@ export function AuthForm({ mode }: AuthFormProps) {
         {isRegister ? "Registrieren" : "Anmelden"}
       </h2>
 
+      {submitSuccess && (
+        <p className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-400 border border-green-500/20">
+          {submitSuccess}
+        </p>
+      )}
       {submitError && (
         <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">
           {submitError}
