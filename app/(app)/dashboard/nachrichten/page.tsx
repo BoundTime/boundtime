@@ -103,7 +103,7 @@ export default async function NachrichtenPage({
         otherNick: p?.nick ?? "?",
         otherAvatarUrl: p?.avatar_url ?? null,
         lastContent: last?.content ?? null,
-        lastAt: last?.created_at ?? c.created_at,
+        lastAt: last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString(),
       };
     })
     .sort((a, b) => (b.lastAt > a.lastAt ? -1 : 1));
