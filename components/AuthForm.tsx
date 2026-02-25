@@ -35,7 +35,31 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   const isRegister = mode === "register";
 
-  function validate(): boolean {
+  function toGermanError(raw: string): string {
+  const m = raw.toLowerCase();
+  if (m.includes("user already registered") || m.includes("already been registered"))
+    return "Diese E-Mail-Adresse ist bereits registriert. Bitte melde dich an oder nutze Passwort vergessen.";
+  if (m.includes("invalid login credentials"))
+    return "E-Mail oder Passwort ist falsch.";
+  if (m.includes("rate limit") || m.includes("email rate limit"))
+    return "Zu viele E-Mails in kurzer Zeit. Bitte warte einige Minuten und versuche es erneut.";
+  if (m.includes("signup requires") || m.includes("valid password"))
+    return "Bitte gib ein gültiges Passwort ein (mindestens 8 Zeichen).";
+  if (m.includes("unable to validate email") || m.includes("validate email"))
+    return "Die E-Mail-Adresse konnte nicht validiert werden. Bitte prüfe die Schreibweise.";
+  if (m.includes("email not confirmed"))
+    return "Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben.";
+  if (m.includes("forbidden") || m.includes("403"))
+    return "Zugriff verweigert. Bitte versuche es später erneut.";
+  if (m.includes("fetch failed") || m.includes("network"))
+    return "Verbindungsproblem. Bitte prüfe deine Internetverbindung.";
+  // Fallback: englische Fehler allgemein übersetzen
+  if (/^[a-z\s]+$/.test(raw) || raw.includes(" ") && !/ä|ö|ü|ß|einen|bitte|deine/i.test(raw))
+    return "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.";
+  return raw;
+}
+
+function validate(): boolean {
     const next: Record<string, string> = {};
     const emailTrim = email.trim();
     if (!emailTrim) next.email = "E-Mail ist erforderlich.";
@@ -107,7 +131,11 @@ export function AuthForm({ mode }: AuthFormProps) {
             },
           },
         });
-        if (error) throw error;
+        if (error) {
+          setSubmitError(toGermanError(error.message));
+          setLoading(false);
+          return;
+        }
         if (!data.user) throw new Error("Registrierung fehlgeschlagen.");
 
         // Bei aktivierter E-Mail-Bestätigung: keine Session bis zur Bestätigung.
@@ -138,7 +166,11 @@ export function AuthForm({ mode }: AuthFormProps) {
           email: email.trim(),
           password,
         });
-        if (error) throw error;
+        if (error) {
+          setSubmitError(toGermanError(error.message));
+          setLoading(false);
+          return;
+        }
         router.push("/dashboard");
         router.refresh();
       }
@@ -149,25 +181,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       } else if (err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string") {
         message = (err as { message: string }).message;
       }
-      // Häufige Supabase-Fehler auf Deutsch (case-insensitive)
-      const m = message.toLowerCase();
-      if (m.includes("user already registered") || m.includes("already been registered"))
-        message = "Diese E-Mail-Adresse ist bereits registriert. Bitte melde dich an oder nutze Passwort vergessen.";
-      else if (m.includes("invalid login credentials"))
-        message = "E-Mail oder Passwort ist falsch.";
-      else if (m.includes("rate limit") || m.includes("email rate limit"))
-        message = "Zu viele E-Mails in kurzer Zeit. Bitte warte einige Minuten und versuche es erneut.";
-      else if (m.includes("signup requires") || m.includes("valid password"))
-        message = "Bitte gib ein gültiges Passwort ein (mindestens 8 Zeichen).";
-      else if (m.includes("unable to validate email") || m.includes("validate email"))
-        message = "Die E-Mail-Adresse konnte nicht validiert werden. Bitte prüfe die Schreibweise.";
-      else if (m.includes("email not confirmed"))
-        message = "Bitte bestätige zuerst deine E-Mail-Adresse über den Link, den wir dir geschickt haben.";
-      else if (m.includes("forbidden") || m.includes("403"))
-        message = "Zugriff verweigert. Bitte versuche es später erneut.";
-      else if (m.includes("fetch failed") || m.includes("network"))
-        message = "Verbindungsproblem. Bitte prüfe deine Internetverbindung.";
-      setSubmitError(message);
+      setSubmitError(toGermanError(message));
     } finally {
       setLoading(false);
     }
