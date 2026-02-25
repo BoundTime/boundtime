@@ -1,8 +1,18 @@
--- Trigger: Profil automatisch anlegen, wenn ein neuer Nutzer in auth.users eingetragen wird.
--- Erforderlich für E-Mail-Bestätigung: Der Client hat nach signUp keine Session,
--- daher scheitert die RLS-Policy "profiles_insert_own" (authenticated required).
--- Die Profildaten (nick, gender, role, date_of_birth) werden via user_metadata beim signUp übergeben.
+# Trigger in Supabase manuell ausführen
 
+Der Fehler "Database error saving new user" bedeutet: Beim Anlegen eines Nutzers kann das Profil nicht erstellt werden.  
+Der Datenbank-Trigger muss in Supabase ausgeführt werden.
+
+## Schritte
+
+1. **Supabase Dashboard** öffnen: https://supabase.com/dashboard
+2. Dein Projekt **BoundTime** auswählen
+3. Links auf **SQL Editor** klicken
+4. **New query** wählen
+5. Den folgenden SQL-Code **komplett** einfügen:
+
+```sql
+-- Trigger: Profil automatisch anlegen bei neuer Registrierung
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -29,3 +39,12 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+```
+
+6. Auf **Run** (oder Strg+Enter) klicken
+7. Es sollte "Success" erscheinen
+
+## Danach
+
+- Registrierung erneut testen
+- Der Fehler sollte verschwinden

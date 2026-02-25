@@ -42,8 +42,8 @@ export function AuthForm({ mode }: AuthFormProps) {
     return "Diese E-Mail-Adresse ist bereits registriert. Bitte melde dich an oder nutze Passwort vergessen.";
   if (m.includes("invalid login credentials"))
     return "E-Mail oder Passwort ist falsch.";
-  if (m.includes("rate limit") || m.includes("email rate limit"))
-    return "Zu viele E-Mails in kurzer Zeit. Bitte warte einige Minuten und versuche es erneut.";
+  if (m.includes("rate limit") || m.includes("email rate limit exceeded"))
+    return "Zu viele E-Mails in kurzer Zeit. Bitte warte 15–30 Minuten und versuche es erneut.";
   if (m.includes("signup requires") || m.includes("valid password"))
     return "Bitte gib ein gültiges Passwort ein (mindestens 8 Zeichen).";
   if (m.includes("unable to validate email") || m.includes("validate email"))
@@ -54,6 +54,10 @@ export function AuthForm({ mode }: AuthFormProps) {
     return "Zugriff verweigert. Bitte versuche es später erneut.";
   if (m.includes("fetch failed") || m.includes("network"))
     return "Verbindungsproblem. Bitte prüfe deine Internetverbindung.";
+  if (m.includes("error sending confirmation email"))
+    return "Die Bestätigungs-E-Mail konnte nicht versendet werden. Prüfe die SMTP-Einstellungen in Supabase (Host, Port, Benutzername, Passwort).";
+  if (m.includes("database error saving new user"))
+    return "Beim Speichern des Profils ist ein Fehler aufgetreten. Bitte stelle sicher, dass die Datenbank-Migration (Trigger für neue Nutzer) in Supabase ausgeführt wurde.";
   // Fallback: englische Fehler allgemein übersetzen
   if (/^[a-z\s]+$/.test(raw) || raw.includes(" ") && !/ä|ö|ü|ß|einen|bitte|deine/i.test(raw))
     return "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.";
@@ -140,7 +144,9 @@ function validate(): boolean {
             },
           },
         });
-        if (error) {
+        // "Error sending confirmation email" kommt manchmal, obwohl User angelegt und E-Mail versendet wurde.
+        // Wenn data.user existiert, behandeln wir es als Erfolg.
+        if (error && !data?.user) {
           const msg = error.message || String(error);
           setRawError(msg || JSON.stringify(error));
           setSubmitError(toGermanError(msg));
