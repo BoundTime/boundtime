@@ -145,7 +145,12 @@ function validate(): boolean {
           },
         });
         // "Error sending confirmation email" kommt manchmal, obwohl User angelegt und E-Mail versendet wurde.
-        // Wenn data.user existiert, behandeln wir es als Erfolg.
+        // In diesem Fall trotzdem zur Bestätigungsseite weiterleiten – Nutzer soll Postfach prüfen.
+        const errMsg = (error?.message || "").toLowerCase();
+        if (error && errMsg.includes("error sending confirmation email")) {
+          router.push(`/register/check-email?email=${encodeURIComponent(email.trim())}`);
+          return;
+        }
         if (error && !data?.user) {
           const msg = error.message || String(error);
           setRawError(msg || JSON.stringify(error));
