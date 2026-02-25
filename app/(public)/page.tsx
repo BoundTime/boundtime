@@ -15,13 +15,16 @@ export default function HomePage() {
         />
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center">
-            <Link href="/" className="inline-block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded-lg">
+            <Link
+              href="/"
+              className="inline-block rounded-xl border border-gray-700/80 bg-card/50 px-6 py-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+            >
               <Image
                 src="/logo.png"
                 alt="BoundTime – Logo"
                 width={320}
                 height={120}
-                className="mx-auto h-auto w-64 sm:w-80 mix-blend-lighten"
+                className="mx-auto h-auto w-64 sm:w-80"
                 priority
               />
             </Link>
