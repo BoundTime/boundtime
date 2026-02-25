@@ -114,7 +114,13 @@ function validate(): boolean {
     try {
       if (isRegister) {
         const nickTrim = nick.trim();
-        const { data: nickTaken } = await supabase.rpc("nick_exists", { check_nick: nickTrim });
+        const { data: nickTaken, error: nickErr } = await supabase.rpc("nick_exists", { check_nick: nickTrim });
+        if (nickErr) {
+          setRawError(nickErr.message || JSON.stringify(nickErr));
+          setSubmitError("Nick-Prüfung fehlgeschlagen. Bitte versuche es später erneut.");
+          setLoading(false);
+          return;
+        }
         if (nickTaken) {
           setSubmitError("Dieser Nick ist bereits vergeben. Bitte wähle einen anderen.");
           setLoading(false);
@@ -135,8 +141,9 @@ function validate(): boolean {
           },
         });
         if (error) {
-          setRawError(error.message);
-          setSubmitError(toGermanError(error.message));
+          const msg = error.message || String(error);
+          setRawError(msg || JSON.stringify(error));
+          setSubmitError(toGermanError(msg));
           setLoading(false);
           return;
         }
@@ -176,8 +183,9 @@ function validate(): boolean {
           password,
         });
         if (error) {
-          setRawError(error.message);
-          setSubmitError(toGermanError(error.message));
+          const msg = error.message || String(error);
+          setRawError(msg || JSON.stringify(error));
+          setSubmitError(toGermanError(msg));
           setLoading(false);
           return;
         }
@@ -186,12 +194,18 @@ function validate(): boolean {
       }
     } catch (err: unknown) {
       let message = "Ein Fehler ist aufgetreten.";
+      let raw = "";
       if (err instanceof Error) {
-        message = err.message;
-      } else if (err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string") {
-        message = (err as { message: string }).message;
+        message = err.message || String(err);
+        raw = `${err.name}: ${message}`;
+      } else if (err && typeof err === "object") {
+        const o = err as Record<string, unknown>;
+        message = (typeof o.message === "string" ? o.message : JSON.stringify(o)) || String(err);
+        raw = JSON.stringify(o, null, 0).slice(0, 300);
+      } else {
+        raw = String(err);
       }
-      setRawError(message);
+      setRawError(raw || message);
       setSubmitError(toGermanError(message));
     } finally {
       setLoading(false);
@@ -213,15 +227,11 @@ function validate(): boolean {
         </p>
       )}
       {submitError && (
-        <div className="space-y-1">
-          <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">
-            {submitError}
+        <div className="space-y-2 rounded-lg border border-red-500/30 bg-red-950/20 p-3">
+          <p className="text-sm text-red-400">{submitError}</p>
+          <p className="text-xs text-gray-500">
+            Technische Details: {rawError || "nicht verfügbar"}
           </p>
-          {rawError && (
-            <p className="break-all rounded bg-gray-800/80 px-2 py-1.5 font-mono text-xs text-gray-400" title="Für Support: diese technische Meldung kopieren">
-              {rawError}
-            </p>
-          )}
         </div>
       )}
 
