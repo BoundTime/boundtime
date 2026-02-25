@@ -21,7 +21,7 @@ export default function HomePage() {
                 alt="BoundTime – Logo"
                 width={320}
                 height={120}
-                className="mx-auto h-auto w-64 sm:w-80"
+                className="mx-auto h-auto w-64 sm:w-80 mix-blend-lighten"
                 priority
               />
             </Link>
