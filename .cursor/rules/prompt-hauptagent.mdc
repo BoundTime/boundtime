@@ -1,0 +1,13 @@
+---
+description: Prompts für den Hauptagenten – eine zentrale Datei, Vorprüfung vor dem Schreiben
+globs: 
+alwaysApply: true
+---
+
+# Prompt-Datei für den Hauptagenten
+
+- **Zentrale Datei:** Alle Prompts an den Hauptagenten (den codenden Agenten) werden in `.cursor/PROMPT-HAUPTAGENT-PROFIL.md` geschrieben.
+- **Vor dem Schreiben:** Immer zuerst die Datei lesen und prüfen, ob sie **leer** ist.
+  - Wenn **leer:** Neuen Prompt direkt eintragen.
+  - Wenn **nicht leer:** Den Nutzer kurz informieren (z. B. „Die Datei war noch nicht leer – wurde der letzte Prompt schon umgesetzt?“) und anschließend den **neuen** Prompt eintragen (bestehenden Inhalt ersetzen).
+- Der Hauptagent wird angewiesen, nach Erledigung der Aufgabe den **kompletten Inhalt** dieser Datei zu löschen, damit die nächste Aufgabe dort eingetragen werden kann.

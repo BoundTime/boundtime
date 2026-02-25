@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rollen-Symbole Vorschau</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #e5e5e5; padding: 2rem; }
+    h2 { color: #7a1f2b; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.25rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; margin-bottom: 1rem; }
+    .icon-box { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; background: #262626; border-radius: 12px; border: 1px solid #404040; min-width: 100px; }
+    .icon-box span { font-size: 0.75rem; color: #a3a3a3; text-align: center; }
+    .icon-box i { color: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <h1>Rollen-Symbole (Lucide)</h1>
+
+  <h2>Dom</h2>
+  <div class="row">
+    <div class="icon-box"><i data-lucide="crown" width="32" height="32"></i><span>Crown</span></div>
+    <div class="icon-box"><i data-lucide="shield" width="32" height="32"></i><span>Shield</span></div>
+    <div class="icon-box"><i data-lucide="award" width="32" height="32"></i><span>Award</span></div>
+    <div class="icon-box"><i data-lucide="gem" width="32" height="32"></i><span>Gem</span></div>
+    <div class="icon-box"><i data-lucide="star" width="32" height="32"></i><span>Star</span></div>
+  </div>
+
+  <h2>Sub</h2>
+  <div class="row">
+    <div class="icon-box"><i data-lucide="heart" width="32" height="32"></i><span>Heart</span></div>
+    <div class="icon-box"><i data-lucide="link-2" width="32" height="32"></i><span>Link2</span></div>
+    <div class="icon-box"><i data-lucide="arrow-down" width="32" height="32"></i><span>ArrowDown</span></div>
+    <div class="icon-box"><i data-lucide="flower-2" width="32" height="32"></i><span>Flower2</span></div>
+    <div class="icon-box"><i data-lucide="circle-dot" width="32" height="32"></i><span>CircleDot</span></div>
+  </div>
+
+  <h2>Switcher</h2>
+  <div class="row">
+    <div class="icon-box"><i data-lucide="arrow-left-right" width="32" height="32"></i><span>ArrowLeftRight</span></div>
+    <div class="icon-box"><i data-lucide="refresh-cw" width="32" height="32"></i><span>RefreshCw</span></div>
+    <div class="icon-box"><i data-lucide="repeat" width="32" height="32"></i><span>Repeat</span></div>
+    <div class="icon-box"><i data-lucide="shuffle" width="32" height="32"></i><span>Shuffle</span></div>
+    <div class="icon-box"><i data-lucide="layers" width="32" height="32"></i><span>Layers</span></div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

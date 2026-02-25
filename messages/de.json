@@ -1,0 +1,51 @@
+{
+  "common": {
+    "back": "Zurück",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Wird geladen…",
+    "error": "Fehler"
+  },
+  "nav": {
+    "start": "Start",
+    "discover": "Entdecken",
+    "messages": "Nachrichten",
+    "notifications": "Benachrichtigungen",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "login": "Login"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "feed": "Feed",
+    "chastity": "Keuschhaltung",
+    "yourChastitySubs": "Ihre Keuschlinge",
+    "activity": "Aktivität"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "all": "Alle In-App-Hinweise",
+    "newMessage": "Neue Nachricht",
+    "newFollower": "Neuer Follower",
+    "profileView": "Profilbesuch",
+    "postLike": "Like auf deinen Post",
+    "profileLike": "Like auf dein Profil",
+    "chastityNewTask": "Neue Aufgabe (Keuschhaltung)",
+    "chastityTaskAwaitingConfirmation": "Aufgabe wartet auf Bestätigung",
+    "chastityRewardRequest": "Belohnungsanfrage",
+    "chastityDeadlineSoon": "Frist läuft bald ab",
+    "none": "Keine neuen Benachrichtigungen."
+  },
+  "entdecken": {
+    "title": "Entdecken",
+    "filter": "Filter",
+    "keyholderSought": "Keyholder gesucht",
+    "subSought": "Sub gesucht",
+    "verifiedDom": "Verifizierter Dom"
+  },
+  "chastity": {
+    "title": "Keuschhaltung",
+    "boundDollars": "BoundDollars",
+    "progressToReward": "Fortschritt zum Belohnungsziel"
+  }
+}
