@@ -217,9 +217,9 @@ function validate(): boolean {
           <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">
             {submitError}
           </p>
-          {rawError && rawError !== submitError && (
-            <p className="text-xs text-gray-500" title="Für Support: diese technische Meldung kopieren">
-              Technisch: {rawError}
+          {rawError && (
+            <p className="break-all rounded bg-gray-800/80 px-2 py-1.5 font-mono text-xs text-gray-400" title="Für Support: diese technische Meldung kopieren">
+              {rawError}
             </p>
           )}
         </div>
