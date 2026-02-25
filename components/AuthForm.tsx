@@ -32,6 +32,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [rawError, setRawError] = useState<string | null>(null); // zum Debuggen
 
   const isRegister = mode === "register";
 
@@ -95,6 +96,7 @@ function validate(): boolean {
     setErrors(next);
     setSubmitError(null);
     setSubmitSuccess(null);
+    setRawError(null);
     return Object.keys(next).length === 0;
   }
 
@@ -105,6 +107,7 @@ function validate(): boolean {
     setLoading(true);
     setSubmitError(null);
     setSubmitSuccess(null);
+    setRawError(null);
 
     const supabase = createClient();
 
@@ -132,11 +135,17 @@ function validate(): boolean {
           },
         });
         if (error) {
+          setRawError(error.message);
           setSubmitError(toGermanError(error.message));
           setLoading(false);
           return;
         }
-        if (!data.user) throw new Error("Registrierung fehlgeschlagen.");
+        if (!data.user) {
+          setRawError("Kein user in data");
+          setSubmitError("Registrierung fehlgeschlagen.");
+          setLoading(false);
+          return;
+        }
 
         // Bei aktivierter E-Mail-Bestätigung: keine Session bis zur Bestätigung.
         // Das Profil wird per DB-Trigger aus user_metadata erstellt.
@@ -167,6 +176,7 @@ function validate(): boolean {
           password,
         });
         if (error) {
+          setRawError(error.message);
           setSubmitError(toGermanError(error.message));
           setLoading(false);
           return;
@@ -181,6 +191,7 @@ function validate(): boolean {
       } else if (err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string") {
         message = (err as { message: string }).message;
       }
+      setRawError(message);
       setSubmitError(toGermanError(message));
     } finally {
       setLoading(false);
@@ -202,9 +213,16 @@ function validate(): boolean {
         </p>
       )}
       {submitError && (
-        <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">
-          {submitError}
-        </p>
+        <div className="space-y-1">
+          <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">
+            {submitError}
+          </p>
+          {rawError && rawError !== submitError && (
+            <p className="text-xs text-gray-500" title="Für Support: diese technische Meldung kopieren">
+              Technisch: {rawError}
+            </p>
+          )}
+        </div>
       )}
 
       {isRegister && (
