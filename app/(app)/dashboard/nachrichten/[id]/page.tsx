@@ -45,7 +45,7 @@ export default async function ChatPage({
   const { data: senderProfiles } = await supabase
     .from("profiles")
     .select("id, nick")
-    .in("id", [...new Set((messages ?? []).map((m) => m.sender_id))]);
+    .in("id", Array.from(new Set((messages ?? []).map((m) => m.sender_id))));
   const nickById = new Map(senderProfiles?.map((p) => [p.id, p.nick]) ?? []);
 
   return (

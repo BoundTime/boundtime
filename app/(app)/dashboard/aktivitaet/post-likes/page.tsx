@@ -43,7 +43,7 @@ export default async function AktivitaetPostLikesPage() {
     list = (data ?? []) as { post_id: string; user_id: string; liked_at: string }[];
   }
 
-  const userIds = [...new Set(list.map((l) => l.user_id))];
+  const userIds = Array.from(new Set(list.map((l) => l.user_id)));
   const { data: profilesData } = userIds.length > 0
     ? await supabase.from("profiles").select("id, nick, avatar_url").in("id", userIds)
     : { data: [] };

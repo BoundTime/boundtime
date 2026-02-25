@@ -27,7 +27,7 @@ export default async function AktivitaetBesucherPage() {
 
   const { data: viewsData } = await supabase.rpc("get_my_profile_views");
   const views = Array.isArray(viewsData) ? viewsData as { viewer_id: string; viewed_at: string }[] : [];
-  const viewerIds = [...new Set(views.map((v) => v.viewer_id))];
+  const viewerIds = Array.from(new Set(views.map((v) => v.viewer_id)));
   const { data: profilesData } = viewerIds.length > 0
     ? await supabase.from("profiles").select("id, nick, avatar_url").in("id", viewerIds)
     : { data: [] };

@@ -33,7 +33,7 @@ export default async function AlbenPage() {
     album_name: albums?.find((a) => a.id === r.album_id)?.name ?? "?",
     requester_nick: null as string | null,
   }));
-  const requesterIds = [...new Set(requests.map((r) => r.requester_id))];
+  const requesterIds = Array.from(new Set(requests.map((r) => r.requester_id)));
   if (requesterIds.length > 0) {
     const { data: profs } = await supabase
       .from("profiles")

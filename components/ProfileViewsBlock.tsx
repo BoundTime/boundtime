@@ -68,7 +68,7 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
       setViews(list);
       setErrorMsg(null);
 
-      const viewerIds = [...new Set(list.map((v) => v.viewer_id))];
+      const viewerIds = Array.from(new Set(list.map((v) => v.viewer_id)));
       if (viewerIds.length === 0) {
         setLoading(false);
         return;

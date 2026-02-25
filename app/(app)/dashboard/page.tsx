@@ -160,7 +160,7 @@ export default async function DashboardPage() {
       .order("created_at", { ascending: false })
       .limit(50);
     if (postsData?.length) {
-      const authorIds = [...new Set(postsData.map((p) => p.author_id))];
+      const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
       const { data: authors } = await supabase
         .from("profiles")
         .select("id, nick, avatar_url, verified")
@@ -218,9 +218,9 @@ export default async function DashboardPage() {
       .order("liked_at", { ascending: false })
       .limit(50);
   }
-  const likerIds = [...new Set((profileLikesRes.data ?? []).map((l: { liker_id: string }) => l.liker_id))];
-  const postLikerIds = [...new Set((postLikersRes.data ?? []).map((l: { user_id: string }) => l.user_id))];
-  const allActivityUserIds = [...new Set([...likerIds, ...postLikerIds])];
+  const likerIds = Array.from(new Set((profileLikesRes.data ?? []).map((l: { liker_id: string }) => l.liker_id)));
+  const postLikerIds = Array.from(new Set((postLikersRes.data ?? []).map((l: { user_id: string }) => l.user_id)));
+  const allActivityUserIds = Array.from(new Set([...likerIds, ...postLikerIds]));
   const { data: activityProfiles } = allActivityUserIds.length > 0
     ? await supabase
         .from("profiles")

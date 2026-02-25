@@ -78,7 +78,7 @@ export default async function DomBereichPage() {
       .order("created_at", { ascending: false })
       .limit(50);
     if (postsData?.length) {
-      const authorIds = [...new Set(postsData.map((p) => p.author_id))];
+      const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
       const { data: authors } = await supabase
         .from("profiles")
         .select("id, nick, avatar_url")

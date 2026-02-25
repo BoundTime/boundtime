@@ -32,7 +32,7 @@ export default async function AktivitaetProfilLikesPage() {
     .order("liked_at", { ascending: false })
     .limit(100);
   const list = likes ?? [];
-  const likerIds = [...new Set(list.map((l) => l.liker_id))];
+  const likerIds = Array.from(new Set(list.map((l) => l.liker_id)));
   const { data: profilesData } = likerIds.length > 0
     ? await supabase.from("profiles").select("id, nick, avatar_url").in("id", likerIds)
     : { data: [] };
