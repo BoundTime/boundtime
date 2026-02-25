@@ -24,7 +24,7 @@ export default async function VerifikationenAdminPage() {
     .select("id, user_id, photo_path, status, submitted_at")
     .order("submitted_at", { ascending: false });
 
-  const userIds = [...new Set((verifications ?? []).map((v) => v.user_id))];
+  const userIds = Array.from(new Set((verifications ?? []).map((v) => v.user_id)));
   const { data: profs } = userIds.length > 0
     ? await supabase.from("profiles").select("id, nick").in("id", userIds)
     : { data: [] };
