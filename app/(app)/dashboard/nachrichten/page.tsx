@@ -80,7 +80,7 @@ export default async function NachrichtenPage({
 
   const { data: convDetails } = await supabase
     .from("conversations")
-    .select("id, participant_a, participant_b")
+    .select("id, participant_a, participant_b, created_at")
     .in("id", convIds);
   const otherIds = new Set<string>();
   convDetails?.forEach((c) => {

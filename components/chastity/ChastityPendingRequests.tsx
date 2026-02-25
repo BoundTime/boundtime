@@ -44,7 +44,26 @@ export function ChastityPendingRequests({ arrangementId }: { arrangementId: stri
       .eq("arrangement_id", arrangementId)
       .eq("status", "pending")
       .order("created_at", { ascending: false })
-      .then(({ data }) => setRequests(data ?? []));
+      .then(({ data, error }) => {
+        if (error) { setRequests([]); return; }
+        const raw = (data ?? []) as unknown as Record<string, unknown>[];
+        const normalized: RequestRow[] = raw.map((r) => {
+          const ci = r.chastity_catalog_items;
+          const items = Array.isArray(ci) ? ci[0] : ci;
+          const tpl = items && typeof items === "object" && "chastity_reward_templates" in items
+            ? (items as { chastity_reward_templates: unknown }).chastity_reward_templates
+            : null;
+          const tmpl = Array.isArray(tpl) ? tpl[0] : tpl;
+          return {
+            ...r,
+            chastity_catalog_items: items ? {
+              ...(items as object),
+              chastity_reward_templates: tmpl && typeof tmpl === "object" ? tmpl : null,
+            } : null,
+          } as RequestRow;
+        });
+        setRequests(normalized);
+      });
   }, [arrangementId]);
 
   async function approve(requestId: string) {

@@ -18,7 +18,7 @@ export function ChastityCalendarList({ tasks }: { tasks: Task[] }) {
       list.push(t);
       map.set(t.due_date, list);
     }
-    return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [tasks]);
 
   if (tasks.length === 0) return null;

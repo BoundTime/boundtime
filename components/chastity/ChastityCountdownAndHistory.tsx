@@ -39,7 +39,20 @@ export function ChastityCountdownAndHistory({
       .not("approved_at", "is", null)
       .order("approved_at", { ascending: false })
       .limit(10)
-      .then(({ data }) => setHistory(data ?? []));
+      .then(({ data }) => {
+        const raw = data ?? [];
+        const normalized: RewardRequest[] = raw.map((r: Record<string, unknown>) => {
+          const items = r.chastity_catalog_items;
+          const ci = Array.isArray(items) ? items[0] : items;
+          const templates = ci && typeof ci === "object" && "chastity_reward_templates" in ci ? (ci as { chastity_reward_templates: unknown }).chastity_reward_templates : null;
+          const tpl = Array.isArray(templates) ? templates[0] : templates;
+          return {
+            approved_at: r.approved_at,
+            chastity_catalog_items: ci ? { custom_title: (ci as { custom_title?: unknown }).custom_title ?? null, chastity_reward_templates: tpl && typeof tpl === "object" ? (tpl as { title?: string }) : null } : null,
+          } as RewardRequest;
+        });
+        setHistory(normalized);
+      });
   }, [arrangementId]);
 
   const nextPrice =

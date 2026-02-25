@@ -214,7 +214,7 @@ export default async function DashboardPage() {
     postLikersRes = await supabase
       .from("post_likes")
       .select("post_id, user_id, liked_at")
-      .in("post_id", [...myPostIds])
+      .in("post_id", Array.from(myPostIds))
       .order("liked_at", { ascending: false })
       .limit(50);
   }

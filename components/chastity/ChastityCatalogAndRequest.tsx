@@ -31,7 +31,15 @@ export function ChastityCatalogAndRequest({
       .select("id, reward_template_id, custom_title, price_bound_dollars, requires_unlock, chastity_reward_templates(title)")
       .eq("arrangement_id", arrangementId)
       .order("price_bound_dollars")
-      .then(({ data }) => setItems(data ?? []));
+      .then(({ data }) => {
+        const items = (data ?? []).map((d: Record<string, unknown>) => ({
+          ...d,
+          chastity_reward_templates: Array.isArray(d.chastity_reward_templates)
+            ? d.chastity_reward_templates[0]
+            : d.chastity_reward_templates,
+        })) as CatalogItem[];
+        setItems(items);
+      });
   }, [arrangementId]);
 
   async function requestItem(itemId: string) {
@@ -55,7 +63,7 @@ export function ChastityCatalogAndRequest({
   }
 
   const displayTitle = (item: CatalogItem) =>
-    item.custom_title ?? (item.chastity_reward_templates as { title?: string } | null)?.title ?? "-";
+    item.custom_title ?? item.chastity_reward_templates?.title ?? "-";
 
   if (items.length === 0) return null;
 

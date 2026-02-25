@@ -33,7 +33,15 @@ export function ChastityStreakAndBadges({
       .select("badge_id, earned_at, chastity_badge_definitions(id, title, description, icon_emoji)")
       .eq("arrangement_id", arrangementId)
       .order("earned_at", { ascending: false })
-      .then(({ data }) => setBadges(data ?? []));
+      .then(({ data }) => {
+        const raw = (data ?? []) as unknown as Record<string, unknown>[];
+        const normalized: BadgeEarned[] = raw.map((r) => {
+          const defs = r.chastity_badge_definitions;
+          const def = Array.isArray(defs) ? defs[0] : defs;
+          return { badge_id: r.badge_id as string, earned_at: r.earned_at as string, chastity_badge_definitions: def as BadgeDef | null };
+        });
+        setBadges(normalized);
+      });
   }, [arrangementId]);
 
   return (

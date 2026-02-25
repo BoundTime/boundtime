@@ -7,17 +7,19 @@ type Props = {
   href: string;
   children: React.ReactNode;
   className?: string;
+  title?: string;
   onClick?: () => void;
 };
 
 /** Nav-Link, der nach der Navigation router.refresh() ausführt, damit die Zielseite mit aktuellen Daten lädt. */
-export function RefreshNavLink({ href, children, className, onClick }: Props) {
+export function RefreshNavLink({ href, children, className, title, onClick }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   return (
     <Link
       href={href}
       className={className}
+      title={title}
       onClick={(e) => {
         onClick?.();
         e.preventDefault();
