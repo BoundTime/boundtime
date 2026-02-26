@@ -251,8 +251,8 @@ export default async function DashboardPage() {
       {/* 1. Chastity-Status oben (nur für Sub oder Dom ohne Keuschlinge – Dom mit Keuschlingen sehen den Block „Ihre Keuschlinge“) */}
       {!(isDomOrSwitcher && asDomWithSub.length > 0) && (
         <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
-            <Link href="/dashboard/keuschhaltung" className="flex items-center gap-2 text-xl font-semibold text-white transition-colors hover:text-accent">
+          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+            <Link href="/dashboard/keuschhaltung" className="flex items-center justify-center gap-2 text-xl font-semibold text-white transition-colors hover:text-accent">
               <LockKeyhole className="h-5 w-5 text-gray-400" />
               Keuschhaltung
             </Link>
@@ -280,7 +280,7 @@ export default async function DashboardPage() {
       {/* 1b. Dom-Dashboard: Ihre Keuschlinge + Offene Punkte (nur für Dom/Switcher mit aktiven Vereinbarungen) */}
       {isDomOrSwitcher && asDomWithSub.length > 0 && (
         <div className="mt-8 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-          <div className="bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
             <Link href="/dashboard/keuschhaltung" className="block text-center text-xl font-semibold text-white transition-colors hover:text-accent">
               Ihre Keuschlinge
             </Link>
@@ -333,7 +333,7 @@ export default async function DashboardPage() {
           </ul>
           {openPoints.length > 0 && (
             <>
-              <h3 className="text-lg font-semibold text-white">Offene Punkte</h3>
+              <h3 className="text-center text-lg font-semibold text-white">Offene Punkte</h3>
               <ul className="space-y-2">
                 {openPoints.slice(0, 10).map((item, i) => (
                   <li key={`${item.type}-${i}`}>
@@ -362,8 +362,8 @@ export default async function DashboardPage() {
           href="/dashboard/aktivitaet/besucher"
           className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
         >
-          <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+            <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Eye className="h-4 w-4 text-gray-400" />
               Wer hat dein Profil besucht
             </h3>
@@ -376,8 +376,8 @@ export default async function DashboardPage() {
           href="/dashboard/aktivitaet/profil-likes"
           className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
         >
-          <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+            <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
               Wer hat dein Profil geliked
             </h3>
@@ -395,8 +395,8 @@ export default async function DashboardPage() {
           href="/dashboard/aktivitaet/post-likes"
           className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
         >
-          <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
+          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+            <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
               Wer hat deine Posts geliked
             </h3>
@@ -415,8 +415,8 @@ export default async function DashboardPage() {
 
       {/* 2. Feed zentral: Header-Karte + Inhalts-Karte */}
       <div className="mt-12 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-        <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
-          <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
+        <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
+          <h2 className="flex items-center justify-center gap-2 text-xl font-semibold text-white">
             <Rss className="h-5 w-5 text-gray-400" />
             Feed
           </h2>

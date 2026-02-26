@@ -39,13 +39,12 @@ export function ChastityStatusBlock({
     const statusText = locked
       ? null
       : asSubArrangement
-        ? "Noch nicht verschlossen (Dom startet Lock)"
+        ? "Warte auf Lock durch Dom"
         : "Nicht verschlossen";
-    const statusShort = asSubArrangement ? "Warte auf Dom" : "Nicht verschlossen";
     return (
       <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:gap-3">
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-4">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-2 sm:gap-3">
             {locked ? (
               <LockKeyhole
                 className="h-8 w-8 shrink-0 text-accent sm:h-10 sm:w-10"
@@ -66,10 +65,7 @@ export function ChastityStatusBlock({
                   arrangementId={asSubArrangement!.id}
                 />
               ) : (
-                <>
-                  <span className="sm:hidden">{statusShort}</span>
-                  <span className="hidden sm:inline">{statusText}</span>
-                </>
+                statusText
               )}
               <span className="ml-1 text-gray-500 sm:ml-2">· Bound: {isBound ? "Gebunden" : "Frei"}</span>
             </span>
@@ -94,8 +90,8 @@ export function ChastityStatusBlock({
   if (isDom && asDomArrangements.length > 0) {
     return (
       <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             {asDomArrangements.slice(0, 4).map((arr) => (
               <div
                 key={arr.id}
@@ -149,7 +145,7 @@ export function ChastityStatusBlock({
             )}
           </div>
         </div>
-        <p className="mt-2 text-xs text-gray-500">Bound: {isBound ? "Gebunden" : "Frei"}</p>
+        <p className="mt-2 text-center text-xs text-gray-500">Bound: {isBound ? "Gebunden" : "Frei"}</p>
       </div>
     );
   }
@@ -157,7 +153,7 @@ export function ChastityStatusBlock({
   if (isDom) {
     return (
       <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center justify-center gap-2 sm:gap-4">
           <UnlockKeyhole
             className="h-8 w-8 shrink-0 text-gray-500 sm:h-10 sm:w-10"
             strokeWidth={1.5}
@@ -171,7 +167,7 @@ export function ChastityStatusBlock({
 
   return (
     <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm sm:p-4">
-      <div className="flex items-center gap-2 sm:gap-4">
+      <div className="flex items-center justify-center gap-2 sm:gap-4">
         <UnlockKeyhole
           className="h-8 w-8 shrink-0 text-gray-500 sm:h-10 sm:w-10"
           strokeWidth={1.5}
