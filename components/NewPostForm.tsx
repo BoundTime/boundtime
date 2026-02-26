@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { POST_CONTENT_MAX } from "@/types";
 import { ImagePlus } from "lucide-react";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 export function NewPostForm() {
   const router = useRouter();
@@ -18,22 +19,21 @@ export function NewPostForm() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return;
-      supabase
+      const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url")
+        .select("nick, avatar_url, avatar_photo_id")
         .eq("id", user.id)
-        .single()
-        .then(({ data }) => {
-          setNick(data?.nick ?? null);
-          if (data?.avatar_url) {
-            const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(data.avatar_url);
-            setAvatarUrl(urlData.publicUrl);
-          } else {
-            setAvatarUrl(null);
-          }
-        });
+        .single();
+      setNick(data?.nick ?? null);
+      const url = data
+        ? await resolveProfileAvatarUrl(
+            { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
+            supabase
+          )
+        : null;
+      setAvatarUrl(url);
     });
   }, []);
 

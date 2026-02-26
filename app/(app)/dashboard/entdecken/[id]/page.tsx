@@ -13,6 +13,7 @@ import { RoleIcon } from "@/components/RoleIcon";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -64,12 +65,17 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at"
     )
     .eq("id", id)
     .single();
 
   if (!profile) notFound();
+
+  const avatarUrl = await resolveProfileAvatarUrl(
+    { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
+    supabase
+  );
 
   if (user.id !== profile.id) {
     // Profilbesuch clientseitig erfassen (JWT des Besuchers)
@@ -136,8 +142,6 @@ export default async function ProfilDetailPage({
     }
   }
 
-  const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url ?? "");
-  const avatarUrl = profile.avatar_url ? urlData.publicUrl : null;
   const initials = (profile.nick ?? "?")
     .split(/[\s_]+/)
     .map((w: string) => w[0])

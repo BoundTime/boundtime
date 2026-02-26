@@ -10,6 +10,7 @@ import { LockDurationBadge } from "@/components/LockDurationBadge";
 import { NotificationBell } from "@/components/NotificationBell";
 import { RefreshNavLink } from "@/components/RefreshNavLink";
 import { RoleIcon } from "@/components/RoleIcon";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
@@ -38,21 +39,20 @@ export function Navbar() {
     async function loadProfile(userId: string) {
       const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, role, verified")
+        .select("nick, avatar_url, avatar_photo_id, role, verified")
         .eq("id", userId)
         .single();
 
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
-      if (data?.avatar_url) {
-        const { data: urlData } = supabase.storage
-          .from("avatars")
-          .getPublicUrl(data.avatar_url);
-        setAvatarUrl(urlData.publicUrl);
-      } else {
-        setAvatarUrl(null);
-      }
+      const url = data
+        ? await resolveProfileAvatarUrl(
+            { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
+            supabase
+          )
+        : null;
+      setAvatarUrl(url);
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {

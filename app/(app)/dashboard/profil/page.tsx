@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel } from "@/lib/profile-utils";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { Pencil, Images } from "lucide-react";
 
 function formatTimeAgo(date: Date): string {
@@ -52,12 +53,17 @@ export default async function ProfilPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level"
     )
     .eq("id", user.id)
     .single();
 
   if (!profile) redirect("/login");
+
+  const avatarUrl = await resolveProfileAvatarUrl(
+    { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
+    supabase
+  );
 
   const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
     supabase
@@ -70,8 +76,6 @@ export default async function ProfilPage({
       .eq("follower_id", profile.id),
   ]);
 
-  const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url ?? "");
-  const avatarUrl = profile.avatar_url ? urlData.publicUrl : null;
   const initials = (profile.nick ?? "?")
     .split(/[\s_]+/)
     .map((w: string) => w[0])

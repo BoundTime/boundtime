@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -20,15 +21,8 @@ function formatTimeAgo(date: Date): string {
   return date.toLocaleDateString("de-DE");
 }
 
-function getAvatarUrl(avatarPath: string | null): string | null {
-  if (!avatarPath) return null;
-  const supabase = createClient();
-  const { data } = supabase.storage.from("avatars").getPublicUrl(avatarPath);
-  return data.publicUrl;
-}
-
 type ViewRow = { viewer_id: string; viewed_at: string };
-type ProfileRow = { id: string; nick: string | null; avatar_url: string | null };
+type ProfileRow = { id: string; nick: string | null; avatar_display_url: string | null };
 
 export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
   const router = useRouter();
@@ -76,11 +70,20 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
 
       const { data: profilesData } = await supabase
         .from("profiles")
-        .select("id, nick, avatar_url")
+        .select("id, nick, avatar_url, avatar_photo_id")
         .in("id", viewerIds);
 
-      if (!cancelled) {
-        setProfiles(new Map((profilesData ?? []).map((p) => [p.id, p])));
+      if (!cancelled && profilesData?.length) {
+        const withUrls = await Promise.all(
+          profilesData.map(async (p) => {
+            const avatar_display_url = await resolveProfileAvatarUrl(
+              { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+              supabase
+            );
+            return [p.id, { id: p.id, nick: p.nick, avatar_display_url }] as const;
+          })
+        );
+        setProfiles(new Map(withUrls));
       }
       setLoading(false);
     }
@@ -127,7 +130,7 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
           <ul className="space-y-1">
             {displayViews.map((v) => {
               const p = profiles.get(v.viewer_id);
-              const avatarUrl = p?.avatar_url ? getAvatarUrl(p.avatar_url) : null;
+              const avatarUrl = p?.avatar_display_url ?? null;
               return (
                 <li key={`${v.viewer_id}-${v.viewed_at}`} onClick={(e) => e.stopPropagation()}>
                   <Link

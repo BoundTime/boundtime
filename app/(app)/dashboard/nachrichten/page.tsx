@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 export default async function NachrichtenPage({
   searchParams,
@@ -89,9 +90,27 @@ export default async function NachrichtenPage({
   });
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, last_seen_at")
+    .select("id, nick, avatar_url, avatar_photo_id, last_seen_at")
     .in("id", Array.from(otherIds));
-  const profileById = new Map(profiles?.map((p) => [p.id, p]) ?? []);
+  const profileById = new Map<
+    string,
+    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null }
+  >();
+  if (profiles?.length) {
+    await Promise.all(
+      profiles.map(async (p) => {
+        const avatar_display_url = await resolveProfileAvatarUrl(
+          { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+          supabase
+        );
+        profileById.set(p.id, {
+          nick: p.nick,
+          avatar_display_url,
+          last_seen_at: p.last_seen_at ?? null,
+        });
+      })
+    );
+  }
 
   const list = (convDetails ?? [])
     .map((c) => {
@@ -102,8 +121,8 @@ export default async function NachrichtenPage({
         id: c.id,
         otherId,
         otherNick: p?.nick ?? "?",
-        otherAvatarUrl: p?.avatar_url ?? null,
-        otherLastSeenAt: (p as { last_seen_at?: string | null } | undefined)?.last_seen_at ?? null,
+        otherAvatarUrl: p?.avatar_display_url ?? null,
+        otherLastSeenAt: p?.last_seen_at ?? null,
         lastContent: last?.content ?? null,
         lastAt: last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString(),
       };
@@ -122,9 +141,7 @@ export default async function NachrichtenPage({
       <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
         <ul className="space-y-3">
           {list.map((item) => {
-            const avatarUrl = item.otherAvatarUrl
-              ? supabase.storage.from("avatars").getPublicUrl(item.otherAvatarUrl).data.publicUrl
-              : null;
+            const avatarUrl = item.otherAvatarUrl;
             const initials = (item.otherNick ?? "?")
               .split(/[\s_]+/)
               .map((w: string) => w[0])

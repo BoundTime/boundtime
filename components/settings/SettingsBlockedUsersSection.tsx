@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 type BlockedUser = {
   blocked_id: string;
   nick: string | null;
-  avatar_url: string | null;
+  avatar_display_url: string | null;
 };
 
 export function SettingsBlockedUsersSection() {
@@ -30,14 +31,23 @@ export function SettingsBlockedUsersSection() {
         }
         const { data: profs } = await supabase
           .from("profiles")
-          .select("id, nick, avatar_url")
+          .select("id, nick, avatar_url, avatar_photo_id")
           .in("id", ids);
-        const byId = new Map((profs ?? []).map((p: { id: string; nick: string | null; avatar_url: string | null }) => [p.id, { nick: p.nick, avatar_url: p.avatar_url }]));
+        const withUrls = await Promise.all(
+          (profs ?? []).map(async (p: { id: string; nick: string | null; avatar_url: string | null; avatar_photo_id: string | null }) => {
+            const avatar_display_url = await resolveProfileAvatarUrl(
+              { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+              supabase
+            );
+            return [p.id, { nick: p.nick, avatar_display_url }] as const;
+          })
+        );
+        const byId = new Map(withUrls);
         setUsers(
           ids.map((id) => ({
             blocked_id: id,
             nick: byId.get(id)?.nick ?? null,
-            avatar_url: byId.get(id)?.avatar_url ?? null,
+            avatar_display_url: byId.get(id)?.avatar_display_url ?? null,
           }))
         );
       } finally {
@@ -79,9 +89,9 @@ export function SettingsBlockedUsersSection() {
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gray-600 bg-background">
-                  {u.avatar_url ? (
+                  {u.avatar_display_url ? (
                     <img
-                      src={supabase.storage.from("avatars").getPublicUrl(u.avatar_url).data.publicUrl}
+                      src={u.avatar_display_url}
                       alt=""
                       className="h-full w-full object-cover"
                     />

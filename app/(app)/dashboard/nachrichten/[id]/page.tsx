@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { MessageInput } from "@/components/MessageInput";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 export default async function ChatPage({
   params,
@@ -28,11 +29,14 @@ export default async function ChatPage({
   const otherId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
   const { data: otherProfile } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url")
+    .select("id, nick, avatar_url, avatar_photo_id")
     .eq("id", otherId)
     .single();
-  const otherAvatarUrl = otherProfile?.avatar_url
-    ? supabase.storage.from("avatars").getPublicUrl(otherProfile.avatar_url).data.publicUrl
+  const otherAvatarUrl = otherProfile
+    ? await resolveProfileAvatarUrl(
+        { avatar_url: otherProfile.avatar_url, avatar_photo_id: otherProfile.avatar_photo_id },
+        supabase
+      )
     : null;
   const otherNick = otherProfile?.nick ?? "?";
 

@@ -26,7 +26,7 @@ function getAvatarUrl(avatarPath: string | null): string | null {
 }
 
 type PostLikeRow = { post_id: string; user_id: string; liked_at: string };
-type ProfileRow = { id: string; nick: string | null; avatar_url: string | null };
+type ProfileRow = { id: string; nick: string | null; avatar_url?: string | null; avatar_display_url?: string | null };
 type PostRow = { id: string; content: string | null };
 
 export function PostLikesBlock({
@@ -69,7 +69,7 @@ export function PostLikesBlock({
               const snippet = post?.content
                 ? (post.content.length > 40 ? post.content.slice(0, 40).trim() + "…" : post.content)
                 : null;
-              const avatarUrl = p?.avatar_url ? getAvatarUrl(p.avatar_url) : null;
+              const avatarUrl = p?.avatar_display_url ?? (p?.avatar_url ? getAvatarUrl(p.avatar_url) : null);
               return (
                 <li key={`${l.post_id}-${l.user_id}-${i}`} onClick={(e) => e.stopPropagation()}>
                   <Link

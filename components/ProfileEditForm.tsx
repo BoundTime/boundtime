@@ -12,6 +12,8 @@ import {
   MAX_TEXT_LENGTH,
 } from "@/types";
 import { PlzOrtAutocomplete } from "@/components/PlzOrtAutocomplete";
+import Link from "next/link";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 export function ProfileEditForm() {
   const router = useRouter();
@@ -31,8 +33,6 @@ export function ProfileEditForm() {
   const [preferences, setPreferences] = useState<string[]>([]);
   const [expectationsText, setExpectationsText] = useState("");
   const [aboutMe, setAboutMe] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
   const [gender, setGender] = useState<string | null>(null);
@@ -50,7 +50,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, experience_level"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level"
         )
         .eq("id", user.id)
         .single()
@@ -59,7 +59,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, experience_level"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level"
               )
               .eq("id", user.id)
               .single();
@@ -76,12 +76,11 @@ export function ProfileEditForm() {
               setExpectationsText(fallbackData.expectations_text ?? "");
               setAboutMe(fallbackData.about_me ?? "");
               setExperienceLevel(fallbackData.experience_level ?? "");
-              if (fallbackData.avatar_url) {
-                const { data: urlData } = supabase.storage
-                  .from("avatars")
-                  .getPublicUrl(fallbackData.avatar_url);
-                setCurrentAvatarUrl(urlData.publicUrl);
-              }
+              const url = await resolveProfileAvatarUrl(
+                { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
+                supabase
+              );
+              setCurrentAvatarUrl(url);
             }
           } else if (data) {
             setHeightCm(data.height_cm != null ? String(data.height_cm) : "");
@@ -97,29 +96,16 @@ export function ProfileEditForm() {
             setExpectationsText(data.expectations_text ?? "");
             setAboutMe(data.about_me ?? "");
             setExperienceLevel(data.experience_level ?? "");
-            if (data.avatar_url) {
-              const { data: urlData } = supabase.storage
-                .from("avatars")
-                .getPublicUrl(data.avatar_url);
-              setCurrentAvatarUrl(urlData.publicUrl);
-            }
+            const url = await resolveProfileAvatarUrl(
+              { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
+              supabase
+            );
+            setCurrentAvatarUrl(url);
           }
           setLoading(false);
         });
     });
   }, [router]);
-
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Bitte nur Bilddateien (z. B. JPG, PNG) wählen.");
-      return;
-    }
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
-    setError(null);
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -131,23 +117,6 @@ export function ProfileEditForm() {
     const supabase = createClient();
 
     try {
-      let avatarPath: string | null = null;
-
-      if (avatarFile) {
-        const ext = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
-        const path = `${userId}/avatar.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("avatars")
-          .upload(path, avatarFile, {
-            upsert: true,
-            contentType: avatarFile.type,
-          });
-        if (uploadError) {
-          throw new Error(`Profilbild: ${uploadError.message}`);
-        }
-        avatarPath = path;
-      }
-
       const updates: Record<string, unknown> = {
         height_cm: heightCm ? parseInt(heightCm, 10) : null,
         weight_kg: weightKg ? parseInt(weightKg, 10) : null,
@@ -160,7 +129,6 @@ export function ProfileEditForm() {
         about_me: aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null,
         experience_level: experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null,
       };
-      if (avatarPath !== null) updates.avatar_url = avatarPath;
       if (preferences.length > 0) updates.preferences = preferences;
 
       const { error: updateError } = await supabase
@@ -187,12 +155,10 @@ export function ProfileEditForm() {
       }
       setSuccessMessage("Ihre Angaben wurden gespeichert.");
       router.refresh();
-      if (avatarFile) {
-        setAvatarFile(null);
-        setAvatarPreview(null);
-        const path = avatarPath as string;
-        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-        setCurrentAvatarUrl(urlData.publicUrl);
+      const { data: profileData } = await supabase.from("profiles").select("avatar_url, avatar_photo_id").eq("id", userId).single();
+      if (profileData) {
+        const url = await resolveProfileAvatarUrl(profileData, supabase);
+        setCurrentAvatarUrl(url);
       }
       setTimeout(() => setSuccessMessage(null), 4000);
     } catch (err: unknown) {
@@ -474,27 +440,17 @@ export function ProfileEditForm() {
         <label className="mb-1 block text-sm font-medium text-gray-300">
           Profilbild
         </label>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <div className="flex shrink-0 items-center gap-4">
-            {(avatarPreview || currentAvatarUrl) && (
-              <div className="relative h-24 w-24 overflow-hidden rounded-full bg-card">
-                <img
-                  src={avatarPreview || currentAvatarUrl || ""}
-                  alt="Profilbild"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp"
-              onChange={handleAvatarChange}
-              className="text-sm text-gray-400 file:mr-2 file:rounded file:border-0 file:bg-accent file:px-3 file:py-1 file:text-white file:hover:bg-accent-hover"
-            />
+        {currentAvatarUrl && (
+          <div className="mb-3 h-24 w-24 overflow-hidden rounded-full bg-card">
+            <img src={currentAvatarUrl} alt="Profilbild" className="h-full w-full object-cover" />
           </div>
-        </div>
-        <p className="mt-1 text-xs text-gray-500">
-          Max. 5 MB, Formate: JPG, PNG, GIF, WebP
+        )}
+        <p className="text-sm text-gray-400">
+          Profilbild im{" "}
+          <Link href="/dashboard/alben" className="text-accent underline hover:text-accent-hover">
+            Hauptalbum
+          </Link>{" "}
+          festlegen. Wähle dort ein Foto aus und klicke auf „Als Profilbild“.
         </p>
       </div>
 

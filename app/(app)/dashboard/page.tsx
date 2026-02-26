@@ -11,6 +11,7 @@ import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
 import { PostLikesBlock } from "@/components/PostLikesBlock";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ChastityLockDuration } from "@/components/chastity/ChastityLockDuration";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -31,7 +32,7 @@ const PROFILE_SLOTS = 10;
 function getProfileProgress(profile: Record<string, unknown> | null): number {
   if (!profile) return 0;
   let filled = 0;
-  if (profile.avatar_url) filled++;
+  if (profile.avatar_url || profile.avatar_photo_id) filled++;
   if (profile.postal_code || profile.city) filled++;
   if (profile.height_cm != null && profile.height_cm !== "") filled++;
   if (profile.weight_kg != null && profile.weight_kg !== "") filled++;
@@ -58,7 +59,7 @@ export default async function DashboardPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "nick, role, avatar_url, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me, is_admin, bound_dollars"
+      "nick, role, avatar_url, avatar_photo_id, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me, is_admin, bound_dollars"
     )
     .eq("id", user.id)
     .single();
@@ -80,27 +81,30 @@ export default async function DashboardPage() {
   const subIds = asDomArrangements.map((a) => a.sub_id);
   const { data: subProfiles } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, verified")
+    .select("id, nick, avatar_url, avatar_photo_id, verified")
     .in("id", subIds);
   const subProfileById = new Map(subProfiles?.map((p) => [p.id, p]) ?? []);
-  const asDomWithSub = asDomArrangements.map((a) => {
-    const sub = subProfileById.get(a.sub_id);
-    let subAvatarUrl: string | null = null;
-    if (sub?.avatar_url) {
-      const { data } = supabase.storage.from("avatars").getPublicUrl(sub.avatar_url);
-      subAvatarUrl = data.publicUrl;
-    }
-    return {
-      id: a.id,
-      subId: a.sub_id,
-      subNick: sub?.nick ?? "?",
-      subAvatarUrl,
-      subVerified: sub?.verified ?? false,
-      lockedAt: a.locked_at,
-      boundDollars: a.bound_dollars ?? 0,
-      rewardGoalBoundDollars: a.reward_goal_bound_dollars ?? 0,
-    };
-  });
+  const asDomWithSub = await Promise.all(
+    asDomArrangements.map(async (a) => {
+      const sub = subProfileById.get(a.sub_id);
+      const subAvatarUrl = sub
+        ? await resolveProfileAvatarUrl(
+            { avatar_url: sub.avatar_url, avatar_photo_id: sub.avatar_photo_id },
+            supabase
+          )
+        : null;
+      return {
+        id: a.id,
+        subId: a.sub_id,
+        subNick: sub?.nick ?? "?",
+        subAvatarUrl,
+        subVerified: sub?.verified ?? false,
+        lockedAt: a.locked_at,
+        boundDollars: a.bound_dollars ?? 0,
+        rewardGoalBoundDollars: a.reward_goal_bound_dollars ?? 0,
+      };
+    })
+  );
 
   const isDomOrSwitcher = role === "Dom" || role === "Switcher";
   const domArrangementIds = asDomArrangements.map((a) => a.id);
@@ -163,23 +167,26 @@ export default async function DashboardPage() {
       const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
       const { data: authors } = await supabase
         .from("profiles")
-        .select("id, nick, avatar_url, verified")
+        .select("id, nick, avatar_url, avatar_photo_id, verified")
         .in("id", authorIds);
       const authorById = new Map(authors?.map((a) => [a.id, a]) ?? []);
-      posts = postsData.map((p) => {
-        const a = authorById.get(p.author_id);
-        let avatarUrl: string | null = null;
-        if (a?.avatar_url) {
-          const { data } = supabase.storage.from("avatars").getPublicUrl(a.avatar_url);
-          avatarUrl = data.publicUrl;
-        }
-        return {
-          ...p,
-          author_nick: a?.nick ?? null,
-          author_avatar_url: avatarUrl,
-          author_verified: a?.verified ?? false,
-        };
-      });
+      posts = await Promise.all(
+        postsData.map(async (p) => {
+          const a = authorById.get(p.author_id);
+          const avatarUrl = a
+            ? await resolveProfileAvatarUrl(
+                { avatar_url: a.avatar_url, avatar_photo_id: a.avatar_photo_id },
+                supabase
+              )
+            : null;
+          return {
+            ...p,
+            author_nick: a?.nick ?? null,
+            author_avatar_url: avatarUrl,
+            author_verified: a?.verified ?? false,
+          };
+        })
+      );
     }
   }
 
@@ -224,16 +231,20 @@ export default async function DashboardPage() {
   const { data: activityProfiles } = allActivityUserIds.length > 0
     ? await supabase
         .from("profiles")
-        .select("id, nick, avatar_url")
+        .select("id, nick, avatar_url, avatar_photo_id")
         .in("id", allActivityUserIds)
     : { data: [] };
-  const profileById = new Map(activityProfiles?.map((p) => [p.id, p]) ?? []);
-
-  function activityAvatarUrl(avatarPath: string | null): string | null {
-    if (!avatarPath) return null;
-    const { data } = supabase.storage.from("avatars").getPublicUrl(avatarPath);
-    return data.publicUrl;
-  }
+  const activityProfilesWithAvatars = activityProfiles?.length
+    ? await Promise.all(
+        activityProfiles.map(async (p) => {
+          const avatar_display_url = await resolveProfileAvatarUrl(
+            { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+            supabase
+          );
+          return { id: p.id, nick: p.nick, avatar_url: p.avatar_url, avatar_display_url };
+        })
+      )
+    : [];
 
   return (
     <Container className="py-16">
@@ -366,7 +377,7 @@ export default async function DashboardPage() {
           <div className="rounded-b-xl border-t border-gray-700 bg-card p-3">
             <ProfileLikesBlock
               likes={profileLikesRes.data ?? []}
-              profiles={activityProfiles ?? []}
+              profiles={activityProfilesWithAvatars}
               hideTitle
             />
           </div>
@@ -381,7 +392,7 @@ export default async function DashboardPage() {
           <div className="rounded-b-xl border-t border-gray-700 bg-card p-3">
             <PostLikesBlock
               likes={postLikersRes.data ?? []}
-              profiles={activityProfiles ?? []}
+              profiles={activityProfilesWithAvatars}
               posts={myPostsRes.data ?? []}
               hideTitle
             />

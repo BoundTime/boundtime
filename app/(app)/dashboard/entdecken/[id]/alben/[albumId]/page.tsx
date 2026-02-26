@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { AlbumViewer } from "@/components/albums/AlbumViewer";
 
 export default async function AlbumViewPage({
@@ -49,24 +50,43 @@ export default async function AlbumViewPage({
 
   const { data: ownerProfile } = await supabase
     .from("profiles")
-    .select("nick, avatar_url")
+    .select("nick, avatar_url, avatar_photo_id")
     .eq("id", ownerId)
     .single();
 
-  const avatarUrl = ownerProfile?.avatar_url
-    ? supabase.storage.from("avatars").getPublicUrl(ownerProfile.avatar_url).data.publicUrl
+  const avatarUrl = ownerProfile
+    ? await resolveProfileAvatarUrl(
+        {
+          avatar_url: ownerProfile.avatar_url,
+          avatar_photo_id: ownerProfile.avatar_photo_id,
+        },
+        supabase
+      )
     : null;
 
-  const showAvatarFirst = album.is_main && avatarUrl;
+  const photoIds = new Set((photos ?? []).map((p) => p.id));
+  const avatarPhotoInAlbum =
+    album.is_main &&
+    ownerProfile?.avatar_photo_id &&
+    photoIds.has(ownerProfile.avatar_photo_id);
 
-  const images = [
-    ...(showAvatarFirst ? [{ id: "avatar", url: avatarUrl!, alt: "Profilbild" }] : []),
-    ...(photos ?? []).map((p) => ({
-      id: p.id,
-      url: supabase.storage.from("album-photos").getPublicUrl(p.storage_path).data.publicUrl,
-      alt: "",
-    })),
-  ];
+  const baseImages = (photos ?? []).map((p) => ({
+    id: p.id,
+    url: supabase.storage.from("album-photos").getPublicUrl(p.storage_path).data.publicUrl,
+    alt: "",
+  }));
+
+  const images =
+    album.is_main && avatarUrl && !avatarPhotoInAlbum
+      ? [{ id: "avatar", url: avatarUrl, alt: "Profilbild" as const }, ...baseImages]
+      : avatarPhotoInAlbum && ownerProfile?.avatar_photo_id
+        ? (() => {
+            const avId = ownerProfile.avatar_photo_id;
+            const avImg = baseImages.find((i) => i.id === avId);
+            const rest = baseImages.filter((i) => i.id !== avId);
+            return avImg ? [avImg, ...rest] : baseImages;
+          })()
+        : baseImages;
 
   return (
     <Container className="py-16">

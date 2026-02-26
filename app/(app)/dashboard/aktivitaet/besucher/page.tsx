@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { Eye } from "lucide-react";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -30,13 +31,26 @@ export default async function AktivitaetBesucherPage() {
   const views = Array.isArray(viewsData) ? viewsData as { viewer_id: string; viewed_at: string }[] : [];
   const viewerIds = Array.from(new Set(views.map((v) => v.viewer_id)));
   const { data: profilesData } = viewerIds.length > 0
-    ? await supabase.from("profiles").select("id, nick, avatar_url, last_seen_at").in("id", viewerIds)
+    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at").in("id", viewerIds)
     : { data: [] };
-  const profileById = new Map((profilesData ?? []).map((p) => [p.id, p]));
-
-  function avatarUrl(path: string | null): string | null {
-    if (!path) return null;
-    return supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+  const profileById = new Map<
+    string,
+    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null }
+  >();
+  if (profilesData?.length) {
+    await Promise.all(
+      profilesData.map(async (p) => {
+        const avatar_display_url = await resolveProfileAvatarUrl(
+          { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+          supabase
+        );
+        profileById.set(p.id, {
+          nick: p.nick,
+          avatar_display_url,
+          last_seen_at: p.last_seen_at ?? null,
+        });
+      })
+    );
   }
 
   return (
@@ -61,7 +75,7 @@ export default async function AktivitaetBesucherPage() {
           <ul className="space-y-3">
             {views.map((v) => {
               const p = profileById.get(v.viewer_id);
-              const url = p?.avatar_url ? avatarUrl(p.avatar_url) : null;
+              const url = p?.avatar_display_url ?? null;
               return (
                 <li key={`${v.viewer_id}-${v.viewed_at}`}>
                   <Link
@@ -80,7 +94,7 @@ export default async function AktivitaetBesucherPage() {
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 font-medium text-white">
                         {p?.nick ?? "?"}
-                        <OnlineIndicator lastSeenAt={(p as { last_seen_at?: string | null })?.last_seen_at ?? null} variant="text" />
+                        <OnlineIndicator lastSeenAt={p?.last_seen_at ?? null} variant="text" />
                       </p>
                       <p className="text-sm text-gray-500">{formatTimeAgo(new Date(v.viewed_at))}</p>
                     </div>

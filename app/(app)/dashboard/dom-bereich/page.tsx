@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -81,22 +82,25 @@ export default async function DomBereichPage() {
       const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
       const { data: authors } = await supabase
         .from("profiles")
-        .select("id, nick, avatar_url")
+        .select("id, nick, avatar_url, avatar_photo_id")
         .in("id", authorIds);
       const authorById = new Map(authors?.map((a) => [a.id, a]) ?? []);
-      posts = postsData.map((p) => {
-        const a = authorById.get(p.author_id);
-        let avatarUrl: string | null = null;
-        if (a?.avatar_url) {
-          const { data } = supabase.storage.from("avatars").getPublicUrl(a.avatar_url);
-          avatarUrl = data.publicUrl;
-        }
-        return {
-          ...p,
-          author_nick: a?.nick ?? null,
-          author_avatar_url: avatarUrl,
-        };
-      });
+      posts = await Promise.all(
+        postsData.map(async (p) => {
+          const a = authorById.get(p.author_id);
+          const avatarUrl = a
+            ? await resolveProfileAvatarUrl(
+                { avatar_url: a.avatar_url, avatar_photo_id: a.avatar_photo_id },
+                supabase
+              )
+            : null;
+          return {
+            ...p,
+            author_nick: a?.nick ?? null,
+            author_avatar_url: avatarUrl,
+          };
+        })
+      );
     }
   }
 

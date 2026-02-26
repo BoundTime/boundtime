@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Upload, Trash2 } from "lucide-react";
+import { Upload, Trash2, User } from "lucide-react";
 import { AlbumLightbox } from "./AlbumLightbox";
 
 type Photo = {
@@ -11,6 +11,8 @@ type Photo = {
   storage_path: string;
   fsk18: boolean;
   sort_order: number;
+  title?: string | null;
+  caption?: string | null;
 };
 
 export function AlbumDetailManager({
@@ -18,18 +20,22 @@ export function AlbumDetailManager({
   ownerId,
   initialPhotos,
   isMainAlbum = false,
-  avatarUrl = null,
+  avatarPhotoId = null,
 }: {
   albumId: string;
   ownerId: string;
   initialPhotos: Photo[];
   isMainAlbum?: boolean;
-  avatarUrl?: string | null;
+  avatarPhotoId?: string | null;
 }) {
   const router = useRouter();
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
+  const [avatarPhotoIdState, setAvatarPhotoIdState] = useState<string | null>(avatarPhotoId);
   const [uploading, setUploading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCaption, setEditCaption] = useState("");
 
   const supabase = createClient();
   const getUrl = (path: string) =>
@@ -62,7 +68,7 @@ export function AlbumDetailManager({
           fsk18: false,
           sort_order: maxOrder + 1,
         })
-        .select("id, storage_path, fsk18, sort_order")
+        .select("id, storage_path, fsk18, sort_order, title, caption")
         .single();
       if (inserted) added.push(inserted);
     }
@@ -73,20 +79,60 @@ export function AlbumDetailManager({
   }
 
   const images = useMemo(() => {
-    const list: { id: string; url: string; alt?: string }[] = [];
-    if (isMainAlbum && avatarUrl) {
-      list.push({ id: "avatar", url: avatarUrl, alt: "Profilbild" });
-    }
-    photos.forEach((p) => {
-      list.push({ id: p.id, url: getUrl(p.storage_path), alt: "" });
-    });
-    return list;
-  }, [isMainAlbum, avatarUrl, photos]);
+    return photos.map((p) => ({
+      id: p.id,
+      url: getUrl(p.storage_path),
+      alt: p.title ?? p.caption ?? "",
+    }));
+  }, [photos]);
 
   async function deletePhoto(photoId: string, storagePath: string) {
     await supabase.storage.from("album-photos").remove([storagePath]);
     await supabase.from("photo_album_photos").delete().eq("id", photoId);
+    if (avatarPhotoIdState === photoId) {
+      await supabase.from("profiles").update({ avatar_photo_id: null }).eq("id", ownerId);
+      setAvatarPhotoIdState(null);
+    }
     setPhotos((prev) => prev.filter((p) => p.id !== photoId));
+    router.refresh();
+  }
+
+  async function setAsProfilePhoto(photoId: string) {
+    const photo = photos.find((p) => p.id === photoId);
+    if (!photo || !isMainAlbum) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ avatar_photo_id: photoId, avatar_url: null })
+      .eq("id", ownerId);
+    if (!error) {
+      setAvatarPhotoIdState(photoId);
+      router.refresh();
+    }
+  }
+
+  function startEditing(photo: Photo) {
+    setEditingPhotoId(photo.id);
+    setEditTitle(photo.title ?? "");
+    setEditCaption(photo.caption ?? "");
+  }
+
+  async function savePhotoEdit(photoId: string) {
+    const { error } = await supabase
+      .from("photo_album_photos")
+      .update({ title: editTitle.trim() || null, caption: editCaption.trim() || null })
+      .eq("id", photoId);
+    if (!error) {
+      setPhotos((prev) =>
+        prev.map((p) =>
+          p.id === photoId
+            ? { ...p, title: editTitle.trim() || null, caption: editCaption.trim() || null }
+            : p
+        )
+      );
+    }
+    setEditingPhotoId(null);
+    setEditTitle("");
+    setEditCaption("");
     router.refresh();
   }
 
@@ -108,9 +154,9 @@ export function AlbumDetailManager({
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-        {images.map((img, index) => (
+        {photos.map((photo, index) => (
           <div
-            key={img.id}
+            key={photo.id}
             className="group relative aspect-square overflow-hidden rounded-lg border border-gray-700 bg-gray-900"
           >
             <button
@@ -119,25 +165,112 @@ export function AlbumDetailManager({
               className="block h-full w-full focus:outline-none focus:ring-2 focus:ring-accent"
             >
               <img
-                src={img.url}
-                alt={img.alt ?? ""}
+                src={getUrl(photo.storage_path)}
+                alt={photo.title ?? photo.caption ?? ""}
                 className="h-full w-full cursor-pointer object-cover transition-opacity hover:opacity-90"
               />
             </button>
-            {img.id === "avatar" && (
-              <span className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
-                Profilbild
+            {avatarPhotoIdState === photo.id && (
+              <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
+                <User className="h-3 w-3" /> Profilbild
               </span>
             )}
-            {img.id !== "avatar" && (
+            {isMainAlbum && (
               <button
                 type="button"
-                onClick={(e) => { e.stopPropagation(); deletePhoto(img.id, (photos.find((p) => p.id === img.id) as Photo)?.storage_path ?? ""); }}
-                className="absolute right-2 top-2 rounded bg-red-600/80 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
-                title="Foto entfernen"
-                aria-label="Foto entfernen"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAsProfilePhoto(photo.id);
+                }}
+                className="absolute bottom-2 right-2 rounded bg-accent/90 px-2 py-1 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
+                title="Als Profilbild wählen"
               >
-                <Trash2 className="h-4 w-4" />
+                Als Profilbild
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                deletePhoto(photo.id, photo.storage_path);
+              }}
+              className="absolute right-2 top-2 rounded bg-red-600/80 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+              title="Foto entfernen"
+              aria-label="Foto entfernen"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+            {(photo.title || photo.caption || editingPhotoId === photo.id) && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-6">
+                {editingPhotoId === photo.id ? (
+                  <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      placeholder="Titel"
+                      className="w-full rounded border border-gray-600 bg-black/60 px-2 py-1 text-xs text-white placeholder-gray-500"
+                    />
+                    <textarea
+                      value={editCaption}
+                      onChange={(e) => setEditCaption(e.target.value)}
+                      placeholder="Beschreibung"
+                      rows={2}
+                      className="w-full resize-none rounded border border-gray-600 bg-black/60 px-2 py-1 text-xs text-white placeholder-gray-500"
+                    />
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => savePhotoEdit(photo.id)}
+                        className="rounded bg-accent px-2 py-0.5 text-xs text-white hover:bg-accent-hover"
+                      >
+                        Speichern
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingPhotoId(null);
+                          setEditTitle("");
+                          setEditCaption("");
+                        }}
+                        className="rounded bg-gray-600 px-2 py-0.5 text-xs text-white hover:bg-gray-500"
+                      >
+                        Abbrechen
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-0.5">
+                    {photo.title && (
+                      <p className="text-xs font-medium text-white">{photo.title}</p>
+                    )}
+                    {photo.caption && (
+                      <p className="line-clamp-2 text-xs text-gray-300">{photo.caption}</p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditing(photo);
+                      }}
+                      className="text-xs text-gray-400 underline hover:text-white"
+                    >
+                      Bearbeiten
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+            {!photo.title && !photo.caption && editingPhotoId !== photo.id && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  startEditing(photo);
+                }}
+                className="absolute bottom-2 left-2 rounded bg-black/40 px-2 py-0.5 text-xs text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white"
+              >
+                Titel/Caption hinzufügen
               </button>
             )}
           </div>
@@ -151,7 +284,7 @@ export function AlbumDetailManager({
           onIndexChange={setLightboxIndex}
         />
       )}
-      {photos.length === 0 && !(isMainAlbum && avatarUrl) && (
+      {photos.length === 0 && (
         <p className="text-sm text-gray-500">Noch keine Fotos. Lade welche hoch.</p>
       )}
     </div>

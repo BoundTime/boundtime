@@ -26,7 +26,7 @@ function getAvatarUrl(avatarPath: string | null): string | null {
 }
 
 type LikeRow = { liker_id: string; liked_at: string };
-type ProfileRow = { id: string; nick: string | null; avatar_url: string | null };
+type ProfileRow = { id: string; nick: string | null; avatar_url?: string | null; avatar_display_url?: string | null };
 
 export function ProfileLikesBlock({
   likes,
@@ -61,7 +61,7 @@ export function ProfileLikesBlock({
           <ul className="space-y-1">
             {displayList.map((l) => {
               const p = profileById.get(l.liker_id);
-              const avatarUrl = p?.avatar_url ? getAvatarUrl(p.avatar_url) : null;
+              const avatarUrl = p?.avatar_display_url ?? (p?.avatar_url ? getAvatarUrl(p.avatar_url) : null);
               return (
                 <li key={`${l.liker_id}-${l.liked_at}`} onClick={(e) => e.stopPropagation()}>
                   <Link

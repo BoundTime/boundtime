@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { Heart } from "lucide-react";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -35,13 +36,26 @@ export default async function AktivitaetProfilLikesPage() {
   const list = likes ?? [];
   const likerIds = Array.from(new Set(list.map((l) => l.liker_id)));
   const { data: profilesData } = likerIds.length > 0
-    ? await supabase.from("profiles").select("id, nick, avatar_url, last_seen_at").in("id", likerIds)
+    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at").in("id", likerIds)
     : { data: [] };
-  const profileById = new Map((profilesData ?? []).map((p) => [p.id, p]));
-
-  function avatarUrl(path: string | null): string | null {
-    if (!path) return null;
-    return supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl;
+  const profileById = new Map<
+    string,
+    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null }
+  >();
+  if (profilesData?.length) {
+    await Promise.all(
+      profilesData.map(async (p) => {
+        const avatar_display_url = await resolveProfileAvatarUrl(
+          { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+          supabase
+        );
+        profileById.set(p.id, {
+          nick: p.nick,
+          avatar_display_url,
+          last_seen_at: p.last_seen_at ?? null,
+        });
+      })
+    );
   }
 
   return (
@@ -66,7 +80,7 @@ export default async function AktivitaetProfilLikesPage() {
           <ul className="space-y-3">
             {list.map((l) => {
               const p = profileById.get(l.liker_id);
-              const url = p?.avatar_url ? avatarUrl(p.avatar_url) : null;
+              const url = p?.avatar_display_url ?? null;
               return (
                 <li key={`${l.liker_id}-${l.liked_at}`}>
                   <Link
@@ -85,7 +99,7 @@ export default async function AktivitaetProfilLikesPage() {
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 font-medium text-white">
                         {p?.nick ?? "?"}
-                        <OnlineIndicator lastSeenAt={(p as { last_seen_at?: string | null })?.last_seen_at ?? null} variant="text" />
+                        <OnlineIndicator lastSeenAt={p?.last_seen_at ?? null} variant="text" />
                       </p>
                       <p className="text-sm text-gray-500">{formatTimeAgo(new Date(l.liked_at))}</p>
                     </div>

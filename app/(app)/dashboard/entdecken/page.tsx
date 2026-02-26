@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { RoleIcon } from "@/components/RoleIcon";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
 const SUB_GESUCHT = "Keuschhalten anbieten (Keyholder)";
@@ -47,7 +48,7 @@ export default async function EntdeckenPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, looking_for, preferences, verified, experience_level, last_seen_at")
+    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at")
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
@@ -59,7 +60,17 @@ export default async function EntdeckenPage({
   if (keuschhaltungFilter === "keyholder_gesucht") query = query.contains("looking_for", [KEYHOLDER_GESUCHT]);
   if (keuschhaltungFilter === "sub_gesucht") query = query.contains("looking_for", [SUB_GESUCHT]);
 
-  const { data: profiles } = await query.order("nick");
+  const { data: profilesRaw } = await query.order("nick");
+
+  const profiles = await Promise.all(
+    (profilesRaw ?? []).map(async (p) => {
+      const avatarUrl = await resolveProfileAvatarUrl(
+        { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+        supabase
+      );
+      return { ...p, avatarUrl };
+    })
+  );
 
   const myPlzPrefix = myProfile.data?.postal_code?.slice(0, 2) ?? null;
 
@@ -88,8 +99,7 @@ export default async function EntdeckenPage({
         <div className="mt-6 grid gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {profiles?.length ? (
             profiles.map((profile) => {
-              const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url ?? "");
-              const avatarUrl = profile.avatar_url ? urlData.publicUrl : null;
+              const avatarUrl = (profile as { avatarUrl?: string | null }).avatarUrl ?? null;
               const initials = (profile.nick ?? "?")
                 .split(/[\s_]+/)
                 .map((w: string) => w[0])

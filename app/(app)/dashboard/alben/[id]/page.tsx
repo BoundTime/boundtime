@@ -26,19 +26,17 @@ export default async function AlbumDetailPage({
 
   const { data: photos } = await supabase
     .from("photo_album_photos")
-    .select("id, storage_path, fsk18, sort_order")
+    .select("id, storage_path, fsk18, sort_order, title, caption")
     .eq("album_id", id)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("avatar_url")
+    .select("avatar_photo_id")
     .eq("id", user.id)
     .single();
-  const avatarUrl = profile?.avatar_url
-    ? supabase.storage.from("avatars").getPublicUrl(profile.avatar_url).data.publicUrl
-    : null;
+  const avatarPhotoId = profile?.avatar_photo_id ?? null;
 
   return (
     <Container className="py-16">
@@ -58,7 +56,7 @@ export default async function AlbumDetailPage({
           ownerId={user.id}
           initialPhotos={photos ?? []}
           isMainAlbum={album.is_main}
-          avatarUrl={avatarUrl}
+          avatarPhotoId={avatarPhotoId}
         />
       </div>
     </Container>
