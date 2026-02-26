@@ -32,6 +32,7 @@ function getNotificationHref(type: NotificationType, relatedId: string | null, r
       return "/dashboard/aktivitaet/post-likes";
     case "chastity_new_task":
     case "chastity_deadline_soon":
+    case "chastity_arrangement_offer":
     case "chastity_task_awaiting_confirmation":
     case "chastity_reward_request":
       return "/dashboard/keuschhaltung";

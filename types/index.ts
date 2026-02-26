@@ -88,6 +88,7 @@ export const NOTIFICATION_TYPES = [
   "chastity_task_awaiting_confirmation",
   "chastity_reward_request",
   "chastity_deadline_soon",
+  "chastity_arrangement_offer",
 ] as const;
 
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
@@ -102,4 +103,5 @@ export const NOTIFICATION_LABELS: Record<NotificationType, string> = {
   chastity_task_awaiting_confirmation: "Aufgabe wartet auf Bestätigung",
   chastity_reward_request: "Belohnungsanfrage",
   chastity_deadline_soon: "Frist läuft bald ab",
+  chastity_arrangement_offer: "Keuschhaltungs-Anfrage wartet auf dich",
 };
