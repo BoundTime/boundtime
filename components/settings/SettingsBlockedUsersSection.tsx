@@ -17,11 +17,12 @@ export function SettingsBlockedUsersSection() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase
-      .from("blocked_users")
-      .select("blocked_id")
-      .order("created_at", { ascending: false })
-      .then(async ({ data: blocks }) => {
+    void (async () => {
+      try {
+        const { data: blocks } = await supabase
+          .from("blocked_users")
+          .select("blocked_id")
+          .order("created_at", { ascending: false });
         const ids = (blocks ?? []).map((b: { blocked_id: string }) => b.blocked_id);
         if (ids.length === 0) {
           setUsers([]);
@@ -39,8 +40,10 @@ export function SettingsBlockedUsersSection() {
             avatar_url: byId.get(id)?.avatar_url ?? null,
           }))
         );
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   async function unblock(blockedId: string) {
