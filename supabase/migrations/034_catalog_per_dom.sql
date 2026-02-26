@@ -15,16 +15,18 @@ alter table public.chastity_catalog_items
 alter table public.chastity_catalog_items
   drop constraint if exists chastity_catalog_items_arrangement_id_fkey;
 
+-- RLS-Policies zuerst löschen (abhängig von arrangement_id), danach Spalte
+drop policy if exists "chastity_catalog_items_select" on public.chastity_catalog_items;
+drop policy if exists "chastity_catalog_items_insert" on public.chastity_catalog_items;
+drop policy if exists "chastity_catalog_items_update" on public.chastity_catalog_items;
+drop policy if exists "chastity_catalog_items_delete" on public.chastity_catalog_items;
+
 alter table public.chastity_catalog_items
   drop column arrangement_id;
 
 create index if not exists chastity_catalog_items_dom_id on public.chastity_catalog_items(dom_id);
 
--- RLS aktualisieren
-drop policy if exists "chastity_catalog_items_select" on public.chastity_catalog_items;
-drop policy if exists "chastity_catalog_items_insert" on public.chastity_catalog_items;
-drop policy if exists "chastity_catalog_items_update" on public.chastity_catalog_items;
-drop policy if exists "chastity_catalog_items_delete" on public.chastity_catalog_items;
+-- RLS neu anlegen
 
 create policy "chastity_catalog_items_select" on public.chastity_catalog_items
   for select using (
