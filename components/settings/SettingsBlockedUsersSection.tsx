@@ -62,9 +62,8 @@ export function SettingsBlockedUsersSection() {
   const supabase = createClient();
 
   return (
-    <div className="rounded-xl border border-gray-700 bg-card p-6">
-      <h2 className="text-lg font-semibold text-white">Blockierte User</h2>
-      <p className="mt-1 text-sm text-gray-400">
+    <div>
+      <p className="text-sm text-gray-400">
         Hier siehst du User, die du blockiert hast.
       </p>
       {loading ? (

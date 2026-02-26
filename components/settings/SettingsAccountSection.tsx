@@ -68,9 +68,8 @@ export function SettingsAccountSection({
   }
 
   return (
-    <div className="rounded-xl border border-gray-700 bg-card p-6">
-      <h2 className="text-lg font-semibold text-white">Konto</h2>
-      <p className="mt-1 text-sm text-gray-400">
+    <div>
+      <p className="text-sm text-gray-400">
         Angemeldet mit: <span className="text-white">{email ?? "—"}</span>
       </p>
 

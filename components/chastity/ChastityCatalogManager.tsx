@@ -21,7 +21,7 @@ type CatalogItem = {
   chastity_reward_templates?: { title: string } | null;
 };
 
-export function ChastityCatalogManager({ domId }: { domId: string }) {
+export function ChastityCatalogManager({ domId, embedded }: { domId: string; embedded?: boolean }) {
   const router = useRouter();
   const [templates, setTemplates] = useState<RewardTemplate[]>([]);
   const [items, setItems] = useState<CatalogItem[]>([]);
@@ -105,14 +105,23 @@ export function ChastityCatalogManager({ domId }: { domId: string }) {
     item.custom_title ?? (item.chastity_reward_templates as { title?: string } | null)?.title ?? "-";
 
   return (
-    <div className="rounded-xl border border-gray-700 bg-background p-4">
-      <h3 className="text-lg font-semibold text-white">Belohnungskatalog</h3>
-      <p className="mt-1 text-sm text-gray-500">
-        Belohnungen mit Preisen hinzufügen. Sub kann daraus anfordern. Preis 0 BD = Überraschungs-Geschenk.
-      </p>
-      <p className="mt-1 text-xs text-gray-600">
-        Orientierung: Klein 10–30 · Mittel 40–80 · Groß 100–200 · Sehr groß 250+ BD
-      </p>
+    <div className={embedded ? "" : "rounded-xl border border-gray-700 bg-background p-4"}>
+      {!embedded && (
+        <>
+          <h3 className="text-lg font-semibold text-white">Belohnungskatalog</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Belohnungen mit Preisen hinzufügen. Sub kann daraus anfordern. Preis 0 BD = Überraschungs-Geschenk.
+          </p>
+          <p className="mt-1 text-xs text-gray-600">
+            Orientierung: Klein 10–30 · Mittel 40–80 · Groß 100–200 · Sehr groß 250+ BD
+          </p>
+        </>
+      )}
+      {embedded && (
+        <p className="mb-4 text-sm text-gray-500">
+          Belohnungen mit Preisen hinzufügen. Sub kann daraus anfordern. Preis 0 BD = Überraschungs-Geschenk.
+        </p>
+      )}
       {items.length > 0 && (
         <ul className="mt-4 space-y-2">
           {items.map((item) => (

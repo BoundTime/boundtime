@@ -24,9 +24,8 @@ export function SettingsSessionsSection() {
   }
 
   return (
-    <div className="rounded-xl border border-gray-700 bg-card p-6">
-      <h2 className="text-lg font-semibold text-white">Sitzungen</h2>
-      <p className="mt-1 text-sm text-gray-400">
+    <div>
+      <p className="text-sm text-gray-400">
         Du bist auf diesem Gerät angemeldet.
       </p>
       <button

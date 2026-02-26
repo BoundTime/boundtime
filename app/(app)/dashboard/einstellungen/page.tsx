@@ -6,6 +6,7 @@ import { ChastityCatalogManager } from "@/components/chastity/ChastityCatalogMan
 import { SettingsAccountSection } from "@/components/settings/SettingsAccountSection";
 import { SettingsSessionsSection } from "@/components/settings/SettingsSessionsSection";
 import { SettingsBlockedUsersSection } from "@/components/settings/SettingsBlockedUsersSection";
+import { CollapsibleSection } from "@/components/settings/CollapsibleSection";
 
 export default async function EinstellungenPage() {
   const supabase = await createClient();
@@ -36,28 +37,30 @@ export default async function EinstellungenPage() {
         Verwalte deine Kontoeinstellungen und den Belohnungskatalog.
       </p>
 
-      {isDomOrSwitcher ? (
-        <div className="mt-8">
-          <ChastityCatalogManager domId={user.id} />
-        </div>
-      ) : (
-        <div className="mt-8 rounded-xl border border-gray-700 bg-card p-6">
-          <p className="text-gray-400">
-            Der Belohnungskatalog ist für Dom(me)s – du siehst hier deine Konto- und Sitzungseinstellungen.
-          </p>
-        </div>
-      )}
+      <div className="mt-8 space-y-4">
+        {isDomOrSwitcher ? (
+          <CollapsibleSection title="Belohnungskatalog" defaultOpen>
+            <ChastityCatalogManager domId={user.id} embedded />
+          </CollapsibleSection>
+        ) : (
+          <CollapsibleSection title="Belohnungskatalog">
+            <p className="text-gray-400">
+              Der Belohnungskatalog ist für Dom(me)s – du siehst hier deine Konto- und Sitzungseinstellungen.
+            </p>
+          </CollapsibleSection>
+        )}
 
-      <div className="mt-8">
-        <SettingsAccountSection email={user.email} />
-      </div>
+        <CollapsibleSection title="Konto" defaultOpen>
+          <SettingsAccountSection email={user.email} />
+        </CollapsibleSection>
 
-      <div className="mt-8">
-        <SettingsSessionsSection />
-      </div>
+        <CollapsibleSection title="Sitzungen">
+          <SettingsSessionsSection />
+        </CollapsibleSection>
 
-      <div className="mt-8">
-        <SettingsBlockedUsersSection />
+        <CollapsibleSection title="Blockierte User">
+          <SettingsBlockedUsersSection />
+        </CollapsibleSection>
       </div>
     </Container>
   );
