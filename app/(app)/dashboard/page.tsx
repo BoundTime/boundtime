@@ -359,7 +359,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Aktivität: 3 Blöcke – gesamte Kachel klickbar */}
-      <div className="mt-8 grid gap-6 sm:grid-cols-1 lg:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-1 lg:grid-cols-3 lg:gap-6">
         <Link
           href="/dashboard/aktivitaet/besucher"
           className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
@@ -431,13 +431,13 @@ export default async function DashboardPage() {
             <NewPostForm />
           </div>
           {posts.length > 0 ? (
-            <ul className="mt-6 space-y-6">
+            <ul className="mt-6 space-y-4 sm:space-y-6">
               {posts.map((post) => (
                 <li
                   key={post.id}
                   className="overflow-hidden rounded-xl border border-gray-700 bg-background/50 shadow-sm"
                 >
-                  <div className="flex items-center gap-4 p-4">
+                  <div className="flex items-center gap-4 p-4 sm:p-6">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
                       <div className="h-12 w-12 overflow-hidden rounded-full border border-gray-700 bg-background">
                         {post.author_avatar_url ? (
@@ -464,14 +464,14 @@ export default async function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="border-t border-gray-700 px-4 pb-4 pt-1">
+                  <div className="border-t border-gray-700 px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
                     <p className="whitespace-pre-wrap text-gray-300">{post.content}</p>
                     {post.image_url && (
                       <div className="mt-4 overflow-hidden rounded-lg">
                         <img
                           src={supabase.storage.from("post-images").getPublicUrl(post.image_url).data.publicUrl}
                           alt=""
-                          className="max-h-[28rem] w-full object-contain"
+                          className="max-h-[24rem] w-full object-contain sm:max-h-[28rem]"
                         />
                       </div>
                     )}

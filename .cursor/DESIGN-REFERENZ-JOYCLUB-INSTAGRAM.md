@@ -18,9 +18,29 @@ Recherche zu Joyclub.de und Instagram zur Orientierung für das BoundTime-Layout
 - **Navigation:** Erleben (Dates, Events, Clubs), Eintauchen (Mitglieder, Livestreams, Forum, Gruppen, Fotos), Entdecken (Magazin, Sex Education).
 - **Layout-Diskussionen:** Es gab Community-Debatten zu „Neues Layout“ – Joyclub iteriert am Design.
 
-### Einschränkung
-Ohne Login können die **konkreten Profilkacheln** (Größe, Spalten, Abstände, Bildformat) nicht analysiert werden.  
-**Alternative:** Screenshots von Joyclub (Mitgliedersuche/Explore) würden helfen – diese können hier als Referenz genutzt werden.
+### Joyclub ClubMail (Postfach) – aus Screenshot
+
+Zwei-Spalten-Layout, dunkles Theme:
+
+**Linke Spalte – Gesprächsliste (Kacheln):**
+- Titel „ClubMail“ + Tabs: **Postfach** (Inbox), **Komplimente**
+- Suchfeld „Suchen“
+- **Conversation Tiles:** Jede Kachel zeigt:
+  - Rundes Profilbild
+  - Username, Geschlechts-Icon, Verifizierungs-Badge (grünes Häkchen)
+  - Snippet der letzten Nachricht
+  - Zeitstempel (z. B. 21:19)
+  - „X“ zum Schließen/Löschen
+- Aktive Konversation heller hervorgehoben
+- Einheitliche Kachelgröße, klar strukturiert
+
+**Rechte Spalte – Aktive Konversation:**
+- **Header:** Profilbild, Username, Alter · Ort
+- **Aktionen:** z. B. „Nicht in Kontaktliste“ → „Nein, danke schicken“, „Unterhaltung beenden“
+- **Chat-Bubbles:** Gegenseitige Nachrichten, Zeitstempel (Heute, 21:19)
+- **Eingabefeld:** „Verfasse eine Nachricht…“ + Icons (Kamera, Bild, Mikrofon, Geschenk, Anhang, Senden)
+
+**Optik:** Ruhig, modern, Dark Theme. Keine „Meine Kontakte“-Sidebar rechts – die rechte Seite gehört der Konversation.
 
 ---
 
@@ -78,8 +98,9 @@ Ohne Login können die **konkreten Profilkacheln** (Größe, Spalten, Abstände,
 4. **Feed:** Einheitlicheres Bildformat; Abstände zwischen Posts prüfen.
 5. **Karten-Stil:** Einheitliche Rundungen (`rounded-lg` oder `rounded-xl`) und Borders.
 
-### Optional (wenn Joyclub-Screenshots vorliegen)
+### Optional
 6. Joyclub-spezifische Details übernehmen (z.B. Badge-Platzierung, Hover-Effekte).
+7. **Nachrichten (Postfach):** Joyclub ClubMail als Referenz – zwei Spalten (Liste links, Chat rechts), einheitliche Gesprächs-Kacheln mit Profilbild, Nick, Badge, Snippet, Zeit.
 
 ---
 

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { MessageInput } from "@/components/MessageInput";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -53,15 +52,15 @@ export default async function ChatPage({
   const nickById = new Map(senderProfiles?.map((p) => [p.id, p.nick]) ?? []);
 
   return (
-    <Container className="py-16">
-      <div className="mb-6 flex items-center gap-4">
+    <div className="flex min-h-0 flex-1 flex-col border-t border-gray-700 bg-card md:border-t-0 md:border-l">
+      <div className="shrink-0 p-4 md:hidden">
         <Link href="/dashboard/nachrichten" className="text-sm text-gray-400 hover:text-white">
           ← Nachrichten
         </Link>
       </div>
 
-      <div className="rounded-xl border border-gray-700 bg-card shadow-sm">
-        <div className="flex items-center gap-4 border-b border-gray-700 p-4">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="flex shrink-0 items-center gap-4 border-b border-gray-700 p-4">
           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gray-700 bg-background">
             {otherAvatarUrl ? (
               <img src={otherAvatarUrl} alt="" className="h-full w-full object-cover" />
@@ -74,7 +73,7 @@ export default async function ChatPage({
           <h1 className="font-semibold text-white">{otherNick}</h1>
         </div>
 
-        <div className="max-h-[50vh] min-h-[200px] overflow-y-auto p-4 space-y-4">
+        <div className="min-h-[200px] flex-1 overflow-y-auto p-4 space-y-4">
           {!messages?.length ? (
             <p className="text-center text-sm text-gray-500">Noch keine Nachrichten.</p>
           ) : (
@@ -108,11 +107,11 @@ export default async function ChatPage({
           )}
         </div>
 
-        <div className="border-t border-gray-700 p-4">
+        <div className="shrink-0 border-t border-gray-700 p-4">
           <MessageInput conversationId={id} />
         </div>
       </div>
-    </Container>
+    </div>
   );
 }
 

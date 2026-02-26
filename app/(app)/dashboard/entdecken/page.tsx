@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { RoleIcon } from "@/components/RoleIcon";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
@@ -96,7 +97,7 @@ export default async function EntdeckenPage({
         keuschhaltungFilter={keuschhaltungFilter}
       />
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {profiles?.length ? (
             profiles.map((profile) => {
               const avatarUrl = (profile as { avatarUrl?: string | null }).avatarUrl ?? null;
@@ -128,8 +129,12 @@ export default async function EntdeckenPage({
                       <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
                     </span>
                   </div>
-                  <div className="flex flex-col gap-0.5 p-2 sm:p-1.5">
-                    <p className="flex items-center gap-1.5 text-xs text-gray-300">
+                  <div className="flex flex-col gap-0.5 p-2.5 sm:p-3">
+                    <p className="flex items-center gap-1.5 text-sm font-medium text-white">
+                      <span className="truncate">{profile.nick ?? "?"}</span>
+                      {isVerifiedDom && <VerifiedBadge size={12} />}
+                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-gray-400">
                       <RoleIcon role={profile.role} size={10} />
                       <span>{profile.role ?? "—"} · {profile.gender ?? "—"}</span>
                     </p>
