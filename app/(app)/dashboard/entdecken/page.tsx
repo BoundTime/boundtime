@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { RoleIcon } from "@/components/RoleIcon";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 
@@ -48,7 +47,7 @@ export default async function EntdeckenPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, expectations_text, looking_for, preferences, verified, experience_level, last_seen_at")
+    .select("id, nick, role, gender, city, postal_code, avatar_url, looking_for, preferences, verified, experience_level, last_seen_at")
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
@@ -86,7 +85,7 @@ export default async function EntdeckenPage({
         keuschhaltungFilter={keuschhaltungFilter}
       />
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="mt-6 grid gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {profiles?.length ? (
             profiles.map((profile) => {
               const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_url ?? "");
@@ -97,14 +96,8 @@ export default async function EntdeckenPage({
                 .join("")
                 .toUpperCase()
                 .slice(0, 2);
-              const lookingSnippet = Array.isArray(profile.looking_for) && profile.looking_for.length
-                ? profile.looking_for.slice(0, 2).join(", ")
-                : null;
-              const prefSnippet = Array.isArray(profile.preferences) && profile.preferences.length
-                ? profile.preferences.slice(0, 2)
-                : [];
-
               const isVerifiedDom = profile.verified && (profile.role === "Dom" || profile.role === "Switcher");
+              const location = [profile.postal_code, profile.city].filter(Boolean).join(" ");
               return (
                 <Link
                   key={profile.id}
@@ -113,62 +106,25 @@ export default async function EntdeckenPage({
                     isVerifiedDom ? "border-accent/60 hover:border-accent/80" : "border-gray-700 hover:border-gray-600"
                   }`}
                 >
-                  <div className="relative h-28 w-full overflow-hidden bg-gray-900">
+                  <div className="relative aspect-square w-full overflow-hidden bg-gray-900">
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="flex h-full w-full items-center justify-center text-xl font-semibold text-accent sm:text-2xl">
+                      <span className="flex h-full w-full items-center justify-center text-lg font-semibold text-accent">
                         {initials}
                       </span>
                     )}
-                    {isVerifiedDom && (
-                      <span className="absolute right-1.5 top-1.5 rounded bg-accent/90 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                        Verifiziert
-                      </span>
-                    )}
-                    <span className="absolute bottom-1.5 right-1.5">
+                    <span className="absolute bottom-1 right-1">
                       <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
                     </span>
                   </div>
-                  <div className="flex flex-col gap-0.5 p-2">
-                    <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-white">
-                      <span className="truncate">{profile.nick ?? "—"}</span>
-                      {profile.verified && <VerifiedBadge size={10} className="shrink-0" />}
-                    </p>
-                    <p className="flex items-center gap-1.5 text-xs text-gray-400">
-                      <RoleIcon role={profile.role} size={12} />
+                  <div className="flex flex-col gap-0.5 p-1.5">
+                    <p className="flex items-center gap-1.5 text-xs text-gray-300">
+                      <RoleIcon role={profile.role} size={10} />
                       <span>{profile.role ?? "—"} · {profile.gender ?? "—"}</span>
-                      {isVerifiedDom && <span className="text-accent"> · Verifizierter Dom</span>}
                     </p>
-                    {profile.experience_level && (
-                      <p className="text-xs text-gray-500">
-                        {profile.experience_level === "beginner" && "Einsteiger:in"}
-                        {profile.experience_level === "experienced" && "Erfahren"}
-                        {profile.experience_level === "advanced" && "Sehr erfahren"}
-                      </p>
-                    )}
-                    {(profile.city || profile.postal_code) && (
-                      <p className="text-xs text-gray-500">
-                        {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
-                      </p>
-                    )}
-                    {prefSnippet.length > 0 && (
-                      <div className="mt-0.5 flex flex-wrap gap-1">
-                        {prefSnippet.map((p) => (
-                          <span
-                            key={p}
-                            className="rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent"
-                          >
-                            {p}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {(lookingSnippet || profile.expectations_text) && (
-                      <p className="line-clamp-2 text-xs text-gray-500">
-                        {lookingSnippet || (profile.expectations_text ?? "").slice(0, 80)}
-                        {(profile.expectations_text?.length ?? 0) > 80 ? "…" : ""}
-                      </p>
+                    {location && (
+                      <p className="truncate text-xs text-gray-500">{location}</p>
                     )}
                   </div>
                 </Link>
