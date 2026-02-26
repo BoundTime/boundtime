@@ -54,8 +54,12 @@ export default async function KeuschhaltungPage({
 
   const nickById = new Map(profiles?.map((p) => [p.id, p.nick]) ?? []);
 
-  const asDom = (arrangements ?? []).filter((a) => a.dom_id === user.id);
-  const asSub = (arrangements ?? []).filter((a) => a.sub_id === user.id);
+  const asDom = (arrangements ?? []).filter(
+    (a) => a.dom_id === user.id && ["active", "paused", "pending", "requested_by_sub"].includes(a.status)
+  );
+  const asSub = (arrangements ?? []).filter(
+    (a) => a.sub_id === user.id && (a.status === "active" || a.status === "paused")
+  );
 
   const subArrangementIds = asSub
     .filter((a) => a.status === "active" || a.status === "paused")
@@ -137,13 +141,13 @@ export default async function KeuschhaltungPage({
         </div>
       )}
 
-      {/* Als Sub: Eingehende Anfragen */}
-      {asSub.filter((a) => a.status === "pending").length > 0 && (
+      {/* Als Sub: Eingehende Anfragen (asSub hat nur active/paused; pending holen wir aus arrangements) */}
+      {arrangements?.filter((a) => a.sub_id === user.id && a.status === "pending").length ? (
         <div className="mb-8 rounded-xl border border-gray-700 bg-card p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-white">Anfragen an dich</h2>
           <ul className="mt-4 space-y-4">
-            {asSub
-              .filter((a) => a.status === "pending")
+            {(arrangements ?? [])
+              .filter((a) => a.sub_id === user.id && a.status === "pending")
               .map((a) => (
                 <li
                   key={a.id}
@@ -202,14 +206,12 @@ export default async function KeuschhaltungPage({
         </div>
       )}
 
-      {/* Meine Vereinbarungen (Sub) – ohne pending, die sind oben */}
-      {asSub.filter((a) => a.status !== "pending").length > 0 && (
+      {/* Meine Vereinbarungen (Sub) – nur active/paused */}
+      {asSub.length > 0 && (
         <div className="mb-8 rounded-xl border border-gray-700 bg-card p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-white">Deine Dynamiken (als Sub)</h2>
           <ul className="mt-4 space-y-4">
-            {asSub
-              .filter((a) => a.status !== "pending")
-              .map((a) => {
+            {asSub.map((a) => {
                 const openTasks = openTasksByArrangement.get(a.id) ?? [];
                 return (
                 <li

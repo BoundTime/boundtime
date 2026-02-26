@@ -62,11 +62,14 @@ export default async function KeuschhaltungDetailPage({
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, nick")
+    .select("id, nick, gender")
     .in("id", [arrangement.dom_id, arrangement.sub_id]);
-  const nickById = new Map(profiles?.map((p) => [p.id, p.nick]) ?? []);
-  const domNick = nickById.get(arrangement.dom_id) ?? "?";
-  const subNick = nickById.get(arrangement.sub_id) ?? "?";
+  const profileById = new Map(profiles?.map((p) => [p.id, p]) ?? []);
+  const domProfile = profileById.get(arrangement.dom_id);
+  const subProfile = profileById.get(arrangement.sub_id);
+  const domNick = domProfile?.nick ?? "?";
+  const subNick = subProfile?.nick ?? "?";
+  const domGender = domProfile?.gender ?? null;
 
   const isDom = arrangement.dom_id === user.id;
   const isSub = arrangement.sub_id === user.id;
@@ -95,7 +98,7 @@ export default async function KeuschhaltungDetailPage({
       {/* Für Dom: Entsperren/Sperren und Verschlossendauer ganz oben */}
       {arrangement.status === "active" && isDom && (
         <div className="mb-6 rounded-xl border border-gray-700 bg-card p-6 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">Schloss-Status · Verschlossendauer</h2>
+          <h2 className="mb-4 text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Schloss-Status · Verschlossendauer</h2>
           <ChastityLockDisplay
             arrangementId={arrangement.id}
             lockedAt={arrangement.locked_at}
@@ -105,8 +108,12 @@ export default async function KeuschhaltungDetailPage({
       )}
 
       <div className="rounded-xl border border-gray-700 bg-card p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-white">
-          Deine Dynamik: {isDom ? subNick : domNick}
+        <h1 className="text-center text-2xl font-bold text-white">
+          {isDom
+            ? `Dein Keuschling: ${subNick}`
+            : domGender === "Frau"
+              ? `Deine Keyholderin: ${domNick}`
+              : `Dein Keyholder: ${domNick}`}
         </h1>
         <ChastityStreakAndBadges
           arrangementId={arrangement.id}

@@ -76,7 +76,7 @@ export function ChastityRandomCheck({
 
   return (
     <div className="mt-4 rounded-xl border border-gray-700 bg-background p-4">
-      <h3 className="text-lg font-semibold text-white">Zufalls-Check</h3>
+      <h3 className="text-lg font-semibold text-white">Spontan-Check</h3>
       <p className="mt-1 text-sm text-gray-500">
         {isDom
           ? "Verlange einen unangekündigten Beweis vom Sub binnen X Stunden."
@@ -102,7 +102,7 @@ export function ChastityRandomCheck({
             disabled={loading}
             className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50"
           >
-            {loading ? "…" : "Zufalls-Check auslösen"}
+            {loading ? "…" : "Spontan-Check auslösen"}
           </button>
         </div>
       )}
@@ -145,7 +145,7 @@ export function ChastityRandomCheck({
                   type="button"
                   onClick={() => deleteCheck(c.id)}
                   className="rounded border border-red-600/50 px-2 py-1 text-xs text-red-400 hover:bg-red-950/30"
-                  title="Zufalls-Check löschen"
+                  title="Spontan-Check löschen"
                 >
                   Löschen
                 </button>

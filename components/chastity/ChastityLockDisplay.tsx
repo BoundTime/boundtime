@@ -37,7 +37,7 @@ export function ChastityLockDisplay({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col items-center justify-center gap-4 text-center sm:flex-row">
       <button
         type="button"
         onClick={isDom ? toggle : undefined}
@@ -65,7 +65,7 @@ export function ChastityLockDisplay({
         </span>
       </button>
       {locked && lockedAt && (
-        <div className="text-sm text-gray-300">
+        <div className="text-center text-sm text-gray-300">
           <ChastityLockDuration lockedAt={lockedAt} arrangementId={arrangementId} />
         </div>
       )}

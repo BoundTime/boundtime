@@ -128,7 +128,7 @@ export default async function DashboardPage() {
     for (const c of checks) {
       pendingChecksByArrangement.set(c.arrangement_id, (pendingChecksByArrangement.get(c.arrangement_id) ?? 0) + 1);
       const arr = asDomWithSub.find((a) => a.id === c.arrangement_id);
-      if (arr) openPoints.push({ type: "check", label: `Zufalls-Check offen: ${arr.subNick}`, href: `/dashboard/keuschhaltung/${c.arrangement_id}` });
+      if (arr) openPoints.push({ type: "check", label: `Spontan-Check offen: ${arr.subNick}`, href: `/dashboard/keuschhaltung/${c.arrangement_id}` });
     }
     for (const a of asDomWithSub) {
       const n = pendingTasksByArrangement.get(a.id) ?? 0;
@@ -308,7 +308,7 @@ export default async function DashboardPage() {
                           {[
                             pendingTasks > 0 && `${pendingTasks} offene Aufgabe(n)`,
                             (pendingRewardsByArrangement.get(arr.id) ?? 0) > 0 && "Belohnungsanfrage(n)",
-                            (pendingChecksByArrangement.get(arr.id) ?? 0) > 0 && "Zufalls-Check(s) offen",
+                            (pendingChecksByArrangement.get(arr.id) ?? 0) > 0 && "Spontan-Check(s) offen",
                           ].filter(Boolean).join(" · ")}
                         </p>
                       )}
