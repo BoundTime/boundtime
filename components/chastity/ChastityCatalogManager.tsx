@@ -9,6 +9,7 @@ type RewardTemplate = {
   title: string;
   description: string | null;
   requires_unlock: boolean;
+  default_price_bound_dollars: number | null;
 };
 
 type CatalogItem = {
@@ -34,7 +35,7 @@ export function ChastityCatalogManager({ domId }: { domId: string }) {
   useEffect(() => {
     createClient()
       .from("chastity_reward_templates")
-      .select("id, title, description, requires_unlock")
+      .select("id, title, description, requires_unlock, default_price_bound_dollars")
       .order("sort_order")
       .then(({ data }) => setTemplates(data ?? []));
   }, []);
@@ -109,6 +110,9 @@ export function ChastityCatalogManager({ domId }: { domId: string }) {
       <p className="mt-1 text-sm text-gray-500">
         Belohnungen mit Preisen hinzufügen. Sub kann daraus anfordern. Preis 0 BD = Überraschungs-Geschenk.
       </p>
+      <p className="mt-1 text-xs text-gray-600">
+        Orientierung: Klein 10–30 · Mittel 40–80 · Groß 100–200 · Sehr groß 250+ BD
+      </p>
       {items.length > 0 && (
         <ul className="mt-4 space-y-2">
           {items.map((item) => (
@@ -144,7 +148,10 @@ export function ChastityCatalogManager({ domId }: { domId: string }) {
             onChange={(e) => {
               setTemplateId(e.target.value);
               const t = templates.find((tpl) => tpl.id === e.target.value);
-              if (t) setRequiresUnlock(t.requires_unlock);
+              if (t) {
+                setRequiresUnlock(t.requires_unlock);
+                setPrice(String(t.default_price_bound_dollars ?? 50));
+              }
             }}
             className="rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
           >
@@ -177,6 +184,16 @@ export function ChastityCatalogManager({ domId }: { domId: string }) {
             onChange={(e) => setPrice(e.target.value)}
             className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
           />
+          {(() => {
+            const p = parseInt(price, 10);
+            if (isNaN(p) || p <= 0) return null;
+            const tasks = Math.round(p / 15);
+            return (
+              <p className="mt-1 text-xs text-gray-500">
+                ≈ {tasks} erledigte Aufgabe{tasks !== 1 ? "n" : ""}
+              </p>
+            );
+          })()}
         </div>
         {!templateId && (
           <label className="flex items-center gap-2">
