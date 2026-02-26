@@ -15,7 +15,11 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "BoundTime – Netzwerk für diskrete und respektvolle BDSM-Kontakte",
   description:
-    "Eine deutschsprachige Community für Austausch, Begegnung und Vertrauen.",
+    "Deutschsprachige BDSM-Community mit Keuschhaltung: Austausch, Begegnung und Vertrauen. Keuschhaltung mit Aufgaben und Belohnungen gemeinsam vereinbaren und umsetzen.",
+  verification:
+    process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : undefined,
 };
 
 export default async function RootLayout({
