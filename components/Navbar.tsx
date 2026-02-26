@@ -120,7 +120,7 @@ export function Navbar() {
                   className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
                 >
                   <Home className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
-                  Start
+                  MyBound
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/entdecken"
@@ -177,7 +177,7 @@ export function Navbar() {
                   <RefreshNavLink
                     href="/dashboard"
                     className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
-                    title="Start"
+                    title="MyBound"
                   >
                     <div className="flex h-8 w-8 shrink-0 overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
@@ -281,7 +281,7 @@ export function Navbar() {
                 <>
                   <RefreshNavLink href="/dashboard" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <Home className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
-                    Start
+                    MyBound
                   </RefreshNavLink>
                   <RefreshNavLink href="/dashboard/entdecken" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <Search className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />

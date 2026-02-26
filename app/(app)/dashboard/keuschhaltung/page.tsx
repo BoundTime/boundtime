@@ -88,7 +88,7 @@ export default async function KeuschhaltungPage({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">Keuschhaltung</h1>
           <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
-            ← Start
+            ← MyBound
           </Link>
         </div>
       </div>

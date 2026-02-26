@@ -28,7 +28,7 @@ export default async function EinstellungenPage() {
     <Container className="py-16">
       <div className="mb-6">
         <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
-          ← Zurück zum Start
+          ← Zurück zu MyBound
         </Link>
       </div>
 

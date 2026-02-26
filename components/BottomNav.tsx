@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Home, Search, MessageSquare, User, Plus } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/dashboard", label: "MyBound", icon: Home },
   { href: "/dashboard/entdecken", label: "Entdecken", icon: Search },
   { href: "/dashboard", label: "Post", icon: Plus, center: true },
   { href: "/dashboard/nachrichten", label: "Nachrichten", icon: MessageSquare },

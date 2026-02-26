@@ -64,7 +64,7 @@ export default async function AktivitaetProfilLikesPage() {
         href="/dashboard"
         className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
       >
-        ← Dashboard
+        ← MyBound
       </Link>
 
       <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">

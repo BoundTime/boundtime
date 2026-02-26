@@ -29,7 +29,7 @@ export default async function VerifizierungPage() {
         <div className="rounded-xl border border-green-700 bg-green-950/30 p-6 text-center">
           <p className="font-semibold text-green-400">Du bist verifiziert.</p>
           <Link href="/dashboard" className="mt-4 inline-block text-sm text-accent hover:underline">
-            ← Zurück zum Start
+            ← Zurück zu MyBound
           </Link>
         </div>
       </Container>

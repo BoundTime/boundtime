@@ -137,7 +137,7 @@ export default async function ProfilPage({
         href="/dashboard"
         className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
       >
-        ← Zurück zum Start
+        ← Zurück zu MyBound
       </Link>
 
       {/* Header: eigenes Profil wie Profil-Detail */}

@@ -47,7 +47,7 @@ export default async function DomBereichPage() {
             Bitte verifiziere dein Konto und stelle sicher, dass deine Rolle Dom oder Switcher ist.
           </p>
           <Link href="/dashboard" className="mt-6 inline-block text-accent hover:underline">
-            ← Zurück zum Start
+            ← Zurück zu MyBound
           </Link>
         </div>
       </Container>
@@ -109,7 +109,7 @@ export default async function DomBereichPage() {
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-white">Dom(me)-Bereich</h1>
         <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
-          ← Start
+          ← MyBound
         </Link>
       </div>
       <p className="mb-6 text-gray-400">

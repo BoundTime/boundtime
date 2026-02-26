@@ -47,7 +47,7 @@ export default async function VerifikationenAdminPage() {
     <Container className="py-16">
       <div className="mb-6">
         <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
-          ← Zurück zum Dashboard
+          ← Zurück zu MyBound
         </Link>
       </div>
 
