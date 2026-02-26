@@ -363,7 +363,7 @@ export default async function DashboardPage() {
               Wer hat dein Profil besucht
             </h3>
           </div>
-          <div className="rounded-b-xl border-t border-gray-700 bg-card p-3">
+          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
             <ProfileViewsBlock hideTitle />
           </div>
         </div>
@@ -374,7 +374,7 @@ export default async function DashboardPage() {
               Wer hat dein Profil geliked
             </h3>
           </div>
-          <div className="rounded-b-xl border-t border-gray-700 bg-card p-3">
+          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
             <ProfileLikesBlock
               likes={profileLikesRes.data ?? []}
               profiles={activityProfilesWithAvatars}
@@ -389,7 +389,7 @@ export default async function DashboardPage() {
               Wer hat deine Posts geliked
             </h3>
           </div>
-          <div className="rounded-b-xl border-t border-gray-700 bg-card p-3">
+          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
             <PostLikesBlock
               likes={postLikersRes.data ?? []}
               profiles={activityProfilesWithAvatars}
@@ -402,13 +402,13 @@ export default async function DashboardPage() {
 
       {/* 2. Feed zentral: Header-Karte + Inhalts-Karte */}
       <div className="mt-12 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-        <div className="bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+        <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
           <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
             <Rss className="h-5 w-5 text-gray-400" />
             Feed
           </h2>
         </div>
-        <div className="rounded-b-xl border-t border-gray-700 bg-card p-6 shadow-sm">
+        <div className="rounded-b-xl border-t border-gray-700 bg-card p-4 shadow-sm sm:p-6">
           <NewPostForm />
           {posts.length > 0 ? (
             <ul className="mt-6 space-y-6">

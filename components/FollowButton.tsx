@@ -66,7 +66,7 @@ export function FollowButton({
         type="button"
         onClick={toggle}
         disabled={loading}
-        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 ${
+        className={`min-h-[44px] flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 sm:py-2 ${
           isFollowing
             ? "border border-gray-600 text-gray-300 hover:border-gray-500 hover:bg-gray-800"
             : "bg-accent text-white hover:bg-accent-hover"

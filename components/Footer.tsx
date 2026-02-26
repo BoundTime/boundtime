@@ -10,36 +10,36 @@ export function Footer({ className }: { className?: string }) {
           <p className="text-sm text-gray-400">
             © {new Date().getFullYear()} BoundTime – Community für diskrete BDSM-Kontakte.
           </p>
-          <div className="flex flex-wrap justify-center gap-6">
+          <nav className="grid grid-cols-2 justify-items-center gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-6">
             <Link
               href="/impressum"
-              className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
               <FileText className="h-4 w-4 shrink-0" />
               Impressum
             </Link>
             <Link
               href="/datenschutz"
-              className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
               <Shield className="h-4 w-4 shrink-0" />
               Datenschutz
             </Link>
             <Link
               href="/agb"
-              className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
               <ScrollText className="h-4 w-4 shrink-0" />
               AGB
             </Link>
             <Link
               href="/community-regeln"
-              className="flex items-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 text-sm text-gray-400 transition-colors duration-150 hover:text-white sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
               <UsersRound className="h-4 w-4 shrink-0" />
               Community-Regeln
             </Link>
-          </div>
+          </nav>
         </div>
       </div>
     </footer>

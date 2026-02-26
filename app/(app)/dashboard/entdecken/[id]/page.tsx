@@ -289,7 +289,7 @@ export default async function ProfilDetailPage({
 
         {/* Aktionen (Folgen, Nachricht, Keuschhaltung) */}
         {profile.id !== user.id && (
-          <div className="flex flex-wrap items-center justify-center gap-3 border-t border-gray-700 px-6 py-4 sm:justify-start">
+          <div className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-700 px-4 py-4 sm:justify-start sm:gap-3 sm:px-6">
             <FollowButton followingId={profile.id} initialIsFollowing={isFollowing} />
             <BlockButton blockedId={profile.id} initialBlocked={isBlockedByMe} />
             <ProfileLikeButton
@@ -299,7 +299,7 @@ export default async function ProfilDetailPage({
             />
             <Link
               href={`/dashboard/nachrichten?with=${profile.id}`}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+              className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
             >
               Nachricht senden
             </Link>
@@ -327,7 +327,7 @@ export default async function ProfilDetailPage({
                   (profile.role === "Sub" || profile.role === "Switcher") && (
                     <Link
                       href={`/dashboard/keuschhaltung?offer=${profile.id}`}
-                      className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+                      className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
                     >
                       Keuschhaltung anbieten
                     </Link>

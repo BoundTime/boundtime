@@ -76,7 +76,7 @@ export default async function EntdeckenPage({
 
   return (
     <Container className="py-16">
-      <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+      <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">Entdecken</h1>
           <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
@@ -85,7 +85,7 @@ export default async function EntdeckenPage({
         </div>
       </div>
 
-      <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
+      <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-4 shadow-sm sm:p-6">
       <EntdeckenFilterSection
         roleFilter={roleFilter}
         genderFilter={genderFilter}
@@ -96,7 +96,7 @@ export default async function EntdeckenPage({
         keuschhaltungFilter={keuschhaltungFilter}
       />
 
-        <div className="mt-6 grid gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {profiles?.length ? (
             profiles.map((profile) => {
               const avatarUrl = (profile as { avatarUrl?: string | null }).avatarUrl ?? null;
@@ -128,7 +128,7 @@ export default async function EntdeckenPage({
                       <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
                     </span>
                   </div>
-                  <div className="flex flex-col gap-0.5 p-1.5">
+                  <div className="flex flex-col gap-0.5 p-2 sm:p-1.5">
                     <p className="flex items-center gap-1.5 text-xs text-gray-300">
                       <RoleIcon role={profile.role} size={10} />
                       <span>{profile.role ?? "—"} · {profile.gender ?? "—"}</span>

@@ -24,11 +24,11 @@ export default function HomePage() {
                 alt="BoundTime – Logo"
                 width={320}
                 height={120}
-                className="mx-auto h-auto w-64 sm:w-80"
+                className="mx-auto h-auto w-56 sm:w-80"
                 priority
               />
             </Link>
-            <h1 className="mt-8 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            <h1 className="mt-8 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               BoundTime – Netzwerk für diskrete und respektvolle BDSM-Kontakte
             </h1>
             <p className="mt-6 text-lg text-gray-300">
@@ -58,22 +58,22 @@ export default function HomePage() {
 
       <section id="keuschhaltung" className="border-t border-gray-800 py-12">
         <Container>
-          <div className="rounded-xl border border-gray-700 bg-card p-8 text-center shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+          <div className="rounded-xl border border-gray-700 bg-card p-4 text-center shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-8">
             <h2 className="text-xl font-semibold text-white">Keuschhaltung</h2>
             <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
               Vereinbaren Sie mit einer Person Ihrer Wahl Keuschhaltung inklusive Aufgaben, BoundDollars und Belohnungskatalog – für alle, die diese Dynamik leben möchten.
             </p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:gap-0">
               <Link
                 href="/register"
-                className="inline-block rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98]"
+                className="min-h-[44px] w-full flex items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white transition-all duration-200 hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] sm:w-auto sm:py-2.5"
               >
                 Jetzt registrieren
               </Link>
-              <span className="mx-2 text-gray-500">oder</span>
+              <span className="text-gray-500 sm:mx-2">oder</span>
               <Link
                 href="/login"
-                className="inline-block rounded-lg border border-gray-600 px-5 py-2.5 text-sm text-gray-300 transition-all duration-200 hover:scale-[1.01] hover:border-gray-500 hover:bg-card active:scale-[0.99]"
+                className="min-h-[44px] w-full flex items-center justify-center rounded-lg border border-gray-600 px-5 py-3 text-sm text-gray-300 transition-all duration-200 hover:scale-[1.01] hover:border-gray-500 hover:bg-card active:scale-[0.99] sm:w-auto sm:py-2.5"
               >
                 Anmelden
               </Link>
@@ -85,7 +85,7 @@ export default function HomePage() {
       <section id="sicherheit" className="border-t border-gray-800 py-16">
         <Container>
           <div className="grid gap-12 md:grid-cols-3">
-            <div className="rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
               <ShieldCheck className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
               <h2 className="mt-3 text-lg font-semibold text-white">
                 Sicherheit & Diskretion
@@ -96,7 +96,7 @@ export default function HomePage() {
                 Vertraulichkeit und sichere Nutzung zu gewährleisten.
               </p>
             </div>
-            <div className="rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
               <HeartHandshake className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
               <h2 className="mt-3 text-lg font-semibold text-white">
                 Consent & Respekt
@@ -107,7 +107,7 @@ export default function HomePage() {
                 Kommunikation zwischen allen Nutzerinnen und Nutzern.
               </p>
             </div>
-            <div className="rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
               <UsersRound className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
               <h2 className="mt-3 text-lg font-semibold text-white" id="community">
                 Community-Fokus

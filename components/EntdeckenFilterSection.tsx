@@ -30,7 +30,7 @@ export function EntdeckenFilterSection({
     <form
       method="get"
       action="/dashboard/entdecken"
-      className="flex flex-wrap items-end gap-4"
+      className={idSuffix === "mobile" ? "flex flex-col gap-4" : "flex flex-wrap items-end gap-4"}
       onSubmit={() => setMobileOpen(false)}
     >
       <div>
@@ -117,16 +117,17 @@ export function EntdeckenFilterSection({
           className="w-24 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
         />
       </div>
+      <div className={idSuffix === "mobile" ? "flex flex-col gap-2" : "contents"}>
       <button
         type="submit"
-        className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+        className="min-h-[44px] rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover"
       >
         Filtern
       </button>
       {myPlzPrefix && (
         <Link
           href={`/dashboard/entdecken?plz_prefix=${myPlzPrefix}`}
-          className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:border-gray-500 hover:text-white"
+          className="min-h-[44px] flex items-center justify-center rounded-lg border border-gray-600 px-4 py-3 text-sm text-gray-300 hover:border-gray-500 hover:text-white"
           onClick={() => setMobileOpen(false)}
         >
           Meine Umgebung
@@ -134,11 +135,12 @@ export function EntdeckenFilterSection({
       )}
       <Link
         href="/dashboard/entdecken"
-        className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-400 hover:border-gray-500 hover:text-white"
+        className="min-h-[44px] flex items-center justify-center rounded-lg border border-gray-600 px-4 py-3 text-sm text-gray-400 hover:border-gray-500 hover:text-white"
         onClick={() => setMobileOpen(false)}
       >
         Alle anzeigen
       </Link>
+      </div>
     </form>
   );
 
@@ -154,7 +156,7 @@ export function EntdeckenFilterSection({
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-card px-4 py-3 text-sm font-medium text-gray-300 shadow-sm hover:border-gray-600 hover:text-white"
+          className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-gray-700 bg-card px-4 py-3 text-sm font-medium text-gray-300 shadow-sm hover:border-gray-600 hover:text-white"
         >
           <SlidersHorizontal className="h-4 w-4" />
           Filter
