@@ -166,7 +166,7 @@ export default async function KeuschhaltungPage({
               ))}
           </ul>
         </div>
-      )}
+      ) : null}
 
       {/* Meine Vereinbarungen (Dom) */}
       {asDom.length > 0 && (
