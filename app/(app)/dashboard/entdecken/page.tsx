@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { RoleIcon } from "@/components/RoleIcon";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
+import { OnlineIndicator } from "@/components/OnlineIndicator";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
 const SUB_GESUCHT = "Keuschhalten anbieten (Keyholder)";
@@ -47,7 +48,7 @@ export default async function EntdeckenPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, expectations_text, looking_for, preferences, verified, experience_level")
+    .select("id, nick, role, gender, city, postal_code, avatar_url, expectations_text, looking_for, preferences, verified, experience_level, last_seen_at")
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
@@ -125,6 +126,9 @@ export default async function EntdeckenPage({
                         Verifiziert
                       </span>
                     )}
+                    <span className="absolute bottom-1.5 right-1.5">
+                      <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
+                    </span>
                   </div>
                   <div className="flex flex-col gap-0.5 p-2">
                     <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-white">

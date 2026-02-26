@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { Heart } from "lucide-react";
+import { OnlineIndicator } from "@/components/OnlineIndicator";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -45,7 +46,7 @@ export default async function AktivitaetPostLikesPage() {
 
   const userIds = Array.from(new Set(list.map((l) => l.user_id)));
   const { data: profilesData } = userIds.length > 0
-    ? await supabase.from("profiles").select("id, nick, avatar_url").in("id", userIds)
+    ? await supabase.from("profiles").select("id, nick, avatar_url, last_seen_at").in("id", userIds)
     : { data: [] };
   const profileById = new Map((profilesData ?? []).map((p) => [p.id, p]));
 
@@ -97,7 +98,10 @@ export default async function AktivitaetPostLikesPage() {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-white">{p?.nick ?? "?"}</p>
+                      <p className="flex items-center gap-2 font-medium text-white">
+                        {p?.nick ?? "?"}
+                        <OnlineIndicator lastSeenAt={(p as { last_seen_at?: string | null })?.last_seen_at ?? null} variant="text" />
+                      </p>
                       <p className="text-sm text-gray-400">
                         hat deinen Post geliked · {formatTimeAgo(new Date(l.liked_at))}
                       </p>

@@ -12,6 +12,7 @@ import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { RecordProfileView } from "@/components/RecordProfileView";
+import { OnlineIndicator } from "@/components/OnlineIndicator";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -63,7 +64,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level"
+      "id, nick, role, gender, city, postal_code, avatar_url, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at"
     )
     .eq("id", id)
     .single();
@@ -247,6 +248,7 @@ export default async function ProfilDetailPage({
             <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
               {profile.nick ?? "—"}
               {profile.verified && <VerifiedBadge size={20} />}
+              <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
             </h1>
             <p className="mt-1 text-gray-400">
               {roleLabel && (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
+import { OnlineIndicator } from "@/components/OnlineIndicator";
 
 export default async function NachrichtenPage({
   searchParams,
@@ -88,7 +89,7 @@ export default async function NachrichtenPage({
   });
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url")
+    .select("id, nick, avatar_url, last_seen_at")
     .in("id", Array.from(otherIds));
   const profileById = new Map(profiles?.map((p) => [p.id, p]) ?? []);
 
@@ -102,6 +103,7 @@ export default async function NachrichtenPage({
         otherId,
         otherNick: p?.nick ?? "?",
         otherAvatarUrl: p?.avatar_url ?? null,
+        otherLastSeenAt: (p as { last_seen_at?: string | null } | undefined)?.last_seen_at ?? null,
         lastContent: last?.content ?? null,
         lastAt: last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString(),
       };
@@ -149,7 +151,10 @@ export default async function NachrichtenPage({
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-white">{item.otherNick}</p>
+                    <p className="flex items-center gap-2 font-medium text-white">
+                      {item.otherNick}
+                      <OnlineIndicator lastSeenAt={item.otherLastSeenAt} variant="text" />
+                    </p>
                     <p className="truncate text-sm text-gray-500">{preview}</p>
                   </div>
                   <p className="shrink-0 text-xs text-gray-500">{timeStr}</p>
