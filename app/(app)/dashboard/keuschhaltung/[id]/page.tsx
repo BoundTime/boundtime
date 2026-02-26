@@ -18,7 +18,6 @@ import { ChastityDailyCheckin } from "@/components/chastity/ChastityDailyCheckin
 import { ChastityCheckinsOverview } from "@/components/chastity/ChastityCheckinsOverview";
 import { ChastityRandomCheck } from "@/components/chastity/ChastityRandomCheck";
 import { ChastityActivityTimeline } from "@/components/chastity/ChastityActivityTimeline";
-import { ChastityCountdownAndHistory } from "@/components/chastity/ChastityCountdownAndHistory";
 import { ChastityCalendarList } from "@/components/chastity/ChastityCalendarList";
 import { BoundDollarsProgress } from "@/components/chastity/BoundDollarsProgress";
 import { EndConnectionButton } from "@/components/chastity/EndConnectionButton";
@@ -160,12 +159,7 @@ export default async function KeuschhaltungDetailPage({
           </>
         )}
         {arrangement.status === "active" && isSub && (
-          <div className="mt-4 space-y-4">
-            <ChastityCountdownAndHistory
-              arrangementId={arrangement.id}
-              boundDollars={arrangement.bound_dollars}
-              rewardGoalBoundDollars={arrangement.reward_goal_bound_dollars}
-            />
+          <div className="mt-4">
             <ChastityCatalogAndRequest
               arrangementId={arrangement.id}
               domId={arrangement.dom_id}
