@@ -20,13 +20,7 @@ type CatalogItem = {
   chastity_reward_templates?: { title: string } | null;
 };
 
-export function ChastityCatalogManager({
-  arrangementId,
-  domId,
-}: {
-  arrangementId: string;
-  domId: string;
-}) {
+export function ChastityCatalogManager({ domId }: { domId: string }) {
   const router = useRouter();
   const [templates, setTemplates] = useState<RewardTemplate[]>([]);
   const [items, setItems] = useState<CatalogItem[]>([]);
@@ -49,7 +43,7 @@ export function ChastityCatalogManager({
     createClient()
       .from("chastity_catalog_items")
       .select("id, reward_template_id, custom_title, price_bound_dollars, requires_unlock, chastity_reward_templates(title)")
-      .eq("arrangement_id", arrangementId)
+      .eq("dom_id", domId)
       .order("created_at")
       .then(({ data }) => {
         const items = (data ?? []).map((d: Record<string, unknown>) => ({
@@ -60,7 +54,7 @@ export function ChastityCatalogManager({
         })) as CatalogItem[];
         setItems(items);
       });
-  }, [arrangementId]);
+  }, [domId]);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -81,7 +75,7 @@ export function ChastityCatalogManager({
     setLoading(true);
     const supabase = createClient();
     const { error: insertErr } = await supabase.from("chastity_catalog_items").insert({
-      arrangement_id: arrangementId,
+      dom_id: domId,
       reward_template_id: templateId || null,
       custom_title: templateId ? null : customTitle.trim() || null,
       price_bound_dollars: p,

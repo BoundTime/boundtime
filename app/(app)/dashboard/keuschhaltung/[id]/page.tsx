@@ -9,7 +9,6 @@ import { ChastityPenaltyButton } from "@/components/chastity/ChastityPenaltyButt
 import { ChastityConfirmTaskButton } from "@/components/chastity/ChastityConfirmTaskButton";
 import { ChastityLockDisplay } from "@/components/chastity/ChastityLockDisplay";
 import { KeuschhaltungDetailTabs } from "@/components/chastity/KeuschhaltungDetailTabs";
-import { ChastityCatalogManager } from "@/components/chastity/ChastityCatalogManager";
 import { ChastityCatalogAndRequest } from "@/components/chastity/ChastityCatalogAndRequest";
 import { ChastityPendingRequests } from "@/components/chastity/ChastityPendingRequests";
 import { ChastityUnlockLog } from "@/components/chastity/ChastityUnlockLog";
@@ -137,7 +136,6 @@ export default async function KeuschhaltungDetailPage({
         )}
         {arrangement.status === "active" && isDom && (
           <div className="mt-4 space-y-4">
-            <ChastityCatalogManager arrangementId={arrangement.id} domId={user.id} />
             <ChastityPendingRequests arrangementId={arrangement.id} />
             <div className="rounded-xl border border-gray-700 bg-background/50 p-4">
               <h2 className="text-base font-semibold text-white">Aufgabe hinzufügen</h2>
@@ -170,6 +168,7 @@ export default async function KeuschhaltungDetailPage({
             />
             <ChastityCatalogAndRequest
               arrangementId={arrangement.id}
+              domId={arrangement.dom_id}
               boundDollars={arrangement.bound_dollars}
             />
           </div>

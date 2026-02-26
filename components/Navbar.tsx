@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole } from "lucide-react";
+import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ChastityNavBadge } from "@/components/chastity/ChastityNavBadge";
 import { LockDurationBadge } from "@/components/LockDurationBadge";
@@ -162,6 +162,13 @@ export function Navbar() {
                   <UserIcon className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Profil
                 </RefreshNavLink>
+                <RefreshNavLink
+                  href="/dashboard/einstellungen"
+                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                >
+                  <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                  Einstellungen
+                </RefreshNavLink>
               </div>
               <div className="hidden md:flex md:items-center md:gap-4 md:border-l md:border-gray-700 md:pl-6">
                 <LockDurationBadge />
@@ -302,6 +309,10 @@ export function Navbar() {
                   <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <UserIcon className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Profil bearbeiten
+                  </RefreshNavLink>
+                  <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                    <Settings className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                    Einstellungen
                   </RefreshNavLink>
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />

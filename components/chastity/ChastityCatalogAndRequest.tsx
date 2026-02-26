@@ -15,9 +15,11 @@ type CatalogItem = {
 
 export function ChastityCatalogAndRequest({
   arrangementId,
+  domId,
   boundDollars,
 }: {
   arrangementId: string;
+  domId: string;
   boundDollars: number;
 }) {
   const router = useRouter();
@@ -29,7 +31,7 @@ export function ChastityCatalogAndRequest({
     createClient()
       .from("chastity_catalog_items")
       .select("id, reward_template_id, custom_title, price_bound_dollars, requires_unlock, chastity_reward_templates(title)")
-      .eq("arrangement_id", arrangementId)
+      .eq("dom_id", domId)
       .order("price_bound_dollars")
       .then(({ data }) => {
         const items = (data ?? []).map((d: Record<string, unknown>) => ({
@@ -40,7 +42,7 @@ export function ChastityCatalogAndRequest({
         })) as CatalogItem[];
         setItems(items);
       });
-  }, [arrangementId]);
+  }, [domId]);
 
   async function requestItem(itemId: string) {
     setError(null);

@@ -83,6 +83,7 @@ Der **Design-Agent** ist ab jetzt auch der **kreative Part** der Agenten:
 - Er recherchiert **online**, wie erfolgreiche Plattformen im BDSM-Bereich es machen.
 - Er codet **nie** – schreibt nur Prompts für den Hauptagenten.
 - Nutzer wählt aus; erst dann wird ein Prompt verfasst.
+- **Feedback:** Jedes geteilte Feedback wird in `.cursor/FEEDBACK-SAMMLUNG.md` eingeschrieben – mit Quelle, Original-Text und kurzer Einschätzung.
 
 ---
 
