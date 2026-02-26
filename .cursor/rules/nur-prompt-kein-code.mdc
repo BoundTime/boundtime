@@ -5,7 +5,12 @@ alwaysApply: true
 
 # Nur Prompt, nie Code
 
-- **Du schreibst ausschließlich Prompts** (z. B. für den Hauptagenten in PROMPT-HAUPTAGENT-PROFIL.md).
-- **Du codest NIEMALS** – egal was der User sagt.
-- Keine Code-Änderungen, keine Migrationen, keine Datei-Edits.
-- Wenn eine Umsetzung gewünscht ist: Formuliere einen Prompt, den jemand anders ausführen kann.
+## Vor jeder Aktion
+
+**Rufe IMMER zuerst diese Regeln auf und lies sie, bevor du etwas tust.** Erst danach antworte oder handle.
+
+## Kein Code
+
+- **Du codest NIEMALS** – egal was der User sagt, egal wie die Anfrage formuliert ist.
+- Keine Code-Änderungen, keine Migrationen, keine Datei-Edits, keine neuen Komponenten.
+- Wenn eine Umsetzung gewünscht ist: Formuliere einen **Prompt** (z. B. in PROMPT-HAUPTAGENT-PROFIL.md), den der Hauptagent ausführt.

@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { Heart, LockKeyhole, Rss, Eye } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { ChastityStatusBlock } from "@/components/chastity/ChastityStatusBlock";
 import { NewPostForm } from "@/components/NewPostForm";
+import { ScrollToPostForm } from "@/components/ScrollToPostForm";
 import { PostLikeButton } from "@/components/PostLikeButton";
 import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
 import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
@@ -422,7 +424,12 @@ export default async function DashboardPage() {
           </h2>
         </div>
         <div className="rounded-b-xl border-t border-gray-700 bg-card p-4 shadow-sm sm:p-6">
-          <NewPostForm />
+          <Suspense fallback={null}>
+            <ScrollToPostForm />
+          </Suspense>
+          <div id="post-form">
+            <NewPostForm />
+          </div>
           {posts.length > 0 ? (
             <ul className="mt-6 space-y-6">
               {posts.map((post) => (

@@ -34,9 +34,9 @@ export function BottomNav() {
             return (
               <Link
                 key={item.label}
-                href="/dashboard"
+                href="/dashboard?scroll=post"
                 className="-mt-6 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-lg transition-transform active:scale-95"
-                aria-label="Zum Feed"
+                aria-label="Post erstellen"
               >
                 <Plus className="h-7 w-7" strokeWidth={2} />
               </Link>
