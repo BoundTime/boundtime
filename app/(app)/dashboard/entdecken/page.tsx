@@ -50,7 +50,7 @@ export default async function EntdeckenPage({
     .select("id, nick, role, gender, city, postal_code, avatar_url, expectations_text, looking_for, preferences, verified, experience_level")
     .neq("id", user.id);
 
-  if (excludeIds.size) query = query.not("id", "in", `(${[...excludeIds].join(",")})`);
+  if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
   if (roleFilter) query = query.eq("role", roleFilter);
   if (genderFilter) query = query.eq("gender", genderFilter);
   if (plzPrefix) query = query.like("postal_code", `${plzPrefix}%`);
