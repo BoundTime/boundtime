@@ -24,7 +24,7 @@ function formatTimeAgo(date: Date): string {
 type ViewRow = { viewer_id: string; viewed_at: string };
 type ProfileRow = { id: string; nick: string | null; avatar_display_url: string | null };
 
-export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
+export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: boolean; embeddedInLink?: boolean } = {}) {
   const router = useRouter();
   const [views, setViews] = useState<ViewRow[]>([]);
   const [profiles, setProfiles] = useState<Map<string, ProfileRow>>(new Map());
@@ -93,8 +93,9 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
   }, []);
 
   if (loading) {
+    const LoadWrapper = embeddedInLink ? "div" : "section";
     return (
-      <section className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm">
+      <LoadWrapper className={embeddedInLink ? "rounded-xl bg-card p-3" : "rounded-xl border border-gray-700 bg-card p-3 shadow-sm"}>
         {!hideTitle && (
           <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
             <Eye className="h-4 w-4" />
@@ -102,21 +103,26 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
           </h3>
         )}
         <p className="text-xs text-gray-500">Wird geladen…</p>
-      </section>
+      </LoadWrapper>
     );
   }
 
   const displayViews = views.slice(0, 4);
   const hasMore = views.length > 4;
 
+  const Wrapper = embeddedInLink ? "div" : "section";
+  const wrapperProps = embeddedInLink
+    ? { className: "rounded-xl bg-card p-3" }
+    : {
+        role: "button" as const,
+        tabIndex: 0,
+        onClick: () => router.push("/dashboard/aktivitaet/besucher"),
+        onKeyDown: (e: React.KeyboardEvent) => e.key === "Enter" && router.push("/dashboard/aktivitaet/besucher"),
+        className: "cursor-pointer rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-colors hover:border-gray-600",
+      };
+
   return (
-    <section
-      role="button"
-      tabIndex={0}
-      onClick={() => router.push("/dashboard/aktivitaet/besucher")}
-      onKeyDown={(e) => e.key === "Enter" && router.push("/dashboard/aktivitaet/besucher")}
-      className="cursor-pointer rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-colors hover:border-gray-600"
-    >
+    <Wrapper {...wrapperProps}>
       {!hideTitle && (
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
           <Eye className="h-4 w-4" />
@@ -166,6 +172,6 @@ export function ProfileViewsBlock({ hideTitle }: { hideTitle?: boolean } = {}) {
           Bisher hat noch niemand dein Profil angesehen.
         </p>
       )}
-    </section>
+    </Wrapper>
   );
 }

@@ -32,24 +32,31 @@ export function ProfileLikesBlock({
   likes,
   profiles,
   hideTitle,
+  embeddedInLink,
 }: {
   likes: LikeRow[];
   profiles: ProfileRow[];
   hideTitle?: boolean;
+  embeddedInLink?: boolean;
 }) {
   const router = useRouter();
   const profileById = new Map(profiles.map((p) => [p.id, p]));
   const displayList = likes.slice(0, 4);
   const hasMore = likes.length > 4;
 
+  const Wrapper = embeddedInLink ? "div" : "section";
+  const wrapperProps = embeddedInLink
+    ? { className: "rounded-xl bg-card p-3" }
+    : {
+        role: "button" as const,
+        tabIndex: 0,
+        onClick: () => router.push("/dashboard/aktivitaet/profil-likes"),
+        onKeyDown: (e: React.KeyboardEvent) => e.key === "Enter" && router.push("/dashboard/aktivitaet/profil-likes"),
+        className: "cursor-pointer rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-colors hover:border-gray-600",
+      };
+
   return (
-    <section
-      role="button"
-      tabIndex={0}
-      onClick={() => router.push("/dashboard/aktivitaet/profil-likes")}
-      onKeyDown={(e) => e.key === "Enter" && router.push("/dashboard/aktivitaet/profil-likes")}
-      className="cursor-pointer rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-colors hover:border-gray-600"
-    >
+    <Wrapper {...wrapperProps}>
       {!hideTitle && (
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
           <Heart className="h-4 w-4" />
@@ -95,6 +102,6 @@ export function ProfileLikesBlock({
       ) : (
         <p className="text-xs text-gray-500">Noch hat niemand dein Profil geliked.</p>
       )}
-    </section>
+    </Wrapper>
   );
 }

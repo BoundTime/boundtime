@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { LockKeyhole, UnlockKeyhole } from "lucide-react";
 import { ChastityLockDuration } from "./ChastityLockDuration";
 import { BoundDollarsProgress } from "./BoundDollarsProgress";
@@ -37,35 +36,42 @@ export function ChastityStatusBlock({
 
   if (isSub) {
     const locked = !!asSubArrangement?.lockedAt;
+    const statusText = locked
+      ? null
+      : asSubArrangement
+        ? "Noch nicht verschlossen (Dom startet Lock)"
+        : "Nicht verschlossen";
+    const statusShort = asSubArrangement ? "Warte auf Dom" : "Nicht verschlossen";
     return (
-      <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:gap-3">
             {locked ? (
               <LockKeyhole
-                className="h-10 w-10 shrink-0 text-accent"
+                className="h-8 w-8 shrink-0 text-accent sm:h-10 sm:w-10"
                 strokeWidth={1.5}
                 aria-label="Verschlossen"
               />
             ) : (
               <UnlockKeyhole
-                className="h-10 w-10 shrink-0 text-gray-500"
+                className="h-8 w-8 shrink-0 text-gray-500 sm:h-10 sm:w-10"
                 strokeWidth={1.5}
                 aria-label="Nicht verschlossen"
               />
             )}
-            <span className="text-sm text-gray-300">
+            <span className="min-w-0 text-xs text-gray-300 sm:text-sm">
               {locked ? (
                 <ChastityLockDuration
                   lockedAt={asSubArrangement!.lockedAt!}
                   arrangementId={asSubArrangement!.id}
                 />
-              ) : asSubArrangement ? (
-                "Noch nicht verschlossen (Dom startet Lock)"
-              )               : (
-                "Nicht verschlossen"
+              ) : (
+                <>
+                  <span className="sm:hidden">{statusShort}</span>
+                  <span className="hidden sm:inline">{statusText}</span>
+                </>
               )}
-              <span className="ml-2 text-gray-500">· Bound: {isBound ? "Gebunden" : "Frei"}</span>
+              <span className="ml-1 text-gray-500 sm:ml-2">· Bound: {isBound ? "Gebunden" : "Frei"}</span>
             </span>
             {profileBoundDollars != null && profileBoundDollars > 0 && !asSubArrangement && (
               <p className="mt-2 text-sm text-gray-400">Dein Konto: {profileBoundDollars} BD</p>
@@ -80,12 +86,6 @@ export function ChastityStatusBlock({
               </div>
             )}
           </div>
-          <Link
-            href="/dashboard/keuschhaltung"
-            className="shrink-0 text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-hover hover:underline"
-          >
-            Keuschhaltung →
-          </Link>
         </div>
       </div>
     );
@@ -93,7 +93,7 @@ export function ChastityStatusBlock({
 
   if (isDom && asDomArrangements.length > 0) {
     return (
-      <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+      <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4">
             {asDomArrangements.slice(0, 4).map((arr) => (
@@ -119,8 +119,8 @@ export function ChastityStatusBlock({
                   strokeWidth={1.5}
                   aria-hidden
                 />
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-300">
+                <div className="min-w-0 flex flex-col">
+                  <span className="truncate text-xs text-gray-300 sm:text-sm">
                     {arr.lockedAt ? (
                       <ChastityLockDuration
                         lockedAt={arr.lockedAt}
@@ -148,12 +148,6 @@ export function ChastityStatusBlock({
               </span>
             )}
           </div>
-          <Link
-            href="/dashboard/keuschhaltung"
-            className="shrink-0 text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-hover hover:underline"
-          >
-            Keuschhaltung →
-          </Link>
         </div>
         <p className="mt-2 text-xs text-gray-500">Bound: {isBound ? "Gebunden" : "Frei"}</p>
       </div>
@@ -162,44 +156,29 @@ export function ChastityStatusBlock({
 
   if (isDom) {
     return (
-      <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <UnlockKeyhole
-              className="h-10 w-10 shrink-0 text-gray-500"
-              strokeWidth={1.5}
-              aria-label="Keine Dynamik"
-            />
-            <span className="text-sm text-gray-500">Keine Dynamik</span>
-            <span className="text-gray-500">· Bound: Frei</span>
-          </div>
-          <Link
-            href="/dashboard/keuschhaltung"
-            className="shrink-0 text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-hover hover:underline"
-          >
-            Keuschhaltung →
-          </Link>
+      <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <UnlockKeyhole
+            className="h-8 w-8 shrink-0 text-gray-500 sm:h-10 sm:w-10"
+            strokeWidth={1.5}
+            aria-label="Keine Dynamik"
+          />
+          <span className="min-w-0 text-xs text-gray-500 sm:text-sm">Keine Dynamik · Bound: Frei</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-4">
+    <div className="rounded-xl border border-gray-700 bg-card p-3 shadow-sm sm:p-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <UnlockKeyhole
-          className="h-10 w-10 shrink-0 text-gray-500"
+          className="h-8 w-8 shrink-0 text-gray-500 sm:h-10 sm:w-10"
           strokeWidth={1.5}
           aria-hidden
         />
-          <span className="text-sm text-gray-500">Bound: Frei</span>
-          <Link
-            href="/dashboard/keuschhaltung"
-            className="text-sm font-medium text-accent transition-colors duration-150 hover:text-accent-hover hover:underline"
-          >
-            Keuschhaltung →
-          </Link>
-        </div>
+        <span className="text-xs text-gray-500 sm:text-sm">Bound: Frei</span>
       </div>
-    );
+    </div>
+  );
 }

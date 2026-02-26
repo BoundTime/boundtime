@@ -252,10 +252,10 @@ export default async function DashboardPage() {
       {!(isDomOrSwitcher && asDomWithSub.length > 0) && (
         <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
           <div className="flex items-center justify-between bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
-            <h2 className="flex items-center gap-2 text-xl font-semibold text-white">
+            <Link href="/dashboard/keuschhaltung" className="flex items-center gap-2 text-xl font-semibold text-white transition-colors hover:text-accent">
               <LockKeyhole className="h-5 w-5 text-gray-400" />
               Keuschhaltung
-            </h2>
+            </Link>
           </div>
           <div className="rounded-b-xl border-t border-gray-700 bg-card p-6">
             <ChastityStatusBlock
@@ -281,10 +281,12 @@ export default async function DashboardPage() {
       {isDomOrSwitcher && asDomWithSub.length > 0 && (
         <div className="mt-8 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
           <div className="bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
-            <h2 className="text-xl font-semibold text-white">Ihre Keuschlinge</h2>
+            <Link href="/dashboard/keuschhaltung" className="block text-center text-xl font-semibold text-white transition-colors hover:text-accent">
+              Ihre Keuschlinge
+            </Link>
           </div>
           <div className="space-y-6 border-t border-gray-700 bg-card p-6">
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="flex flex-wrap justify-center gap-4">
             {asDomWithSub.map((arr) => {
               const pendingTasks = pendingTasksByArrangement.get(arr.id) ?? 0;
               return (
@@ -354,9 +356,12 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Aktivität: 3 Blöcke */}
+      {/* Aktivität: 3 Blöcke – gesamte Kachel klickbar */}
       <div className="mt-8 grid gap-6 sm:grid-cols-1 lg:grid-cols-3">
-        <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
+        <Link
+          href="/dashboard/aktivitaet/besucher"
+          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+        >
           <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
               <Eye className="h-4 w-4 text-gray-400" />
@@ -364,10 +369,13 @@ export default async function DashboardPage() {
             </h3>
           </div>
           <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
-            <ProfileViewsBlock hideTitle />
+            <ProfileViewsBlock hideTitle embeddedInLink />
           </div>
-        </div>
-        <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
+        </Link>
+        <Link
+          href="/dashboard/aktivitaet/profil-likes"
+          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+        >
           <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
@@ -379,10 +387,14 @@ export default async function DashboardPage() {
               likes={profileLikesRes.data ?? []}
               profiles={activityProfilesWithAvatars}
               hideTitle
+              embeddedInLink
             />
           </div>
-        </div>
-        <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
+        </Link>
+        <Link
+          href="/dashboard/aktivitaet/post-likes"
+          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+        >
           <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
@@ -395,9 +407,10 @@ export default async function DashboardPage() {
               profiles={activityProfilesWithAvatars}
               posts={myPostsRes.data ?? []}
               hideTitle
+              embeddedInLink
             />
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* 2. Feed zentral: Header-Karte + Inhalts-Karte */}
