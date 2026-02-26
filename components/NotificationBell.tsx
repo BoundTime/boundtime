@@ -37,7 +37,12 @@ function getNotificationHref(n: NotificationRow): string {
   }
 }
 
-export function NotificationBell() {
+type NotificationBellProps = {
+  variant?: "desktop" | "mobile";
+  onNavigate?: () => void;
+};
+
+export function NotificationBell({ variant = "desktop", onNavigate }: NotificationBellProps = {}) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [list, setList] = useState<NotificationRow[]>([]);
   const [open, setOpen] = useState(false);
@@ -101,6 +106,24 @@ export function NotificationBell() {
   }, []);
 
   if (loading) return null;
+
+  if (variant === "mobile") {
+    return (
+      <Link
+        href="/dashboard/benachrichtigungen"
+        onClick={onNavigate}
+        className="relative flex items-center gap-2 rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white"
+      >
+        <Bell className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+        Benachrichtigungen
+        {unreadCount > 0 && (
+          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-bold text-white">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
+      </Link>
+    );
+  }
 
   return (
     <div className="relative" ref={ref}>

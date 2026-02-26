@@ -285,9 +285,7 @@ export function Navbar() {
                     <MessageSquare className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Nachrichten
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/benachrichtigungen" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
-                    Benachrichtigungen
-                  </RefreshNavLink>
+                  <NotificationBell variant="mobile" onNavigate={closeMenu} />
                   <ChastityNavBadge
                     onClick={(e) => {
                       e.preventDefault();
@@ -308,7 +306,7 @@ export function Navbar() {
                   )}
                   <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <UserIcon className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
-                    Profil bearbeiten
+                    Profil
                   </RefreshNavLink>
                   <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <Settings className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
