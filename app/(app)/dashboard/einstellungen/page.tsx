@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { ChastityCatalogManager } from "@/components/chastity/ChastityCatalogManager";
+import { SettingsAccountSection } from "@/components/settings/SettingsAccountSection";
+import { SettingsSessionsSection } from "@/components/settings/SettingsSessionsSection";
+import { SettingsBlockedUsersSection } from "@/components/settings/SettingsBlockedUsersSection";
 
 export default async function EinstellungenPage() {
   const supabase = await createClient();
@@ -40,16 +43,21 @@ export default async function EinstellungenPage() {
       ) : (
         <div className="mt-8 rounded-xl border border-gray-700 bg-card p-6">
           <p className="text-gray-400">
-            Der Belohnungskatalog ist nur für Dom(me)s und Switcher verfügbar.
+            Der Belohnungskatalog ist für Dom(me)s – du siehst hier deine Konto- und Sitzungseinstellungen.
           </p>
         </div>
       )}
 
-      {/* Platzhalter für weitere Einstellungen */}
-      <div className="mt-8 rounded-xl border border-gray-700/50 border-dashed bg-card/30 p-6">
-        <p className="text-sm text-gray-500">
-          Weitere Einstellungen (Benachrichtigungen, Datenschutz, Konto) folgen.
-        </p>
+      <div className="mt-8">
+        <SettingsAccountSection email={user.email} />
+      </div>
+
+      <div className="mt-8">
+        <SettingsSessionsSection />
+      </div>
+
+      <div className="mt-8">
+        <SettingsBlockedUsersSection />
       </div>
     </Container>
   );

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel } from "@/lib/profile-utils";
 import { ChastityRequestButton } from "@/components/chastity/ChastityRequestButton";
 import { FollowButton } from "@/components/FollowButton";
+import { BlockButton } from "@/components/BlockButton";
 import { ProfileLikeButton } from "@/components/ProfileLikeButton";
 import { PostLikeButton } from "@/components/PostLikeButton";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
@@ -73,13 +74,22 @@ export default async function ProfilDetailPage({
     // Profilbesuch clientseitig erfassen (JWT des Besuchers)
   }
 
-  const { data: followRow } = await supabase
-    .from("follows")
-    .select("follower_id")
-    .eq("follower_id", user.id)
-    .eq("following_id", profile.id)
-    .maybeSingle();
+  const [{ data: followRow }, { data: blockRow }] = await Promise.all([
+    supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("follower_id", user.id)
+      .eq("following_id", profile.id)
+      .maybeSingle(),
+    supabase
+      .from("blocked_users")
+      .select("blocker_id")
+      .eq("blocker_id", user.id)
+      .eq("blocked_id", profile.id)
+      .maybeSingle(),
+  ]);
   const isFollowing = !!followRow;
+  const isBlockedByMe = !!blockRow;
 
   let profileLikeCount = 0;
   let profileLikedByMe = false;
@@ -275,6 +285,7 @@ export default async function ProfilDetailPage({
         {profile.id !== user.id && (
           <div className="flex flex-wrap items-center justify-center gap-3 border-t border-gray-700 px-6 py-4 sm:justify-start">
             <FollowButton followingId={profile.id} initialIsFollowing={isFollowing} />
+            <BlockButton blockedId={profile.id} initialBlocked={isBlockedByMe} />
             <ProfileLikeButton
               profileId={profile.id}
               initialLiked={profileLikedByMe}

@@ -36,11 +36,21 @@ export default async function EntdeckenPage({
     .eq("id", user.id)
     .single();
 
+  const [{ data: iBlocked }, { data: blockedMe }] = await Promise.all([
+    supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id),
+    supabase.from("blocked_users").select("blocker_id").eq("blocked_id", user.id),
+  ]);
+  const excludeIds = new Set([
+    ...(iBlocked ?? []).map((r: { blocked_id: string }) => r.blocked_id),
+    ...(blockedMe ?? []).map((r: { blocker_id: string }) => r.blocker_id),
+  ]);
+
   let query = supabase
     .from("profiles")
     .select("id, nick, role, gender, city, postal_code, avatar_url, expectations_text, looking_for, preferences, verified, experience_level")
     .neq("id", user.id);
 
+  if (excludeIds.size) query = query.not("id", "in", `(${[...excludeIds].join(",")})`);
   if (roleFilter) query = query.eq("role", roleFilter);
   if (genderFilter) query = query.eq("gender", genderFilter);
   if (plzPrefix) query = query.like("postal_code", `${plzPrefix}%`);
