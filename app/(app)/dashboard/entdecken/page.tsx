@@ -119,7 +119,7 @@ export default async function EntdeckenPage({
                   }`}
                 >
                   <div className="relative aspect-square w-full overflow-hidden bg-gray-900">
-                    <AvatarWithVerified verified={profile.verified} size="md" className="absolute inset-0">
+                    <AvatarWithVerified verified={profile.verified} size="lg" position="top-right" variant="prominent" className="absolute inset-0">
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
