@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useCallback, useState } from "react";
+import { X, ChevronLeft, ChevronRight, User, Trash2, Pencil } from "lucide-react";
 
 type ImageItem = {
   id: string;
@@ -9,20 +9,47 @@ type ImageItem = {
   alt?: string;
 };
 
+type OwnerPhoto = {
+  id: string;
+  storage_path: string;
+  title?: string | null;
+  caption?: string | null;
+};
+
 export function AlbumLightbox({
   images,
   currentIndex,
   onClose,
   onIndexChange,
+  ownerMode,
 }: {
   images: ImageItem[];
   currentIndex: number;
   onClose: () => void;
   onIndexChange: (index: number) => void;
+  ownerMode?: {
+    photos: OwnerPhoto[];
+    isMainAlbum: boolean;
+    onSetAsProfile: (photoId: string) => void;
+    onDelete: (photoId: string, storagePath: string) => void;
+    onSaveEdit: (photoId: string, title: string, caption: string) => void;
+  };
 }) {
   const current = images[currentIndex];
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < images.length - 1;
+  const currentOwnerPhoto = ownerMode?.photos?.[currentIndex] ?? null;
+  const [editTitle, setEditTitle] = useState("");
+  const [editCaption, setEditCaption] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (currentOwnerPhoto) {
+      setEditTitle(currentOwnerPhoto.title ?? "");
+      setEditCaption(currentOwnerPhoto.caption ?? "");
+      setIsEditing(false);
+    }
+  }, [currentOwnerPhoto, currentIndex]);
 
   const goPrev = useCallback(() => {
     if (hasPrev) onIndexChange(currentIndex - 1);
@@ -88,18 +115,100 @@ export function AlbumLightbox({
       )}
 
       <div
-        className="relative max-h-[90vh] max-w-[90vw] cursor-default"
+        className="relative flex max-h-[90vh] max-w-[90vw] flex-col items-center cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={current.url}
           alt={current.alt ?? "Albumfoto"}
-          className="max-h-[90vh] max-w-full object-contain"
+          className="max-h-[75vh] max-w-full object-contain"
         />
-        {images.length > 1 && (
-          <p className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-black/60 px-3 py-1 text-sm text-white">
+        {images.length > 1 && !ownerMode && (
+          <p className="mt-2 rounded bg-black/60 px-3 py-1 text-sm text-white">
             {currentIndex + 1} / {images.length}
           </p>
+        )}
+        {ownerMode && currentOwnerPhoto && current.id !== "avatar" && (
+          <div className="mt-4 w-full max-w-md space-y-3 rounded-lg border border-gray-600 bg-black/40 p-4">
+            {images.length > 1 && (
+              <p className="text-center text-sm text-gray-400">
+                {currentIndex + 1} / {images.length}
+              </p>
+            )}
+            <div className="flex flex-wrap justify-center gap-2">
+              {ownerMode.isMainAlbum && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    ownerMode.onSetAsProfile(currentOwnerPhoto.id);
+                  }}
+                  className="inline-flex items-center gap-2 rounded bg-accent px-3 py-2 text-sm font-medium text-white hover:bg-accent-hover"
+                >
+                  <User className="h-4 w-4" />
+                  Als Profilbild
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm("Foto wirklich löschen?")) {
+                    ownerMode.onDelete(currentOwnerPhoto.id, currentOwnerPhoto.storage_path);
+                    onClose();
+                  }
+                }}
+                className="inline-flex items-center gap-2 rounded bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500"
+              >
+                <Trash2 className="h-4 w-4" />
+                Löschen
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(!isEditing);
+                  if (!isEditing) {
+                    setEditTitle(currentOwnerPhoto.title ?? "");
+                    setEditCaption(currentOwnerPhoto.caption ?? "");
+                  }
+                }}
+                className="inline-flex items-center gap-2 rounded bg-gray-600 px-3 py-2 text-sm font-medium text-white hover:bg-gray-500"
+              >
+                <Pencil className="h-4 w-4" />
+                {isEditing ? "Abbrechen" : "Titel bearbeiten"}
+              </button>
+            </div>
+            {isEditing && (
+              <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Titel"
+                  className="w-full rounded border border-gray-600 bg-black/60 px-3 py-2 text-sm text-white placeholder-gray-500"
+                />
+                <textarea
+                  value={editCaption}
+                  onChange={(e) => setEditCaption(e.target.value)}
+                  placeholder="Beschreibung"
+                  rows={2}
+                  className="w-full resize-none rounded border border-gray-600 bg-black/60 px-3 py-2 text-sm text-white placeholder-gray-500"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    ownerMode.onSaveEdit(currentOwnerPhoto.id, editTitle, editCaption);
+                    setIsEditing(false);
+                  }}
+                  className="w-full rounded bg-accent py-2 text-sm font-medium text-white hover:bg-accent-hover"
+                >
+                  Speichern
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
