@@ -128,9 +128,20 @@ export function Navbar() {
         {user ? (
           <RefreshNavLink
             href="/dashboard"
-            className="text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
-            BoundTime
+            <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-9 w-9 shrink-0">
+              <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-accent">
+                    {nick?.slice(0, 1).toUpperCase() ?? "?"}
+                  </span>
+                )}
+              </div>
+            </AvatarWithVerified>
+            <span>BoundTime</span>
           </RefreshNavLink>
         ) : (
           <Link
