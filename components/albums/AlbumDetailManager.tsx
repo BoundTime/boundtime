@@ -344,7 +344,7 @@ export function AlbumDetailManager({
                 e.stopPropagation();
                 deletePhoto(photo.id, photo.storage_path);
               }}
-              className="absolute right-2 top-2 rounded bg-red-600/80 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+              className="absolute right-2 top-2 z-10 min-h-[44px] min-w-[44px] rounded bg-red-600/80 p-1.5 text-white opacity-100 transition-opacity hover:bg-red-600 sm:opacity-0 sm:group-hover:opacity-100"
               title="Foto entfernen"
               aria-label="Foto entfernen"
             >

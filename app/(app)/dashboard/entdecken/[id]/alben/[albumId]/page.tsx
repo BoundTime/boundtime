@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { AlbumViewer } from "@/components/albums/AlbumViewer";
+import { AlbumDetailManager } from "@/components/albums/AlbumDetailManager";
 
 export default async function AlbumViewPage({
   params,
@@ -43,7 +44,7 @@ export default async function AlbumViewPage({
 
   const { data: photos } = await supabase
     .from("photo_album_photos")
-    .select("id, storage_path")
+    .select("id, storage_path, fsk18, sort_order, title, caption")
     .eq("album_id", albumId)
     .order("sort_order")
     .order("created_at");
@@ -53,6 +54,7 @@ export default async function AlbumViewPage({
     .select("nick, avatar_url, avatar_photo_id")
     .eq("id", ownerId)
     .single();
+  const avatarPhotoId = ownerProfile?.avatar_photo_id ?? null;
 
   const avatarUrl = ownerProfile
     ? await resolveProfileAvatarUrl(
@@ -105,11 +107,30 @@ export default async function AlbumViewPage({
         </p>
 
         <div className="mt-6">
-          <AlbumViewer images={images} />
+          {isOwner ? (
+            <AlbumDetailManager
+              albumId={album.id}
+              ownerId={user.id}
+              initialPhotos={(photos ?? []).map((p) => ({
+                id: p.id,
+                storage_path: p.storage_path,
+                fsk18: p.fsk18 ?? false,
+                sort_order: p.sort_order ?? 0,
+                title: p.title ?? null,
+                caption: p.caption ?? null,
+              }))}
+              isMainAlbum={album.is_main}
+              avatarPhotoId={avatarPhotoId}
+            />
+          ) : (
+            <>
+              <AlbumViewer images={images} />
+              {images.length === 0 && (
+                <p className="mt-6 text-sm text-gray-500">Noch keine Fotos in diesem Album.</p>
+              )}
+            </>
+          )}
         </div>
-        {images.length === 0 && (
-          <p className="mt-6 text-sm text-gray-500">Noch keine Fotos in diesem Album.</p>
-        )}
       </div>
     </Container>
   );
