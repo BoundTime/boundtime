@@ -130,6 +130,7 @@ export default async function DashboardPage() {
     .select("following_id")
     .eq("follower_id", user.id);
   const followingIds = (followed ?? []).map((f) => f.following_id);
+  const feedAuthorIds = Array.from(new Set([user.id, ...followingIds]));
 
   let posts: Array<{
     id: string;
@@ -141,11 +142,11 @@ export default async function DashboardPage() {
     author_avatar_url: string | null;
     author_tier: "bronze" | "silver" | "gold";
   }> = [];
-  if (followingIds.length > 0) {
+  if (feedAuthorIds.length > 0) {
     const { data: postsData } = await supabase
       .from("posts")
       .select("id, author_id, content, image_url, created_at")
-      .in("author_id", followingIds)
+      .in("author_id", feedAuthorIds)
       .order("created_at", { ascending: false })
       .limit(50);
     if (postsData?.length) {
