@@ -162,18 +162,20 @@ export function AlbumLightbox({
             {currentIndex + 1} / {images.length}
           </p>
         )}
-        {current.id !== "avatar" && ownerId && albumId && (
-          <div className="mt-4 flex flex-wrap items-center gap-4" onClick={(e) => e.stopPropagation()}>
-            <PhotoLikeButton
-              photoId={current.id}
-              initialLiked={photoStats[current.id]?.likedByMe ?? false}
-              initialCount={photoStats[current.id]?.likeCount ?? 0}
-            />
-            <PhotoCommentSection
-              photoId={current.id}
-              initialComments={[]}
-              initialCount={photoStats[current.id]?.commentCount ?? 0}
-            />
+        {current.id !== "avatar" && ownerId && albumId && !ownerMode && (
+          <div className="mt-4 w-full max-w-md space-y-3 rounded-lg border border-gray-600 bg-black/40 p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-wrap items-center gap-4">
+              <PhotoLikeButton
+                photoId={current.id}
+                initialLiked={photoStats[current.id]?.likedByMe ?? false}
+                initialCount={photoStats[current.id]?.likeCount ?? 0}
+              />
+              <PhotoCommentSection
+                photoId={current.id}
+                initialComments={[]}
+                initialCount={photoStats[current.id]?.commentCount ?? 0}
+              />
+            </div>
           </div>
         )}
         {ownerMode && currentOwnerPhoto && current.id !== "avatar" && (
