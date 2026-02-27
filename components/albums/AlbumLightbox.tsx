@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight, User, Trash2, Pencil } from "lucide-react";
 import { PhotoLikeButton } from "@/components/PhotoLikeButton";
 import { PhotoCommentSection } from "@/components/PhotoCommentSection";
@@ -89,7 +90,7 @@ export function AlbumLightbox({
 
   if (!current || images.length === 0) return null;
 
-  return (
+  const lightboxContent = (
     <div
       className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90"
       role="dialog"
@@ -129,7 +130,7 @@ export function AlbumLightbox({
       )}
 
       <div
-        className="relative flex max-h-[90vh] max-w-[90vw] flex-col items-center cursor-default"
+        className="relative flex max-h-[90vh] max-w-[90vw] flex-col items-center overflow-y-auto cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Klickbare Zonen: links = vorheriges, rechts = nächstes Foto */}
@@ -260,4 +261,8 @@ export function AlbumLightbox({
       </div>
     </div>
   );
+
+  return typeof document !== "undefined"
+    ? createPortal(lightboxContent, document.body)
+    : lightboxContent;
 }
