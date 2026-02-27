@@ -77,7 +77,7 @@ export function AlbumLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+      className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90"
       role="dialog"
       aria-modal="true"
       aria-label="Bild vergrößert"
@@ -118,11 +118,30 @@ export function AlbumLightbox({
         className="relative flex max-h-[90vh] max-w-[90vw] flex-col items-center cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={current.url}
-          alt={current.alt ?? "Albumfoto"}
-          className="max-h-[75vh] max-w-full object-contain"
-        />
+        {/* Klickbare Zonen: links = vorheriges, rechts = nächstes Foto */}
+        <div className="relative flex w-full max-w-[90vw] items-center justify-center">
+          {hasPrev && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              className="absolute left-0 top-0 z-10 h-full min-h-[200px] w-1/3 min-w-[80px] cursor-w-resize"
+              aria-label="Vorheriges Bild"
+            />
+          )}
+          {hasNext && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              className="absolute right-0 top-0 z-10 h-full min-h-[200px] w-1/3 min-w-[80px] cursor-e-resize"
+              aria-label="Nächstes Bild"
+            />
+          )}
+          <img
+            src={current.url}
+            alt={current.alt ?? "Albumfoto"}
+            className="max-h-[75vh] max-w-full object-contain"
+          />
+        </div>
         {images.length > 1 && !ownerMode && (
           <p className="mt-2 rounded bg-black/60 px-3 py-1 text-sm text-white">
             {currentIndex + 1} / {images.length}
