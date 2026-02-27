@@ -74,7 +74,7 @@ export function AlbumDetailManager({
       if (inserted) added.push(inserted);
     }
     setPhotos((prev) => [...prev, ...added]);
-    setPendingEditIds((prev) => new Set([...prev, ...added.map((p) => p.id)]));
+    setPendingEditIds((prev) => new Set([...Array.from(prev), ...added.map((p) => p.id)]));
     setUploading(false);
     e.target.value = "";
     router.refresh();
