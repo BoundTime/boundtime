@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Upload, Trash2, User } from "lucide-react";
+import { Upload, Trash2, User, Check } from "lucide-react";
 import { AlbumLightbox } from "./AlbumLightbox";
 
 type Photo = {
@@ -36,6 +36,7 @@ export function AlbumDetailManager({
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editCaption, setEditCaption] = useState("");
+  const [pendingEditIds, setPendingEditIds] = useState<Set<string>>(new Set());
 
   const supabase = createClient();
   const getUrl = (path: string) =>
@@ -73,6 +74,7 @@ export function AlbumDetailManager({
       if (inserted) added.push(inserted);
     }
     setPhotos((prev) => [...prev, ...added]);
+    setPendingEditIds((prev) => new Set([...prev, ...added.map((p) => p.id)]));
     setUploading(false);
     e.target.value = "";
     router.refresh();
@@ -133,15 +135,22 @@ export function AlbumDetailManager({
     setEditingPhotoId(null);
     setEditTitle("");
     setEditCaption("");
+    setPendingEditIds((prev) => {
+      const next = new Set(prev);
+      next.delete(photoId);
+      return next;
+    });
     router.refresh();
   }
+
+  const pendingPhotos = photos.filter((p) => pendingEditIds.has(p.id));
 
   return (
     <div className="mt-6 space-y-4">
       <div>
         <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-gray-600 bg-background/50 px-4 py-3 text-sm text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300">
           <Upload className="h-4 w-4" />
-          {uploading ? "Wird hochgeladen …" : "Fotos hochladen"}
+          {uploading ? "Wird hochgeladen …" : "Schritt 1: Fotos hochladen"}
           <input
             type="file"
             accept="image/*"
@@ -152,6 +161,131 @@ export function AlbumDetailManager({
           />
         </label>
       </div>
+
+      {/* Bearbeitung neuer Fotos: größere Darstellung, Titel/Caption vor Übernahme ins Album */}
+      {pendingPhotos.length > 0 && (
+        <div className="rounded-xl border border-accent/40 bg-background/50 p-4 sm:p-6">
+          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent">
+            Neue Fotos bearbeiten – Schritt 2 von 2
+          </h3>
+          <p className="mb-4 text-sm text-gray-400">
+            Gib optional Titel und Beschreibung ein. Dann übernimm die Fotos ins Album.
+          </p>
+          <div className="space-y-6">
+            {pendingPhotos.map((photo) => (
+              <div
+                key={photo.id}
+                className="flex flex-col gap-4 rounded-lg border border-gray-700 bg-gray-900/50 p-4 sm:flex-row sm:gap-6"
+              >
+                <div className="aspect-square w-full max-w-[200px] shrink-0 overflow-hidden rounded-lg border border-gray-700 sm:max-w-[160px]">
+                  <img
+                    src={getUrl(photo.storage_path)}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="min-w-0 flex-1 space-y-3">
+                  <input
+                    type="text"
+                    value={editingPhotoId === photo.id ? editTitle : (photo.title ?? "")}
+                    onChange={(e) => {
+                      if (editingPhotoId === photo.id) setEditTitle(e.target.value);
+                      else {
+                        setEditingPhotoId(photo.id);
+                        setEditTitle(e.target.value);
+                        setEditCaption(photo.caption ?? "");
+                      }
+                    }}
+                    onFocus={() => {
+                      if (editingPhotoId !== photo.id) {
+                        setEditingPhotoId(photo.id);
+                        setEditTitle(photo.title ?? "");
+                        setEditCaption(photo.caption ?? "");
+                      }
+                    }}
+                    placeholder="Titel (optional)"
+                    className="w-full rounded border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                  <textarea
+                    value={editingPhotoId === photo.id ? editCaption : (photo.caption ?? "")}
+                    onChange={(e) => {
+                      if (editingPhotoId === photo.id) setEditCaption(e.target.value);
+                      else {
+                        setEditingPhotoId(photo.id);
+                        setEditTitle(photo.title ?? "");
+                        setEditCaption(e.target.value);
+                      }
+                    }}
+                    onFocus={() => {
+                      if (editingPhotoId !== photo.id) {
+                        setEditingPhotoId(photo.id);
+                        setEditTitle(photo.title ?? "");
+                        setEditCaption(photo.caption ?? "");
+                      }
+                    }}
+                    placeholder="Beschreibung (optional)"
+                    rows={3}
+                    className="w-full resize-none rounded border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const title = editingPhotoId === photo.id ? editTitle : (photo.title ?? "");
+                        const caption = editingPhotoId === photo.id ? editCaption : (photo.caption ?? "");
+                        const { error } = await supabase
+                          .from("photo_album_photos")
+                          .update({ title: title.trim() || null, caption: caption.trim() || null })
+                          .eq("id", photo.id);
+                        if (!error) {
+                          setPhotos((prev) =>
+                            prev.map((p) =>
+                              p.id === photo.id
+                                ? { ...p, title: title.trim() || null, caption: caption.trim() || null }
+                                : p
+                            )
+                          );
+                          setEditingPhotoId(null);
+                          setEditTitle("");
+                          setEditCaption("");
+                          setPendingEditIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(photo.id);
+                            return next;
+                          });
+                          router.refresh();
+                        }
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded bg-accent px-3 py-1.5 text-sm font-medium text-white hover:bg-accent-hover"
+                    >
+                      <Check className="h-4 w-4" />
+                      Übernehmen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingEditIds((prev) => {
+                        const next = new Set(prev);
+                        next.delete(photo.id);
+                        return next;
+                      })}
+                      className="rounded bg-gray-600 px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-500"
+                    >
+                      Überspringen
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPendingEditIds(new Set())}
+            className="mt-4 rounded bg-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-500"
+          >
+            Alle übernehmen (ohne weitere Bearbeitung)
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {photos.map((photo, index) => (
@@ -171,23 +305,39 @@ export function AlbumDetailManager({
               />
             </button>
             {avatarPhotoIdState === photo.id && (
-              <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
+              <span className="absolute left-2 top-2 flex items-center gap-1 rounded bg-black/60 px-2 py-0.5 text-xs text-white">
                 <User className="h-3 w-3" /> Profilbild
               </span>
             )}
-            {isMainAlbum && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setAsProfilePhoto(photo.id);
-                }}
-                className="absolute bottom-2 right-2 rounded bg-accent/90 px-2 py-1 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-accent"
-                title="Als Profilbild wählen"
-              >
-                Als Profilbild
-              </button>
-            )}
+            {/* Aktions-Buttons unten: auf Mobile immer sichtbar & untereinander, auf Desktop bei Hover */}
+            <div className="absolute bottom-2 left-2 right-2 z-10 flex flex-col-reverse items-stretch gap-1.5 sm:bottom-2 sm:left-auto sm:right-2 sm:flex-row sm:flex-row-reverse sm:items-center sm:gap-1.5">
+              {isMainAlbum && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAsProfilePhoto(photo.id);
+                  }}
+                  className="min-h-[44px] shrink-0 rounded bg-accent/90 px-2.5 py-1.5 text-xs font-medium text-white opacity-100 transition-opacity hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent sm:min-h-0 sm:opacity-0 sm:group-hover:opacity-100"
+                  title="Als Profilbild wählen"
+                  aria-label="Als Profilbild wählen"
+                >
+                  Als Profilbild
+                </button>
+              )}
+              {!photo.title && !photo.caption && editingPhotoId !== photo.id && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startEditing(photo);
+                  }}
+                  className="min-h-[44px] shrink-0 rounded bg-black/60 px-2.5 py-1.5 text-xs text-gray-300 opacity-100 transition-opacity hover:bg-black/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent sm:min-h-0 sm:opacity-0 sm:group-hover:opacity-100"
+                >
+                  Titel/Caption hinzufügen
+                </button>
+              )}
+            </div>
             <button
               type="button"
               onClick={(e) => {
@@ -260,18 +410,6 @@ export function AlbumDetailManager({
                   </div>
                 )}
               </div>
-            )}
-            {!photo.title && !photo.caption && editingPhotoId !== photo.id && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  startEditing(photo);
-                }}
-                className="absolute bottom-2 left-2 rounded bg-black/40 px-2 py-0.5 text-xs text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white"
-              >
-                Titel/Caption hinzufügen
-              </button>
             )}
           </div>
         ))}
