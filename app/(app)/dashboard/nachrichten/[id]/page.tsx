@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { MessageInput } from "@/components/MessageInput";
+import { ChatMessages } from "@/components/ChatMessages";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 
@@ -43,7 +44,7 @@ export default async function ChatPage({
 
   const { data: messages } = await supabase
     .from("messages")
-    .select("id, sender_id, content, created_at")
+    .select("id, sender_id, content, created_at, delivered_at, read_at")
     .eq("conversation_id", id)
     .order("created_at", { ascending: true });
 
@@ -77,39 +78,12 @@ export default async function ChatPage({
           <h1 className="font-semibold text-white">{otherNick}</h1>
         </div>
 
-        <div className="min-h-[200px] flex-1 overflow-y-auto p-4 space-y-4">
-          {!messages?.length ? (
-            <p className="text-center text-sm text-gray-500">Noch keine Nachrichten.</p>
-          ) : (
-            messages.map((m) => {
-              const isOwn = m.sender_id === user.id;
-              return (
-                <div
-                  key={m.id}
-                  className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      isOwn
-                        ? "bg-accent text-white"
-                        : "border border-gray-600 bg-background text-gray-200"
-                    }`}
-                  >
-                    {!isOwn && (
-                      <p className="text-xs font-medium text-accent">
-                        {nickById.get(m.sender_id) ?? "?"}
-                      </p>
-                    )}
-                    <p className="whitespace-pre-wrap break-words">{m.content}</p>
-                    <p className={`mt-1 text-xs ${isOwn ? "text-white/80" : "text-gray-500"}`}>
-                      {formatTime(new Date(m.created_at))}
-                    </p>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
+        <ChatMessages
+          messages={messages ?? []}
+          conversationId={id}
+          userId={user.id}
+          nickById={Object.fromEntries(nickById)}
+        />
 
         <div className="shrink-0 border-t border-gray-700 p-4">
           <MessageInput conversationId={id} />
@@ -117,16 +91,4 @@ export default async function ChatPage({
       </div>
     </div>
   );
-}
-
-function formatTime(date: Date): string {
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  if (isToday) return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-  return date.toLocaleString("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 }
