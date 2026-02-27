@@ -25,6 +25,9 @@ function getNotificationHref(n: NotificationRow): string {
       return n.related_user_id ? `/dashboard/entdecken/${n.related_user_id}` : "/dashboard/entdecken";
     case "post_like":
       return "/dashboard/aktivitaet/post-likes";
+    case "photo_like":
+    case "photo_comment":
+      return n.related_id ? `/dashboard/foto/${n.related_id}` : "/dashboard/benachrichtigungen";
     case "chastity_new_task":
     case "chastity_deadline_soon":
     case "chastity_arrangement_offer":

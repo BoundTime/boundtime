@@ -15,18 +15,26 @@ type Photo = {
   caption?: string | null;
 };
 
+type PhotoStats = {
+  likeCount: number;
+  likedByMe: boolean;
+  commentCount: number;
+};
+
 export function AlbumDetailManager({
   albumId,
   ownerId,
   initialPhotos,
   isMainAlbum = false,
   avatarPhotoId = null,
+  photoStats = {},
 }: {
   albumId: string;
   ownerId: string;
   initialPhotos: Photo[];
   isMainAlbum?: boolean;
   avatarPhotoId?: string | null;
+  photoStats?: Record<string, PhotoStats>;
 }) {
   const router = useRouter();
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
@@ -318,6 +326,9 @@ export function AlbumDetailManager({
           currentIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
           onIndexChange={setLightboxIndex}
+          ownerId={ownerId}
+          albumId={albumId}
+          photoStats={photoStats}
           ownerMode={{
             photos: photos.map((p) => ({
               id: p.id,

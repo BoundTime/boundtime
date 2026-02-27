@@ -25,6 +25,7 @@ export function Navbar() {
   const [verified, setVerified] = useState(false);
   const [verificationTier, setVerificationTier] = useState<"bronze" | "silver" | "gold">("bronze");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -89,6 +90,30 @@ export function Navbar() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadNotifications(0);
+      return;
+    }
+    const supabase = createClient();
+    async function loadUnread() {
+      const { count } = await supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user!.id)
+        .is("read_at", null);
+      setUnreadNotifications(count ?? 0);
+    }
+    loadUnread();
+    const channel = supabase
+      .channel("navbar-notifications")
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, () => loadUnread())
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -244,10 +269,13 @@ export function Navbar() {
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
-            aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background md:hidden"
+            aria-label={menuOpen ? "Menü schließen" : unreadNotifications > 0 ? "Menü öffnen (ungelesene Benachrichtigungen)" : "Menü öffnen"}
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background md:hidden"
           >
             {menuOpen ? <X className="h-6 w-6" strokeWidth={1.5} /> : <Menu className="h-6 w-6" strokeWidth={1.5} />}
+            {unreadNotifications > 0 && (
+              <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden />
+            )}
           </button>
         </div>
       </nav>

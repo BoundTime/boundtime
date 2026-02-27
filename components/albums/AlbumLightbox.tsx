@@ -2,6 +2,8 @@
 
 import { useEffect, useCallback, useState } from "react";
 import { X, ChevronLeft, ChevronRight, User, Trash2, Pencil } from "lucide-react";
+import { PhotoLikeButton } from "@/components/PhotoLikeButton";
+import { PhotoCommentSection } from "@/components/PhotoCommentSection";
 
 type ImageItem = {
   id: string;
@@ -16,17 +18,29 @@ type OwnerPhoto = {
   caption?: string | null;
 };
 
+type PhotoStats = {
+  likeCount: number;
+  likedByMe: boolean;
+  commentCount: number;
+};
+
 export function AlbumLightbox({
   images,
   currentIndex,
   onClose,
   onIndexChange,
+  ownerId,
+  albumId,
+  photoStats = {},
   ownerMode,
 }: {
   images: ImageItem[];
   currentIndex: number;
   onClose: () => void;
   onIndexChange: (index: number) => void;
+  ownerId?: string;
+  albumId?: string;
+  photoStats?: Record<string, PhotoStats>;
   ownerMode?: {
     photos: OwnerPhoto[];
     isMainAlbum: boolean;
@@ -146,6 +160,20 @@ export function AlbumLightbox({
           <p className="mt-2 rounded bg-black/60 px-3 py-1 text-sm text-white">
             {currentIndex + 1} / {images.length}
           </p>
+        )}
+        {current.id !== "avatar" && ownerId && albumId && (
+          <div className="mt-4 flex flex-wrap items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            <PhotoLikeButton
+              photoId={current.id}
+              initialLiked={photoStats[current.id]?.likedByMe ?? false}
+              initialCount={photoStats[current.id]?.likeCount ?? 0}
+            />
+            <PhotoCommentSection
+              photoId={current.id}
+              initialComments={[]}
+              initialCount={photoStats[current.id]?.commentCount ?? 0}
+            />
+          </div>
         )}
         {ownerMode && currentOwnerPhoto && current.id !== "avatar" && (
           <div className="mt-4 w-full max-w-md space-y-3 rounded-lg border border-gray-600 bg-black/40 p-4">

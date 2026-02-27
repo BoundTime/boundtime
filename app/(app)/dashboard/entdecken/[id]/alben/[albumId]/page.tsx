@@ -78,6 +78,38 @@ export default async function AlbumViewPage({
     alt: "",
   }));
 
+  const realPhotoIds = (photos ?? []).map((p) => p.id);
+  let photoStats: Record<string, { likeCount: number; likedByMe: boolean; commentCount: number }> = {};
+  if (realPhotoIds.length > 0) {
+    const [likesRes, commentsRes] = await Promise.all([
+      supabase
+        .from("photo_album_photo_likes")
+        .select("photo_id, user_id")
+        .in("photo_id", realPhotoIds),
+      supabase
+        .from("photo_album_photo_comments")
+        .select("photo_id")
+        .in("photo_id", realPhotoIds),
+    ]);
+    const likeCountByPhoto = new Map<string, number>();
+    const likedByMeSet = new Set<string>();
+    (likesRes.data ?? []).forEach((r: { photo_id: string; user_id: string }) => {
+      likeCountByPhoto.set(r.photo_id, (likeCountByPhoto.get(r.photo_id) ?? 0) + 1);
+      if (r.user_id === user.id) likedByMeSet.add(r.photo_id);
+    });
+    const commentCountByPhoto = new Map<string, number>();
+    (commentsRes.data ?? []).forEach((r: { photo_id: string }) => {
+      commentCountByPhoto.set(r.photo_id, (commentCountByPhoto.get(r.photo_id) ?? 0) + 1);
+    });
+    realPhotoIds.forEach((pid) => {
+      photoStats[pid] = {
+        likeCount: likeCountByPhoto.get(pid) ?? 0,
+        likedByMe: likedByMeSet.has(pid),
+        commentCount: commentCountByPhoto.get(pid) ?? 0,
+      };
+    });
+  }
+
   const images =
     album.is_main && avatarUrl && !avatarPhotoInAlbum
       ? [{ id: "avatar", url: avatarUrl, alt: "Profilbild" as const }, ...baseImages]
@@ -121,10 +153,16 @@ export default async function AlbumViewPage({
               }))}
               isMainAlbum={album.is_main}
               avatarPhotoId={avatarPhotoId}
+              photoStats={photoStats}
             />
           ) : (
             <>
-              <AlbumViewer images={images} />
+              <AlbumViewer
+                images={images}
+                ownerId={ownerId}
+                albumId={albumId}
+                photoStats={photoStats}
+              />
               {images.length === 0 && (
                 <p className="mt-6 text-sm text-gray-500">Noch keine Fotos in diesem Album.</p>
               )}
