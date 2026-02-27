@@ -31,6 +31,10 @@ export function PhotoCommentSection({
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
+  useEffect(() => {
+    if (expanded) loadComments();
+  }, [expanded, photoId]);
+
   async function loadComments() {
     const supabase = createClient();
     const { data } = await supabase
