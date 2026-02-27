@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole, Settings } from "lucide-react";
@@ -15,15 +16,28 @@ import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import type { User } from "@supabase/supabase-js";
 
-export function Navbar() {
+type InitialNavData = {
+  userId: string;
+  nick: string | null;
+  avatarUrl: string | null;
+  role: string | null;
+  verified: boolean;
+  verificationTier: "bronze" | "silver" | "gold";
+};
+
+export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavData | null }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
-  const [nick, setNick] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
-  const [verified, setVerified] = useState(false);
-  const [verificationTier, setVerificationTier] = useState<"bronze" | "silver" | "gold">("bronze");
+  const [user, setUser] = useState<User | null>(
+    initialNavData ? ({ id: initialNavData.userId } as User) : null
+  );
+  const [nick, setNick] = useState<string | null>(initialNavData?.nick ?? null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(initialNavData?.avatarUrl ?? null);
+  const [role, setRole] = useState<string | null>(initialNavData?.role ?? null);
+  const [verified, setVerified] = useState(initialNavData?.verified ?? false);
+  const [verificationTier, setVerificationTier] = useState<"bronze" | "silver" | "gold">(
+    initialNavData?.verificationTier ?? "bronze"
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
@@ -92,7 +106,8 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!user) {
+    const uid = user?.id ?? initialNavData?.userId;
+    if (!uid) {
       setUnreadNotifications(0);
       return;
     }
@@ -101,7 +116,7 @@ export function Navbar() {
       const { count } = await supabase
         .from("notifications")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", user!.id)
+        .eq("user_id", uid)
         .is("read_at", null);
       setUnreadNotifications(count ?? 0);
     }
@@ -113,7 +128,7 @@ export function Navbar() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id, initialNavData?.userId]);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -131,9 +146,9 @@ export function Navbar() {
             className="flex items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
             <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-9 w-9 shrink-0">
-              <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
+              <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                 {avatarUrl ? (
-                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                  <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" priority />
                 ) : (
                   <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-accent">
                     {nick?.slice(0, 1).toUpperCase() ?? "?"}
@@ -221,12 +236,14 @@ export function Navbar() {
                     title="MyBound"
                   >
                     <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-8 w-8 shrink-0">
-                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
+                    <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
-                        <img
+                        <Image
                           src={avatarUrl}
                           alt=""
-                          className="h-full w-full object-cover"
+                          fill
+                          className="object-cover"
+                          sizes="32px"
                         />
                       ) : (
                         <span className="flex h-full w-full items-center justify-center text-xs font-semibold text-accent">
@@ -370,9 +387,9 @@ export function Navbar() {
                   {nick && (
                     <RefreshNavLink href="/dashboard" onClick={closeMenu} className="mt-4 flex items-center gap-3 rounded-lg border border-gray-700 p-3 hover:bg-gray-800">
                       <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-10 w-10 shrink-0">
-                      <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
+                      <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                         {avatarUrl ? (
-                          <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                          <Image src={avatarUrl} alt="" fill className="object-cover" sizes="40px" />
                         ) : (
                           <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-accent">
                             {nick.slice(0, 1).toUpperCase() || "?"}

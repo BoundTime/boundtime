@@ -108,7 +108,25 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (loading) return null;
+  if (loading) {
+    if (variant === "mobile") {
+      return (
+        <div className="flex items-center gap-2 rounded-lg px-4 py-3 text-base text-gray-300">
+          <Bell className="h-4 w-4 shrink-0" strokeWidth={1.5} />
+          Benachrichtigungen
+        </div>
+      );
+    }
+    return (
+      <button
+        type="button"
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg p-2 text-gray-300"
+        aria-label="Benachrichtigungen"
+      >
+        <Bell className="h-5 w-5" strokeWidth={1.5} />
+      </button>
+    );
+  }
 
   if (variant === "mobile") {
     return (

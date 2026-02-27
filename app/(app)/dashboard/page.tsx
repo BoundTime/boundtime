@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { Heart, LockKeyhole, Rss, Eye } from "lucide-react";
@@ -280,9 +281,9 @@ export default async function DashboardPage() {
                     className="flex items-center gap-4 rounded-lg border border-gray-700 bg-background p-4 transition-colors hover:border-gray-600"
                   >
                     <AvatarWithVerified verificationTier={arr.subTier} size="md" className="h-12 w-12 shrink-0">
-                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-700">
+                    <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700">
                       {arr.subAvatarUrl ? (
-                        <img src={arr.subAvatarUrl} alt="" className="h-full w-full object-cover" />
+                        <Image src={arr.subAvatarUrl} alt="" fill className="object-cover" sizes="48px" />
                       ) : (
                         <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-accent">
                           {(arr.subNick ?? "?").slice(0, 1).toUpperCase()}
@@ -424,9 +425,9 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-4 p-4 sm:p-6">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
                       <AvatarWithVerified verificationTier={post.author_tier} size="md" className="h-12 w-12">
-                      <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
+                      <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                         {post.author_avatar_url ? (
-                          <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" />
+                          <Image src={post.author_avatar_url} alt="" fill className="object-cover" sizes="48px" />
                         ) : (
                           <span className="flex h-full w-full items-center justify-center text-base font-semibold text-accent">
                             {(post.author_nick ?? "?").slice(0, 1).toUpperCase()}
@@ -453,11 +454,13 @@ export default async function DashboardPage() {
                   <div className="border-t border-gray-700 px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
                     <p className="whitespace-pre-wrap text-gray-300">{post.content}</p>
                     {post.image_url && (
-                      <div className="mt-4 overflow-hidden rounded-lg">
-                        <img
+                      <div className="relative mt-4 aspect-video w-full max-h-[28rem] overflow-hidden rounded-lg">
+                        <Image
                           src={supabase.storage.from("post-images").getPublicUrl(post.image_url).data.publicUrl}
                           alt=""
-                          className="max-h-[24rem] w-full object-contain sm:max-h-[28rem]"
+                          fill
+                          className="object-contain"
+                          sizes="(max-width: 640px) 100vw, 640px"
                         />
                       </div>
                     )}

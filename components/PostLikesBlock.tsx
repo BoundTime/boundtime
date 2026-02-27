@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
@@ -85,9 +86,9 @@ export function PostLikesBlock({
                     className="flex items-center gap-2 rounded p-1.5 transition-colors hover:bg-background/50"
                   >
                     <AvatarWithVerified verificationTier={p?.verification_tier} size="sm" className="h-7 w-7 shrink-0">
-                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
+                    <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                       {avatarUrl ? (
-                        <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                        <Image src={avatarUrl} alt="" fill className="object-cover" sizes="28px" />
                       ) : (
                         <span className="flex h-full w-full items-center justify-center text-[10px] font-semibold text-accent">
                           {(p?.nick ?? "?").slice(0, 1).toUpperCase()}
