@@ -12,6 +12,7 @@ import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
 import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
 import { PostLikesBlock } from "@/components/PostLikesBlock";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import { ChastityLockDuration } from "@/components/chastity/ChastityLockDuration";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
@@ -233,7 +234,7 @@ export default async function DashboardPage() {
   const { data: activityProfiles } = allActivityUserIds.length > 0
     ? await supabase
         .from("profiles")
-        .select("id, nick, avatar_url, avatar_photo_id")
+        .select("id, nick, avatar_url, avatar_photo_id, verified")
         .in("id", allActivityUserIds)
     : { data: [] };
   const activityProfilesWithAvatars = activityProfiles?.length
@@ -243,7 +244,7 @@ export default async function DashboardPage() {
             { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
             supabase
           );
-          return { id: p.id, nick: p.nick, avatar_url: p.avatar_url, avatar_display_url };
+          return { ...p, avatar_display_url };
         })
       )
     : [];
@@ -439,7 +440,8 @@ export default async function DashboardPage() {
                 >
                   <div className="flex items-center gap-4 p-4 sm:p-6">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
-                      <div className="h-12 w-12 overflow-hidden rounded-full border border-gray-700 bg-background">
+                      <AvatarWithVerified verified={post.author_verified} size="md" className="h-12 w-12">
+                      <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                         {post.author_avatar_url ? (
                           <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" />
                         ) : (
@@ -448,6 +450,7 @@ export default async function DashboardPage() {
                           </span>
                         )}
                       </div>
+                      </AvatarWithVerified>
                     </Link>
                     <div className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5">

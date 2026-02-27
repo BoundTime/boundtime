@@ -6,6 +6,7 @@ import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -22,7 +23,7 @@ function formatTimeAgo(date: Date): string {
 }
 
 type ViewRow = { viewer_id: string; viewed_at: string };
-type ProfileRow = { id: string; nick: string | null; avatar_display_url: string | null };
+type ProfileRow = { id: string; nick: string | null; avatar_display_url: string | null; verified?: boolean };
 
 export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: boolean; embeddedInLink?: boolean } = {}) {
   const router = useRouter();
@@ -70,7 +71,7 @@ export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: b
 
       const { data: profilesData } = await supabase
         .from("profiles")
-        .select("id, nick, avatar_url, avatar_photo_id")
+        .select("id, nick, avatar_url, avatar_photo_id, verified")
         .in("id", viewerIds);
 
       if (!cancelled && profilesData?.length) {
@@ -80,7 +81,7 @@ export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: b
               { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
               supabase
             );
-            return [p.id, { id: p.id, nick: p.nick, avatar_display_url }] as const;
+            return [p.id, { id: p.id, nick: p.nick, avatar_display_url, verified: p.verified ?? false }] as const;
           })
         );
         setProfiles(new Map(withUrls));
@@ -143,7 +144,8 @@ export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: b
                     href={`/dashboard/entdecken/${v.viewer_id}`}
                     className="flex items-center gap-2 rounded p-1.5 transition-colors hover:bg-background/50"
                   >
-                    <div className="h-7 w-7 shrink-0 overflow-hidden rounded-full border border-gray-700 bg-background">
+                    <AvatarWithVerified verified={p?.verified} size="sm" className="h-7 w-7 shrink-0">
+                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                       ) : (
@@ -152,6 +154,7 @@ export function ProfileViewsBlock({ hideTitle, embeddedInLink }: { hideTitle?: b
                         </span>
                       )}
                     </div>
+                    </AvatarWithVerified>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium text-white">{p?.nick ?? "?"}</p>
                       <p className="text-[10px] text-gray-500">{formatTimeAgo(new Date(v.viewed_at))}</p>

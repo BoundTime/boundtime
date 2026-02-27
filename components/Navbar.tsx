@@ -12,6 +12,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { RefreshNavLink } from "@/components/RefreshNavLink";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import type { User } from "@supabase/supabase-js";
 
 export function Navbar() {
@@ -179,7 +180,8 @@ export function Navbar() {
                     className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
                     title="MyBound"
                   >
-                    <div className="flex h-8 w-8 shrink-0 overflow-hidden rounded-full border border-gray-600 bg-background">
+                    <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
+                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
                         <img
                           src={avatarUrl}
@@ -192,6 +194,7 @@ export function Navbar() {
                         </span>
                       )}
                     </div>
+                    </AvatarWithVerified>
                     <span className="flex items-center gap-1.5">
                       Hallo, {nick}
                       <RoleIcon role={role} size={14} />
@@ -323,7 +326,8 @@ export function Navbar() {
                   </div>
                   {nick && (
                     <RefreshNavLink href="/dashboard" onClick={closeMenu} className="mt-4 flex items-center gap-3 rounded-lg border border-gray-700 p-3 hover:bg-gray-800">
-                      <div className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gray-600 bg-background">
+                      <AvatarWithVerified verified={verified} size="sm" className="h-10 w-10 shrink-0">
+                      <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                         {avatarUrl ? (
                           <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                         ) : (
@@ -332,6 +336,7 @@ export function Navbar() {
                           </span>
                         )}
                       </div>
+                      </AvatarWithVerified>
                       <span className="flex items-center gap-1.5 text-sm text-gray-300">
                         Hallo, {nick}
                         <RoleIcon role={role} size={14} />

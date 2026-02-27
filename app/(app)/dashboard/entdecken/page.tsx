@@ -6,6 +6,7 @@ import { RoleIcon } from "@/components/RoleIcon";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
@@ -118,6 +119,7 @@ export default async function EntdeckenPage({
                   }`}
                 >
                   <div className="relative aspect-square w-full overflow-hidden bg-gray-900">
+                    <AvatarWithVerified verified={profile.verified} size="md" className="absolute inset-0">
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
@@ -125,6 +127,7 @@ export default async function EntdeckenPage({
                         {initials}
                       </span>
                     )}
+                    </AvatarWithVerified>
                     <span className="absolute bottom-1 right-1">
                       <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
                     </span>

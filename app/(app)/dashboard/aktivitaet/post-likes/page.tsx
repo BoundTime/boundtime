@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Heart } from "lucide-react";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -47,11 +48,11 @@ export default async function AktivitaetPostLikesPage() {
 
   const userIds = Array.from(new Set(list.map((l) => l.user_id)));
   const { data: profilesData } = userIds.length > 0
-    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at").in("id", userIds)
+    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at, verified").in("id", userIds)
     : { data: [] };
   const profileById = new Map<
     string,
-    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null }
+    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null; verified: boolean }
   >();
   if (profilesData?.length) {
     await Promise.all(
@@ -64,6 +65,7 @@ export default async function AktivitaetPostLikesPage() {
           nick: p.nick,
           avatar_display_url,
           last_seen_at: p.last_seen_at ?? null,
+          verified: p.verified ?? false,
         });
       })
     );
@@ -102,7 +104,8 @@ export default async function AktivitaetPostLikesPage() {
                     href={`/dashboard/entdecken/${l.user_id}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-700 bg-background/50 p-4 transition-colors hover:border-gray-600"
                   >
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-gray-700 bg-background">
+                    <AvatarWithVerified verified={p?.verified} size="md" className="h-12 w-12 shrink-0">
+                    <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                       {url ? (
                         <img src={url} alt="" className="h-full w-full object-cover" />
                       ) : (
@@ -111,6 +114,7 @@ export default async function AktivitaetPostLikesPage() {
                         </span>
                       )}
                     </div>
+                    </AvatarWithVerified>
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 font-medium text-white">
                         {p?.nick ?? "?"}

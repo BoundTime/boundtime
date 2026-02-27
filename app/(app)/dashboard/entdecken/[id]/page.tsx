@@ -11,6 +11,7 @@ import { PostLikeButton } from "@/components/PostLikeButton";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -239,7 +240,8 @@ export default async function ProfilDetailPage({
       {/* Header: dezenter Gradient, großer Avatar, Nick, Rolle, Ort */}
       <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card">
         <div className="flex flex-col items-center p-6 text-center sm:flex-row sm:items-start sm:text-left">
-          <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background shadow-lg sm:h-28 sm:w-28">
+          <AvatarWithVerified verified={profile.verified} size="lg" className="h-24 w-24 shrink-0 sm:h-28 sm:w-28">
+          <div className="h-full w-full overflow-hidden rounded-full border-2 border-gray-700 bg-background shadow-lg">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
             ) : (
@@ -248,6 +250,7 @@ export default async function ProfilDetailPage({
               </span>
             )}
           </div>
+          </AvatarWithVerified>
           <div className="mt-4 sm:ml-6 sm:mt-0">
             <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
               {profile.nick ?? "—"}
