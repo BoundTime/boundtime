@@ -41,7 +41,7 @@ export function VerificationAdminList({
       .eq("id", id);
 
     if (status === "approved") {
-      await supabase.from("profiles").update({ verified: true }).eq("id", v.user_id);
+      await supabase.from("profiles").update({ verified: true, verification_tier: "gold" }).eq("id", v.user_id);
     }
 
     setLoadingId(null);

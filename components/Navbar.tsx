@@ -23,6 +23,7 @@ export function Navbar() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
+  const [verificationTier, setVerificationTier] = useState<"bronze" | "silver" | "gold">("bronze");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -41,13 +42,14 @@ export function Navbar() {
     async function loadProfile(userId: string) {
       const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified")
+        .select("nick, avatar_url, avatar_photo_id, role, verified, verification_tier")
         .eq("id", userId)
         .single();
 
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
+      setVerificationTier((data?.verification_tier as "bronze" | "silver" | "gold") ?? (data?.verified ? "gold" : "bronze"));
       const url = data
         ? await resolveProfileAvatarUrl(
             { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
@@ -66,6 +68,7 @@ export function Navbar() {
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
+        setVerificationTier("bronze");
       }
     });
 
@@ -80,6 +83,7 @@ export function Navbar() {
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
+        setVerificationTier("bronze");
       }
     });
 
@@ -180,7 +184,7 @@ export function Navbar() {
                     className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
                     title="MyBound"
                   >
-                    <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
+                    <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-8 w-8 shrink-0">
                     <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
                         <img
@@ -326,7 +330,7 @@ export function Navbar() {
                   </div>
                   {nick && (
                     <RefreshNavLink href="/dashboard" onClick={closeMenu} className="mt-4 flex items-center gap-3 rounded-lg border border-gray-700 p-3 hover:bg-gray-800">
-                      <AvatarWithVerified verified={verified} size="sm" className="h-10 w-10 shrink-0">
+                      <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-10 w-10 shrink-0">
                       <div className="h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                         {avatarUrl ? (
                           <img src={avatarUrl} alt="" className="h-full w-full object-cover" />

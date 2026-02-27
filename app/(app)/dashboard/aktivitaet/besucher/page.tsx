@@ -32,11 +32,11 @@ export default async function AktivitaetBesucherPage() {
   const views = Array.isArray(viewsData) ? viewsData as { viewer_id: string; viewed_at: string }[] : [];
   const viewerIds = Array.from(new Set(views.map((v) => v.viewer_id)));
   const { data: profilesData } = viewerIds.length > 0
-    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at, verified").in("id", viewerIds)
+    ? await supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id, last_seen_at, verification_tier").in("id", viewerIds)
     : { data: [] };
   const profileById = new Map<
     string,
-    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null; verified: boolean }
+    { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null; verification_tier: "bronze" | "silver" | "gold" }
   >();
   if (profilesData?.length) {
     await Promise.all(
@@ -49,7 +49,7 @@ export default async function AktivitaetBesucherPage() {
           nick: p.nick,
           avatar_display_url,
           last_seen_at: p.last_seen_at ?? null,
-          verified: p.verified ?? false,
+          verification_tier: (p.verification_tier as "bronze" | "silver" | "gold") ?? "bronze",
         });
       })
     );
@@ -84,7 +84,7 @@ export default async function AktivitaetBesucherPage() {
                     href={`/dashboard/entdecken/${v.viewer_id}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-700 bg-background/50 p-4 transition-colors hover:border-gray-600"
                   >
-                    <AvatarWithVerified verified={p?.verified} size="md" className="h-12 w-12 shrink-0">
+                    <AvatarWithVerified verificationTier={p?.verification_tier} size="md" className="h-12 w-12 shrink-0">
                     <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                       {url ? (
                         <img src={url} alt="" className="h-full w-full object-cover" />

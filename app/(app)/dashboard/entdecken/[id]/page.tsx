@@ -10,8 +10,8 @@ import { ProfileLikeButton } from "@/components/ProfileLikeButton";
 import { PostLikeButton } from "@/components/PostLikeButton";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
+import { VerificationTierBadge } from "@/components/VerificationTierBadge";
 import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -66,7 +66,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, verification_tier, experience_level, last_seen_at"
     )
     .eq("id", id)
     .single();
@@ -240,7 +240,11 @@ export default async function ProfilDetailPage({
       {/* Header: dezenter Gradient, großer Avatar, Nick, Rolle, Ort */}
       <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card">
         <div className="flex flex-col items-center p-6 text-center sm:flex-row sm:items-start sm:text-left">
-          <AvatarWithVerified verified={profile.verified} size="lg" className="h-24 w-24 shrink-0 sm:h-28 sm:w-28">
+          <AvatarWithVerified
+            verificationTier={(profile.verification_tier as "bronze" | "silver" | "gold") ?? (profile.verified ? "gold" : "bronze")}
+            size="lg"
+            className="h-24 w-24 shrink-0 sm:h-28 sm:w-28"
+          >
           <div className="h-full w-full overflow-hidden rounded-full border-2 border-gray-700 bg-background shadow-lg">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -254,7 +258,11 @@ export default async function ProfilDetailPage({
           <div className="mt-4 sm:ml-6 sm:mt-0">
             <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
               {profile.nick ?? "—"}
-              {profile.verified && <VerifiedBadge size={20} />}
+              <VerificationTierBadge
+                tier={(profile.verification_tier as "bronze" | "silver" | "gold") ?? (profile.verified ? "gold" : "bronze")}
+                size={20}
+                showLabel
+              />
               <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
             </h1>
             <p className="mt-1 text-gray-400">

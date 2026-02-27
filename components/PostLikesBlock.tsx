@@ -27,7 +27,7 @@ function getAvatarUrl(avatarPath: string | null): string | null {
 }
 
 type PostLikeRow = { post_id: string; user_id: string; liked_at: string };
-type ProfileRow = { id: string; nick: string | null; avatar_url?: string | null; avatar_display_url?: string | null; verified?: boolean };
+type ProfileRow = { id: string; nick: string | null; avatar_url?: string | null; avatar_display_url?: string | null; verification_tier?: "bronze" | "silver" | "gold" };
 type PostRow = { id: string; content: string | null };
 
 export function PostLikesBlock({
@@ -84,7 +84,7 @@ export function PostLikesBlock({
                     href={`/dashboard/entdecken/${l.user_id}`}
                     className="flex items-center gap-2 rounded p-1.5 transition-colors hover:bg-background/50"
                   >
-                    <AvatarWithVerified verified={p?.verified} size="sm" className="h-7 w-7 shrink-0">
+                    <AvatarWithVerified verificationTier={p?.verification_tier} size="sm" className="h-7 w-7 shrink-0">
                     <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt="" className="h-full w-full object-cover" />

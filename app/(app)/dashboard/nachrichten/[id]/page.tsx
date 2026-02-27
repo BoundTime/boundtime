@@ -29,7 +29,7 @@ export default async function ChatPage({
   const otherId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
   const { data: otherProfile } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, avatar_photo_id, verified")
+    .select("id, nick, avatar_url, avatar_photo_id, verification_tier")
     .eq("id", otherId)
     .single();
   const otherAvatarUrl = otherProfile
@@ -39,7 +39,7 @@ export default async function ChatPage({
       )
     : null;
   const otherNick = otherProfile?.nick ?? "?";
-  const otherVerified = otherProfile?.verified ?? false;
+  const otherTier = (otherProfile?.verification_tier as "bronze" | "silver" | "gold") ?? "bronze";
 
   const { data: messages } = await supabase
     .from("messages")
@@ -63,7 +63,7 @@ export default async function ChatPage({
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-center gap-4 border-b border-gray-700 p-4">
-          <AvatarWithVerified verified={otherVerified} size="sm" className="h-10 w-10 shrink-0">
+          <AvatarWithVerified verificationTier={otherTier} size="sm" className="h-10 w-10 shrink-0">
           <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
             {otherAvatarUrl ? (
               <img src={otherAvatarUrl} alt="" className="h-full w-full object-cover" />
