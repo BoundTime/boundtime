@@ -13,6 +13,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { RefreshNavLink } from "@/components/RefreshNavLink";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { useUnreadMessageCount } from "@/lib/useUnreadMessageCount";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import type { User } from "@supabase/supabase-js";
 
@@ -40,6 +41,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   );
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -189,7 +191,14 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   href="/dashboard/nachrichten"
                   className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
                 >
-                  <MessageSquare className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                  <span className="relative shrink-0">
+                    <MessageSquare className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+                    {unreadMessages > 0 && (
+                      <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
+                  </span>
                   Nachrichten
                 </RefreshNavLink>
                 <NotificationBell />
@@ -350,9 +359,14 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                     <Search className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Entdecken
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/nachrichten" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard/nachrichten" onClick={closeMenu} className="relative flex items-center rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
                     <MessageSquare className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Nachrichten
+                    {unreadMessages > 0 && (
+                      <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-medium text-white">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
                   </RefreshNavLink>
                   <NotificationBell variant="mobile" onNavigate={closeMenu} />
                   <ChastityNavBadge

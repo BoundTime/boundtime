@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, MessageSquare, User, Plus } from "lucide-react";
+import { useUnreadMessageCount } from "@/lib/useUnreadMessageCount";
 
 const navItems = [
   { href: "/dashboard", label: "MyBound", icon: Home },
@@ -14,6 +15,7 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const unreadMessages = useUnreadMessageCount();
 
   return (
     <nav
@@ -43,15 +45,24 @@ export function BottomNav() {
             );
           }
 
+          const showMessageBadge = item.href === "/dashboard/nachrichten" && unreadMessages > 0;
+
           return (
             <Link
               key={item.label}
               href={item.href}
-              className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 py-3 px-2 text-xs transition-colors ${
+              className={`relative flex min-w-0 flex-1 flex-col items-center gap-0.5 py-3 px-2 text-xs transition-colors ${
                 isActive ? "text-accent" : "text-gray-400 hover:text-gray-300"
               }`}
             >
-              <Icon className="h-6 w-6 flex-shrink-0" strokeWidth={1.5} aria-hidden />
+              <span className="relative shrink-0">
+                <Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden />
+                {showMessageBadge && (
+                  <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white">
+                    {unreadMessages > 99 ? "99+" : unreadMessages}
+                  </span>
+                )}
+              </span>
               <span>{item.label}</span>
             </Link>
           );
