@@ -9,6 +9,7 @@ import { ChastityStatusBlock } from "@/components/chastity/ChastityStatusBlock";
 import { NewPostForm } from "@/components/NewPostForm";
 import { ScrollToPostForm } from "@/components/ScrollToPostForm";
 import { PostLikeButton } from "@/components/PostLikeButton";
+import { PostDeleteButton } from "@/components/PostDeleteButton";
 import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
 import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
 import { PostLikesBlock } from "@/components/PostLikesBlock";
@@ -465,12 +466,18 @@ export default async function DashboardPage() {
                         />
                       </div>
                     )}
-                    <div className="mt-3 flex items-center">
+                    <div className="mt-3 flex items-center gap-4">
                       <PostLikeButton
                         postId={post.id}
                         initialLiked={postLikeByPostId[post.id]?.likedByMe ?? false}
                         initialCount={postLikeByPostId[post.id]?.count ?? 0}
                       />
+                      {post.author_id === user.id && (
+                        <PostDeleteButton
+                          postId={post.id}
+                          imageUrl={post.image_url}
+                        />
+                      )}
                     </div>
                   </div>
                 </li>

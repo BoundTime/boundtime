@@ -8,6 +8,7 @@ import { FollowButton } from "@/components/FollowButton";
 import { BlockButton } from "@/components/BlockButton";
 import { ProfileLikeButton } from "@/components/ProfileLikeButton";
 import { PostLikeButton } from "@/components/PostLikeButton";
+import { PostDeleteButton } from "@/components/PostDeleteButton";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
@@ -413,12 +414,18 @@ export default async function ProfilDetailPage({
                             />
                           </div>
                         )}
-                        <div className="mt-3 flex items-center">
+                        <div className="mt-3 flex items-center gap-4">
                           <PostLikeButton
                             postId={post.id}
                             initialLiked={postLikeByPostId[post.id]?.likedByMe ?? false}
                             initialCount={postLikeByPostId[post.id]?.count ?? 0}
                           />
+                          {profile.id === user.id && (
+                            <PostDeleteButton
+                              postId={post.id}
+                              imageUrl={post.image_url}
+                            />
+                          )}
                         </div>
                       </div>
                     </li>

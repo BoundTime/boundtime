@@ -7,6 +7,7 @@ import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { Pencil, Images } from "lucide-react";
+import { PostDeleteButton } from "@/components/PostDeleteButton";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -275,6 +276,9 @@ export default async function ProfilPage({
                             />
                           </div>
                         )}
+                        <div className="mt-3 flex items-center">
+                          <PostDeleteButton postId={post.id} imageUrl={post.image_url} />
+                        </div>
                       </div>
                     </li>
                   ))}

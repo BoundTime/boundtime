@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { VerificationTierBadge } from "@/components/VerificationTierBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { PostDeleteButton } from "@/components/PostDeleteButton";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -159,6 +160,11 @@ export default async function DomBereichPage() {
                       alt=""
                       className="max-h-[28rem] w-full object-contain"
                     />
+                  </div>
+                )}
+                {post.author_id === user.id && (
+                  <div className="mt-3 flex items-center">
+                    <PostDeleteButton postId={post.id} imageUrl={post.image_url} />
                   </div>
                 )}
               </div>
