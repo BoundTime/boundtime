@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Verification = {
@@ -23,8 +25,23 @@ export function VerificationAdminList({
 }) {
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const supabase = createClient();
+
+  useEffect(() => {
+    if (lightboxUrl) document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [lightboxUrl]);
+
+  useEffect(() => {
+    if (!lightboxUrl) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxUrl(null);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [lightboxUrl]);
 
   async function setStatus(id: string, status: "approved" | "rejected") {
     setLoadingId(id);
@@ -66,9 +83,13 @@ export function VerificationAdminList({
                 key={v.id}
                 className="flex flex-wrap gap-4 rounded-lg border border-gray-700 bg-background p-4"
               >
-                <div className="shrink-0 overflow-hidden rounded-lg border border-gray-600">
-                  <img src={url} alt="" className="h-32 w-auto object-contain" />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxUrl(url)}
+                  className="shrink-0 cursor-zoom-in overflow-hidden rounded-lg border border-gray-600 transition-opacity hover:opacity-90"
+                >
+                  <img src={url} alt="Verifizierungsfoto vergrößern" className="h-32 w-auto object-contain" />
+                </button>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-white">{v.nick}</p>
                   <p className="text-xs text-gray-500">
@@ -98,6 +119,34 @@ export function VerificationAdminList({
           })}
         </ul>
       )}
+
+      {lightboxUrl &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Verifizierungsfoto vergrößert"
+            onClick={() => setLightboxUrl(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxUrl(null)}
+              className="absolute right-4 top-4 rounded-full p-2 text-white hover:bg-white/10"
+              aria-label="Schließen"
+            >
+              <X className="h-8 w-8" />
+            </button>
+            <img
+              src={lightboxUrl}
+              alt="Verifizierungsfoto"
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
