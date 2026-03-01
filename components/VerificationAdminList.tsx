@@ -30,6 +30,7 @@ export function VerificationAdminList({
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectionNote, setRejectionNote] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -49,6 +50,7 @@ export function VerificationAdminList({
 
   async function setStatus(id: string, status: "approved" | "rejected", note?: string) {
     setLoadingId(id);
+    setError(null);
     const v = verifications.find((x) => x.id === id);
     if (!v) return;
 
@@ -61,13 +63,20 @@ export function VerificationAdminList({
       updates.note = note.trim().slice(0, REJECTION_NOTE_MAX);
     }
 
-    await supabase
-      .from("verifications")
-      .update(updates)
-      .eq("id", id);
-
     if (status === "approved") {
-      await supabase.from("profiles").update({ verified: true }).eq("id", v.user_id);
+      const { error: rpcErr } = await supabase.rpc("approve_verification", {
+        p_verification_id: id,
+      });
+      if (rpcErr) {
+        setError(rpcErr.message);
+        setLoadingId(null);
+        return;
+      }
+    } else {
+      await supabase
+        .from("verifications")
+        .update(updates)
+        .eq("id", id);
     }
 
     setLoadingId(null);
@@ -90,6 +99,9 @@ export function VerificationAdminList({
 
   return (
     <div className="mt-6 space-y-4">
+      {error && (
+        <p className="rounded-lg bg-red-500/10 px-4 py-2 text-sm text-red-400">{error}</p>
+      )}
       <h2 className="text-lg font-semibold text-white">
         Offene Anträge ({pending.length})
       </h2>

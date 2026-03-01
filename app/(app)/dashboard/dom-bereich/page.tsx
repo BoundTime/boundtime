@@ -2,23 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { PostDeleteButton } from "@/components/PostDeleteButton";
-
-function formatTimeAgo(date: Date): string {
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-  if (diffMins < 1) return "gerade eben";
-  if (diffMins < 60) return `vor ${diffMins} Min.`;
-  if (diffHours < 24) return `vor ${diffHours} Std.`;
-  if (diffDays === 1) return "gestern";
-  if (diffDays < 7) return `vor ${diffDays} Tagen`;
-  return date.toLocaleDateString("de-DE");
-}
+import { DomForumTopicList } from "@/components/dom/DomForumTopicList";
+import { DomForumNewTopicForm } from "@/components/dom/DomForumNewTopicForm";
+import { MessageSquarePlus } from "lucide-react";
 
 export default async function DomBereichPage() {
   const supabase = await createClient();
@@ -40,7 +26,10 @@ export default async function DomBereichPage() {
     return (
       <Container className="py-16">
         <div className="rounded-xl border border-gray-700 bg-card p-8 text-center shadow-sm">
-          <h1 className="text-2xl font-bold text-white">Dom(me)-Bereich</h1>
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-800">
+            <MessageSquarePlus className="h-8 w-8 text-gray-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-white">Dom(me)-Forum</h1>
           <p className="mt-4 text-gray-400">
             Dieser Bereich ist nur für verifizierte Mitglieder mit der Rolle Dom oder Switcher zugänglich.
           </p>
@@ -55,128 +44,64 @@ export default async function DomBereichPage() {
     );
   }
 
-  const { data: domProfileIds } = await supabase
-    .from("profiles")
-    .select("id")
-    .in("role", ["Dom", "Switcher"])
-    .eq("verified", true);
-  const ids = domProfileIds?.map((p) => p.id) ?? [];
+  const { data: topics } = await supabase
+    .from("dom_forum_topics")
+    .select("id, title, author_id, created_at, updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(50);
 
-  let posts: Array<{
-    id: string;
-    author_id: string;
-    content: string;
-    image_url: string | null;
-    created_at: string;
-    author_nick: string | null;
-    author_avatar_url: string | null;
-  }> = [];
+  const topicIds = (topics ?? []).map((t) => t.id);
+  const authorIds = [...new Set((topics ?? []).map((t) => t.author_id))];
+  let postCountByTopic: Record<string, number> = {};
 
-  if (ids.length > 0) {
-    const { data: postsData } = await supabase
-      .from("posts")
-      .select("id, author_id, content, image_url, created_at")
-      .in("author_id", ids)
-      .order("created_at", { ascending: false })
-      .limit(50);
-    if (postsData?.length) {
-      const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
-      const { data: authors } = await supabase
-        .from("profiles")
-        .select("id, nick, avatar_url, avatar_photo_id")
-        .in("id", authorIds);
-      const authorById = new Map(authors?.map((a) => [a.id, a]) ?? []);
-      posts = await Promise.all(
-        postsData.map(async (p) => {
-          const a = authorById.get(p.author_id);
-          const avatarUrl = a
-            ? await resolveProfileAvatarUrl(
-                { avatar_url: a.avatar_url, avatar_photo_id: a.avatar_photo_id },
-                supabase
-              )
-            : null;
-          return {
-            ...p,
-            author_nick: a?.nick ?? null,
-            author_avatar_url: avatarUrl,
-          };
-        })
-      );
-    }
+  const [authorsRes, countsRes] = await Promise.all([
+    authorIds.length > 0
+      ? supabase.from("profiles").select("id, nick, avatar_url, avatar_photo_id").in("id", authorIds)
+      : { data: [] },
+    topicIds.length > 0
+      ? supabase.from("dom_forum_posts").select("topic_id").in("topic_id", topicIds)
+      : { data: [] },
+  ]);
+
+  for (const p of countsRes.data ?? []) {
+    postCountByTopic[p.topic_id] = (postCountByTopic[p.topic_id] ?? 0) + 1;
   }
+  const authorById = new Map((authorsRes.data ?? []).map((a) => [a.id, a]));
+
+  const topicsWithCount = (topics ?? []).map((t) => ({
+    ...t,
+    author_nick: authorById.get(t.author_id)?.nick ?? "?",
+    post_count: postCountByTopic[t.id] ?? 0,
+  }));
 
   return (
     <Container className="py-16">
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-white">Dom(me)-Bereich</h1>
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/20">
+              <MessageSquarePlus className="h-6 w-6 text-accent" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Dom(me)-Forum</h1>
+              <p className="text-sm text-gray-500">Austausch & Diskussion unter verifizierten Dom(me)s</p>
+            </div>
+          </div>
+        </div>
         <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
           ← MyBound
         </Link>
       </div>
-      <p className="mb-6 text-gray-400">
-        Austausch und Timeline nur von verifizierten Dom(me)s. Nur für verifizierte Mitglieder mit Rolle Dom oder Switcher sichtbar.
-      </p>
 
-      {posts.length > 0 ? (
-        <ul className="space-y-6">
-          {posts.map((post) => (
-            <li
-              key={post.id}
-              className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm"
-            >
-              <div className="flex items-center gap-4 p-4">
-                <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
-                  <div className="h-12 w-12 overflow-hidden rounded-full border border-gray-700 bg-background">
-                    {post.author_avatar_url ? (
-                      <img src={post.author_avatar_url} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="flex h-full w-full items-center justify-center text-base font-semibold text-accent">
-                        {(post.author_nick ?? "?").slice(0, 1).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-                <div className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1.5">
-                    <Link
-                      href={`/dashboard/entdecken/${post.author_id}`}
-                      className="font-medium text-white hover:text-accent"
-                    >
-                      {post.author_nick ?? "?"}
-                    </Link>
-                    <VerifiedBadge size={14} showLabel />
-                  </span>
-                  <p className="text-xs text-gray-500">
-                    {formatTimeAgo(new Date(post.created_at))}
-                  </p>
-                </div>
-              </div>
-              <div className="border-t border-gray-700 px-4 pb-4 pt-1">
-                <p className="whitespace-pre-wrap text-gray-300">{post.content}</p>
-                {post.image_url && (
-                  <div className="mt-4 overflow-hidden rounded-lg">
-                    <img
-                      src={supabase.storage.from("post-images").getPublicUrl(post.image_url).data.publicUrl}
-                      alt=""
-                      className="max-h-[28rem] w-full object-contain"
-                    />
-                  </div>
-                )}
-                {post.author_id === user.id && (
-                  <div className="mt-3 flex items-center">
-                    <PostDeleteButton postId={post.id} imageUrl={post.image_url} />
-                  </div>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="rounded-xl border border-gray-700 bg-card p-8 text-center shadow-sm">
-          <p className="text-gray-400">Noch keine Beiträge von verifizierten Dom(me)s.</p>
-          <p className="mt-2 text-sm text-gray-500">Verifizierte Dom(me)s können hier posten; die Beiträge erscheinen in diesem Bereich.</p>
-        </div>
-      )}
+      <div className="mb-8 rounded-xl border border-gray-700 bg-card p-4 shadow-sm">
+        <h2 className="mb-3 text-sm font-semibold text-gray-300">Neues Thema erstellen</h2>
+        <DomForumNewTopicForm />
+      </div>
+
+      <section>
+        <h2 className="mb-4 text-lg font-semibold text-white">Themen</h2>
+        <DomForumTopicList topics={topicsWithCount} />
+      </section>
     </Container>
   );
 }

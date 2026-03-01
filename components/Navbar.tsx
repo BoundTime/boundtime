@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole, Settings } from "lucide-react";
+import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole, Settings, MessageSquarePlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ChastityNavBadge } from "@/components/chastity/ChastityNavBadge";
 import { LockDurationBadge } from "@/components/LockDurationBadge";
@@ -210,8 +210,10 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   <RefreshNavLink
                     href="/dashboard/dom-bereich"
                     className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                    title="Forum für Dom(me)s – Themen erstellen und diskutieren"
                   >
-                    Dom(me)-Bereich
+                    <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                    <span className="hidden sm:inline">Dom(me)-Forum</span>
                   </RefreshNavLink>
                 )}
                 <RefreshNavLink
@@ -376,8 +378,9 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                     className="rounded-lg px-4 py-3 text-base text-gray-300 hover:bg-gray-800 hover:text-white"
                   />
                   {verified && (role === "Dom" || role === "Switcher") && (
-                    <RefreshNavLink href="/dashboard/dom-bereich" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
-                      Dom(me)-Bereich
+                    <RefreshNavLink href="/dashboard/dom-bereich" onClick={closeMenu} className="flex items-center gap-2 rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                      <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
+                      Dom(me)-Forum
                     </RefreshNavLink>
                   )}
                   <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
