@@ -1,9 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { ShieldCheck, HeartHandshake, UsersRound } from "lucide-react";
 import { Container } from "@/components/Container";
+import { createClient } from "@/lib/supabase/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) redirect("/dashboard");
+
   return (
     <>
       <section className="relative overflow-hidden py-20 sm:py-28">
