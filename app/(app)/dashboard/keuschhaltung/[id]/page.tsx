@@ -233,7 +233,7 @@ export default async function KeuschhaltungDetailPage({
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isSub && task.status === "pending" && (
+                    {isSub && task.status === "pending" && task.due_date <= today && (
                       <ChastityCompleteTaskWithPhoto
                         taskId={task.id}
                         arrangementId={arrangement.id}
