@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { useRestriction } from "@/lib/restriction-context";
 
 const COMMENT_MAX = 500;
 
@@ -25,6 +26,7 @@ export function PhotoCommentSection({
   initialCount: number;
 }) {
   const router = useRouter();
+  const { canWrite, requestUnlock } = useRestriction();
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [count, setCount] = useState(initialCount);
   const [newContent, setNewContent] = useState("");
@@ -50,6 +52,10 @@ export function PhotoCommentSection({
 
   async function submitComment(e: React.FormEvent) {
     e.preventDefault();
+    if (!canWrite) {
+      requestUnlock();
+      return;
+    }
     const trimContent = newContent.trim().slice(0, COMMENT_MAX);
     if (!trimContent) return;
     setLoading(true);

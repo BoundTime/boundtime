@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRestriction } from "@/lib/restriction-context";
 
 export function DomForumNewTopicForm() {
   const router = useRouter();
+  const { canWrite, requestUnlock } = useRestriction();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,6 +15,10 @@ export function DomForumNewTopicForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!canWrite) {
+      requestUnlock();
+      return;
+    }
     setError(null);
     const trimTitle = title.trim();
     const trimContent = content.trim();

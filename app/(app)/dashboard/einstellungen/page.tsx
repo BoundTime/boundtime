@@ -6,6 +6,7 @@ import { ChastityCatalogManager } from "@/components/chastity/ChastityCatalogMan
 import { SettingsAccountSection } from "@/components/settings/SettingsAccountSection";
 import { SettingsSessionsSection } from "@/components/settings/SettingsSessionsSection";
 import { SettingsBlockedUsersSection } from "@/components/settings/SettingsBlockedUsersSection";
+import { SettingsRestrictionSection } from "@/components/settings/SettingsRestrictionSection";
 import { CollapsibleSection } from "@/components/settings/CollapsibleSection";
 
 export default async function EinstellungenPage() {
@@ -17,7 +18,7 @@ export default async function EinstellungenPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, account_type")
     .eq("id", user.id)
     .single();
 
@@ -61,6 +62,12 @@ export default async function EinstellungenPage() {
         <CollapsibleSection title="Blockierte User">
           <SettingsBlockedUsersSection />
         </CollapsibleSection>
+
+        {profile?.account_type === "couple" && (
+          <CollapsibleSection title="Zugriffsbeschränkung">
+            <SettingsRestrictionSection />
+          </CollapsibleSection>
+        )}
       </div>
     </Container>
   );

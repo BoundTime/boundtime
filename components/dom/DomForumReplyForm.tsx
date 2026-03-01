@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRestriction } from "@/lib/restriction-context";
 import { ImagePlus } from "lucide-react";
 
 export function DomForumReplyForm({ topicId }: { topicId: string }) {
   const router = useRouter();
+  const { canWrite, requestUnlock } = useRestriction();
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -15,6 +17,10 @@ export function DomForumReplyForm({ topicId }: { topicId: string }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!canWrite) {
+      requestUnlock();
+      return;
+    }
     setError(null);
     const trimContent = content.trim();
     if (!trimContent) {

@@ -6,9 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 import { POST_CONTENT_MAX } from "@/types";
 import { ImagePlus } from "lucide-react";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { useRestriction } from "@/lib/restriction-context";
 
 export function NewPostForm() {
   const router = useRouter();
+  const { canWrite, requestUnlock } = useRestriction();
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -51,6 +53,10 @@ export function NewPostForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!canWrite) {
+      requestUnlock();
+      return;
+    }
     setError(null);
     const trimContent = content.trim();
     if (!trimContent) {
@@ -114,7 +120,7 @@ export function NewPostForm() {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Was möchtest du teilen?"
+            placeholder={canWrite ? "Was möchtest du teilen?" : "Passwort eingeben um zu posten"}
             maxLength={POST_CONTENT_MAX}
             rows={2}
             className="w-full resize-none rounded-xl border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
@@ -135,10 +141,10 @@ export function NewPostForm() {
             </span>
             <button
               type="submit"
-              disabled={loading}
-              className="ml-auto rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
-            >
-              {loading ? "…" : "Posten"}
+            disabled={loading}
+            className="ml-auto rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+          >
+            {loading ? "…" : canWrite ? "Posten" : "Freischalten"}
             </button>
           </div>
           {imagePreview && (
