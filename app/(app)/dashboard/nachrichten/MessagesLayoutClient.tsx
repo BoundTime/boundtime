@@ -15,6 +15,8 @@ type ConvItem = {
   otherLastSeenAt: string | null;
   lastContent: string | null;
   lastAt: string;
+  hasUnread?: boolean;
+  unreadCount?: number;
 };
 
 function formatTimeAgo(date: Date): string {
@@ -95,11 +97,14 @@ export function MessagesLayoutClient({
                       </div>
                       </AvatarWithVerified>
                       <div className="min-w-0 flex-1">
-                        <p className="flex items-center gap-1.5 truncate font-medium text-white">
+                        <p className={`flex items-center gap-1.5 truncate ${item.hasUnread ? "font-semibold text-white" : "font-medium text-white"}`}>
                           {item.otherNick}
+                          {item.hasUnread && (
+                            <span className="flex h-2 min-w-2 shrink-0 items-center justify-center rounded-full bg-accent" aria-label="Ungelesen" />
+                          )}
                           <OnlineIndicator lastSeenAt={item.otherLastSeenAt} variant="dot" />
                         </p>
-                        <p className="truncate text-xs text-gray-500">{preview}</p>
+                        <p className={`truncate text-xs ${item.hasUnread ? "text-gray-300" : "text-gray-500"}`}>{preview}</p>
                       </div>
                       <p className="shrink-0 text-xs text-gray-500">{timeStr}</p>
                     </Link>

@@ -12,15 +12,35 @@ async function getConversationList(userId: string) {
   const convIds = (convs ?? []).map((c) => c.id);
   if (convIds.length === 0) return null;
 
-  const { data: lastMessages } = await supabase
-    .from("messages")
-    .select("conversation_id, content, created_at")
-    .in("conversation_id", convIds)
-    .order("created_at", { ascending: false });
+  const [lastMessagesRes, unreadRes] = await Promise.all([
+    supabase
+      .from("messages")
+      .select("conversation_id, content, created_at")
+      .in("conversation_id", convIds)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("messages")
+      .select("conversation_id, created_at")
+      .in("conversation_id", convIds)
+      .neq("sender_id", userId)
+      .is("read_at", null)
+      .order("created_at", { ascending: false }),
+  ]);
+
   const lastByConv = new Map<string, { content: string; created_at: string }>();
-  (lastMessages ?? []).forEach((m) => {
+  (lastMessagesRes.data ?? []).forEach((m) => {
     if (!lastByConv.has(m.conversation_id)) {
       lastByConv.set(m.conversation_id, { content: m.content, created_at: m.created_at });
+    }
+  });
+
+  const unreadByConv = new Map<string, { count: number; latestAt: string }>();
+  (unreadRes.data ?? []).forEach((m) => {
+    const cur = unreadByConv.get(m.conversation_id);
+    if (!cur) {
+      unreadByConv.set(m.conversation_id, { count: 1, latestAt: m.created_at });
+    } else {
+      unreadByConv.set(m.conversation_id, { count: cur.count + 1, latestAt: cur.latestAt });
     }
   });
 
@@ -60,6 +80,8 @@ async function getConversationList(userId: string) {
       const otherId = c.participant_a === userId ? c.participant_b : c.participant_a;
       const p = profileById.get(otherId);
       const last = lastByConv.get(c.id);
+      const unread = unreadByConv.get(c.id);
+      const lastAt = last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString();
       return {
         id: c.id,
         otherId,
@@ -68,10 +90,20 @@ async function getConversationList(userId: string) {
         otherVerified: p?.verified ?? false,
         otherLastSeenAt: p?.last_seen_at ?? null,
         lastContent: last?.content ?? null,
-        lastAt: last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString(),
+        lastAt,
+        hasUnread: (unread?.count ?? 0) > 0,
+        unreadCount: unread?.count ?? 0,
+        unreadLatestAt: unread?.latestAt ?? null,
       };
     })
-    .sort((a, b) => (b.lastAt > a.lastAt ? 1 : -1));
+    .sort((a, b) => {
+      const aUnread = a.hasUnread ? (a.unreadLatestAt ?? a.lastAt) : "";
+      const bUnread = b.hasUnread ? (b.unreadLatestAt ?? b.lastAt) : "";
+      if (aUnread && bUnread) return bUnread > aUnread ? 1 : -1;
+      if (a.hasUnread) return -1;
+      if (b.hasUnread) return 1;
+      return b.lastAt > a.lastAt ? 1 : -1;
+    });
 
   return list;
 }

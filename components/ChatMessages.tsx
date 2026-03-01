@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Check, CheckCheck } from "lucide-react";
 
@@ -36,6 +36,14 @@ export function ChatMessages({
   userId: string;
   nickById: Record<string, string | null>;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current && messages.length > 0) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   useEffect(() => {
     const supabase = createClient();
     const toMark = messages.filter(
@@ -62,7 +70,7 @@ export function ChatMessages({
   }, [messages, userId]);
 
   return (
-    <div className="min-h-[200px] flex-1 overflow-y-auto p-4 space-y-4">
+    <div ref={scrollRef} className="min-h-[200px] flex-1 overflow-y-auto p-4 space-y-4">
       {!messages?.length ? (
         <p className="text-center text-sm text-gray-500">Noch keine Nachrichten.</p>
       ) : (
