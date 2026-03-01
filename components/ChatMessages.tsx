@@ -70,7 +70,7 @@ export function ChatMessages({
   }, [messages, userId]);
 
   return (
-    <div ref={scrollRef} className="min-h-[200px] flex-1 overflow-y-auto p-4 space-y-4">
+    <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto p-4 space-y-4">
       {!messages?.length ? (
         <p className="text-center text-sm text-gray-500">Noch keine Nachrichten.</p>
       ) : (

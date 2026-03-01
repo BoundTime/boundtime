@@ -49,7 +49,7 @@ export function MessagesLayoutClient({
         ← MyBound
       </Link>
 
-      <div className="flex flex-col gap-0 overflow-hidden rounded-xl border border-gray-700 md:flex-row md:gap-0">
+      <div className="flex max-h-[calc(100vh-10rem)] min-h-[350px] flex-col gap-0 overflow-hidden rounded-xl border border-gray-700 md:flex-row md:gap-0">
         {/* Linke Spalte: Gesprächsliste – auf Mobile ausgeblendet wenn Chat sichtbar */}
         <aside
           className={`${
@@ -60,7 +60,7 @@ export function MessagesLayoutClient({
             <h1 className="text-xl font-bold text-white">Nachrichten</h1>
             <p className="mt-0.5 text-sm text-gray-400">Deine Unterhaltungen</p>
           </div>
-          <div className="max-h-[60vh] flex-1 overflow-y-auto p-4 md:max-h-[70vh]">
+          <div className="min-h-0 flex-1 overflow-y-auto p-4 md:max-h-[70vh]">
             <ul className="space-y-2">
               {list.map((item) => {
                 const avatarUrl = item.otherAvatarUrl;
@@ -119,7 +119,7 @@ export function MessagesLayoutClient({
         <main
           className={`${
             isChatView ? "flex" : "hidden md:flex"
-          } min-h-[300px] flex-1 flex-col`}
+          } min-h-[300px] min-w-0 flex-1 flex-col overflow-hidden`}
         >
           {children}
         </main>
