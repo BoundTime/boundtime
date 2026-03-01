@@ -23,7 +23,6 @@ type InitialNavData = {
   avatarUrl: string | null;
   role: string | null;
   verified: boolean;
-  verificationTier: "bronze" | "silver" | "gold";
 };
 
 export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavData | null }) {
@@ -36,9 +35,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialNavData?.avatarUrl ?? null);
   const [role, setRole] = useState<string | null>(initialNavData?.role ?? null);
   const [verified, setVerified] = useState(initialNavData?.verified ?? false);
-  const [verificationTier, setVerificationTier] = useState<"bronze" | "silver" | "gold">(
-    initialNavData?.verificationTier ?? "bronze"
-  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
@@ -59,14 +55,13 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     async function loadProfile(userId: string) {
       const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified, verification_tier")
+        .select("nick, avatar_url, avatar_photo_id, role, verified")
         .eq("id", userId)
         .single();
 
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
-      setVerificationTier((data?.verification_tier as "bronze" | "silver" | "gold") ?? (data?.verified ? "gold" : "bronze"));
       const url = data
         ? await resolveProfileAvatarUrl(
             { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
@@ -85,7 +80,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
-        setVerificationTier("bronze");
       }
     });
 
@@ -100,7 +94,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
-        setVerificationTier("bronze");
       }
     });
 
@@ -147,7 +140,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             href="/dashboard"
             className="flex items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
-            <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-9 w-9 shrink-0">
+            <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0">
               <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                 {avatarUrl ? (
                   <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" priority />
@@ -244,7 +237,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                     className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
                     title="MyBound"
                   >
-                    <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-8 w-8 shrink-0">
+                    <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
                     <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
                         <Image
@@ -400,7 +393,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   </div>
                   {nick && (
                     <RefreshNavLink href="/dashboard" onClick={closeMenu} className="mt-4 flex items-center gap-3 rounded-lg border border-gray-700 p-3 hover:bg-gray-800">
-                      <AvatarWithVerified verificationTier={verificationTier} size="sm" className="h-10 w-10 shrink-0">
+                      <AvatarWithVerified verified={verified} size="sm" className="h-10 w-10 shrink-0">
                       <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                         {avatarUrl ? (
                           <Image src={avatarUrl} alt="" fill className="object-cover" sizes="40px" />

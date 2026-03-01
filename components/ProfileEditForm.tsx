@@ -14,8 +14,6 @@ import {
 import { PlzOrtAutocomplete } from "@/components/PlzOrtAutocomplete";
 import Link from "next/link";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { getProfileProgress, computeVerificationTier } from "@/lib/profile-utils";
-
 export function ProfileEditForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -143,11 +141,6 @@ export function ProfileEditForm() {
           .select("verified, avatar_url, avatar_photo_id, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me")
           .eq("id", userId)
           .single();
-        if (updatedProfile) {
-          const progress = getProfileProgress(updatedProfile as Record<string, unknown>);
-          const tier = computeVerificationTier(updatedProfile.verified ?? false, progress);
-          await supabase.from("profiles").update({ verification_tier: tier }).eq("id", userId);
-        }
       }
 
       if (updateError) {
@@ -159,12 +152,6 @@ export function ProfileEditForm() {
             .update(updatesWithoutPrefs)
             .eq("id", userId);
           if (!retryError) {
-            const { data: p } = await supabase.from("profiles").select("verified, avatar_url, avatar_photo_id, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me").eq("id", userId).single();
-            if (p) {
-              const progress = getProfileProgress(p as Record<string, unknown>);
-              const tier = computeVerificationTier(p.verified ?? false, progress);
-              await supabase.from("profiles").update({ verification_tier: tier }).eq("id", userId);
-            }
             setSuccessMessage("Gespeichert. Hinweis: Vorlieben konnten nicht gespeichert werden (Migration 011 ausführen).");
             router.refresh();
             setTimeout(() => setSuccessMessage(null), 5000);

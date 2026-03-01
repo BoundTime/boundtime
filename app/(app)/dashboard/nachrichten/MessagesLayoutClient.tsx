@@ -11,7 +11,7 @@ type ConvItem = {
   otherId: string;
   otherNick: string;
   otherAvatarUrl: string | null;
-  otherVerificationTier?: "bronze" | "silver" | "gold";
+  otherVerified?: boolean;
   otherLastSeenAt: string | null;
   lastContent: string | null;
   lastAt: string;
@@ -83,7 +83,7 @@ export function MessagesLayoutClient({
                           : "border-gray-700 bg-background/50 hover:border-gray-600"
                       }`}
                     >
-                      <AvatarWithVerified verificationTier={item.otherVerificationTier} size="sm" className="h-10 w-10 shrink-0">
+                      <AvatarWithVerified verified={item.otherVerified} size="sm" className="h-10 w-10 shrink-0">
                       <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                         {avatarUrl ? (
                           <img src={avatarUrl} alt="" className="h-full w-full object-cover" />

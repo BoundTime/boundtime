@@ -55,13 +55,3 @@ export function getProfileProgress(profile: Record<string, unknown> | null): num
   if (profile.about_me && String(profile.about_me).trim()) filled++;
   return Math.round((filled / PROFILE_SLOTS) * 100);
 }
-
-/** Bestimmt verification_tier: gold wenn verified, sonst silver bei ≥80%, sonst bronze */
-export function computeVerificationTier(
-  verified: boolean,
-  progress: number
-): "bronze" | "silver" | "gold" {
-  if (verified) return "gold";
-  if (progress >= 80) return "silver";
-  return "bronze";
-}

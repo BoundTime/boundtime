@@ -35,9 +35,9 @@ async function getConversationList(userId: string) {
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, avatar_photo_id, last_seen_at, verification_tier")
+    .select("id, nick, avatar_url, avatar_photo_id, last_seen_at, verified")
     .in("id", Array.from(otherIds));
-  const profileById = new Map<string, { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null; verification_tier: "bronze" | "silver" | "gold" }>();
+  const profileById = new Map<string, { nick: string | null; avatar_display_url: string | null; last_seen_at: string | null; verified: boolean }>();
   if (profiles?.length) {
     await Promise.all(
       profiles.map(async (p) => {
@@ -49,7 +49,7 @@ async function getConversationList(userId: string) {
           nick: p.nick,
           avatar_display_url,
           last_seen_at: p.last_seen_at ?? null,
-          verification_tier: (p.verification_tier as "bronze" | "silver" | "gold") ?? "bronze",
+          verified: p.verified ?? false,
         });
       })
     );
@@ -65,7 +65,7 @@ async function getConversationList(userId: string) {
         otherId,
         otherNick: p?.nick ?? "?",
         otherAvatarUrl: p?.avatar_display_url ?? null,
-        otherVerificationTier: p?.verification_tier ?? "bronze",
+        otherVerified: p?.verified ?? false,
         otherLastSeenAt: p?.last_seen_at ?? null,
         lastContent: last?.content ?? null,
         lastAt: last?.created_at ?? (c as { created_at?: string }).created_at ?? new Date(0).toISOString(),

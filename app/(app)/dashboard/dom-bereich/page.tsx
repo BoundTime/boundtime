@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { VerificationTierBadge } from "@/components/VerificationTierBadge";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { PostDeleteButton } from "@/components/PostDeleteButton";
 
@@ -144,7 +144,7 @@ export default async function DomBereichPage() {
                     >
                       {post.author_nick ?? "?"}
                     </Link>
-                    <VerificationTierBadge tier="gold" size={14} showLabel />
+                    <VerifiedBadge size={14} showLabel />
                   </span>
                   <p className="text-xs text-gray-500">
                     {formatTimeAgo(new Date(post.created_at))}

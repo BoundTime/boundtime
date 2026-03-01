@@ -6,7 +6,7 @@ import { RoleIcon } from "@/components/RoleIcon";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
-import { VerificationTierBadge } from "@/components/VerificationTierBadge";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
@@ -50,7 +50,7 @@ export default async function EntdeckenPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, verification_tier, experience_level, last_seen_at")
+    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at")
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
@@ -108,19 +108,18 @@ export default async function EntdeckenPage({
                 .join("")
                 .toUpperCase()
                 .slice(0, 2);
-              const tier = (profile.verification_tier as "bronze" | "silver" | "gold") ?? (profile.verified ? "gold" : "bronze");
-              const isGoldDom = (tier === "gold") && (profile.role === "Dom" || profile.role === "Switcher");
+              const isVerifiedDom = profile.verified && (profile.role === "Dom" || profile.role === "Switcher");
               const location = [profile.postal_code, profile.city].filter(Boolean).join(" ");
               return (
                 <Link
                   key={profile.id}
                   href={`/dashboard/entdecken/${profile.id}`}
                   className={`flex flex-col overflow-hidden rounded-lg border bg-background/50 transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background ${
-                    isGoldDom ? "border-accent/60 hover:border-accent/80" : "border-gray-700 hover:border-gray-600"
+                    isVerifiedDom ? "border-accent/60 hover:border-accent/80" : "border-gray-700 hover:border-gray-600"
                   }`}
                 >
                   <div className="relative aspect-square w-full overflow-hidden bg-gray-900">
-                    <AvatarWithVerified verificationTier={tier} size="lg" position="top-right" variant="prominent" className="absolute inset-0">
+                    <AvatarWithVerified verified={profile.verified} size="lg" position="top-right" className="absolute inset-0">
                     {avatarUrl ? (
                       <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
@@ -136,7 +135,7 @@ export default async function EntdeckenPage({
                   <div className="flex flex-col gap-0.5 p-2.5 sm:p-3">
                     <p className="flex items-center gap-1.5 text-sm font-medium text-white">
                       <span className="truncate">{profile.nick ?? "?"}</span>
-                      <VerificationTierBadge tier={tier} size={12} showLabel />
+                      {profile.verified && <VerifiedBadge size={12} showLabel />}
                     </p>
                     <p className="flex items-center gap-1.5 text-xs text-gray-400">
                       <RoleIcon role={profile.role} size={10} />

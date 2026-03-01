@@ -14,7 +14,7 @@ import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
 import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
 import { PostLikesBlock } from "@/components/PostLikesBlock";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
-import { VerificationTierBadge } from "@/components/VerificationTierBadge";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ChastityLockDuration } from "@/components/chastity/ChastityLockDuration";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { getProfileProgress } from "@/lib/profile-utils";
@@ -67,7 +67,7 @@ export default async function DashboardPage() {
   const subIds = asDomArrangements.map((a) => a.sub_id);
   const { data: subProfiles } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, avatar_photo_id, verified, verification_tier")
+    .select("id, nick, avatar_url, avatar_photo_id, verified")
     .in("id", subIds);
   const subProfileById = new Map(subProfiles?.map((p) => [p.id, p]) ?? []);
   const asDomWithSub = await Promise.all(
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
         subId: a.sub_id,
         subNick: sub?.nick ?? "?",
         subAvatarUrl,
-        subTier: (sub?.verification_tier as "bronze" | "silver" | "gold") ?? (sub?.verified ? "gold" : "bronze"),
+        subVerified: sub?.verified ?? false,
         lockedAt: a.locked_at,
         boundDollars: a.bound_dollars ?? 0,
         rewardGoalBoundDollars: a.reward_goal_bound_dollars ?? 0,
@@ -141,7 +141,7 @@ export default async function DashboardPage() {
     created_at: string;
     author_nick: string | null;
     author_avatar_url: string | null;
-    author_tier: "bronze" | "silver" | "gold";
+    author_verified: boolean;
   }> = [];
   if (feedAuthorIds.length > 0) {
     const { data: postsData } = await supabase
@@ -154,7 +154,7 @@ export default async function DashboardPage() {
       const authorIds = Array.from(new Set(postsData.map((p) => p.author_id)));
       const { data: authors } = await supabase
         .from("profiles")
-        .select("id, nick, avatar_url, avatar_photo_id, verified, verification_tier")
+        .select("id, nick, avatar_url, avatar_photo_id, verified")
         .in("id", authorIds);
       const authorById = new Map(authors?.map((a) => [a.id, a]) ?? []);
       posts = await Promise.all(
@@ -170,7 +170,7 @@ export default async function DashboardPage() {
             ...p,
             author_nick: a?.nick ?? null,
             author_avatar_url: avatarUrl,
-            author_tier: (a?.verification_tier as "bronze" | "silver" | "gold") ?? (a?.verified ? "gold" : "bronze"),
+            author_verified: a?.verified ?? false,
           };
         })
       );
@@ -218,7 +218,7 @@ export default async function DashboardPage() {
   const { data: activityProfiles } = allActivityUserIds.length > 0
     ? await supabase
         .from("profiles")
-        .select("id, nick, avatar_url, avatar_photo_id, verified, verification_tier")
+        .select("id, nick, avatar_url, avatar_photo_id, verified")
         .in("id", allActivityUserIds)
     : { data: [] };
   const activityProfilesWithAvatars = activityProfiles?.length
@@ -282,7 +282,7 @@ export default async function DashboardPage() {
                     href={`/dashboard/keuschhaltung/${arr.id}`}
                     className="flex items-center gap-4 rounded-lg border border-gray-700 bg-background p-4 transition-colors hover:border-gray-600"
                   >
-                    <AvatarWithVerified verificationTier={arr.subTier} size="md" className="h-12 w-12 shrink-0">
+                    <AvatarWithVerified verified={arr.subVerified} size="md" className="h-12 w-12 shrink-0">
                     <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700">
                       {arr.subAvatarUrl ? (
                         <Image src={arr.subAvatarUrl} alt="" fill className="object-cover" sizes="48px" />
@@ -296,7 +296,7 @@ export default async function DashboardPage() {
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-1.5 font-medium text-white">
                         {arr.subNick}
-                        <VerificationTierBadge tier={arr.subTier} size={12} showLabel />
+                        {arr.subVerified && <VerifiedBadge size={12} showLabel />}
                       </p>
                       <p className="text-xs text-gray-400">
                         {arr.lockedAt ? (
@@ -426,7 +426,7 @@ export default async function DashboardPage() {
                 >
                   <div className="flex items-center gap-4 p-4 sm:p-6">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
-                      <AvatarWithVerified verificationTier={post.author_tier} size="md" className="h-12 w-12">
+                      <AvatarWithVerified verified={post.author_verified} size="md" className="h-12 w-12">
                       <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
                         {post.author_avatar_url ? (
                           <Image src={post.author_avatar_url} alt="" fill className="object-cover" sizes="48px" />
@@ -446,7 +446,7 @@ export default async function DashboardPage() {
                         >
                           {post.author_nick ?? "?"}
                         </Link>
-                        <VerificationTierBadge tier={post.author_tier} size={14} showLabel />
+                        {post.author_verified && <VerifiedBadge size={14} showLabel />}
                       </span>
                       <p className="text-xs text-gray-500">
                         {formatTimeAgo(new Date(post.created_at))}
