@@ -35,6 +35,8 @@ function getNotificationHref(n: NotificationRow): string {
     case "chastity_task_awaiting_confirmation":
     case "chastity_reward_request":
       return "/dashboard/keuschhaltung";
+    case "verification_rejected":
+      return "/dashboard/verifizierung";
     default:
       return "/dashboard/benachrichtigungen";
   }

@@ -16,6 +16,8 @@ type Verification = {
   photoUrl?: string | null;
 };
 
+const REJECTION_NOTE_MAX = 500;
+
 export function VerificationAdminList({
   verifications,
   adminId,
@@ -26,6 +28,8 @@ export function VerificationAdminList({
   const router = useRouter();
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [rejectionNote, setRejectionNote] = useState("");
 
   const supabase = createClient();
 
@@ -43,18 +47,23 @@ export function VerificationAdminList({
     return () => document.removeEventListener("keydown", onKey);
   }, [lightboxUrl]);
 
-  async function setStatus(id: string, status: "approved" | "rejected") {
+  async function setStatus(id: string, status: "approved" | "rejected", note?: string) {
     setLoadingId(id);
     const v = verifications.find((x) => x.id === id);
     if (!v) return;
 
+    const updates: Record<string, unknown> = {
+      status,
+      reviewed_at: new Date().toISOString(),
+      reviewed_by: adminId,
+    };
+    if (status === "rejected" && note?.trim()) {
+      updates.note = note.trim().slice(0, REJECTION_NOTE_MAX);
+    }
+
     await supabase
       .from("verifications")
-      .update({
-        status,
-        reviewed_at: new Date().toISOString(),
-        reviewed_by: adminId,
-      })
+      .update(updates)
       .eq("id", id);
 
     if (status === "approved") {
@@ -62,7 +71,19 @@ export function VerificationAdminList({
     }
 
     setLoadingId(null);
+    setRejectingId(null);
+    setRejectionNote("");
     router.refresh();
+  }
+
+  function startReject(id: string) {
+    setRejectingId(id);
+    setRejectionNote("");
+  }
+
+  function cancelReject() {
+    setRejectingId(null);
+    setRejectionNote("");
   }
 
   const pending = verifications.filter((v) => v.status === "pending");
@@ -106,7 +127,7 @@ export function VerificationAdminList({
                     </button>
                     <button
                       type="button"
-                      onClick={() => setStatus(v.id, "rejected")}
+                      onClick={() => startReject(v.id)}
                       disabled={loadingId === v.id}
                       className="rounded border border-red-600/50 px-3 py-1 text-sm text-red-400 hover:bg-red-950/30 disabled:opacity-50"
                     >
@@ -119,6 +140,57 @@ export function VerificationAdminList({
           })}
         </ul>
       )}
+
+      {rejectingId &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Ablehnungsgrund angeben"
+            onClick={(e) => e.target === e.currentTarget && cancelReject()}
+          >
+            <div
+              className="w-full max-w-md rounded-xl border border-gray-700 bg-card p-6 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-lg font-semibold text-white">Verifizierung ablehnen</h3>
+              <p className="mt-2 text-sm text-gray-400">
+                Optional: Gib einen Grund an. Der Nutzer erhält diese Nachricht in seinem Postfach.
+              </p>
+              <textarea
+                value={rejectionNote}
+                onChange={(e) => setRejectionNote(e.target.value.slice(0, REJECTION_NOTE_MAX))}
+                placeholder="z.B. Foto unscharf, Ausweis nicht lesbar..."
+                rows={4}
+                className="mt-4 w-full resize-none rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none"
+                maxLength={REJECTION_NOTE_MAX}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                {rejectionNote.length}/{REJECTION_NOTE_MAX} Zeichen
+              </p>
+              <div className="mt-4 flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={cancelReject}
+                  className="rounded border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatus(rejectingId, "rejected", rejectionNote)}
+                  disabled={loadingId === rejectingId}
+                  className="rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  Ablehnen
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
 
       {lightboxUrl &&
         typeof document !== "undefined" &&

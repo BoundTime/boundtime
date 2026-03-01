@@ -20,7 +20,7 @@ export default async function VerifizierungPage() {
 
   const { data: verification } = await supabase
     .from("verifications")
-    .select("id, status, submitted_at")
+    .select("id, status, submitted_at, note")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -72,6 +72,12 @@ export default async function VerifizierungPage() {
         {verification?.status === "rejected" && (
           <div className="mt-4 rounded-lg border border-red-700 bg-red-950/30 p-4">
             <p className="text-red-300">Deine Verifizierung wurde abgelehnt. Du kannst einen neuen Antrag stellen.</p>
+            {verification.note?.trim() && (
+              <div className="mt-3 rounded border border-red-700/50 bg-black/20 p-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-red-400/80">Begründung des Teams</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm text-gray-300">{verification.note.trim()}</p>
+              </div>
+            )}
           </div>
         )}
 
