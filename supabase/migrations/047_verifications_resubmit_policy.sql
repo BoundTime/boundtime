@@ -21,9 +21,14 @@ create or replace function public.submit_verification(p_photo_path text)
 returns void language plpgsql security definer set search_path = public as $$
 declare
   v_user_id uuid := auth.uid();
+  v_existing_status text;
 begin
   if v_user_id is null then
     raise exception 'Nicht authentifiziert';
+  end if;
+  select status into v_existing_status from public.verifications where user_id = v_user_id;
+  if v_existing_status = 'approved' then
+    raise exception 'Verifizierung bereits freigegeben';
   end if;
   insert into public.verifications (user_id, photo_path, status, submitted_at, note, reviewed_at, reviewed_by)
   values (v_user_id, p_photo_path, 'pending', now(), null, null, null)
@@ -33,8 +38,6 @@ begin
     submitted_at = excluded.submitted_at,
     note = null,
     reviewed_at = null,
-    reviewed_by = null
-  where verifications.user_id = v_user_id
-    and verifications.status in ('pending', 'rejected');
+    reviewed_by = null;
 end;
 $$;
