@@ -17,17 +17,18 @@ create policy "verifications_update_own_pending_rejected" on public.verification
   with check (user_id = auth.uid());
 
 -- RPC: Verifizierung einreichen/erneut einreichen – umgeht RLS zuverlässig
+-- Block nur, wenn profiles.verified = true (blauer Haken); verifications.status kann abweichen
 create or replace function public.submit_verification(p_photo_path text)
 returns void language plpgsql security definer set search_path = public as $$
 declare
   v_user_id uuid := auth.uid();
-  v_existing_status text;
+  v_profile_verified boolean;
 begin
   if v_user_id is null then
     raise exception 'Nicht authentifiziert';
   end if;
-  select status into v_existing_status from public.verifications where user_id = v_user_id;
-  if v_existing_status = 'approved' then
+  select verified into v_profile_verified from public.profiles where id = v_user_id;
+  if v_profile_verified then
     raise exception 'Verifizierung bereits freigegeben';
   end if;
   insert into public.verifications (user_id, photo_path, status, submitted_at, note, reviewed_at, reviewed_by)
