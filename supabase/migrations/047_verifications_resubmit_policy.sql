@@ -1,6 +1,13 @@
 -- User darf eigenes Pending- und Rejected-Update (Ersatzfoto / erneutes Einreichen)
 -- Nach Ablehnung soll der Nutzer erneut einreichen können (upsert)
 
+-- Storage: Update/Überschreiben erlauben (upsert: true beim erneuten Einreichen)
+drop policy if exists "verifications_storage_update_own" on storage.objects;
+create policy "verifications_storage_update_own" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'verifications' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'verifications' and (storage.foldername(name))[1] = auth.uid()::text);
+
 drop policy if exists "verifications_update_own_pending" on public.verifications;
 drop policy if exists "verifications_update_own_pending_rejected" on public.verifications;
 create policy "verifications_update_own_pending_rejected" on public.verifications
