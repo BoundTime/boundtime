@@ -2,8 +2,32 @@
 -- Nach Ablehnung soll der Nutzer erneut einreichen können (upsert)
 
 drop policy if exists "verifications_update_own_pending" on public.verifications;
+drop policy if exists "verifications_update_own_pending_rejected" on public.verifications;
 create policy "verifications_update_own_pending_rejected" on public.verifications
   for update using (
     user_id = auth.uid() and status in ('pending', 'rejected')
   )
   with check (user_id = auth.uid());
+
+-- RPC: Verifizierung einreichen/erneut einreichen – umgeht RLS zuverlässig
+create or replace function public.submit_verification(p_photo_path text)
+returns void language plpgsql security definer set search_path = public as $$
+declare
+  v_user_id uuid := auth.uid();
+begin
+  if v_user_id is null then
+    raise exception 'Nicht authentifiziert';
+  end if;
+  insert into public.verifications (user_id, photo_path, status, submitted_at, note, reviewed_at, reviewed_by)
+  values (v_user_id, p_photo_path, 'pending', now(), null, null, null)
+  on conflict (user_id) do update set
+    photo_path = excluded.photo_path,
+    status = 'pending',
+    submitted_at = excluded.submitted_at,
+    note = null,
+    reviewed_at = null,
+    reviewed_by = null
+  where verifications.user_id = v_user_id
+    and verifications.status in ('pending', 'rejected');
+end;
+$$;

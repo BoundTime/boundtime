@@ -37,23 +37,12 @@ export function VerificationForm({ userId, hasExisting }: { userId: string; hasE
       return;
     }
 
-    const { error: upsertErr } = await supabase
-      .from("verifications")
-      .upsert(
-        {
-          user_id: userId,
-          photo_path: path,
-          status: "pending",
-          submitted_at: new Date().toISOString(),
-          note: null,
-          reviewed_at: null,
-          reviewed_by: null,
-        },
-        { onConflict: "user_id" }
-      );
+    const { error: rpcErr } = await supabase.rpc("submit_verification", {
+      p_photo_path: path,
+    });
 
-    if (upsertErr) {
-      setError(upsertErr.message);
+    if (rpcErr) {
+      setError(rpcErr.message);
       setLoading(false);
       return;
     }
