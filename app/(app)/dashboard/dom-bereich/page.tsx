@@ -51,7 +51,7 @@ export default async function DomBereichPage() {
     .limit(50);
 
   const topicIds = (topics ?? []).map((t) => t.id);
-  const authorIds = [...new Set((topics ?? []).map((t) => t.author_id))];
+  const authorIds = Array.from(new Set((topics ?? []).map((t) => t.author_id)));
   let postCountByTopic: Record<string, number> = {};
 
   const [authorsRes, countsRes] = await Promise.all([
