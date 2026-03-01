@@ -40,7 +40,15 @@ export function VerificationForm({ userId, hasExisting }: { userId: string; hasE
     const { error: upsertErr } = await supabase
       .from("verifications")
       .upsert(
-        { user_id: userId, photo_path: path, status: "pending", submitted_at: new Date().toISOString() },
+        {
+          user_id: userId,
+          photo_path: path,
+          status: "pending",
+          submitted_at: new Date().toISOString(),
+          note: null,
+          reviewed_at: null,
+          reviewed_by: null,
+        },
         { onConflict: "user_id" }
       );
 
