@@ -29,13 +29,14 @@ function getNotificationHref(type: NotificationType, relatedId: string | null, r
     case "profile_like":
       return relatedUserId ? `/dashboard/entdecken/${relatedUserId}` : "/dashboard/entdecken";
     case "post_like":
-      return "/dashboard/aktivitaet/post-likes";
+      return relatedId ? `/dashboard/aktivitaet/post-likes#post-${relatedId}` : "/dashboard/aktivitaet/post-likes";
     case "photo_like":
     case "photo_comment":
       return relatedId ? `/dashboard/foto/${relatedId}` : "/dashboard/benachrichtigungen";
     case "chastity_new_task":
     case "chastity_deadline_soon":
     case "chastity_arrangement_offer":
+    case "chastity_sub_request":
     case "chastity_task_awaiting_confirmation":
     case "chastity_reward_request":
       return "/dashboard/keuschhaltung";
@@ -72,6 +73,12 @@ export default async function BenachrichtigungenPage() {
     related_user_id: string | null;
     related_id: string | null;
   }>;
+  const postLikeLikerIds = Array.from(new Set(list.filter((n) => n.type === "post_like" && n.related_user_id).map((n) => n.related_user_id!)));
+  const nickById: Record<string, string> = {};
+  if (postLikeLikerIds.length > 0) {
+    const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", postLikeLikerIds);
+    for (const p of profs ?? []) nickById[p.id] = p.nick ?? "?";
+  }
 
   return (
     <Container className="py-16">
@@ -98,7 +105,11 @@ export default async function BenachrichtigungenPage() {
                   href={getNotificationHref(n.type, n.related_id, n.related_user_id)}
                   className="flex items-center justify-between rounded-xl border border-gray-700 bg-background/50 px-4 py-3 text-left transition-colors hover:border-gray-600"
                 >
-                  <span className="text-sm text-white">{NOTIFICATION_LABELS[n.type]}</span>
+                  <span className="text-sm text-white">
+                    {n.type === "post_like" && n.related_user_id && nickById[n.related_user_id]
+                      ? `${nickById[n.related_user_id]} hat deinen Post geliked`
+                      : NOTIFICATION_LABELS[n.type]}
+                  </span>
                   <span className="text-xs text-gray-500">{formatTimeAgo(new Date(n.created_at))}</span>
                 </Link>
               </li>

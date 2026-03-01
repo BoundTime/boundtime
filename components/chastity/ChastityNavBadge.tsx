@@ -18,21 +18,29 @@ export function ChastityNavBadge({
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      supabase
-        .from("chastity_arrangements")
-        .select("id")
-        .or(`dom_id.eq.${user.id},sub_id.eq.${user.id}`)
-        .eq("status", "active")
-        .then(({ data: arrs }) => {
-          if (!arrs?.length) { setCount(0); return; }
-          const arrIds = arrs.map((a) => a.id);
+      Promise.all([
+        supabase
+          .from("chastity_arrangements")
+          .select("id")
+          .or(`dom_id.eq.${user.id},sub_id.eq.${user.id}`)
+          .in("status", ["active", "pending", "requested_by_sub"]),
+        supabase.from("chastity_arrangements").select("id").eq("dom_id", user.id).eq("status", "requested_by_sub"),
+        supabase.from("chastity_arrangements").select("id").eq("sub_id", user.id).eq("status", "pending"),
+      ]).then(([arrsRes, domRequestedRes, subPendingRes]) => {
+        const arrs = arrsRes.data ?? [];
+        const arrIds = arrs.map((a) => a.id);
+        let openCount = (domRequestedRes.data?.length ?? 0) + (subPendingRes.data?.length ?? 0);
+        if (arrIds.length > 0) {
           Promise.all([
             supabase.from("chastity_reward_requests").select("id", { count: "exact", head: true }).in("arrangement_id", arrIds).eq("status", "pending"),
             supabase.from("chastity_random_checks").select("id", { count: "exact", head: true }).in("arrangement_id", arrIds).eq("status", "pending"),
           ]).then(([r1, r2]) => {
-            setCount((r1.count ?? 0) + (r2.count ?? 0));
+            setCount(openCount + (r1.count ?? 0) + (r2.count ?? 0));
           });
-        });
+        } else {
+          setCount(openCount);
+        }
+      });
     });
   }, []);
 

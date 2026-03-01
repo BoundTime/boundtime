@@ -77,15 +77,15 @@ export function ChastityStartForm({
       setLoading(false);
       return;
     }
-    const { data: existing } = await supabase
+    const { data: subAlreadyConnected } = await supabase
       .from("chastity_arrangements")
       .select("id")
-      .eq("dom_id", user.id)
       .eq("sub_id", subId)
-      .in("status", ["pending", "active", "paused"])
+      .in("status", ["pending", "active", "paused", "requested_by_sub"])
+      .limit(1)
       .maybeSingle();
-    if (existing) {
-      setError("Mit diesem Sub existiert bereits eine offene Dynamik.");
+    if (subAlreadyConnected) {
+      setError("Dieser Sub gehört schon einem Dom.");
       setLoading(false);
       return;
     }

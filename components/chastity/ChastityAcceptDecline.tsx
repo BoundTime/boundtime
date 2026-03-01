@@ -11,26 +11,43 @@ export function ChastityAcceptDecline({ arrangementId }: { arrangementId: string
   async function accept() {
     setLoading("accept");
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(null);
+      return;
+    }
     const { error } = await supabase
       .from("chastity_arrangements")
-      .update({
-        status: "active",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", arrangementId);
+      .update({ status: "active", updated_at: new Date().toISOString() })
+      .eq("id", arrangementId)
+      .eq("sub_id", user.id);
     setLoading(null);
-    if (!error) router.refresh();
+    if (error) {
+      console.error("ChastityAcceptDecline accept error:", error);
+      return;
+    }
+    router.refresh();
   }
 
   async function decline() {
     setLoading("decline");
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(null);
+      return;
+    }
     const { error } = await supabase
       .from("chastity_arrangements")
       .update({ status: "ended", updated_at: new Date().toISOString() })
-      .eq("id", arrangementId);
+      .eq("id", arrangementId)
+      .eq("sub_id", user.id);
     setLoading(null);
-    if (!error) router.refresh();
+    if (error) {
+      console.error("ChastityAcceptDecline decline error:", error);
+      return;
+    }
+    router.refresh();
   }
 
   return (

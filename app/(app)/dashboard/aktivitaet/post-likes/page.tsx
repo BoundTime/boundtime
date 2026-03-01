@@ -98,8 +98,9 @@ export default async function AktivitaetPostLikesPage() {
                 ? (post.content.length > 50 ? post.content.slice(0, 50).trim() + "…" : post.content)
                 : "deinen Post";
               const url = p?.avatar_display_url ?? null;
+              const isFirstForPost = list.findIndex((x) => x.post_id === l.post_id) === i;
               return (
-                <li key={`${l.post_id}-${l.user_id}-${i}`}>
+                <li key={`${l.post_id}-${l.user_id}-${i}`} id={isFirstForPost ? `post-${l.post_id}` : undefined}>
                   <Link
                     href={`/dashboard/entdecken/${l.user_id}`}
                     className="flex items-center gap-4 rounded-xl border border-gray-700 bg-background/50 p-4 transition-colors hover:border-gray-600"

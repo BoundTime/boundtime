@@ -42,8 +42,16 @@ export function useUnreadMessageCount(userId?: string | undefined) {
       .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, () => load())
       .subscribe();
 
+    const onMessagesRead = () => load();
+    if (typeof window !== "undefined") {
+      window.addEventListener("messages-read", onMessagesRead);
+    }
+
     return () => {
       supabase.removeChannel(channel);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("messages-read", onMessagesRead);
+      }
     };
   }, [uid]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -8,6 +8,24 @@ export function ChastityRequestButton({ domId }: { domId: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasOtherConnection, setHasOtherConnection] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        setHasOtherConnection(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("chastity_arrangements")
+        .select("id")
+        .eq("sub_id", user.id)
+        .in("status", ["pending", "active", "paused", "requested_by_sub"])
+        .limit(1);
+      setHasOtherConnection((data?.length ?? 0) > 0);
+    });
+  }, []);
 
   async function handleClick() {
     setError(null);
@@ -22,12 +40,12 @@ export function ChastityRequestButton({ domId }: { domId: string }) {
     const { data: existing } = await supabase
       .from("chastity_arrangements")
       .select("id")
-      .eq("dom_id", domId)
       .eq("sub_id", user.id)
       .in("status", ["pending", "active", "paused", "requested_by_sub"])
+      .limit(1)
       .maybeSingle();
     if (existing) {
-      setError("Es existiert bereits eine offene Anfrage oder Dynamik.");
+      setError("Du bist schon in einer Verbindung mit einem Dom.");
       setLoading(false);
       return;
     }
@@ -45,6 +63,17 @@ export function ChastityRequestButton({ domId }: { domId: string }) {
     }
     router.push("/dashboard/keuschhaltung");
     router.refresh();
+  }
+
+  if (hasOtherConnection) {
+    return (
+      <span className="text-sm text-gray-400">
+        Du bist schon in einer Verbindung mit einem Dom.{" "}
+        <a href="/dashboard/keuschhaltung" className="font-medium text-accent hover:text-accent-hover">
+          Zur Keuschhaltung
+        </a>
+      </span>
+    );
   }
 
   return (

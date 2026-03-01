@@ -13,6 +13,7 @@ type NotificationRow = {
   created_at: string;
   related_user_id: string | null;
   related_id: string | null;
+  related_user_nick?: string | null;
 };
 
 function getNotificationHref(n: NotificationRow): string {
@@ -24,13 +25,14 @@ function getNotificationHref(n: NotificationRow): string {
     case "profile_like":
       return n.related_user_id ? `/dashboard/entdecken/${n.related_user_id}` : "/dashboard/entdecken";
     case "post_like":
-      return "/dashboard/aktivitaet/post-likes";
+      return n.related_id ? `/dashboard/aktivitaet/post-likes#post-${n.related_id}` : "/dashboard/aktivitaet/post-likes";
     case "photo_like":
     case "photo_comment":
       return n.related_id ? `/dashboard/foto/${n.related_id}` : "/dashboard/benachrichtigungen";
     case "chastity_new_task":
     case "chastity_deadline_soon":
     case "chastity_arrangement_offer":
+    case "chastity_sub_request":
       return "/dashboard/keuschhaltung";
     case "chastity_task_awaiting_confirmation":
     case "chastity_reward_request":
@@ -69,8 +71,22 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
         .eq("user_id", user.id)
         .is("read_at", null)
         .order("created_at", { ascending: false });
+      const rows = (data ?? []) as NotificationRow[];
+      const likerIds = Array.from(new Set(rows.filter((r) => r.type === "post_like" && r.related_user_id).map((r) => r.related_user_id!)));
+      const nickById: Record<string, string> = {};
+      if (likerIds.length > 0) {
+        const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", likerIds);
+        for (const p of profs ?? []) {
+          nickById[p.id] = p.nick ?? "?";
+        }
+      }
+      const withNick = rows.map((r) =>
+        r.type === "post_like" && r.related_user_id
+          ? { ...r, related_user_nick: nickById[r.related_user_id] ?? "?" }
+          : r
+      );
       setUnreadCount(count ?? 0);
-      setList((data ?? []) as NotificationRow[]);
+      setList(withNick);
       setLoading(false);
     }
 
@@ -189,7 +205,9 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
                         onClick={() => { setOpen(false); markAllRead(); }}
                         className="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
                       >
-                        {NOTIFICATION_LABELS[n.type]}
+                        {n.type === "post_like" && n.related_user_nick
+                          ? `${n.related_user_nick} hat deinen Post geliked`
+                          : NOTIFICATION_LABELS[n.type]}
                         <span className="mt-0.5 block text-xs text-gray-500">
                           {formatTimeAgo(new Date(n.created_at))}
                         </span>

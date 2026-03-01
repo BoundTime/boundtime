@@ -54,7 +54,11 @@ export function ChatMessages({
           })
           .eq("id", m.id)
       )
-    ).then(() => {});
+    ).then(() => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("messages-read"));
+      }
+    });
   }, [messages, userId]);
 
   return (
