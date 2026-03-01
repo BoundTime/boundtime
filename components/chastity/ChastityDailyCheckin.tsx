@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Check } from "lucide-react";
 
 const MOOD_EMOJI: Record<number, string> = { 1: "😔", 2: "😐", 3: "🙂", 4: "😊", 5: "😍" };
 
@@ -19,6 +20,8 @@ export function ChastityDailyCheckin({
   const [mood, setMood] = useState<number | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [hadExisting, setHadExisting] = useState(false);
   const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
@@ -34,6 +37,7 @@ export function ChastityDailyCheckin({
         if (data) {
           setMood(data.mood_value);
           setNotes(data.notes ?? "");
+          setHadExisting(true);
         }
       });
   }, [arrangementId, subId, today, isSub]);
@@ -42,7 +46,7 @@ export function ChastityDailyCheckin({
     e.preventDefault();
     setLoading(true);
     const supabase = createClient();
-    await supabase
+    const { error } = await supabase
       .from("chastity_daily_checkins")
       .upsert(
         {
@@ -55,10 +59,49 @@ export function ChastityDailyCheckin({
         { onConflict: "arrangement_id,sub_id,checkin_date" }
       );
     setLoading(false);
-    router.refresh();
+    if (!error) {
+      setSubmitted(true);
+      router.refresh();
+    }
   }
 
   if (!isSub) return null;
+
+  const showDone = submitted || hadExisting;
+  const displayMood = mood ?? null;
+  const displayNotes = notes;
+
+  if (showDone) {
+    return (
+      <div className="mt-4 rounded-xl border border-gray-700 bg-background p-4">
+        <div className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600/20">
+            <Check className="h-4 w-4 text-green-400" strokeWidth={2.5} />
+          </span>
+          <h3 className="text-lg font-semibold text-white">
+            {submitted ? "Check-in für heute abgeschickt ✓" : "Check-in erledigt"}
+          </h3>
+        </div>
+        <p className="mt-1 text-sm text-gray-500">
+          {submitted ? "Dein Dom wurde benachrichtigt." : "Dein Check-in für heute liegt vor."}
+        </p>
+        <div className="mt-4 space-y-2 rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3">
+          {displayMood != null && (
+            <p className="text-sm">
+              <span className="text-gray-500">Stimmung:</span>{" "}
+              <span className="text-white">{MOOD_EMOJI[displayMood] ?? displayMood}</span>
+            </p>
+          )}
+          {displayNotes && (
+            <p className="text-sm">
+              <span className="text-gray-500">Notizen:</span>{" "}
+              <span className="text-gray-300">{displayNotes}</span>
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4 rounded-xl border border-gray-700 bg-background p-4">
