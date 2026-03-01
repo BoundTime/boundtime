@@ -245,7 +245,9 @@ export default async function KeuschhaltungDetailPage({
                     )}
                     {isDom && task.status === "awaiting_confirmation" && (
                       <>
-                        <ChastityConfirmTaskButton taskId={task.id} />
+                        {task.due_date <= today && (
+                          <ChastityConfirmTaskButton taskId={task.id} />
+                        )}
                         <ChastityPenaltyButton taskId={task.id} label="Ablehnen / Strafpunkte" />
                       </>
                     )}
