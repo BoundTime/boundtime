@@ -31,9 +31,13 @@ function getNotificationHref(n: NotificationRow): string {
       return n.related_id ? `/dashboard/foto/${n.related_id}` : "/dashboard/benachrichtigungen";
     case "chastity_new_task":
     case "chastity_deadline_soon":
+    case "chastity_task_awaiting_confirmation":
+    case "chastity_reward_request":
+      return "/dashboard/keuschhaltung";
     case "chastity_arrangement_offer":
     case "chastity_sub_request":
-      return "/dashboard/keuschhaltung";
+    case "chastity_checkin":
+      return n.related_id ? `/dashboard/keuschhaltung/${n.related_id}` : "/dashboard/keuschhaltung";
     case "chastity_task_awaiting_confirmation":
     case "chastity_reward_request":
       return "/dashboard/keuschhaltung";
