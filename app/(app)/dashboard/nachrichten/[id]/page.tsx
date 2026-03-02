@@ -48,6 +48,27 @@ export default async function ChatPage({
     .eq("conversation_id", id)
     .order("created_at", { ascending: true });
 
+  // Anhänge zu den geladenen Nachrichten
+  const messageIds = (messages ?? []).map((m) => m.id);
+  let attachmentsByMessageId: Record<string, { id: string; file_path: string; filename: string; mime_type: string }[]> =
+    {};
+  if (messageIds.length) {
+    const { data: attachments } = await supabase
+      .from("message_attachments")
+      .select("id, message_id, file_path, filename, mime_type")
+      .in("message_id", messageIds);
+    (attachments ?? []).forEach((att) => {
+      const key = (att as { message_id: string }).message_id;
+      if (!attachmentsByMessageId[key]) attachmentsByMessageId[key] = [];
+      attachmentsByMessageId[key].push({
+        id: att.id,
+        file_path: att.file_path,
+        filename: att.filename,
+        mime_type: att.mime_type,
+      });
+    });
+  }
+
   const { data: senderProfiles } = await supabase
     .from("profiles")
     .select("id, nick")
@@ -90,6 +111,7 @@ export default async function ChatPage({
           conversationId={id}
           userId={user.id}
           nickById={Object.fromEntries(nickById)}
+          attachmentsByMessageId={attachmentsByMessageId}
         />
 
         <div className="shrink-0 border-t border-gray-700 p-4">

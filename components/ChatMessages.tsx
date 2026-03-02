@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Check, CheckCheck } from "lucide-react";
 
@@ -25,18 +25,28 @@ type Message = {
   read_at: string | null;
 };
 
+type Attachment = {
+  id: string;
+  file_path: string;
+  filename: string;
+  mime_type: string;
+};
+
 export function ChatMessages({
   messages,
   conversationId,
   userId,
   nickById,
+  attachmentsByMessageId = {},
 }: {
   messages: Message[];
   conversationId: string;
   userId: string;
   nickById: Record<string, string | null>;
+  attachmentsByMessageId?: Record<string, Attachment[]>;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     if (scrollRef.current && messages.length > 0) {
@@ -101,6 +111,45 @@ export function ChatMessages({
                   </p>
                 )}
                 <p className="whitespace-pre-wrap break-words">{m.content}</p>
+
+                {/* Anhänge */}
+                {attachmentsByMessageId[m.id]?.length ? (
+                  <div className="mt-2 space-y-2">
+                    {attachmentsByMessageId[m.id].map((att) => {
+                      const publicUrl =
+                        supabase.storage.from("message-attachments").getPublicUrl(att.file_path)
+                          .data.publicUrl;
+                      const isImage = att.mime_type.startsWith("image/");
+                      return (
+                        <div key={att.id}>
+                          {isImage ? (
+                            <a
+                              href={publicUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="block"
+                            >
+                              <img
+                                src={publicUrl}
+                                alt={att.filename}
+                                className="max-h-48 w-full max-w-sm rounded-md border border-gray-700 object-cover"
+                              />
+                            </a>
+                          ) : (
+                            <a
+                              href={publicUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-2 text-xs text-blue-200 underline"
+                            >
+                              {att.filename}
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
                 <div className="mt-1 flex items-center gap-1.5">
                   <p className={`text-xs ${isOwn ? "text-white/80" : "text-gray-500"}`}>
                     {formatTime(new Date(m.created_at))}
