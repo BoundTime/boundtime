@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { ShieldCheck, HeartHandshake, UsersRound } from "lucide-react";
 import { Container } from "@/components/Container";
@@ -25,13 +24,13 @@ export default async function HomePage() {
               href="/"
               className="inline-block rounded-xl border border-gray-700/80 bg-card/50 p-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
             >
-              <Image
+              {/* Logo: Datei muss unter public/logo.png liegen */}
+              <img
                 src="/logo.png"
                 alt="BoundTime – Logo"
+                className="mx-auto h-auto w-40 sm:w-52 max-h-52 object-contain"
                 width={240}
                 height={240}
-                className="mx-auto h-auto w-40 sm:w-52"
-                priority
               />
             </Link>
             <h1 className="mt-8 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
