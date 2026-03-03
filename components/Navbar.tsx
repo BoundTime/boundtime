@@ -41,6 +41,20 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  const nav = {
+    isDashboard: pathname === "/dashboard",
+    isEntdecken: pathname?.startsWith("/dashboard/entdecken") ?? false,
+    isNachrichten: pathname?.startsWith("/dashboard/nachrichten") ?? false,
+    isKeuschhaltung: pathname?.startsWith("/dashboard/keuschhaltung") ?? false,
+    isDomBereich: pathname?.startsWith("/dashboard/dom-bereich") ?? false,
+    isProfil: pathname?.startsWith("/dashboard/profil") ?? false,
+    isEinstellungen: pathname?.startsWith("/dashboard/einstellungen") ?? false,
+  };
+  const activeLink =
+    "text-white font-medium";
+  const inactiveLink =
+    "text-gray-300 transition-colors duration-150 hover:text-white";
+
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") closeMenu();
@@ -168,21 +182,21 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
               <div className="hidden md:flex md:items-center md:gap-6">
                 <RefreshNavLink
                   href="/dashboard"
-                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
+                  className={`flex items-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : inactiveLink}`}
                 >
                   <Home className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   MyBound
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/entdecken"
-                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isEntdecken ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <Search className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Entdecken
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/nachrichten"
-                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isNachrichten ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <span className="relative shrink-0">
                     <MessageSquare className="h-4 w-4" strokeWidth={1.5} aria-hidden />
@@ -209,7 +223,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 {verified && (role === "Dom" || role === "Switcher") && (
                   <RefreshNavLink
                     href="/dashboard/dom-bereich"
-                    className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                    className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isDomBereich ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                     title="Forum für Dom(me)s – Themen erstellen und diskutieren"
                   >
                     <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
@@ -218,14 +232,14 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 )}
                 <RefreshNavLink
                   href="/dashboard/profil"
-                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isProfil ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <UserIcon className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Profil
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/einstellungen"
-                  className="flex items-center gap-2 text-sm text-gray-300 transition-colors duration-150 hover:text-white"
+                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isEinstellungen ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Einstellungen
@@ -234,11 +248,11 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
               <div className="hidden md:flex md:items-center md:gap-4 md:border-l md:border-gray-700 md:pl-6">
                 <LockDurationBadge />
                 {nick && (
-                  <RefreshNavLink
-                    href="/dashboard"
-                    className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
-                    title="MyBound"
-                  >
+                    <RefreshNavLink
+                      href="/dashboard"
+                      className={`flex items-center gap-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : "text-gray-300 hover:text-white"}`}
+                      title="MyBound"
+                    >
                     <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
                     <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
                       {avatarUrl ? (
@@ -346,15 +360,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-4">
               {user ? (
                 <>
-                  <RefreshNavLink href="/dashboard" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard" onClick={closeMenu} className={`rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isDashboard ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                     <Home className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     MyBound
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/entdecken" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard/entdecken" onClick={closeMenu} className={`rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isEntdecken ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                     <Search className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Entdecken
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/nachrichten" onClick={closeMenu} className="relative flex items-center rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard/nachrichten" onClick={closeMenu} className={`relative flex items-center rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isNachrichten ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                     <MessageSquare className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Nachrichten
                     {unreadMessages > 0 && (
@@ -378,16 +392,16 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                     className="rounded-lg px-4 py-3 text-base text-gray-300 hover:bg-gray-800 hover:text-white"
                   />
                   {verified && (role === "Dom" || role === "Switcher") && (
-                    <RefreshNavLink href="/dashboard/dom-bereich" onClick={closeMenu} className="flex items-center gap-2 rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                    <RefreshNavLink href="/dashboard/dom-bereich" onClick={closeMenu} className={`flex items-center gap-2 rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isDomBereich ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                       <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                       Dom(me)-Forum
                     </RefreshNavLink>
                   )}
-                  <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className={`rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isProfil ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                     <UserIcon className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Profil
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">
+                  <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className={`rounded-lg px-4 py-3 text-base transition-colors duration-150 hover:bg-gray-800 ${nav.isEinstellungen ? "bg-gray-800 text-white" : "text-gray-300 hover:text-white"}`}>
                     <Settings className="mr-2 inline-block h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Einstellungen
                   </RefreshNavLink>
