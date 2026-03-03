@@ -62,32 +62,6 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <section id="keuschhaltung" className="border-t border-gray-800 py-12">
-        <Container>
-          <div className="rounded-xl border border-gray-700 bg-card p-4 text-center shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-8">
-            <h2 className="text-xl font-semibold text-white">Keuschhaltung</h2>
-            <p className="mt-3 text-gray-400 max-w-2xl mx-auto">
-              Vereinbaren Sie mit einer Person Ihrer Wahl Keuschhaltung inklusive Aufgaben, BoundDollars und Belohnungskatalog – für alle, die diese Dynamik leben möchten.
-            </p>
-            <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:gap-0">
-              <Link
-                href="/register"
-                className="min-h-[44px] w-full flex items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white transition-all duration-200 hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] sm:w-auto sm:py-2.5"
-              >
-                Jetzt registrieren
-              </Link>
-              <span className="text-gray-500 sm:mx-2">oder</span>
-              <Link
-                href="/login"
-                className="min-h-[44px] w-full flex items-center justify-center rounded-lg border border-gray-600 px-5 py-3 text-sm text-gray-300 transition-all duration-200 hover:scale-[1.01] hover:border-gray-500 hover:bg-card active:scale-[0.99] sm:w-auto sm:py-2.5"
-              >
-                Anmelden
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </section>
-
       <section id="sicherheit" className="border-t border-gray-800 py-16">
         <Container>
           <div className="grid gap-12 md:grid-cols-3">
