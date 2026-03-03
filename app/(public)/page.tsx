@@ -15,24 +15,27 @@ export default async function HomePage() {
         <div
           className="pointer-events-none absolute inset-0 -top-20"
           style={{
-            background: "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(122,31,43,0.15), transparent)",
+            background: "radial-gradient(ellipse 85% 55% at 50% -15%, rgba(122,31,43,0.22), transparent 60%)",
           }}
         />
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center">
             <Link
               href="/"
-              className="inline-block rounded-xl border border-gray-700/80 bg-card/50 p-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+              className="inline-block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background focus:rounded-xl rounded-xl"
             >
               <img
                 src="/logo.jpg"
                 alt="BoundTime – Logo"
-                className="mx-auto h-auto w-40 sm:w-52 max-h-52 object-contain"
-                width={240}
-                height={240}
+                className="mx-auto h-auto w-48 sm:w-64 lg:w-72 max-h-72 object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+                width={288}
+                height={288}
               />
             </Link>
-            <h1 className="mt-8 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+            <p className="mt-4 text-sm text-gray-400">
+              Community für Cuckoldpaare, Bulls & mehr
+            </p>
+            <h1 className="mt-6 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               BoundTime – Community für Cuckoldpaare, Bulls, Femdoms & Slaves
             </h1>
             <p className="mt-6 text-lg text-gray-300">
