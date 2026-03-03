@@ -147,8 +147,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   }
 
   return (
-    <header className="sticky top-0 z-[60] border-b border-gray-800 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <nav className="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-4 py-4 pl-4 pr-4 sm:pl-6 sm:pr-6">
+    <header className="sticky top-0 z-[60] isolate border-b border-gray-800 bg-background antialiased">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 py-4 pl-4 pr-4 sm:pl-6 sm:pr-6">
         {user ? (
           <RefreshNavLink
             href="/dashboard"
@@ -175,7 +175,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             BoundTime
           </Link>
         )}
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4 min-w-0">
           {user ? (
             <>
               {/* Desktop Nav – erst ab xl (1280px), sonst Hamburger */}
