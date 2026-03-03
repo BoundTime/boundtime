@@ -23,14 +23,14 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl text-center">
             <Link
               href="/"
-              className="inline-block rounded-xl border border-gray-700/80 bg-card/50 px-6 py-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+              className="inline-block rounded-xl border border-gray-700/80 bg-card/50 p-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
             >
               <Image
                 src="/logo.png"
                 alt="BoundTime – Logo"
-                width={320}
-                height={120}
-                className="mx-auto h-auto w-56 sm:w-80"
+                width={240}
+                height={240}
+                className="mx-auto h-auto w-40 sm:w-52"
                 priority
               />
             </Link>
