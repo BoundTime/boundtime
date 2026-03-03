@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { createClient } from "@/lib/supabase/client";
-import { Check, CheckCheck } from "lucide-react";
+import { Check, CheckCheck, X } from "lucide-react";
 
 function formatTime(date: Date): string {
   const now = new Date();
@@ -47,6 +48,23 @@ export function ChatMessages({
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const supabase = useMemo(() => createClient(), []);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (lightboxUrl) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [lightboxUrl]);
+
+  useEffect(() => {
+    if (!lightboxUrl) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxUrl(null);
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightboxUrl]);
 
   useEffect(() => {
     if (scrollRef.current && messages.length > 0) {
@@ -123,18 +141,17 @@ export function ChatMessages({
                       return (
                         <div key={att.id}>
                           {isImage ? (
-                            <a
-                              href={publicUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="block"
+                            <button
+                              type="button"
+                              onClick={() => setLightboxUrl(publicUrl)}
+                              className="block text-left"
                             >
                               <img
                                 src={publicUrl}
                                 alt={att.filename}
-                                className="max-h-48 w-full max-w-sm rounded-md border border-gray-700 object-cover"
+                                className="max-h-48 w-full max-w-sm cursor-pointer rounded-md border border-gray-700 object-cover"
                               />
-                            </a>
+                            </button>
                           ) : (
                             <a
                               href={publicUrl}
@@ -180,6 +197,32 @@ export function ChatMessages({
           );
         })
       )}
+      {lightboxUrl &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Foto vergrößern"
+            onClick={() => setLightboxUrl(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxUrl(null)}
+              className="absolute right-4 top-4 rounded-full p-2 text-white hover:bg-white/10"
+              aria-label="Schließen"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <img
+              src={lightboxUrl}
+              alt=""
+              className="max-h-full max-w-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
