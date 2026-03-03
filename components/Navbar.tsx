@@ -152,20 +152,9 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         {user ? (
           <RefreshNavLink
             href="/dashboard"
-            className="flex shrink-0 items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex shrink-0 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
-            <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0">
-              <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
-                {avatarUrl ? (
-                  <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" priority />
-                ) : (
-                  <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-accent">
-                    {nick?.slice(0, 1).toUpperCase() ?? "?"}
-                  </span>
-                )}
-              </div>
-            </AvatarWithVerified>
-            <span>BoundTime</span>
+            BoundTime
           </RefreshNavLink>
         ) : (
           <Link
