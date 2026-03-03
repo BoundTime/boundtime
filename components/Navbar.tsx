@@ -148,18 +148,18 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
 
   return (
     <header className="sticky top-0 z-[60] isolate border-b border-gray-800 bg-background antialiased">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-3 pl-3 pr-3 sm:pl-4 sm:pr-4">
         {user ? (
           <RefreshNavLink
             href="/dashboard"
-            className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex shrink-0 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
             BoundTime
           </RefreshNavLink>
         ) : (
           <Link
             href="/"
-            className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex shrink-0 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
             BoundTime
           </Link>
@@ -168,29 +168,29 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
           {user ? (
             <>
               {/* Desktop Nav – ab md, kompakt damit alles in eine Zeile passt */}
-              <div className="hidden md:flex md:items-center md:gap-0.5 md:flex-shrink-0 md:min-w-0">
+              <div className="hidden md:flex md:items-center md:gap-1 md:flex-shrink-0 md:min-w-0">
                 <RefreshNavLink
                   href="/dashboard"
-                  className={`flex shrink-0 items-center gap-1 text-xs focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded px-1 py-0.5 ${nav.isDashboard ? activeLink : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded px-1.5 py-0.5 ${nav.isDashboard ? activeLink : inactiveLink}`}
                 >
-                  <Home className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
+                  <Home className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   MyBound
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/entdecken"
-                  className={`flex shrink-0 items-center gap-1 text-xs rounded px-1 py-0.5 ${nav.isEntdecken ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isEntdecken ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
-                  <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
+                  <Search className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Entdecken
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/nachrichten"
-                  className={`flex shrink-0 items-center gap-1 text-xs rounded px-1 py-0.5 ${nav.isNachrichten ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isNachrichten ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <span className="relative shrink-0">
-                    <MessageSquare className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden />
+                    <MessageSquare className="h-4 w-4" strokeWidth={1.5} aria-hidden />
                     {unreadMessages > 0 && (
-                      <span className="absolute -right-1.5 -top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-medium text-white">
+                      <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white">
                         {unreadMessages > 99 ? "99+" : unreadMessages}
                       </span>
                     )}
@@ -199,7 +199,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 </RefreshNavLink>
                 <NotificationBell />
                 <ChastityNavBadge
-                  className="text-xs gap-1 rounded px-1 py-0.5 text-gray-300 transition-colors hover:text-white"
+                  className="text-sm gap-1.5 rounded px-1.5 py-0.5 text-gray-300 transition-colors hover:text-white"
                   onClick={(e) => {
                     e.preventDefault();
                     if (pathname === "/dashboard/keuschhaltung") {
@@ -213,34 +213,34 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 {verified && (role === "Dom" || role === "Switcher") && (
                   <RefreshNavLink
                     href="/dashboard/dom-bereich"
-                    className={`flex shrink-0 items-center gap-1 text-xs rounded px-1 py-0.5 ${nav.isDomBereich ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                    className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isDomBereich ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                     title="Dom(me)-Forum – Themen erstellen und diskutieren"
                   >
-                    <MessageSquarePlus className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
+                    <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     Forum
                   </RefreshNavLink>
                 )}
                 <RefreshNavLink
                   href="/dashboard/profil"
-                  className={`flex shrink-0 items-center gap-1 text-xs rounded px-1 py-0.5 ${nav.isProfil ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isProfil ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
-                  <UserIcon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
+                  <UserIcon className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Profil
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/einstellungen"
-                  className={`flex shrink-0 items-center gap-1 text-xs rounded px-1 py-0.5 ${nav.isEinstellungen ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isEinstellungen ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
-                  <Settings className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
+                  <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Einstellungen
                 </RefreshNavLink>
               </div>
-              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-1.5 md:border-l md:border-gray-700 md:pl-2">
+              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-2 md:border-l md:border-gray-700 md:pl-3">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
                       href="/dashboard"
-                      className={`flex items-center gap-1.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : "text-gray-300 hover:text-white"}`}
+                      className={`flex items-center gap-1.5 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : "text-gray-300 hover:text-white"}`}
                       title="MyBound"
                     >
                     <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
@@ -260,16 +260,16 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                       )}
                     </div>
                     </AvatarWithVerified>
-                    <span className="flex items-center gap-1 truncate max-w-[100px]" title={nick ? `Hallo, ${nick}` : undefined}>
+                    <span className="flex items-center gap-1 truncate max-w-[120px]" title={nick ? `Hallo, ${nick}` : undefined}>
                       Hallo, {nick}
-                      <RoleIcon role={role} size={12} />
+                      <RoleIcon role={role} size={14} />
                     </span>
                   </RefreshNavLink>
                 )}
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="text-xs font-medium text-accent hover:text-accent-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded whitespace-nowrap"
+                  className="text-sm font-medium text-accent hover:text-accent-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded whitespace-nowrap"
                 >
                   Abmelden
                 </button>
