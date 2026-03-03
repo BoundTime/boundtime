@@ -24,9 +24,8 @@ export default async function HomePage() {
               href="/"
               className="inline-block rounded-xl border border-gray-700/80 bg-card/50 p-4 shadow-lg shadow-black/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
             >
-              {/* Logo: Datei muss unter public/logo.png liegen */}
               <img
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="BoundTime – Logo"
                 className="mx-auto h-auto w-40 sm:w-52 max-h-52 object-contain"
                 width={240}
