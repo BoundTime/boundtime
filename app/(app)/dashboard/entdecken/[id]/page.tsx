@@ -61,7 +61,7 @@ export default async function ProfilDetailPage({
 
   const { data: myProfile } = await supabase
     .from("profiles")
-    .select("role, verified, account_type")
+    .select("role, verified, account_type, gender")
     .eq("id", user.id)
     .single();
 
@@ -553,7 +553,16 @@ export default async function ProfilDetailPage({
                   bullId={profile.id}
                   ratings={bullRatings}
                   myRating={bullRatings.find((r) => r.rater_id === user.id) ?? null}
-                  isCouple={myProfile?.account_type === "couple"}
+                  canSeeSection={
+                    user.id === profile.id ||
+                    myProfile?.account_type === "couple" ||
+                    myProfile?.gender === "Frau"
+                  }
+                  canRate={
+                    (myProfile?.account_type === "couple" || myProfile?.gender === "Frau") &&
+                    !!myProfile?.verified
+                  }
+                  viewerVerified={!!myProfile?.verified}
                   isOwnProfile={user.id === profile.id}
                   raterNickById={bullRaterNickById}
                 />
