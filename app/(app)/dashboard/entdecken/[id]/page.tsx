@@ -186,7 +186,7 @@ export default async function ProfilDetailPage({
       .select("id, rater_id, rating, comment, created_at")
       .eq("bull_id", profile.id);
     bullRatings = (ratingsData ?? []) as typeof bullRatings;
-    const raterIds = [...new Set(bullRatings.map((r) => r.rater_id))];
+    const raterIds = Array.from(new Set(bullRatings.map((r) => r.rater_id)));
     if (raterIds.length > 0) {
       const { data: raters } = await supabase.from("profiles").select("id, nick").in("id", raterIds);
       bullRaterNickById = Object.fromEntries(((raters ?? []) as { id: string; nick: string | null }[]).map((p) => [p.id, p.nick]));
