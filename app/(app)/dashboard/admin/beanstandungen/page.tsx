@@ -24,7 +24,7 @@ export default async function BeanstandungenAdminPage() {
     .select("id, bull_rating_id, bull_id, reason_text, created_at, status")
     .order("created_at", { ascending: false });
 
-  const ratingIds = [...new Set((disputes ?? []).map((d) => d.bull_rating_id))];
+  const ratingIds = Array.from(new Set((disputes ?? []).map((d) => d.bull_rating_id)));
   const { data: ratings } =
     ratingIds.length > 0
       ? await supabase
@@ -33,9 +33,9 @@ export default async function BeanstandungenAdminPage() {
           .in("id", ratingIds)
       : { data: [] };
 
-  const bullIds = [...new Set([...(disputes ?? []).map((d) => d.bull_id), ...(ratings ?? []).map((r) => r.bull_id)])];
-  const raterIds = [...new Set((ratings ?? []).map((r) => r.rater_id))];
-  const allUserIds = [...new Set([...bullIds, ...raterIds])];
+  const bullIds = Array.from(new Set([...(disputes ?? []).map((d) => d.bull_id), ...(ratings ?? []).map((r) => r.bull_id)]));
+  const raterIds = Array.from(new Set((ratings ?? []).map((r) => r.rater_id)));
+  const allUserIds = Array.from(new Set([...bullIds, ...raterIds]));
   const { data: profs } =
     allUserIds.length > 0 ? await supabase.from("profiles").select("id, nick").in("id", allUserIds) : { data: [] };
   const nickById = new Map((profs ?? []).map((p) => [p.id, p.nick]));
