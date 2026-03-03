@@ -39,7 +39,7 @@ export default async function HomePage() {
               BoundTime – Community für Cuckoldpaare, Bulls, Femdoms & Slaves
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Eine deutschsprachige Cuckold-Community für Austausch, Dating, Vernetzung, Begegnung und Vertrauen – diskret und auf Augenhöhe.
+              Deutschsprachige Cuckold-Community für Austausch, Dating, Vernetzung, Begegnung und Vertrauen – diskret und auf Augenhöhe.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
