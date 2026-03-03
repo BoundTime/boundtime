@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="de" className="dark">
       <body
-        className={`${plusJakarta.variable} antialiased min-h-screen flex flex-col bg-background text-gray-200 font-sans text-base leading-relaxed`}
+        className={`${plusJakarta.variable} antialiased min-h-screen flex flex-col overflow-x-hidden bg-background text-gray-200 font-sans text-base leading-relaxed`}
       >
         <NextIntlClientProvider messages={messages}>
           <Navbar initialNavData={initialNavData} />

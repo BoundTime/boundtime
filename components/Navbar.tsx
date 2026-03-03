@@ -148,11 +148,11 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
 
   return (
     <header className="sticky top-0 z-[60] border-b border-gray-800 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-24 py-4 pl-4 pr-4 sm:pl-6 sm:pr-6">
+      <nav className="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-4 py-4 pl-4 pr-4 sm:pl-6 sm:pr-6">
         {user ? (
           <RefreshNavLink
             href="/dashboard"
-            className="flex items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex shrink-0 items-center gap-3 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
             <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0">
               <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
@@ -170,16 +170,16 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         ) : (
           <Link
             href="/"
-            className="text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+            className="flex shrink-0 text-xl font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
           >
             BoundTime
           </Link>
         )}
-        <div className="flex items-center gap-6">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-4">
           {user ? (
             <>
-              {/* Desktop Nav – versteckt unter md */}
-              <div className="hidden md:flex md:items-center md:gap-6">
+              {/* Desktop Nav – erst ab xl (1280px), sonst Hamburger */}
+              <div className="hidden xl:flex xl:items-center xl:gap-2 xl:flex-shrink-0">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex items-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : inactiveLink}`}
@@ -245,7 +245,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   Einstellungen
                 </RefreshNavLink>
               </div>
-              <div className="hidden md:flex md:items-center md:gap-4 md:border-l md:border-gray-700 md:pl-6">
+              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-3 md:border-l md:border-gray-700 md:pl-4">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -310,13 +310,13 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             </>
           )}
 
-          {/* Hamburger – nur unter md */}
+          {/* Hamburger – unter xl (unter 1280px), damit rechts immer Platz für Avatar + Abmelden bleibt */}
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Menü schließen" : unreadNotifications > 0 ? "Menü öffnen (ungelesene Benachrichtigungen)" : "Menü öffnen"}
-            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background md:hidden"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background xl:hidden"
           >
             {menuOpen ? <X className="h-6 w-6" strokeWidth={1.5} /> : <Menu className="h-6 w-6" strokeWidth={1.5} />}
             {unreadNotifications > 0 && (
