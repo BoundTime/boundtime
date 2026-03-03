@@ -35,14 +35,10 @@ export default async function HomePage() {
               />
             </Link>
             <h1 className="mt-8 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              BoundTime – Netzwerk für diskrete und respektvolle BDSM-Kontakte
+              BoundTime – Community für Cuckoldpaare, Bulls, Femdoms & Slaves
             </h1>
             <p className="mt-6 text-lg text-gray-300">
-              Eine deutschsprachige Community für Austausch, Begegnung und
-              Vertrauen. Für alle Rollen und Geschlechter – diskret und auf Augenhöhe.
-            </p>
-            <p className="mt-3 text-base text-gray-400">
-              Keuschhaltung mit Aufgaben und Belohnungen: gemeinsam vereinbaren und umsetzen.
+              Eine deutschsprachige Cuckold-Community für Austausch, Dating, Vernetzung, Begegnung und Vertrauen – diskret und auf Augenhöhe.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
