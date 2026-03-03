@@ -15,7 +15,7 @@ const NICK_MAX = 30;
 const NICK_REGEX = /^[a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+$/;
 
 const GENDER_OPTIONS = ["Mann", "Frau", "Divers"] as const;
-const ROLE_OPTIONS = ["Dom", "Sub", "Switcher"] as const;
+const ROLE_OPTIONS = ["Dom", "Sub", "Switcher", "Bull"] as const;
 const ACCOUNT_TYPE_OPTIONS = [
   { value: "single", label: "Einzelprofil" },
   { value: "couple", label: "Paar-Profil (gemeinsamer Account)" },
@@ -144,7 +144,7 @@ function validate(): boolean {
             data: {
               nick: nickTrim,
               gender: gender as "Mann" | "Frau" | "Divers",
-              role: role as "Dom" | "Sub" | "Switcher",
+              role: role as "Dom" | "Sub" | "Switcher" | "Bull",
               date_of_birth: dateOfBirth || null,
               account_type: accountType === "couple" ? "couple" : "single",
             },

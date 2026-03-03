@@ -16,6 +16,7 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { BullRatingsSection } from "@/components/bull/BullRatingsSection";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -60,7 +61,7 @@ export default async function ProfilDetailPage({
 
   const { data: myProfile } = await supabase
     .from("profiles")
-    .select("role, verified")
+    .select("role, verified, account_type")
     .eq("id", user.id)
     .single();
 
@@ -151,7 +152,7 @@ export default async function ProfilDetailPage({
     .toUpperCase()
     .slice(0, 2);
 
-  const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher" };
+  const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher", Bull: "Bull" };
   const roleLabel = profile.role ? roleLabels[profile.role] ?? profile.role : null;
 
   const { data: albums } = await supabase
@@ -176,6 +177,21 @@ export default async function ProfilDetailPage({
   (requests ?? []).forEach((r: { album_id: string; status: string }) => {
     requestStatusByAlbum[r.album_id] = r.status as "pending" | "approved" | "rejected";
   });
+
+  let bullRatings: { id: string; rater_id: string; rating: number; comment: string | null; created_at: string }[] = [];
+  let bullRaterNickById: Record<string, string | null> = {};
+  if (profile.role === "Bull") {
+    const { data: ratingsData } = await supabase
+      .from("bull_ratings")
+      .select("id, rater_id, rating, comment, created_at")
+      .eq("bull_id", profile.id);
+    bullRatings = (ratingsData ?? []) as typeof bullRatings;
+    const raterIds = [...new Set(bullRatings.map((r) => r.rater_id))];
+    if (raterIds.length > 0) {
+      const { data: raters } = await supabase.from("profiles").select("id, nick").in("id", raterIds);
+      bullRaterNickById = Object.fromEntries(((raters ?? []) as { id: string; nick: string | null }[]).map((p) => [p.id, p.nick]));
+    }
+  }
 
   const albumsWithCovers = await Promise.all(
     (albums ?? []).map(async (album) => {
@@ -530,6 +546,17 @@ export default async function ProfilDetailPage({
                   </h2>
                   <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.about_me}</p>
                 </div>
+              )}
+
+              {profile.role === "Bull" && (
+                <BullRatingsSection
+                  bullId={profile.id}
+                  ratings={bullRatings}
+                  myRating={bullRatings.find((r) => r.rater_id === user.id) ?? null}
+                  isCouple={myProfile?.account_type === "couple"}
+                  isOwnProfile={user.id === profile.id}
+                  raterNickById={bullRaterNickById}
+                />
               )}
 
               {!profile.height_cm &&

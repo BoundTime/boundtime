@@ -44,6 +44,8 @@ function getNotificationHref(type: NotificationType, relatedId: string | null, r
       return relatedId ? `/dashboard/keuschhaltung/${relatedId}` : "/dashboard/keuschhaltung";
     case "verification_rejected":
       return "/dashboard/verifizierung";
+    case "bull_rating_dispute":
+      return "/dashboard/admin/beanstandungen";
     default:
       return "/dashboard";
   }

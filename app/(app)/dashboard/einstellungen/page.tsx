@@ -73,14 +73,22 @@ export default async function EinstellungenPage() {
         {isAdmin && (
           <CollapsibleSection title="Admin">
             <p className="mb-3 text-sm text-gray-400">
-              Verifizierungsanfragen prüfen und bearbeiten.
+              Verifizierungsanfragen und Beanstandungen von Bull-Bewertungen bearbeiten.
             </p>
-            <Link
-              href="/dashboard/admin/verifikationen"
-              className="inline-flex items-center rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition-colors hover:bg-amber-500/20"
-            >
-              Verifikationen prüfen
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/dashboard/admin/verifikationen"
+                className="inline-flex items-center rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition-colors hover:bg-amber-500/20"
+              >
+                Verifikationen prüfen
+              </Link>
+              <Link
+                href="/dashboard/admin/beanstandungen"
+                className="inline-flex items-center rounded-lg border border-gray-600 bg-gray-800/50 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-700"
+              >
+                Beanstandungen (Bull)
+              </Link>
+            </div>
           </CollapsibleSection>
         )}
       </div>

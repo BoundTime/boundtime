@@ -1,10 +1,11 @@
-import { Crown, Link2, RefreshCw } from "lucide-react";
+import { Crown, Link2, RefreshCw, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ROLE_ICONS = {
   Dom: Crown,
   Sub: Link2,
   Switcher: RefreshCw,
+  Bull: UserRound,
 } as const;
 
 export type RoleType = keyof typeof ROLE_ICONS;

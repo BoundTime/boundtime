@@ -37,6 +37,7 @@ export function ProfileEditForm() {
   const [gender, setGender] = useState<string | null>(null);
   const [experienceLevel, setExperienceLevel] = useState<string>("");
   const [preferencesFilter, setPreferencesFilter] = useState("");
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -49,7 +50,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role"
         )
         .eq("id", user.id)
         .single()
@@ -58,7 +59,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role"
               )
               .eq("id", user.id)
               .single();
@@ -75,6 +76,7 @@ export function ProfileEditForm() {
               setExpectationsText(fallbackData.expectations_text ?? "");
               setAboutMe(fallbackData.about_me ?? "");
               setExperienceLevel(fallbackData.experience_level ?? "");
+              setRole((fallbackData as { role?: string }).role ?? null);
               const url = await resolveProfileAvatarUrl(
                 { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
                 supabase
@@ -95,6 +97,7 @@ export function ProfileEditForm() {
             setExpectationsText(data.expectations_text ?? "");
             setAboutMe(data.about_me ?? "");
             setExperienceLevel(data.experience_level ?? "");
+            setRole((data as { role?: string }).role ?? null);
             const url = await resolveProfileAvatarUrl(
               { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
               supabase
@@ -198,6 +201,21 @@ export function ProfileEditForm() {
         <p className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-400 border border-green-500/20" role="status">
           {successMessage}
         </p>
+      )}
+
+      {/* Rolle (nur Anzeige; Bull kann nur durch Support geändert werden) */}
+      {role && (
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-300">Rolle</label>
+          <p className="rounded-lg border border-gray-600 bg-gray-800/50 px-4 py-2 text-sm text-white">
+            {role}
+            {role === "Bull" && (
+              <span className="mt-1 block text-xs text-gray-400">
+                Rolle kann nur durch Support geändert werden.
+              </span>
+            )}
+          </p>
+        </div>
       )}
 
       {/* Alter + Geschlecht (nur Anzeige, nicht änderbar) */}

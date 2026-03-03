@@ -84,7 +84,7 @@ export default async function ProfilPage({
     .toUpperCase()
     .slice(0, 2);
 
-  const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher" };
+  const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher", Bull: "Bull" };
   const roleLabel = profile.role ? roleLabels[profile.role] ?? profile.role : null;
 
   const { data: albums } = await supabase

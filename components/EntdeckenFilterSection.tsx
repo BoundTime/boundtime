@@ -45,6 +45,7 @@ export function EntdeckenFilterSection({
           <option value="Dom">Dom</option>
           <option value="Sub">Sub</option>
           <option value="Switcher">Switcher</option>
+          <option value="Bull">Bull</option>
         </select>
       </div>
       <div>

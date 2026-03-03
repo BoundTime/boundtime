@@ -27,6 +27,14 @@ export default async function ChatPage({
     notFound();
   }
 
+  const { data: myProfile } = await supabase
+    .from("profiles")
+    .select("role, verified")
+    .eq("id", user.id)
+    .single();
+  const bullNeedsVerification =
+    myProfile?.role === "Bull" && !myProfile?.verified;
+
   const otherId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
   const { data: otherProfile } = await supabase
     .from("profiles")
@@ -115,7 +123,7 @@ export default async function ChatPage({
         />
 
         <div className="shrink-0 border-t border-gray-700 p-4">
-          <MessageInput conversationId={id} />
+          <MessageInput conversationId={id} bullNeedsVerification={bullNeedsVerification} />
         </div>
       </div>
     </div>

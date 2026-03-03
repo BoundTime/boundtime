@@ -43,6 +43,8 @@ function getNotificationHref(n: NotificationRow): string {
       return "/dashboard/keuschhaltung";
     case "verification_rejected":
       return "/dashboard/verifizierung";
+    case "bull_rating_dispute":
+      return "/dashboard/admin/beanstandungen";
     default:
       return "/dashboard/benachrichtigungen";
   }

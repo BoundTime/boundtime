@@ -26,7 +26,7 @@ export default async function EntdeckenPage({
   if (!user) redirect("/login");
 
   const params = await searchParams;
-  const roleFilter = params.role && ["Dom", "Sub", "Switcher"].includes(params.role) ? params.role : null;
+  const roleFilter = params.role && ["Dom", "Sub", "Switcher", "Bull"].includes(params.role) ? params.role : null;
   const genderFilter = params.gender && ["Mann", "Frau", "Divers"].includes(params.gender) ? params.gender : null;
   const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 3) || null;
   const preferenceFilter = params.preference?.trim() || null;
