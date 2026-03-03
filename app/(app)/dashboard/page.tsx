@@ -45,13 +45,12 @@ export default async function DashboardPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "nick, role, avatar_url, avatar_photo_id, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me, is_admin, bound_dollars"
+      "nick, role, avatar_url, avatar_photo_id, postal_code, city, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, expectations_text, about_me, bound_dollars"
     )
     .eq("id", user.id)
     .single();
 
   const role = profile?.role ?? null;
-  const isAdmin = profile?.is_admin ?? false;
   const progress = getProfileProgress(profile as Record<string, unknown> | null);
 
   await supabase.rpc("create_deadline_soon_notifications").then(() => {});
@@ -508,11 +507,6 @@ export default async function DashboardPage() {
         <Link href="/community-regeln" className="text-accent transition-colors duration-150 hover:underline hover:text-accent-hover">
           Community-Regeln
         </Link>
-        {isAdmin && (
-          <Link href="/dashboard/admin/verifikationen" className="text-amber-400 transition-colors duration-150 hover:underline hover:text-amber-300">
-            Verifikationen prüfen
-          </Link>
-        )}
       </div>
     </Container>
   );

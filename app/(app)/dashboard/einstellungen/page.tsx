@@ -18,12 +18,13 @@ export default async function EinstellungenPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, account_type")
+    .select("role, account_type, is_admin")
     .eq("id", user.id)
     .single();
 
   const isDomOrSwitcher =
     profile?.role === "Dom" || profile?.role === "Switcher";
+  const isAdmin = profile?.is_admin ?? false;
 
   return (
     <Container className="py-16">
@@ -66,6 +67,20 @@ export default async function EinstellungenPage() {
         {profile?.account_type === "couple" && (
           <CollapsibleSection title="Zugriffsbeschränkung">
             <SettingsRestrictionSection />
+          </CollapsibleSection>
+        )}
+
+        {isAdmin && (
+          <CollapsibleSection title="Admin">
+            <p className="mb-3 text-sm text-gray-400">
+              Verifizierungsanfragen prüfen und bearbeiten.
+            </p>
+            <Link
+              href="/dashboard/admin/verifikationen"
+              className="inline-flex items-center rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition-colors hover:bg-amber-500/20"
+            >
+              Verifikationen prüfen
+            </Link>
           </CollapsibleSection>
         )}
       </div>
