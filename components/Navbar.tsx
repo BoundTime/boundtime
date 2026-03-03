@@ -148,7 +148,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
 
   return (
     <header className="sticky top-0 z-[60] isolate border-b border-gray-800 bg-background antialiased">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 py-4 pl-4 pr-4 sm:pl-6 sm:pr-6">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
         {user ? (
           <RefreshNavLink
             href="/dashboard"
@@ -164,28 +164,28 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             BoundTime
           </Link>
         )}
-        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4 min-w-0">
+        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0">
           {user ? (
             <>
-              {/* Desktop Nav – erst ab xl (1280px), sonst Hamburger */}
-              <div className="hidden xl:flex xl:items-center xl:gap-2 xl:flex-shrink-0">
+              {/* Desktop Nav – erst ab 2xl (1536px), darunter Hamburger um Überlappung zu vermeiden */}
+              <div className="hidden 2xl:flex 2xl:items-center 2xl:gap-1 2xl:flex-shrink-0 2xl:min-w-0">
                 <RefreshNavLink
                   href="/dashboard"
-                  className={`flex items-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : inactiveLink}`}
                 >
                   <Home className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   MyBound
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/entdecken"
-                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isEntdecken ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isEntdecken ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <Search className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Entdecken
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/nachrichten"
-                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isNachrichten ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isNachrichten ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <span className="relative shrink-0">
                     <MessageSquare className="h-4 w-4" strokeWidth={1.5} aria-hidden />
@@ -212,7 +212,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 {verified && (role === "Dom" || role === "Switcher") && (
                   <RefreshNavLink
                     href="/dashboard/dom-bereich"
-                    className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isDomBereich ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                    className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isDomBereich ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                     title="Forum für Dom(me)s – Themen erstellen und diskutieren"
                   >
                     <MessageSquarePlus className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
@@ -221,20 +221,20 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 )}
                 <RefreshNavLink
                   href="/dashboard/profil"
-                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isProfil ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isProfil ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <UserIcon className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Profil
                 </RefreshNavLink>
                 <RefreshNavLink
                   href="/dashboard/einstellungen"
-                  className={`flex items-center gap-2 text-sm rounded px-2 py-1 ${nav.isEinstellungen ? activeLink + " bg-gray-800/60" : inactiveLink}`}
+                  className={`flex shrink-0 items-center gap-1.5 text-sm rounded px-1.5 py-0.5 ${nav.isEinstellungen ? activeLink + " bg-gray-800/60" : inactiveLink}`}
                 >
                   <Settings className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden />
                   Einstellungen
                 </RefreshNavLink>
               </div>
-              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-3 md:border-l md:border-gray-700 md:pl-4">
+              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-2 md:border-l md:border-gray-700 md:pl-3">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -305,7 +305,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Menü schließen" : unreadNotifications > 0 ? "Menü öffnen (ungelesene Benachrichtigungen)" : "Menü öffnen"}
-            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background xl:hidden"
+            className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded p-2 text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background 2xl:hidden"
           >
             {menuOpen ? <X className="h-6 w-6" strokeWidth={1.5} /> : <Menu className="h-6 w-6" strokeWidth={1.5} />}
             {unreadNotifications > 0 && (
