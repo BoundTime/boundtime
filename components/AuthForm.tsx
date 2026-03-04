@@ -17,8 +17,8 @@ const NICK_REGEX = /^[a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+$/;
 const GENDER_OPTIONS = ["Mann", "Frau", "Divers"] as const;
 const ROLE_OPTIONS = ["Dom", "Sub", "Switcher", "Bull"] as const;
 const ACCOUNT_TYPE_OPTIONS = [
-  { value: "single", label: "Einzelprofil" },
-  { value: "couple", label: "Paar-Profil (gemeinsamer Account)" },
+  { value: "single", label: "Einzelperson" },
+  { value: "couple", label: "Paar (gemeinsamer Account)" },
 ] as const;
 
 export function AuthForm({ mode }: AuthFormProps) {
@@ -27,7 +27,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [nick, setNick] = useState("");
   const [gender, setGender] = useState<string>("");
   const [role, setRole] = useState<string>("");
-  const [accountType, setAccountType] = useState<string>("single");
+  const [accountType, setAccountType] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,6 +87,7 @@ function validate(): boolean {
         next.nick = "Erlaubt sind nur Buchstaben, Zahlen und Unterstriche.";
       if (!gender) next.gender = "Bitte wähle ein Geschlecht.";
       if (!role) next.role = "Bitte wähle eine Rolle.";
+      if (!accountType) next.accountType = "Bitte wähle Einzelperson oder Paar.";
       if (password !== confirmPassword)
         next.confirmPassword = "Passwörter stimmen nicht überein.";
       if (!dateOfBirth) next.dateOfBirth = "Bitte gib dein Geburtsdatum an.";
@@ -146,7 +147,7 @@ function validate(): boolean {
               gender: gender as "Mann" | "Frau" | "Divers",
               role: role as "Dom" | "Sub" | "Switcher" | "Bull",
               date_of_birth: dateOfBirth || null,
-              account_type: accountType === "couple" ? "couple" : "single",
+              account_type: accountType === "couple" ? "couple" : "single", // empty = single
             },
           },
         });
@@ -266,6 +267,33 @@ function validate(): boolean {
       )}
 
       {isRegister && (
+        <div>
+          <label htmlFor="accountType" className="mb-1 block text-sm font-medium text-gray-300">
+            Account-Typ <span className="text-gray-500">(Pflicht)</span>
+          </label>
+          <select
+            id="accountType"
+            value={accountType}
+            onChange={(e) => setAccountType(e.target.value)}
+            className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          >
+            <option value="">— Einzelperson oder Paar wählen —</option>
+            {ACCOUNT_TYPE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-gray-500">
+            <strong>Paar:</strong> Gemeinsamer Account. Später in den Einstellungen kann ein Zugriffs-Passwort festgelegt werden (z. B. nur Hotwife schreibt, Cuckold nur lesen).
+          </p>
+          {errors.accountType && (
+            <p className="mt-1 text-sm text-red-400">{errors.accountType}</p>
+          )}
+        </div>
+      )}
+
+      {isRegister && (
         <>
           <div>
             <label htmlFor="gender" className="mb-1 block text-sm font-medium text-gray-300">
@@ -323,26 +351,6 @@ function validate(): boolean {
             {errors.role && (
               <p className="mt-1 text-sm text-red-400">{errors.role}</p>
             )}
-          </div>
-          <div>
-            <label htmlFor="accountType" className="mb-1 block text-sm font-medium text-gray-300">
-              Profilart <span className="text-gray-500">(Pflicht)</span>
-            </label>
-            <select
-              id="accountType"
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-            >
-              {ACCOUNT_TYPE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs text-gray-500">
-              Paar-Profil: Ein gemeinsamer Account. Später in den Einstellungen kann ein Zugriffsbeschränkungs-Passwort festgelegt werden.
-            </p>
           </div>
         </>
       )}
