@@ -326,7 +326,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
               <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-red-500" aria-hidden />
             )}
           </button>
-        </div>
       </nav>
 
       {/* Mobile Slide-In Menü – per Portal, damit es über allem liegt */}
