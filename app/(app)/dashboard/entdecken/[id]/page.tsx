@@ -520,32 +520,34 @@ export default async function ProfilDetailPage({
                       )}
                     </div>
                   </div>
-                  <dl className="mt-4 space-y-2 border-t border-gray-700 pt-4">
-                    {data.height_cm != null && data.height_cm > 0 && (
-                      <div className="flex justify-between gap-2 text-sm">
-                        <dt className="text-gray-400">Größe</dt>
-                        <dd className="text-white">{data.height_cm} cm</dd>
-                      </div>
-                    )}
-                    {data.weight_kg != null && data.weight_kg > 0 && (
-                      <div className="flex justify-between gap-2 text-sm">
-                        <dt className="text-gray-400">Gewicht</dt>
-                        <dd className="text-white">{data.weight_kg} kg</dd>
-                      </div>
-                    )}
-                    {data.body_type && (
-                      <div className="flex justify-between gap-2 text-sm">
-                        <dt className="text-gray-400">Figur</dt>
-                        <dd className="text-white">{data.body_type}</dd>
-                      </div>
-                    )}
-                    {getExperienceLabel(data.experience_level ?? null) && (
-                      <div className="flex justify-between gap-2 text-sm">
-                        <dt className="text-gray-400">Erfahrung</dt>
-                        <dd className="text-white">{getExperienceLabel(data.experience_level ?? null)}</dd>
-                      </div>
-                    )}
-                  </dl>
+                  <div className="mt-4 max-w-sm rounded-lg border border-gray-700/60 bg-gray-900/40 px-3 py-3">
+                    <dl className="space-y-2">
+                      {data.height_cm != null && data.height_cm > 0 && (
+                        <div className="flex justify-between gap-4 text-sm">
+                          <dt className="text-gray-400">Größe</dt>
+                          <dd className="text-white">{data.height_cm} cm</dd>
+                        </div>
+                      )}
+                      {data.weight_kg != null && data.weight_kg > 0 && (
+                        <div className="flex justify-between gap-4 text-sm">
+                          <dt className="text-gray-400">Gewicht</dt>
+                          <dd className="text-white">{data.weight_kg} kg</dd>
+                        </div>
+                      )}
+                      {data.body_type && (
+                        <div className="flex justify-between gap-4 text-sm">
+                          <dt className="text-gray-400">Figur</dt>
+                          <dd className="text-white">{data.body_type}</dd>
+                        </div>
+                      )}
+                      {getExperienceLabel(data.experience_level ?? null) && (
+                        <div className="flex justify-between gap-4 text-sm">
+                          <dt className="text-gray-400">Erfahrung</dt>
+                          <dd className="text-white">{getExperienceLabel(data.experience_level ?? null)}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
                   {profile.role && (
                     <div className="mt-3 flex items-center gap-1.5 border-t border-gray-700 pt-3">
                       <RoleIcon role={profile.role} size={16} className="text-gray-400" />
