@@ -21,7 +21,7 @@ const ACCOUNT_TYPE_OPTIONS = [
   { value: "couple", label: "Paarprofil" },
 ] as const;
 const COUPLE_TYPE_OPTIONS = [
-  { value: "man_woman", label: "Mann + Frau" },
+  { value: "man_woman", label: "Frau + Mann" },
   { value: "man_man", label: "Mann + Mann" },
   { value: "woman_woman", label: "Frau + Frau" },
 ] as const;
