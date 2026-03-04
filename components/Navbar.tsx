@@ -148,27 +148,29 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
 
   return (
     <header className="sticky top-0 z-[60] isolate border-b border-gray-800 bg-background antialiased">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
+      <nav className="mx-auto flex max-w-6xl items-center gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
         {user ? (
-          <RefreshNavLink
-            href="/dashboard"
-            className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
-          >
-            BoundTime
-          </RefreshNavLink>
-        ) : (
-          <Link
-            href="/"
-            className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
-          >
-            BoundTime
-          </Link>
-        )}
-        <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0">
-          {user ? (
-            <>
-              {/* Desktop Nav – ab md, kompakt damit alles in eine Zeile passt */}
-              <div className="hidden md:flex md:items-center md:gap-0.5 md:flex-shrink-0 md:min-w-0">
+          <>
+            {/* Links: BoundTime – nimmt Platz und hält Logo links */}
+            <div className="hidden md:flex flex-1 min-w-0 justify-end">
+              <RefreshNavLink
+                href="/dashboard"
+                className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+              >
+                BoundTime
+              </RefreshNavLink>
+            </div>
+            {/* Mobile: BoundTime ohne Zentrier-Layout */}
+            <div className="flex shrink-0 md:hidden">
+              <RefreshNavLink
+                href="/dashboard"
+                className="text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+              >
+                BoundTime
+              </RefreshNavLink>
+            </div>
+            {/* Mitte: Reiter horizontal zentriert zwischen links und rechts */}
+            <div className="hidden md:flex md:shrink-0 md:items-center md:gap-0.5">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex shrink-0 items-center gap-1 text-xs focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded px-1 py-0.5 ${nav.isDashboard ? activeLink : inactiveLink}`}
@@ -234,8 +236,10 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   <Settings className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
                   Einstellungen
                 </RefreshNavLink>
-              </div>
-              <div className="hidden md:flex md:flex-shrink-0 md:items-center md:gap-1.5 md:border-l md:border-gray-700 md:pl-2">
+            </div>
+            {/* Rechts: Avatar, Abmelden – nimmt Platz und hält Block rechts */}
+            <div className="hidden md:flex flex-1 min-w-0 justify-start">
+              <div className="flex flex-shrink-0 items-center gap-1.5 border-l border-gray-700 pl-2">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -274,9 +278,17 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   Abmelden
                 </button>
               </div>
+            </div>
             </>
           ) : (
             <>
+              <Link
+                href="/"
+                className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
+              >
+                BoundTime
+              </Link>
+              <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0">
               <div className="hidden md:flex md:items-center md:gap-4">
               <Link
                 href="/#community"
@@ -296,6 +308,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
               >
                 Login
               </Link>
+              </div>
               </div>
             </>
           )}
