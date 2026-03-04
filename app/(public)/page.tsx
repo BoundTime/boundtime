@@ -68,7 +68,7 @@ export default async function HomePage() {
                 Sicherheit & Diskretion
               </h2>
               <p className="mt-3 text-sm text-gray-400">
-                Ihre Daten und Ihre Privatsphäre stehen an erster Stelle. Wir
+                Eure Daten und eure Privatsphäre stehen an erster Stelle. Wir
                 setzen auf technische und organisatorische Maßnahmen, um
                 Vertraulichkeit und sichere Nutzung zu gewährleisten.
               </p>
