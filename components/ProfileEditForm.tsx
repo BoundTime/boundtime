@@ -46,6 +46,8 @@ export function ProfileEditForm() {
   const [partnerWeightKg, setPartnerWeightKg] = useState("");
   const [partnerBodyType, setPartnerBodyType] = useState("");
   const [partnerAboutMe, setPartnerAboutMe] = useState("");
+  const [partnerPreferences, setPartnerPreferences] = useState<string[]>([]);
+  const [partnerExperienceLevel, setPartnerExperienceLevel] = useState("");
 
   const isCouple = accountType === "couple";
   const isCoupleWomanMan = isCouple && coupleType === "man_woman";
@@ -62,7 +64,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level"
         )
         .eq("id", user.id)
         .single()
@@ -98,6 +100,8 @@ export function ProfileEditForm() {
                 partner_weight_kg?: number | null;
                 partner_body_type?: string | null;
                 partner_about_me?: string | null;
+                partner_preferences?: string[] | null;
+                partner_experience_level?: string | null;
               };
               setAccountType(fallback.account_type ?? null);
               setCoupleType(fallback.couple_type ?? null);
@@ -107,6 +111,8 @@ export function ProfileEditForm() {
               setPartnerWeightKg(fallback.partner_weight_kg != null ? String(fallback.partner_weight_kg) : "");
               setPartnerBodyType(fallback.partner_body_type ?? "");
               setPartnerAboutMe(fallback.partner_about_me ?? "");
+              setPartnerPreferences(Array.isArray(fallback.partner_preferences) ? fallback.partner_preferences : []);
+              setPartnerExperienceLevel(fallback.partner_experience_level ?? "");
               const url = await resolveProfileAvatarUrl(
                 { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
                 supabase
@@ -137,6 +143,8 @@ export function ProfileEditForm() {
               partner_weight_kg?: number | null;
               partner_body_type?: string | null;
               partner_about_me?: string | null;
+              partner_preferences?: string[] | null;
+              partner_experience_level?: string | null;
             };
             setAccountType(d.account_type ?? null);
             setCoupleType(d.couple_type ?? null);
@@ -146,6 +154,8 @@ export function ProfileEditForm() {
             setPartnerWeightKg(d.partner_weight_kg != null ? String(d.partner_weight_kg) : "");
             setPartnerBodyType(d.partner_body_type ?? "");
             setPartnerAboutMe(d.partner_about_me ?? "");
+            setPartnerPreferences(Array.isArray(d.partner_preferences) ? d.partner_preferences : []);
+            setPartnerExperienceLevel(d.partner_experience_level ?? "");
             const url = await resolveProfileAvatarUrl(
               { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
               supabase
@@ -175,6 +185,10 @@ export function ProfileEditForm() {
       let partnerWeight = partnerWeightKg ? parseInt(partnerWeightKg, 10) : null;
       let partnerBody = partnerBodyType || null;
       let partnerAbout = partnerAboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+      let mainPrefs = preferences;
+      let partnerPrefs = partnerPreferences;
+      let mainExp = experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null;
+      let partnerExp = partnerExperienceLevel && ["beginner", "experienced", "advanced"].includes(partnerExperienceLevel) ? partnerExperienceLevel : null;
       if (isCouple && isCoupleWomanMan && !womanFirst) {
         mainHeight = partnerHeightCm ? parseInt(partnerHeightCm, 10) : null;
         mainWeight = partnerWeightKg ? parseInt(partnerWeightKg, 10) : null;
@@ -184,6 +198,10 @@ export function ProfileEditForm() {
         partnerWeight = weightKg ? parseInt(weightKg, 10) : null;
         partnerBody = bodyType || null;
         partnerAbout = aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+        mainPrefs = partnerPreferences;
+        partnerPrefs = preferences;
+        mainExp = partnerExp;
+        partnerExp = experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null;
       }
 
       const updates: Record<string, unknown> = {
@@ -196,14 +214,17 @@ export function ProfileEditForm() {
         looking_for: lookingFor.length > 0 ? lookingFor : null,
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
         about_me: mainAbout,
-        experience_level: experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null,
+        experience_level: mainExp,
       };
-      if (preferences.length > 0) updates.preferences = preferences;
+      if (mainPrefs.length > 0) updates.preferences = mainPrefs;
       if (isCouple) {
         updates.partner_height_cm = partnerHeight;
         updates.partner_weight_kg = partnerWeight;
         updates.partner_body_type = partnerBody;
         updates.partner_about_me = partnerAbout;
+        updates.partner_experience_level = partnerExp;
+        if (partnerPrefs.length > 0) updates.partner_preferences = partnerPrefs;
+        else updates.partner_preferences = null;
       }
 
       const { error: updateError } = await supabase
@@ -304,7 +325,10 @@ export function ProfileEditForm() {
         </p>
       )}
 
-      {/* Körper: bei Paar Frau+Mann zweispaltig (links Frau, rechts Mann), sonst einspaltig */}
+      {/* Pro Partner: bei Paar zweispaltig (links Frau, rechts Mann) mit Körper, Vorlieben, Erfahrungslevel, Über mich */}
+      {isCouple && (
+        <h2 className="text-xl font-semibold text-white">Pro Partner</h2>
+      )}
       {isCoupleWomanMan ? (
         <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
           <legend className="text-lg font-semibold text-white">Körper</legend>
@@ -354,6 +378,45 @@ export function ProfileEditForm() {
               {!womanFirst && partnerDateOfBirth && getAgeFromDateOfBirth(partnerDateOfBirth) != null && (
                 <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(partnerDateOfBirth)} Jahre</p>
               )}
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Vorlieben</label>
+                <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+                  <div className="flex flex-wrap gap-2">
+                    {PREFERENCES_OPTIONS.map((option) => (
+                      <label key={`frau-${option}`} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
+                        <input
+                          type="checkbox"
+                          checked={(womanFirst ? preferences : partnerPreferences).includes(option)}
+                          onChange={(e) => {
+                            if (womanFirst) {
+                              if (e.target.checked) setPreferences((p) => [...p, option]);
+                              else setPreferences((p) => p.filter((x) => x !== option));
+                            } else {
+                              if (e.target.checked) setPartnerPreferences((p) => [...p, option]);
+                              else setPartnerPreferences((p) => p.filter((x) => x !== option));
+                            }
+                          }}
+                          className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Erfahrungslevel</label>
+                <select
+                  value={womanFirst ? experienceLevel : partnerExperienceLevel}
+                  onChange={(e) => (womanFirst ? setExperienceLevel(e.target.value) : setPartnerExperienceLevel(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Keine Angabe —</option>
+                  <option value="beginner">Einsteiger:in</option>
+                  <option value="experienced">Erfahren</option>
+                  <option value="advanced">Sehr erfahren</option>
+                </select>
+              </div>
             </div>
             <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
               <h3 className="text-sm font-semibold text-white">Mann</h3>
@@ -400,23 +463,46 @@ export function ProfileEditForm() {
               {!womanFirst && getAgeFromDateOfBirth(dateOfBirth) != null && (
                 <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(dateOfBirth)} Jahre</p>
               )}
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Vorlieben</label>
+                <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+                  <div className="flex flex-wrap gap-2">
+                    {PREFERENCES_OPTIONS.map((option) => (
+                      <label key={option} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
+                        <input
+                          type="checkbox"
+                          checked={(womanFirst ? preferences : partnerPreferences).includes(option)}
+                          onChange={(e) => {
+                            if (womanFirst) {
+                              if (e.target.checked) setPreferences((p) => [...p, option]);
+                              else setPreferences((p) => p.filter((x) => x !== option));
+                            } else {
+                              if (e.target.checked) setPartnerPreferences((p) => [...p, option]);
+                              else setPartnerPreferences((p) => p.filter((x) => x !== option));
+                            }
+                          }}
+                          className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Erfahrungslevel</label>
+                <select
+                  value={womanFirst ? experienceLevel : partnerExperienceLevel}
+                  onChange={(e) => (womanFirst ? setExperienceLevel(e.target.value) : setPartnerExperienceLevel(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Keine Angabe —</option>
+                  <option value="beginner">Einsteiger:in</option>
+                  <option value="experienced">Erfahren</option>
+                  <option value="advanced">Sehr erfahren</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div>
-            <label htmlFor="experience_level" className="mb-1 block text-sm text-gray-300">
-              Erfahrungslevel <span className="text-gray-500">(optional, gemeinsames Paar)</span>
-            </label>
-            <select
-              id="experience_level"
-              value={experienceLevel}
-              onChange={(e) => setExperienceLevel(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
-            >
-              <option value="">— Keine Angabe —</option>
-              <option value="beginner">Einsteiger:in</option>
-              <option value="experienced">Erfahren</option>
-              <option value="advanced">Sehr erfahren</option>
-            </select>
           </div>
         </fieldset>
       ) : isCouple ? (
@@ -442,6 +528,28 @@ export function ProfileEditForm() {
                   {BODY_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}
                 </select>
               </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Vorlieben</label>
+                <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+                  <div className="flex flex-wrap gap-2">
+                    {PREFERENCES_OPTIONS.map((option) => (
+                      <label key={`links-${option}`} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
+                        <input type="checkbox" checked={preferences.includes(option)} onChange={(e) => { if (e.target.checked) setPreferences((p) => [...p, option]); else setPreferences((p) => p.filter((x) => x !== option)); }} className="rounded border-gray-600 bg-background text-accent focus:ring-accent" />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Erfahrungslevel</label>
+                <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
+                  <option value="">— Keine Angabe —</option>
+                  <option value="beginner">Einsteiger:in</option>
+                  <option value="experienced">Erfahren</option>
+                  <option value="advanced">Sehr erfahren</option>
+                </select>
+              </div>
             </div>
             <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
               <h3 className="text-sm font-semibold text-white">Rechts</h3>
@@ -462,16 +570,29 @@ export function ProfileEditForm() {
                   {BODY_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}
                 </select>
               </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Vorlieben</label>
+                <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+                  <div className="flex flex-wrap gap-2">
+                    {PREFERENCES_OPTIONS.map((option) => (
+                      <label key={`rechts-${option}`} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
+                        <input type="checkbox" checked={partnerPreferences.includes(option)} onChange={(e) => { if (e.target.checked) setPartnerPreferences((p) => [...p, option]); else setPartnerPreferences((p) => p.filter((x) => x !== option)); }} className="rounded border-gray-600 bg-background text-accent focus:ring-accent" />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Erfahrungslevel</label>
+                <select value={partnerExperienceLevel} onChange={(e) => setPartnerExperienceLevel(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
+                  <option value="">— Keine Angabe —</option>
+                  <option value="beginner">Einsteiger:in</option>
+                  <option value="experienced">Erfahren</option>
+                  <option value="advanced">Sehr erfahren</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div>
-            <label htmlFor="experience_level" className="mb-1 block text-sm text-gray-300">Erfahrungslevel (optional)</label>
-            <select id="experience_level" value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
-              <option value="">— Keine Angabe —</option>
-              <option value="beginner">Einsteiger:in</option>
-              <option value="experienced">Erfahren</option>
-              <option value="advanced">Sehr erfahren</option>
-            </select>
           </div>
         </fieldset>
       ) : (
@@ -545,7 +666,10 @@ export function ProfileEditForm() {
       )}
 
 
-      {/* Standort: PLZ/Ort nur aus Datenbasis (Autocomplete) */}
+      {/* Gemeinsam: Ort, Wen sucht ihr, Was vom Gegenüber erwartet wird (bei Paar) */}
+      {isCouple && (
+        <h2 className="text-xl font-semibold text-white">Gemeinsam</h2>
+      )}
       <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
         <legend className="text-lg font-semibold text-white">Ort</legend>
         <p className="text-xs text-gray-500">
@@ -568,12 +692,12 @@ export function ProfileEditForm() {
         </div>
       </fieldset>
 
-      {/* Suche */}
+      {/* Suche / Wen sucht ihr */}
       <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
-        <legend className="text-lg font-semibold text-white">Suche</legend>
+        <legend className="text-lg font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</legend>
         <div>
           <label htmlFor="looking_for_gender" className="mb-1 block text-sm text-gray-300">
-            Wen suchst du?
+            {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
           </label>
           <select
             id="looking_for_gender"
@@ -591,7 +715,7 @@ export function ProfileEditForm() {
         </div>
         <div>
           <span className="mb-2 block text-sm text-gray-300">
-            Was suchst du? (Mehrfachauswahl)
+            {isCouple ? "Was sucht ihr? (Mehrfachauswahl)" : "Was suchst du? (Mehrfachauswahl)"}
           </span>
           <div className="flex flex-wrap gap-3">
             {LOOKING_FOR_OPTIONS.map((option) => (
@@ -617,6 +741,7 @@ export function ProfileEditForm() {
           </div>
         </div>
 
+        {!isCouple && (
         <div>
           <span className="mb-2 block text-sm text-gray-300">
             Vorlieben (worauf stehst du? Mehrfachauswahl)
@@ -664,12 +789,13 @@ export function ProfileEditForm() {
             )}
           </div>
         </div>
+        )}
       </fieldset>
 
       {/* Was erwartest du von deinem Gesuchten? */}
       <div>
         <label htmlFor="expectations_text" className="mb-1 block text-sm font-medium text-gray-300">
-          Was erwartest du von deinem Gesuchten?
+          {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
         </label>
         <textarea
           id="expectations_text"
