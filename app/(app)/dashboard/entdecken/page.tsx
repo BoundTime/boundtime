@@ -50,7 +50,7 @@ export default async function EntdeckenPage({
 
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at")
+    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at, account_type")
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
@@ -139,7 +139,7 @@ export default async function EntdeckenPage({
                     </p>
                     <p className="flex items-center gap-1.5 text-xs text-gray-400">
                       <RoleIcon role={profile.role} size={10} />
-                      <span>{profile.role ?? "—"} · {profile.gender ?? "—"}</span>
+                      <span>{profile.role ?? "—"} · {(profile as { account_type?: string }).account_type === "couple" ? "Paar" : (profile.gender ?? "—")}</span>
                     </p>
                     {location && (
                       <p className="truncate text-xs text-gray-500">{location}</p>

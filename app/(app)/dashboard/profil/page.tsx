@@ -406,38 +406,25 @@ export default async function ProfilPage({
               </div>
             );
 
+            const singleData: PartnerData = {
+              height_cm: p.height_cm,
+              weight_kg: p.weight_kg,
+              body_type: p.body_type ?? undefined,
+              date_of_birth: p.date_of_birth ?? undefined,
+              preferences: Array.isArray(p.preferences) ? p.preferences : [],
+              experience_level: p.experience_level ?? undefined,
+              about_me: p.about_me ?? undefined,
+            };
+
             return (
             <div className="space-y-6">
               {isCouple ? (
-                <>
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
-                    {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
-                  </div>
-                </>
-              ) : null}
-
-              {!isCouple && (profile.height_cm || profile.weight_kg || profile.body_type) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Körper</h2>
-                  <p className="mt-2 text-white">
-                    {[profile.height_cm && `${profile.height_cm} cm`, profile.weight_kg && `${profile.weight_kg} kg`, profile.body_type].filter(Boolean).join(" · ")}
-                  </p>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
+                  {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
                 </div>
-              )}
-              {!isCouple && (profile.age_range || getAgeFromDateOfBirth(profile.date_of_birth) != null) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Alter</h2>
-                  <p className="mt-2 text-white">
-                    {getAgeFromDateOfBirth(profile.date_of_birth) != null ? `${getAgeFromDateOfBirth(profile.date_of_birth)} Jahre` : profile.age_range ?? "—"}
-                  </p>
-                </div>
-              )}
-              {!isCouple && getExperienceLabel(profile.experience_level) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Erfahrung</h2>
-                  <p className="mt-2 text-white">{getExperienceLabel(profile.experience_level)}</p>
-                </div>
+              ) : (
+                renderPartnerCard(singleData, "Profil", avatarUrl)
               )}
 
               {isCouple && (profile.city || profile.postal_code) && (
@@ -465,17 +452,6 @@ export default async function ProfilPage({
                 </div>
               )}
 
-              {!isCouple && Array.isArray(profile.preferences) && profile.preferences.length > 0 && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h2>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {profile.preferences.map((p) => (
-                      <span key={p} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">{p}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {profile.expectations_text && (
                 <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
@@ -485,14 +461,7 @@ export default async function ProfilPage({
                 </div>
               )}
 
-              {!isCouple && profile.about_me && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Über dich</h2>
-                  <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.about_me}</p>
-                </div>
-              )}
-
-              {!isCouple && !profile.height_cm && !profile.weight_kg && !profile.body_type && !profile.age_range && getAgeFromDateOfBirth(profile.date_of_birth) == null && !getExperienceLabel(profile.experience_level) && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !(Array.isArray(profile.preferences) && profile.preferences.length) && !profile.expectations_text && !profile.about_me && (
+              {isCouple && !(profile.city || profile.postal_code) && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
                 <p className="text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
               )}
             </div>
