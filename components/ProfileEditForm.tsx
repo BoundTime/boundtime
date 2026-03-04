@@ -468,17 +468,17 @@ export function ProfileEditForm() {
                 <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
                   <div className="flex flex-wrap gap-2">
                     {PREFERENCES_OPTIONS.map((option) => (
-                      <label key={option} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
+                      <label key={`mann-${option}`} className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500">
                         <input
                           type="checkbox"
-                          checked={(womanFirst ? preferences : partnerPreferences).includes(option)}
+                          checked={(womanFirst ? partnerPreferences : preferences).includes(option)}
                           onChange={(e) => {
                             if (womanFirst) {
-                              if (e.target.checked) setPreferences((p) => [...p, option]);
-                              else setPreferences((p) => p.filter((x) => x !== option));
-                            } else {
                               if (e.target.checked) setPartnerPreferences((p) => [...p, option]);
                               else setPartnerPreferences((p) => p.filter((x) => x !== option));
+                            } else {
+                              if (e.target.checked) setPreferences((p) => [...p, option]);
+                              else setPreferences((p) => p.filter((x) => x !== option));
                             }
                           }}
                           className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
@@ -492,8 +492,8 @@ export function ProfileEditForm() {
               <div>
                 <label className="mb-1 block text-sm text-gray-300">Erfahrungslevel</label>
                 <select
-                  value={womanFirst ? experienceLevel : partnerExperienceLevel}
-                  onChange={(e) => (womanFirst ? setExperienceLevel(e.target.value) : setPartnerExperienceLevel(e.target.value))}
+                  value={womanFirst ? partnerExperienceLevel : experienceLevel}
+                  onChange={(e) => (womanFirst ? setPartnerExperienceLevel(e.target.value) : setExperienceLevel(e.target.value))}
                   className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
                 >
                   <option value="">— Keine Angabe —</option>
