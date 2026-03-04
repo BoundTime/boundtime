@@ -37,6 +37,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [registerStep, setRegisterStep] = useState<1 | 2 | 3>(1);
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [partnerDateOfBirth, setPartnerDateOfBirth] = useState("");
+  const [coupleOrderSwapped, setCoupleOrderSwapped] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptAge, setAcceptAge] = useState(false);
@@ -111,7 +112,7 @@ function validate(): boolean {
         if (age < 18) next.dateOfBirth = "Du musst mindestens 18 Jahre alt sein.";
       }
       if (accountType === "couple") {
-        if (!partnerDateOfBirth) next.partnerDateOfBirth = "Bitte gib das Geburtsdatum der zweiten Person an.";
+        if (!partnerDateOfBirth) next.partnerDateOfBirth = "Bitte gib beide Geburtsdaten an.";
         else {
           const birth = new Date(partnerDateOfBirth);
           const today = new Date();
@@ -171,6 +172,7 @@ function validate(): boolean {
               account_type: accountType === "couple" ? "couple" : "single",
               ...(accountType === "couple" && coupleType ? { couple_type: coupleType } : {}),
               ...(accountType === "couple" && partnerDateOfBirth ? { partner_date_of_birth: partnerDateOfBirth } : {}),
+              ...(accountType === "couple" && coupleType === "man_woman" ? { couple_first_is: coupleOrderSwapped ? "woman" : "man" } : {}),
             },
           },
         });
@@ -453,9 +455,26 @@ function validate(): boolean {
               <p className="text-gray-300">
                 Geburtsdaten beider Personen (beide müssen mindestens 18 Jahre alt sein).
               </p>
+              {coupleType === "man_woman" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDateOfBirth(partnerDateOfBirth);
+                    setPartnerDateOfBirth(dateOfBirth);
+                    setCoupleOrderSwapped((s) => !s);
+                  }}
+                  className="text-sm text-accent hover:text-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
+                >
+                  Reihenfolge tauschen (Frau ↔ Mann)
+                </button>
+              )}
               <div>
                 <label htmlFor="dateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
-                  Geburtsdatum Person 1
+                  {coupleType === "man_woman"
+                    ? (coupleOrderSwapped ? "Geburtsdatum Frau" : "Geburtsdatum Mann")
+                    : coupleType === "man_man"
+                      ? "Geburtsdatum Mann (erster)"
+                      : "Geburtsdatum Frau (erste)"}
                 </label>
                 <input
                   id="dateOfBirth"
@@ -470,7 +489,11 @@ function validate(): boolean {
               </div>
               <div>
                 <label htmlFor="partnerDateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
-                  Geburtsdatum Person 2
+                  {coupleType === "man_woman"
+                    ? (coupleOrderSwapped ? "Geburtsdatum Mann" : "Geburtsdatum Frau")
+                    : coupleType === "man_man"
+                      ? "Geburtsdatum Mann (zweiter)"
+                      : "Geburtsdatum Frau (zweite)"}
                 </label>
                 <input
                   id="partnerDateOfBirth"
