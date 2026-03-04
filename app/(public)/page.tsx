@@ -59,42 +59,48 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <section id="sicherheit" className="border-t border-gray-800 py-16">
+      <section id="sicherheit" className="border-t border-gray-800 py-16 sm:py-20">
         <Container>
-          <div className="grid gap-12 md:grid-cols-3">
-            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
-              <ShieldCheck className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
-              <h2 className="mt-3 text-lg font-semibold text-white">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
+            <article className="flex min-h-[220px] flex-col rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                <ShieldCheck className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden />
+              </div>
+              <h2 className="mt-4 text-lg font-semibold leading-tight text-white">
                 Sicherheit & Diskretion
               </h2>
-              <p className="mt-3 text-sm text-gray-400">
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-400">
                 Eure Daten und eure Privatsphäre stehen an erster Stelle. Wir
                 setzen auf technische und organisatorische Maßnahmen, um
-                Vertraulichkeit und sichere Nutzung zu gewährleisten.
+                Vertraulichkeit und eine sichere Nutzung zu gewährleisten.
               </p>
-            </div>
-            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
-              <HeartHandshake className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
-              <h2 className="mt-3 text-lg font-semibold text-white">
+            </article>
+            <article className="flex min-h-[220px] flex-col rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                <HeartHandshake className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden />
+              </div>
+              <h2 className="mt-4 text-lg font-semibold leading-tight text-white">
                 Consent & Respekt
               </h2>
-              <p className="mt-3 text-sm text-gray-400">
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-400">
                 Einverständnis und gegenseitiger Respekt sind die Grundlage
                 unserer Community. Wir fördern einen achtsamen Umgang und klare
                 Kommunikation zwischen allen Nutzerinnen und Nutzern.
               </p>
-            </div>
-            <div className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md sm:p-6">
-              <UsersRound className="h-8 w-8 text-accent" strokeWidth={1.5} aria-hidden />
-              <h2 className="mt-3 text-lg font-semibold text-white" id="community">
+            </article>
+            <article className="flex min-h-[220px] flex-col rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                <UsersRound className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden />
+              </div>
+              <h2 className="mt-4 text-lg font-semibold leading-tight text-white" id="community">
                 Community-Fokus
               </h2>
-              <p className="mt-3 text-sm text-gray-400">
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-400">
                 BoundTime ist ein Ort für Austausch und seriöse Kontakte. Im
                 Mittelpunkt stehen Vertrauen, Information und der respektvolle
                 Umgang innerhalb der Community.
               </p>
-            </div>
+            </article>
           </div>
         </Container>
       </section>

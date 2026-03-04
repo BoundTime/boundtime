@@ -582,7 +582,7 @@ export default async function ProfilDetailPage({
               ) : null}
 
               {!isCouple && (profile.height_cm || profile.weight_kg || profile.body_type) && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Körper</h2>
                   <p className="mt-2 text-white">
                     {[profile.height_cm && `${profile.height_cm} cm`, profile.weight_kg && `${profile.weight_kg} kg`, profile.body_type].filter(Boolean).join(" · ")}
@@ -591,7 +591,7 @@ export default async function ProfilDetailPage({
               )}
 
               {!isCouple && (profile.age_range || getAgeFromDateOfBirth(profile.date_of_birth) != null) && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Alter</h2>
                   <p className="mt-2 text-white">
                     {getAgeFromDateOfBirth(profile.date_of_birth) != null ? `${getAgeFromDateOfBirth(profile.date_of_birth)} Jahre` : profile.age_range ?? "—"}
@@ -600,21 +600,21 @@ export default async function ProfilDetailPage({
               )}
 
               {!isCouple && getExperienceLabel(profile.experience_level) && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Erfahrung</h2>
                   <p className="mt-2 text-white">{getExperienceLabel(profile.experience_level)}</p>
                 </div>
               )}
 
               {isCouple && (profile.city || profile.postal_code) && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
                   <p className="mt-2 text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
                 </div>
               )}
 
               {profile.looking_for_gender && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen sucht die Person?"}
                   </h2>
@@ -623,7 +623,7 @@ export default async function ProfilDetailPage({
               )}
 
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was sucht ihr?" : "Was sucht die Person?"}
                   </h2>
@@ -632,7 +632,7 @@ export default async function ProfilDetailPage({
               )}
 
               {!isCouple && Array.isArray(profile.preferences) && profile.preferences.length > 0 && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h2>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {profile.preferences.map((p) => (
@@ -643,7 +643,7 @@ export default async function ProfilDetailPage({
               )}
 
               {profile.expectations_text && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartet die Person von ihrem Gesuchten?"}
                   </h2>
@@ -652,7 +652,7 @@ export default async function ProfilDetailPage({
               )}
 
               {!isCouple && profile.about_me && (
-                <div>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Über die Person</h2>
                   <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.about_me}</p>
                 </div>
