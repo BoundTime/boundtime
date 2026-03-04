@@ -48,12 +48,28 @@
 
 ---
 
+## 4. Landingpage: Links „Community“ und „Sicherheit“ in der Navbar anpassen
+
+**Anforderung:** Oben rechts auf der Landingpage (wenn nicht eingeloggt) sollen die Navbar-Links so funktionieren:
+- **„Community“** → Klick führt zur Seite **Community-Regeln** (nicht mehr zum Anker #community auf der Startseite).
+- **„Sicherheit“** → Klick führt zur Seite **Datenschutz** (nicht mehr zum Anker #sicherheit auf der Startseite).
+
+**Umsetzung:**
+- **Betroffene Komponente:** `components/Navbar.tsx`. Dort sind die Links für nicht eingeloggte Nutzer (Desktop und Mobile-Menü) zu finden.
+- **Änderung:**  
+  - Link „Community“: Ziel von `/#community` auf **`/community-regeln`** ändern (Seite existiert unter `app/(public)/community-regeln/page.tsx`).  
+  - Link „Sicherheit“: Ziel von `/#sicherheit` auf **`/datenschutz`** ändern (Seite existiert unter `app/(public)/datenschutz/page.tsx`).
+- Beide Links sowohl in der **Desktop-Navbar** als auch im **Mobile-Menü** (Hamburger) anpassen.
+
+---
+
 ## Kurz-Checkliste
 
 - [ ] Paar: Zwei getrennte Auswahlen (Devot / Dominant / Switcher) pro Person; DB-Spalten oder bestehende Felder anpassen; UI in Profil/Einstellungen
 - [ ] Zugriffsbeschränkung: Deutliche Anzeige „aktiv“ vs. „nicht aktiv“ in den Einstellungen
 - [ ] Zugriffsbeschränkung: Deaktivieren möglich (Häkchen abwählen → Speichern → restriction_enabled = false)
 - [ ] Navbar: Indikator für Paar-Accounts – Grün = keine Beschränkung, Rot = Beschränkung aktiv; optional Tooltip
+- [ ] Navbar: Link „Community“ → `/community-regeln`; Link „Sicherheit“ → `/datenschutz` (Desktop + Mobile)
 
 ---
 
