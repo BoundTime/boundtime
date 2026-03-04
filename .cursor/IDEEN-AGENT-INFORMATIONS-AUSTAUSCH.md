@@ -144,4 +144,32 @@ Der **Design-Agent** ist ab jetzt auch der **kreative Part** der Agenten:
 
 ---
 
-*Stand: Erweiterung um kreative Ideen-Rolle und Recherche 2024/2025*
+## 9. Ideen aus Screenshots (evtl. später umsetzen)
+
+Aus dem Abgleich mit anderen Websites (z. B. fetisch.de, Präferenz-Fragebogen) gesammelte Ideen – **nicht priorisiert, nur als Optionen** für spätere Umsetzung.
+
+### Aus Profil-Seiten (z. B. fetisch.de)
+
+- **Profil speichern / Lesezeichen:** Button „Profil speichern“ – gespeicherte Profile später abrufbar (Favoriten).
+- **Profilaufrufe anzeigen:** Auf dem eigenen Profil „X Profilaufrufe“ anzeigen (Daten habt ihr bereits).
+- **Steckbrief-Block:** Geschlecht, Alter, Beziehungsstatus, Größe, Sprachen etc. als kompakter Block mit klaren Labels.
+- **„Ich stehe auf“ / „Ich suche“ als Tags:** `preferences` und `looking_for` als Tag-Cloud darstellen (wie auf Referenz-Seiten).
+- **Foto-Thumbnails im Profil-Header:** 2–3 kleine Vorschaubilder neben dem Avatar für schnellen Eindruck.
+- **BDSM-/Cuckold-Persönlichkeit mit Slidern:** D/S-Spektrum, Rollen (z. B. Rope Bunny, Sadist/Masochist) mit Balken – angepasst an Cuckold/Bull/Hotwife/Keuschhaltung (z. B. „Wie wichtig ist dir Keuschhaltung?“).
+- **Gamification wie „Schatzsuche“:** Zusätzliche Badges/Entdeckungs-Elemente für Engagement.
+
+### Aus Präferenz-Fragebogen
+
+- **Mehrstufiger Präferenz-Fragebogen:** Onboarding oder Profil-Vervollständigung mit 10–20 Fragen zu Cuckold, Wifesharing, Keuschhaltung, Rolle (Bull/Hotwife/Cuck).
+- **Kategorien + Fortschritt:** „Frage X von Y • Kategorie: Keuschhaltung“ mit Fortschrittsbalken.
+- **Antwort-Skala:** „Sehr / Mittelmäßig / Ein bisschen / Nicht mein Ding“ statt nur Ja/Nein.
+- **„Kategorie überspringen“:** Nutzer:innen können einen Themenblock überspringen (Diskretion, Kontrolle).
+- **Dark-Mode-Karten:** Antwort-Optionen als abgesetzte Karten mit Radio-Buttons (UI-Referenz).
+
+### Speicherort
+
+- Ausführlichere Notizen zu Screenshots: `.cursor/IDEEN-SCREENSHOTS-REFERENZ.md`
+
+---
+
+*Stand: Erweiterung um kreative Ideen-Rolle und Recherche 2024/2025; Ideen aus Screenshots ergänzt*

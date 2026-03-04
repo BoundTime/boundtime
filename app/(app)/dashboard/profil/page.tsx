@@ -54,7 +54,7 @@ export default async function ProfilPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level"
     )
     .eq("id", user.id)
     .single();
@@ -156,18 +156,24 @@ export default async function ProfilPage({
           <div className="mt-4 sm:ml-6 sm:mt-0">
             <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
             <p className="mt-1 text-gray-400">
-              {roleLabel && (
-                <span className="inline-flex items-center gap-1.5">
-                  <RoleIcon role={profile.role} size={18} className="text-gray-400" />
-                  {roleLabel}
-                </span>
-              )}
-              {getAgeFromDateOfBirth(profile.date_of_birth) != null && (roleLabel ? " · " : "")}
-              {getAgeFromDateOfBirth(profile.date_of_birth) != null && (
-                <span>{getAgeFromDateOfBirth(profile.date_of_birth)} Jahre</span>
-              )}
-              {getGenderSymbol(profile.gender) && (
-                <span> {getGenderSymbol(profile.gender)}</span>
+              {(profile as { account_type?: string }).account_type === "couple" ? (
+                <span>Paarprofil</span>
+              ) : (
+                <>
+                  {roleLabel && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <RoleIcon role={profile.role} size={18} className="text-gray-400" />
+                      {roleLabel}
+                    </span>
+                  )}
+                  {getAgeFromDateOfBirth(profile.date_of_birth) != null && (roleLabel ? " · " : "")}
+                  {getAgeFromDateOfBirth(profile.date_of_birth) != null && (
+                    <span>{getAgeFromDateOfBirth(profile.date_of_birth)} Jahre</span>
+                  )}
+                  {getGenderSymbol(profile.gender) && (
+                    <span> {getGenderSymbol(profile.gender)}</span>
+                  )}
+                </>
               )}
             </p>
             {(profile.city || profile.postal_code) && (
@@ -291,51 +297,126 @@ export default async function ProfilPage({
             </>
           )}
 
-          {tab === "info" && (
+          {tab === "info" && (() => {
+            const p = profile as typeof profile & {
+              account_type?: string | null;
+              couple_type?: string | null;
+              couple_first_is?: string | null;
+              partner_date_of_birth?: string | null;
+              partner_height_cm?: number | null;
+              partner_weight_kg?: number | null;
+              partner_body_type?: string | null;
+              partner_about_me?: string | null;
+              partner_preferences?: string[] | null;
+              partner_experience_level?: string | null;
+            };
+            const isCouple = p.account_type === "couple";
+            const isCoupleWomanMan = isCouple && p.couple_type === "man_woman";
+            const womanFirst = p.couple_first_is === "woman";
+            type PartnerData = { height_cm?: number | null; weight_kg?: number | null; body_type?: string | null; date_of_birth?: string | null; preferences?: string[]; experience_level?: string | null; about_me?: string | null };
+            const left: PartnerData = isCoupleWomanMan
+              ? (womanFirst ? { height_cm: p.height_cm, weight_kg: p.weight_kg, body_type: p.body_type, date_of_birth: p.date_of_birth ?? undefined, preferences: Array.isArray(p.preferences) ? p.preferences : [], experience_level: p.experience_level ?? undefined, about_me: p.about_me ?? undefined }
+                : { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined })
+              : { height_cm: p.height_cm, weight_kg: p.weight_kg, body_type: p.body_type, date_of_birth: p.date_of_birth ?? undefined, preferences: Array.isArray(p.preferences) ? p.preferences : [], experience_level: p.experience_level ?? undefined, about_me: p.about_me ?? undefined };
+            const right: PartnerData = isCoupleWomanMan
+              ? (womanFirst ? { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined }
+                : { height_cm: p.height_cm, weight_kg: p.weight_kg, body_type: p.body_type, date_of_birth: p.date_of_birth ?? undefined, preferences: Array.isArray(p.preferences) ? p.preferences : [], experience_level: p.experience_level ?? undefined, about_me: p.about_me ?? undefined })
+              : { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined };
+            const leftLabel = isCoupleWomanMan ? "Frau" : "Links";
+            const rightLabel = isCoupleWomanMan ? "Mann" : "Rechts";
+
+            const renderPartnerColumn = (data: PartnerData, label: string) => (
+              <div key={label} className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+                <h3 className="text-sm font-semibold text-white">{label}</h3>
+                {(data.height_cm || data.weight_kg || data.body_type) && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Körper</h4>
+                    <p className="mt-1 text-white">
+                      {[data.height_cm && `${data.height_cm} cm`, data.weight_kg && `${data.weight_kg} kg`, data.body_type].filter(Boolean).join(" · ")}
+                    </p>
+                  </div>
+                )}
+                {(getAgeFromDateOfBirth(data.date_of_birth ?? null) != null) && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Alter</h4>
+                    <p className="mt-1 text-white">{getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre</p>
+                  </div>
+                )}
+                {getExperienceLabel(data.experience_level ?? null) && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Erfahrung</h4>
+                    <p className="mt-1 text-white">{getExperienceLabel(data.experience_level ?? null)}</p>
+                  </div>
+                )}
+                {data.preferences && data.preferences.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
+                    <div className="mt-1 flex flex-wrap gap-2">
+                      {data.preferences.map((pref) => (
+                        <span key={pref} className="rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent">{pref}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {data.about_me && (
+                  <div>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
+                    <p className="mt-1 whitespace-pre-wrap text-sm text-gray-300">{data.about_me}</p>
+                  </div>
+                )}
+                {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
+                  <p className="text-xs text-gray-500">Keine Angaben</p>
+                )}
+              </div>
+            );
+
+            return (
             <div className="space-y-6">
-              {(profile.height_cm || profile.weight_kg || profile.body_type) && (
+              {isCouple ? (
+                <>
+                  <h2 className="text-lg font-semibold text-white">Pro Partner</h2>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {renderPartnerColumn(left, leftLabel)}
+                    {renderPartnerColumn(right, rightLabel)}
+                  </div>
+                  <h2 className="text-lg font-semibold text-white">Gemeinsam</h2>
+                </>
+              ) : null}
+
+              {!isCouple && (profile.height_cm || profile.weight_kg || profile.body_type) && (
                 <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Körper
-                  </h2>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Körper</h2>
                   <p className="mt-2 text-white">
-                    {[
-                      profile.height_cm && `${profile.height_cm} cm`,
-                      profile.weight_kg && `${profile.weight_kg} kg`,
-                      profile.body_type,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
+                    {[profile.height_cm && `${profile.height_cm} cm`, profile.weight_kg && `${profile.weight_kg} kg`, profile.body_type].filter(Boolean).join(" · ")}
                   </p>
                 </div>
               )}
-
-              {(profile.age_range || getAgeFromDateOfBirth(profile.date_of_birth) != null) && (
+              {!isCouple && (profile.age_range || getAgeFromDateOfBirth(profile.date_of_birth) != null) && (
                 <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Alter
-                  </h2>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Alter</h2>
                   <p className="mt-2 text-white">
-                    {getAgeFromDateOfBirth(profile.date_of_birth) != null
-                      ? `${getAgeFromDateOfBirth(profile.date_of_birth)} Jahre`
-                      : profile.age_range ?? "—"}
+                    {getAgeFromDateOfBirth(profile.date_of_birth) != null ? `${getAgeFromDateOfBirth(profile.date_of_birth)} Jahre` : profile.age_range ?? "—"}
                   </p>
                 </div>
               )}
-
-              {getExperienceLabel(profile.experience_level) && (
+              {!isCouple && getExperienceLabel(profile.experience_level) && (
                 <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Erfahrung
-                  </h2>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Erfahrung</h2>
                   <p className="mt-2 text-white">{getExperienceLabel(profile.experience_level)}</p>
+                </div>
+              )}
+
+              {isCouple && (profile.city || profile.postal_code) && (
+                <div>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
+                  <p className="mt-2 text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
                 </div>
               )}
 
               {profile.looking_for_gender && (
                 <div>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Wen suchst du?
+                    {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
                   </h2>
                   <p className="mt-2 text-white">{profile.looking_for_gender}</p>
                 </div>
@@ -344,25 +425,18 @@ export default async function ProfilPage({
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
                 <div>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was suchst du?
+                    {isCouple ? "Was sucht ihr?" : "Was suchst du?"}
                   </h2>
                   <p className="mt-2 text-white">{profile.looking_for.join(", ")}</p>
                 </div>
               )}
 
-              {Array.isArray(profile.preferences) && profile.preferences.length > 0 && (
+              {!isCouple && Array.isArray(profile.preferences) && profile.preferences.length > 0 && (
                 <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Vorlieben
-                  </h2>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h2>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {profile.preferences.map((p) => (
-                      <span
-                        key={p}
-                        className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent"
-                      >
-                        {p}
-                      </span>
+                      <span key={p} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">{p}</span>
                     ))}
                   </div>
                 </div>
@@ -371,38 +445,25 @@ export default async function ProfilPage({
               {profile.expectations_text && (
                 <div>
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was erwartest du von deinem Gesuchten?
+                    {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
                   </h2>
-                  <p className="mt-2 whitespace-pre-wrap text-gray-300">
-                    {profile.expectations_text}
-                  </p>
+                  <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.expectations_text}</p>
                 </div>
               )}
 
-              {profile.about_me && (
+              {!isCouple && profile.about_me && (
                 <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Über dich
-                  </h2>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Über dich</h2>
                   <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.about_me}</p>
                 </div>
               )}
 
-              {!profile.height_cm &&
-                !profile.weight_kg &&
-                !profile.body_type &&
-                !profile.age_range &&
-                getAgeFromDateOfBirth(profile.date_of_birth) == null &&
-                !getExperienceLabel(profile.experience_level) &&
-                !profile.looking_for_gender &&
-                !(Array.isArray(profile.looking_for) && profile.looking_for.length) &&
-                !(Array.isArray(profile.preferences) && profile.preferences.length) &&
-                !profile.expectations_text &&
-                !profile.about_me && (
-                  <p className="text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
-                )}
+              {!isCouple && !profile.height_cm && !profile.weight_kg && !profile.body_type && !profile.age_range && getAgeFromDateOfBirth(profile.date_of_birth) == null && !getExperienceLabel(profile.experience_level) && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !(Array.isArray(profile.preferences) && profile.preferences.length) && !profile.expectations_text && !profile.about_me && (
+                <p className="text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
+              )}
             </div>
-          )}
+            );
+          })()}
 
           {tab === "alben" && (
             <ProfileAlbumsSection
