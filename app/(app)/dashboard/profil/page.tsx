@@ -6,7 +6,7 @@ import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel } from "@/li
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { Pencil, Images } from "lucide-react";
+import { Pencil, Images, User } from "lucide-react";
 import { PostDeleteButton } from "@/components/PostDeleteButton";
 
 function formatTimeAgo(date: Date): string {
@@ -322,51 +322,87 @@ export default async function ProfilPage({
               ? (womanFirst ? { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined }
                 : { height_cm: p.height_cm, weight_kg: p.weight_kg, body_type: p.body_type, date_of_birth: p.date_of_birth ?? undefined, preferences: Array.isArray(p.preferences) ? p.preferences : [], experience_level: p.experience_level ?? undefined, about_me: p.about_me ?? undefined })
               : { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined };
-            const leftLabel = isCoupleWomanMan ? "Frau" : "Links";
-            const rightLabel = isCoupleWomanMan ? "Mann" : "Rechts";
+            const leftLabel = isCoupleWomanMan ? "Frau" : "Partner:in 1";
+            const rightLabel = isCoupleWomanMan ? "Mann" : "Partner:in 2";
+            const leftHasAvatar = isCoupleWomanMan ? womanFirst : true;
+            const rightHasAvatar = isCoupleWomanMan ? !womanFirst : false;
 
-            const renderPartnerColumn = (data: PartnerData, label: string) => (
-              <div key={label} className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
-                <h3 className="text-sm font-semibold text-white">{label}</h3>
-                {(data.height_cm || data.weight_kg || data.body_type) && (
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Körper</h4>
-                    <p className="mt-1 text-white">
-                      {[data.height_cm && `${data.height_cm} cm`, data.weight_kg && `${data.weight_kg} kg`, data.body_type].filter(Boolean).join(" · ")}
-                    </p>
-                  </div>
-                )}
-                {(getAgeFromDateOfBirth(data.date_of_birth ?? null) != null) && (
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Alter</h4>
-                    <p className="mt-1 text-white">{getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre</p>
-                  </div>
-                )}
-                {getExperienceLabel(data.experience_level ?? null) && (
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Erfahrung</h4>
-                    <p className="mt-1 text-white">{getExperienceLabel(data.experience_level ?? null)}</p>
-                  </div>
-                )}
-                {data.preferences && data.preferences.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
-                    <div className="mt-1 flex flex-wrap gap-2">
-                      {data.preferences.map((pref) => (
-                        <span key={pref} className="rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent">{pref}</span>
-                      ))}
+            const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
+              <div key={label} className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm">
+                <div className="flex flex-col p-5">
+                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
+                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
+                      {cardAvatarUrl ? (
+                        <img src={cardAvatarUrl} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="flex h-full w-full items-center justify-center text-gray-500">
+                          <User className="h-10 w-10 sm:h-12 sm:w-12" strokeWidth={1.5} aria-hidden />
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-3 sm:ml-4 sm:mt-0">
+                      <h3 className="text-base font-semibold text-white">{label}</h3>
+                      {getAgeFromDateOfBirth(data.date_of_birth ?? null) != null && (
+                        <p className="mt-0.5 text-sm text-gray-400">
+                          {getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre
+                        </p>
+                      )}
                     </div>
                   </div>
-                )}
-                {data.about_me && (
-                  <div>
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
-                    <p className="mt-1 whitespace-pre-wrap text-sm text-gray-300">{data.about_me}</p>
-                  </div>
-                )}
-                {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
-                  <p className="text-xs text-gray-500">Keine Angaben</p>
-                )}
+                  <dl className="mt-4 space-y-2 border-t border-gray-700 pt-4">
+                    {data.height_cm != null && data.height_cm > 0 && (
+                      <div className="flex justify-between gap-2 text-sm">
+                        <dt className="text-gray-400">Größe</dt>
+                        <dd className="text-white">{data.height_cm} cm</dd>
+                      </div>
+                    )}
+                    {data.weight_kg != null && data.weight_kg > 0 && (
+                      <div className="flex justify-between gap-2 text-sm">
+                        <dt className="text-gray-400">Gewicht</dt>
+                        <dd className="text-white">{data.weight_kg} kg</dd>
+                      </div>
+                    )}
+                    {data.body_type && (
+                      <div className="flex justify-between gap-2 text-sm">
+                        <dt className="text-gray-400">Figur</dt>
+                        <dd className="text-white">{data.body_type}</dd>
+                      </div>
+                    )}
+                    {getExperienceLabel(data.experience_level ?? null) && (
+                      <div className="flex justify-between gap-2 text-sm">
+                        <dt className="text-gray-400">Erfahrung</dt>
+                        <dd className="text-white">{getExperienceLabel(data.experience_level ?? null)}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  {profile.role && (
+                    <div className="mt-3 flex items-center gap-1.5 border-t border-gray-700 pt-3">
+                      <RoleIcon role={profile.role} size={16} className="text-gray-400" />
+                      <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                    </div>
+                  )}
+                  {data.preferences && data.preferences.length > 0 && (
+                    <div className="mt-4 border-t border-gray-700 pt-4">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {data.preferences.map((pref) => (
+                          <span key={pref} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">
+                            {pref}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {data.about_me && (
+                    <div className="mt-4 border-t border-gray-700 pt-4">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
+                      <p className="mt-2 whitespace-pre-wrap text-sm text-gray-300">{data.about_me}</p>
+                    </div>
+                  )}
+                  {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
+                    <p className="mt-4 border-t border-gray-700 pt-4 text-center text-sm text-gray-500">Keine Angaben</p>
+                  )}
+                </div>
               </div>
             );
 
@@ -375,11 +411,11 @@ export default async function ProfilPage({
               {isCouple ? (
                 <>
                   <h2 className="text-lg font-semibold text-white">Pro Partner</h2>
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {renderPartnerColumn(left, leftLabel)}
-                    {renderPartnerColumn(right, rightLabel)}
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
+                    {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
                   </div>
-                  <h2 className="text-lg font-semibold text-white">Gemeinsam</h2>
+                  <h2 className="mt-8 text-lg font-semibold text-white">Gemeinsam</h2>
                 </>
               ) : null}
 
