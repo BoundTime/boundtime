@@ -259,7 +259,7 @@ function validate(): boolean {
       {isRegister && registerStep === 1 && (
         <>
           <p className="text-gray-300">
-            Möchtest du ein <strong>Paarprofil</strong> (gemeinsamer Account) oder ein <strong>Singleprofil</strong> anlegen?
+            Möchtest du ein <strong>Paarprofil</strong> oder ein <strong>Singleprofil</strong> anlegen?
           </p>
           <div>
             <label htmlFor="accountType" className="mb-1 block text-sm font-medium text-gray-300">
