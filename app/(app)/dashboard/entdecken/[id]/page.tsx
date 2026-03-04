@@ -572,12 +572,10 @@ export default async function ProfilDetailPage({
             <div className="space-y-6">
               {isCouple ? (
                 <>
-                  <h2 className="text-lg font-semibold text-white">Pro Partner</h2>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
                     {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
                   </div>
-                  <h2 className="mt-8 text-lg font-semibold text-white">Gemeinsam</h2>
                 </>
               ) : null}
 
