@@ -291,13 +291,13 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
               <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0">
               <div className="hidden md:flex md:items-center md:gap-4">
               <Link
-                href="/#community"
+                href="/community-regeln"
                 className="text-sm text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
               >
                 Community
               </Link>
               <Link
-                href="/#sicherheit"
+                href="/datenschutz"
                 className="text-sm text-gray-300 transition-colors duration-150 hover:text-white"
               >
                 Sicherheit
@@ -441,8 +441,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 </>
               ) : (
                 <>
-                  <Link href="/#community" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Community</Link>
-                  <Link href="/#sicherheit" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Sicherheit</Link>
+                  <Link href="/community-regeln" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Community</Link>
+                  <Link href="/datenschutz" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Sicherheit</Link>
                   <Link href="/login" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Login</Link>
                 </>
               )}
