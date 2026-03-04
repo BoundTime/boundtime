@@ -17,8 +17,8 @@ const NICK_REGEX = /^[a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]+$/;
 const GENDER_OPTIONS = ["Mann", "Frau", "Divers"] as const;
 const ROLE_OPTIONS = ["Dom", "Sub", "Switcher", "Bull"] as const;
 const ACCOUNT_TYPE_OPTIONS = [
-  { value: "single", label: "Singleprofil (eine Person)" },
-  { value: "couple", label: "Paarprofil (gemeinsamer Account)" },
+  { value: "single", label: "Singleprofil" },
+  { value: "couple", label: "Paarprofil" },
 ] as const;
 const COUPLE_TYPE_OPTIONS = [
   { value: "man_woman", label: "Mann + Frau" },
