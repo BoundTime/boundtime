@@ -36,7 +36,6 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [coupleType, setCoupleType] = useState<string>("");
   const [registerStep, setRegisterStep] = useState<1 | 2 | 3>(1);
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [partnerNick, setPartnerNick] = useState("");
   const [partnerDateOfBirth, setPartnerDateOfBirth] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -112,12 +111,6 @@ function validate(): boolean {
         if (age < 18) next.dateOfBirth = "Du musst mindestens 18 Jahre alt sein.";
       }
       if (accountType === "couple") {
-        const partnerTrim = partnerNick.trim();
-        if (!partnerTrim) next.partnerNick = "Bitte gib den Nick der zweiten Person an.";
-        else if (partnerTrim.length < NICK_MIN || partnerTrim.length > NICK_MAX)
-          next.partnerNick = `Der Nick muss zwischen ${NICK_MIN} und ${NICK_MAX} Zeichen haben.`;
-        else if (!NICK_REGEX.test(partnerTrim))
-          next.partnerNick = "Erlaubt sind nur Buchstaben, Zahlen und Unterstriche.";
         if (!partnerDateOfBirth) next.partnerDateOfBirth = "Bitte gib das Geburtsdatum der zweiten Person an.";
         else {
           const birth = new Date(partnerDateOfBirth);
@@ -165,22 +158,6 @@ function validate(): boolean {
           setLoading(false);
           return;
         }
-        if (accountType === "couple") {
-          const partnerTrim = partnerNick.trim();
-          const { data: partnerNickTaken, error: partnerNickErr } = await supabase.rpc("nick_exists", { check_nick: partnerTrim });
-          if (partnerNickErr) {
-            setRawError(partnerNickErr.message || JSON.stringify(partnerNickErr));
-            setSubmitError("Nick-Prüfung (Partner) fehlgeschlagen. Bitte versuche es später erneut.");
-            setLoading(false);
-            return;
-          }
-          if (partnerNickTaken) {
-            setSubmitError("Der Nick der zweiten Person ist bereits vergeben. Bitte wähle einen anderen.");
-            setLoading(false);
-            return;
-          }
-        }
-
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
@@ -193,7 +170,6 @@ function validate(): boolean {
               date_of_birth: dateOfBirth || null,
               account_type: accountType === "couple" ? "couple" : "single",
               ...(accountType === "couple" && coupleType ? { couple_type: coupleType } : {}),
-              ...(accountType === "couple" && partnerNick.trim() ? { partner_nick: partnerNick.trim() } : {}),
               ...(accountType === "couple" && partnerDateOfBirth ? { partner_date_of_birth: partnerDateOfBirth } : {}),
             },
           },
@@ -452,87 +428,60 @@ function validate(): boolean {
         <>
           {accountType === "couple" ? (
             <>
-              <p className="text-gray-300">
-                Angaben zu beiden Personen (beide müssen mindestens 18 Jahre alt sein).
-              </p>
-              <div className="space-y-4 rounded-lg border border-gray-700/60 bg-gray-900/30 p-4">
-                <p className="text-sm font-medium text-gray-300">Person 1</p>
-                <div>
-                  <label htmlFor="nick" className="mb-1 block text-sm font-medium text-gray-300">
-                    Nick Person 1
-                  </label>
-                  <input
-                    id="nick"
-                    type="text"
-                    value={nick}
-                    onChange={(e) => setNick(e.target.value)}
-                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                    placeholder="z. B. Max_Muster"
-                    autoComplete="username"
-                    minLength={NICK_MIN}
-                    maxLength={NICK_MAX}
-                  />
-                  <p className="mt-1 text-xs text-gray-500">
-                    {NICK_MIN}–{NICK_MAX} Zeichen, nur Buchstaben, Zahlen und Unterstriche.
-                  </p>
-                  {errors.nick && (
-                    <p className="mt-1 text-sm text-red-400">{errors.nick}</p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="dateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
-                    Geburtsdatum Person 1
-                  </label>
-                  <input
-                    id="dateOfBirth"
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                  />
-                  {errors.dateOfBirth && (
-                    <p className="mt-1 text-sm text-red-400">{errors.dateOfBirth}</p>
-                  )}
-                </div>
+              <div>
+                <label htmlFor="nick" className="mb-1 block text-sm font-medium text-gray-300">
+                  Nick <span className="text-gray-500">(Anzeigename für euer Profil)</span>
+                </label>
+                <input
+                  id="nick"
+                  type="text"
+                  value={nick}
+                  onChange={(e) => setNick(e.target.value)}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  placeholder="z. B. Max_Muster"
+                  autoComplete="username"
+                  minLength={NICK_MIN}
+                  maxLength={NICK_MAX}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {NICK_MIN}–{NICK_MAX} Zeichen, nur Buchstaben, Zahlen und Unterstriche. Ein Nickname für das Paarprofil.
+                </p>
+                {errors.nick && (
+                  <p className="mt-1 text-sm text-red-400">{errors.nick}</p>
+                )}
               </div>
-              <div className="space-y-4 rounded-lg border border-gray-700/60 bg-gray-900/30 p-4">
-                <p className="text-sm font-medium text-gray-300">Person 2</p>
-                <div>
-                  <label htmlFor="partnerNick" className="mb-1 block text-sm font-medium text-gray-300">
-                    Nick Person 2
-                  </label>
-                  <input
-                    id="partnerNick"
-                    type="text"
-                    value={partnerNick}
-                    onChange={(e) => setPartnerNick(e.target.value)}
-                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                    placeholder="z. B. Maria_Muster"
-                    minLength={NICK_MIN}
-                    maxLength={NICK_MAX}
-                  />
-                  <p className="mt-1 text-xs text-gray-500">
-                    {NICK_MIN}–{NICK_MAX} Zeichen, nur Buchstaben, Zahlen und Unterstriche.
-                  </p>
-                  {errors.partnerNick && (
-                    <p className="mt-1 text-sm text-red-400">{errors.partnerNick}</p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="partnerDateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
-                    Geburtsdatum Person 2
-                  </label>
-                  <input
-                    id="partnerDateOfBirth"
-                    type="date"
-                    value={partnerDateOfBirth}
-                    onChange={(e) => setPartnerDateOfBirth(e.target.value)}
-                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                  />
-                  {errors.partnerDateOfBirth && (
-                    <p className="mt-1 text-sm text-red-400">{errors.partnerDateOfBirth}</p>
-                  )}
-                </div>
+              <p className="text-gray-300">
+                Geburtsdaten beider Personen (beide müssen mindestens 18 Jahre alt sein).
+              </p>
+              <div>
+                <label htmlFor="dateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
+                  Geburtsdatum Person 1
+                </label>
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+                {errors.dateOfBirth && (
+                  <p className="mt-1 text-sm text-red-400">{errors.dateOfBirth}</p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="partnerDateOfBirth" className="mb-1 block text-sm font-medium text-gray-300">
+                  Geburtsdatum Person 2
+                </label>
+                <input
+                  id="partnerDateOfBirth"
+                  type="date"
+                  value={partnerDateOfBirth}
+                  onChange={(e) => setPartnerDateOfBirth(e.target.value)}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+                {errors.partnerDateOfBirth && (
+                  <p className="mt-1 text-sm text-red-400">{errors.partnerDateOfBirth}</p>
+                )}
               </div>
             </>
           ) : (
