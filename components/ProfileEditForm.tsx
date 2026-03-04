@@ -38,6 +38,18 @@ export function ProfileEditForm() {
   const [experienceLevel, setExperienceLevel] = useState<string>("");
   const [preferencesFilter, setPreferencesFilter] = useState("");
   const [role, setRole] = useState<string | null>(null);
+  const [accountType, setAccountType] = useState<string | null>(null);
+  const [coupleType, setCoupleType] = useState<string | null>(null);
+  const [coupleFirstIs, setCoupleFirstIs] = useState<string | null>(null);
+  const [partnerDateOfBirth, setPartnerDateOfBirth] = useState<string | null>(null);
+  const [partnerHeightCm, setPartnerHeightCm] = useState("");
+  const [partnerWeightKg, setPartnerWeightKg] = useState("");
+  const [partnerBodyType, setPartnerBodyType] = useState("");
+  const [partnerAboutMe, setPartnerAboutMe] = useState("");
+
+  const isCouple = accountType === "couple";
+  const isCoupleWomanMan = isCouple && coupleType === "man_woman";
+  const womanFirst = coupleFirstIs === "woman";
 
   useEffect(() => {
     const supabase = createClient();
@@ -50,7 +62,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me"
         )
         .eq("id", user.id)
         .single()
@@ -59,7 +71,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me"
               )
               .eq("id", user.id)
               .single();
@@ -77,6 +89,24 @@ export function ProfileEditForm() {
               setAboutMe(fallbackData.about_me ?? "");
               setExperienceLevel(fallbackData.experience_level ?? "");
               setRole((fallbackData as { role?: string }).role ?? null);
+              const fallback = fallbackData as {
+                account_type?: string | null;
+                couple_type?: string | null;
+                couple_first_is?: string | null;
+                partner_date_of_birth?: string | null;
+                partner_height_cm?: number | null;
+                partner_weight_kg?: number | null;
+                partner_body_type?: string | null;
+                partner_about_me?: string | null;
+              };
+              setAccountType(fallback.account_type ?? null);
+              setCoupleType(fallback.couple_type ?? null);
+              setCoupleFirstIs(fallback.couple_first_is ?? null);
+              setPartnerDateOfBirth(fallback.partner_date_of_birth ?? null);
+              setPartnerHeightCm(fallback.partner_height_cm != null ? String(fallback.partner_height_cm) : "");
+              setPartnerWeightKg(fallback.partner_weight_kg != null ? String(fallback.partner_weight_kg) : "");
+              setPartnerBodyType(fallback.partner_body_type ?? "");
+              setPartnerAboutMe(fallback.partner_about_me ?? "");
               const url = await resolveProfileAvatarUrl(
                 { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
                 supabase
@@ -98,6 +128,24 @@ export function ProfileEditForm() {
             setAboutMe(data.about_me ?? "");
             setExperienceLevel(data.experience_level ?? "");
             setRole((data as { role?: string }).role ?? null);
+            const d = data as {
+              account_type?: string | null;
+              couple_type?: string | null;
+              couple_first_is?: string | null;
+              partner_date_of_birth?: string | null;
+              partner_height_cm?: number | null;
+              partner_weight_kg?: number | null;
+              partner_body_type?: string | null;
+              partner_about_me?: string | null;
+            };
+            setAccountType(d.account_type ?? null);
+            setCoupleType(d.couple_type ?? null);
+            setCoupleFirstIs(d.couple_first_is ?? null);
+            setPartnerDateOfBirth(d.partner_date_of_birth ?? null);
+            setPartnerHeightCm(d.partner_height_cm != null ? String(d.partner_height_cm) : "");
+            setPartnerWeightKg(d.partner_weight_kg != null ? String(d.partner_weight_kg) : "");
+            setPartnerBodyType(d.partner_body_type ?? "");
+            setPartnerAboutMe(d.partner_about_me ?? "");
             const url = await resolveProfileAvatarUrl(
               { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
               supabase
@@ -119,19 +167,44 @@ export function ProfileEditForm() {
     const supabase = createClient();
 
     try {
+      let mainHeight = heightCm ? parseInt(heightCm, 10) : null;
+      let mainWeight = weightKg ? parseInt(weightKg, 10) : null;
+      let mainBody = bodyType || null;
+      let mainAbout = aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+      let partnerHeight = partnerHeightCm ? parseInt(partnerHeightCm, 10) : null;
+      let partnerWeight = partnerWeightKg ? parseInt(partnerWeightKg, 10) : null;
+      let partnerBody = partnerBodyType || null;
+      let partnerAbout = partnerAboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+      if (isCouple && isCoupleWomanMan && !womanFirst) {
+        mainHeight = partnerHeightCm ? parseInt(partnerHeightCm, 10) : null;
+        mainWeight = partnerWeightKg ? parseInt(partnerWeightKg, 10) : null;
+        mainBody = partnerBodyType || null;
+        mainAbout = partnerAboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+        partnerHeight = heightCm ? parseInt(heightCm, 10) : null;
+        partnerWeight = weightKg ? parseInt(weightKg, 10) : null;
+        partnerBody = bodyType || null;
+        partnerAbout = aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
+      }
+
       const updates: Record<string, unknown> = {
-        height_cm: heightCm ? parseInt(heightCm, 10) : null,
-        weight_kg: weightKg ? parseInt(weightKg, 10) : null,
-        body_type: bodyType || null,
+        height_cm: mainHeight,
+        weight_kg: mainWeight,
+        body_type: mainBody,
         postal_code: postalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
         city: city.trim().slice(0, 200) || null,
         looking_for_gender: lookingForGender || null,
         looking_for: lookingFor.length > 0 ? lookingFor : null,
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
-        about_me: aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null,
+        about_me: mainAbout,
         experience_level: experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null,
       };
       if (preferences.length > 0) updates.preferences = preferences;
+      if (isCouple) {
+        updates.partner_height_cm = partnerHeight;
+        updates.partner_weight_kg = partnerWeight;
+        updates.partner_body_type = partnerBody;
+        updates.partner_about_me = partnerAbout;
+      }
 
       const { error: updateError } = await supabase
         .from("profiles")
@@ -218,8 +291,8 @@ export function ProfileEditForm() {
         </div>
       )}
 
-      {/* Alter + Geschlecht (nur Anzeige, nicht änderbar) */}
-      {(getAgeFromDateOfBirth(dateOfBirth) != null || getGenderSymbol(gender)) && (
+      {/* Alter + Geschlecht (nur Anzeige, nicht änderbar) – bei Paar nur wenn Single */}
+      {!isCouple && (getAgeFromDateOfBirth(dateOfBirth) != null || getGenderSymbol(gender)) && (
         <p className="text-sm text-gray-500">
           {getAgeFromDateOfBirth(dateOfBirth) != null && (
             <span>{getAgeFromDateOfBirth(dateOfBirth)} Jahre</span>
@@ -231,7 +304,177 @@ export function ProfileEditForm() {
         </p>
       )}
 
-      {/* Körper */}
+      {/* Körper: bei Paar Frau+Mann zweispaltig (links Frau, rechts Mann), sonst einspaltig */}
+      {isCoupleWomanMan ? (
+        <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
+          <legend className="text-lg font-semibold text-white">Körper</legend>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Frau</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
+                  <input
+                    type="number"
+                    min={100}
+                    max={250}
+                    value={womanFirst ? heightCm : partnerHeightCm}
+                    onChange={(e) => (womanFirst ? setHeightCm(e.target.value) : setPartnerHeightCm(e.target.value))}
+                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Gewicht (kg)</label>
+                  <input
+                    type="number"
+                    min={30}
+                    max={300}
+                    value={womanFirst ? weightKg : partnerWeightKg}
+                    onChange={(e) => (womanFirst ? setWeightKg(e.target.value) : setPartnerWeightKg(e.target.value))}
+                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Figur</label>
+                <select
+                  value={womanFirst ? bodyType : partnerBodyType}
+                  onChange={(e) => (womanFirst ? setBodyType(e.target.value) : setPartnerBodyType(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Keine Angabe —</option>
+                  {BODY_TYPES.map((b) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              </div>
+              {womanFirst && getAgeFromDateOfBirth(dateOfBirth) != null && (
+                <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(dateOfBirth)} Jahre</p>
+              )}
+              {!womanFirst && partnerDateOfBirth && getAgeFromDateOfBirth(partnerDateOfBirth) != null && (
+                <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(partnerDateOfBirth)} Jahre</p>
+              )}
+            </div>
+            <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Mann</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
+                  <input
+                    type="number"
+                    min={100}
+                    max={250}
+                    value={womanFirst ? partnerHeightCm : heightCm}
+                    onChange={(e) => (womanFirst ? setPartnerHeightCm(e.target.value) : setHeightCm(e.target.value))}
+                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Gewicht (kg)</label>
+                  <input
+                    type="number"
+                    min={30}
+                    max={300}
+                    value={womanFirst ? partnerWeightKg : weightKg}
+                    onChange={(e) => (womanFirst ? setPartnerWeightKg(e.target.value) : setWeightKg(e.target.value))}
+                    className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Figur</label>
+                <select
+                  value={womanFirst ? partnerBodyType : bodyType}
+                  onChange={(e) => (womanFirst ? setPartnerBodyType(e.target.value) : setBodyType(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Keine Angabe —</option>
+                  {BODY_TYPES.map((b) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
+              </div>
+              {womanFirst && partnerDateOfBirth && getAgeFromDateOfBirth(partnerDateOfBirth) != null && (
+                <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(partnerDateOfBirth)} Jahre</p>
+              )}
+              {!womanFirst && getAgeFromDateOfBirth(dateOfBirth) != null && (
+                <p className="text-xs text-gray-500">{getAgeFromDateOfBirth(dateOfBirth)} Jahre</p>
+              )}
+            </div>
+          </div>
+          <div>
+            <label htmlFor="experience_level" className="mb-1 block text-sm text-gray-300">
+              Erfahrungslevel <span className="text-gray-500">(optional, gemeinsames Paar)</span>
+            </label>
+            <select
+              id="experience_level"
+              value={experienceLevel}
+              onChange={(e) => setExperienceLevel(e.target.value)}
+              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+            >
+              <option value="">— Keine Angabe —</option>
+              <option value="beginner">Einsteiger:in</option>
+              <option value="experienced">Erfahren</option>
+              <option value="advanced">Sehr erfahren</option>
+            </select>
+          </div>
+        </fieldset>
+      ) : isCouple ? (
+        <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
+          <legend className="text-lg font-semibold text-white">Körper</legend>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Links</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
+                  <input type="number" min={100} max={250} value={heightCm} onChange={(e) => setHeightCm(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Gewicht (kg)</label>
+                  <input type="number" min={30} max={300} value={weightKg} onChange={(e) => setWeightKg(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white" />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Figur</label>
+                <select value={bodyType} onChange={(e) => setBodyType(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
+                  <option value="">— Keine Angabe —</option>
+                  {BODY_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+              <h3 className="text-sm font-semibold text-white">Rechts</h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
+                  <input type="number" min={100} max={250} value={partnerHeightCm} onChange={(e) => setPartnerHeightCm(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white" />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm text-gray-300">Gewicht (kg)</label>
+                  <input type="number" min={30} max={300} value={partnerWeightKg} onChange={(e) => setPartnerWeightKg(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white" />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Figur</label>
+                <select value={partnerBodyType} onChange={(e) => setPartnerBodyType(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
+                  <option value="">— Keine Angabe —</option>
+                  {BODY_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label htmlFor="experience_level" className="mb-1 block text-sm text-gray-300">Erfahrungslevel (optional)</label>
+            <select id="experience_level" value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white">
+              <option value="">— Keine Angabe —</option>
+              <option value="beginner">Einsteiger:in</option>
+              <option value="experienced">Erfahren</option>
+              <option value="advanced">Sehr erfahren</option>
+            </select>
+          </div>
+        </fieldset>
+      ) : (
       <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
         <legend className="text-lg font-semibold text-white">Körper</legend>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -299,6 +542,7 @@ export function ProfileEditForm() {
           </select>
         </div>
       </fieldset>
+      )}
 
 
       {/* Standort: PLZ/Ort nur aus Datenbasis (Autocomplete) */}
@@ -441,7 +685,52 @@ export function ProfileEditForm() {
         </p>
       </div>
 
-      {/* Über mich */}
+      {/* Über mich: bei Paar Frau+Mann zweispaltig (links Frau, rechts Mann), sonst einspaltig */}
+      {isCoupleWomanMan ? (
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+            <label className="mb-1 block text-sm font-medium text-gray-300">Über mich – Frau</label>
+            <textarea
+              value={womanFirst ? aboutMe : partnerAboutMe}
+              onChange={(e) => (womanFirst ? setAboutMe(e.target.value) : setPartnerAboutMe(e.target.value))}
+              maxLength={MAX_TEXT_LENGTH}
+              rows={4}
+              placeholder="Was andere über sie wissen dürfen …"
+              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {(womanFirst ? aboutMe : partnerAboutMe).length}/{MAX_TEXT_LENGTH} Zeichen
+            </p>
+          </div>
+          <div className="rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+            <label className="mb-1 block text-sm font-medium text-gray-300">Über mich – Mann</label>
+            <textarea
+              value={womanFirst ? partnerAboutMe : aboutMe}
+              onChange={(e) => (womanFirst ? setPartnerAboutMe(e.target.value) : setAboutMe(e.target.value))}
+              maxLength={MAX_TEXT_LENGTH}
+              rows={4}
+              placeholder="Was andere über ihn wissen dürfen …"
+              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {(womanFirst ? partnerAboutMe : aboutMe).length}/{MAX_TEXT_LENGTH} Zeichen
+            </p>
+          </div>
+        </div>
+      ) : isCouple ? (
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+            <label className="mb-1 block text-sm font-medium text-gray-300">Über mich – Links</label>
+            <textarea value={aboutMe} onChange={(e) => setAboutMe(e.target.value)} maxLength={MAX_TEXT_LENGTH} rows={4} placeholder="Optional …" className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white" />
+            <p className="mt-1 text-xs text-gray-500">{aboutMe.length}/{MAX_TEXT_LENGTH} Zeichen</p>
+          </div>
+          <div className="rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+            <label className="mb-1 block text-sm font-medium text-gray-300">Über mich – Rechts</label>
+            <textarea value={partnerAboutMe} onChange={(e) => setPartnerAboutMe(e.target.value)} maxLength={MAX_TEXT_LENGTH} rows={4} placeholder="Optional …" className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white" />
+            <p className="mt-1 text-xs text-gray-500">{partnerAboutMe.length}/{MAX_TEXT_LENGTH} Zeichen</p>
+          </div>
+        </div>
+      ) : (
       <div>
         <label htmlFor="about_me" className="mb-1 block text-sm font-medium text-gray-300">
           Über mich
@@ -459,6 +748,7 @@ export function ProfileEditForm() {
           {aboutMe.length}/{MAX_TEXT_LENGTH} Zeichen
         </p>
       </div>
+      )}
 
       {/* Profilbild */}
       <div>
