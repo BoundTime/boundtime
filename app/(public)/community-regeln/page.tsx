@@ -5,58 +5,38 @@ export default function CommunityRegelnPage() {
     <Container className="py-16">
       <article className="prose prose-invert max-w-none">
         <h1 className="text-3xl font-bold text-white">Community-Regeln</h1>
-        <p className="mt-4 text-gray-400">
-          Um ein respektvolles und sicheres Miteinander zu gewährleisten, bitten wir alle
-          Nutzerinnen und Nutzer, die folgenden Regeln zu beachten.{" "}
-          <strong className="text-gray-300">(Platzhalter – für den Produktivbetrieb verbindliche Fassung erforderlich.)</strong>
+
+        <p className="mt-6 text-gray-300 leading-relaxed">
+          Ziel der Community ist die Vernetzung von Menschen, die in der Welt des Cuckolding leben oder sich dieser zugehörig fühlen.
+        </p>
+        <p className="mt-2 text-gray-300">Hierzu gehören:</p>
+        <ul className="mt-2 list-disc pl-6 space-y-1 text-gray-300">
+          <li>Cuckoldpaare</li>
+          <li>Lover, Hausfreunde &amp; Bulls</li>
+          <li>Femdom-Solodamen</li>
+          <li>Devote Solomänner auf der Suche nach einer Femdom oder Hotwife</li>
+        </ul>
+
+        <p className="mt-6 text-gray-300 leading-relaxed">
+          Vernetzung im Sinne der Community bedeutet Austausch, Verabredungen und Treffen zwischen den Mitgliedern.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Respekt und Einverständnis</h2>
-        <p className="mt-2 text-gray-400">
-          Jeder Kontakt basiert auf gegenseitigem Respekt und klarem Consent. Unerwünschte
-          Ansprachen, Belästigung oder Druck sind nicht gestattet.
+        <h2 className="mt-8 text-xl font-semibold text-white">Regeln der Community</h2>
+        <p className="mt-3 text-gray-300 leading-relaxed">
+          Die Community lebt von einem respektvollen und zuverlässigen Miteinander der Teilnehmer:innen. Cuckolding bedeutet insbesondere für Solomänner keine ausschließliche Suche nach schnellem Sex, sondern die Akzeptanz einer Lebensform, in welcher der Cuckold und seine Partnerin beidseitig und vollumfänglich einbezogen werden.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Altersgrenze und FSK18</h2>
-        <p className="mt-2 text-gray-400">
-          Die Plattform ist ausschließlich volljährigen Personen vorbehalten. Nutzung durch
-          Minderjährige ist strengstens verboten und führt zur sofortigen Löschung des Kontos.
-          Bestimmte Inhalte (z.&nbsp;B. Fotos in Alben) können als FSK18 gekennzeichnet sein; der
-          Zugang kann eine Verifizierung voraussetzen. Die Einhaltung der Altersgrenze wird
-          vorausgesetzt.
+        <h3 className="mt-6 text-lg font-semibold text-white">Teilnahme in der Community</h3>
+        <p className="mt-2 text-gray-300 leading-relaxed">
+          Grundsätzlich steht die Community im Rahmen der Registrierung Jedermann und Jederfrau aus den o.&nbsp;a. Zielgruppen offen.
+        </p>
+        <p className="mt-3 text-gray-300 leading-relaxed">
+          Im Rahmen des Registrierungsprozesses behält sich der Betreiber vor, für den dauerhaften Verbleib in der Community Teilnahmebegründungen einzufordern.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Diskretion und Datenschutz</h2>
-        <p className="mt-2 text-gray-400">
-          Persönliche Daten und Gesprächsinhalte anderer Nutzerinnen und Nutzer dürfen nicht ohne
-          ausdrückliche Zustimmung weitergegeben oder veröffentlicht werden.
+        <p className="mt-6 text-gray-300 leading-relaxed">
+          Die Nichteinhaltung der Communityregeln kann zum sofortigen Ausschluss aus der Gemeinschaft führen.
         </p>
-
-        <h2 className="mt-8 text-xl font-semibold text-white">Verbotene Inhalte und Verhalten</h2>
-        <p className="mt-2 text-gray-400">
-          Illegale Inhalte, Hassrede, Diskriminierung und Verstöße gegen geltendes Recht sind
-          untersagt. Verstöße können zur Sperrung des Zugangs führen.
-        </p>
-
-        <h2 className="mt-8 text-xl font-semibold text-white">Konsequenzen bei Verstößen</h2>
-        <p className="mt-2 text-gray-400">
-          Bei Verstößen gegen diese Regeln oder die AGB behalten wir uns vor, Inhalte zu entfernen,
-          Nutzer zu verwarnen oder den Zugang zeitweise oder dauerhaft zu sperren. Schwerwiegende
-          Verstöße können zur Kündigung des Nutzungsvertrages führen.
-        </p>
-
-        <h2 className="mt-8 text-xl font-semibold text-white">Meldemöglichkeit</h2>
-        <p className="mt-2 text-gray-400">
-          Verdächtige oder regelwidrige Inhalte oder Verhalten können an die im Impressum genannte
-          Kontaktadresse oder über eine in der Anwendung bereitgestellte Meldemöglichkeit
-          gemeldet werden.
-        </p>
-
-        <div className="mt-8 rounded-lg border border-amber-600/30 bg-amber-950/20 p-4 text-sm text-amber-200/90">
-          <strong>Hinweis:</strong> Diese Community-Regeln sind ein Platzhalter für die lokale
-          Entwicklung. Für den produktiven Betrieb sind vollständige und verbindliche Regeln
-          erforderlich.
-        </div>
       </article>
     </Container>
   );
