@@ -155,8 +155,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
       <nav className="mx-auto flex max-w-6xl items-center gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
         {user ? (
           <>
-            {/* Links: BoundTime – nimmt Platz und hält Logo links */}
-            <div className="hidden md:flex flex-1 min-w-0 justify-end">
+            {/* Left (Desktop): Brand – feste Basisbreite für symmetrische Mitte */}
+            <div className="hidden md:flex md:shrink-0 md:basis-[220px] md:items-center md:justify-start">
               <RefreshNavLink
                 href="/dashboard"
                 className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
@@ -164,7 +164,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 BoundTime
               </RefreshNavLink>
             </div>
-            {/* Mobile: BoundTime ohne Zentrier-Layout */}
+            {/* Mobile: BoundTime */}
             <div className="flex shrink-0 md:hidden">
               <RefreshNavLink
                 href="/dashboard"
@@ -173,8 +173,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 BoundTime
               </RefreshNavLink>
             </div>
-            {/* Mitte: Reiter horizontal zentriert zwischen links und rechts */}
-            <div className="hidden md:flex md:shrink-0 md:items-center md:gap-0.5">
+            {/* Center (Desktop): Reiter – flex-1 + justify-center für echte optische Mitte */}
+            <div className="hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-0.5">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex shrink-0 items-center gap-1 text-xs focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded px-1 py-0.5 ${nav.isDashboard ? activeLink : inactiveLink}`}
@@ -241,15 +241,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   Einstellungen
                 </RefreshNavLink>
             </div>
-            {/* Rechts: Avatar, Abmelden – nimmt Platz und hält Block rechts */}
-            <div className="hidden md:flex flex-1 min-w-0 justify-start">
+            {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
+            <div className="hidden md:flex md:shrink-0 md:basis-[220px] md:items-center md:justify-end">
               <div className="flex flex-shrink-0 items-center gap-1.5 border-l border-gray-700 pl-2">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
                       href="/dashboard"
                       className={`flex items-center gap-1.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded ${nav.isDashboard ? activeLink : "text-gray-300 hover:text-white"}`}
-                      title="MyBound"
+                      title={nick}
                     >
                     <AvatarWithVerified verified={verified} size="sm" className="h-8 w-8 shrink-0">
                     <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600 bg-background">
@@ -268,9 +268,9 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                       )}
                     </div>
                     </AvatarWithVerified>
-                    <span className="flex items-center gap-1 truncate max-w-[100px]" title={nick ? `Hallo, ${nick}` : undefined}>
-                      Hallo, {nick}
-                      <RoleIcon role={role} size={12} />
+                    <span className="flex min-w-0 max-w-[88px] items-center gap-1 rounded px-1.5 py-0.5 text-xs">
+                      <span className="min-w-0 truncate" title={nick}>{nick}</span>
+                      <span className="shrink-0"><RoleIcon role={role} size={12} /></span>
                     </span>
                   </RefreshNavLink>
                 )}
@@ -283,6 +283,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 </button>
               </div>
             </div>
+            {/* Mobile: Spacer damit Hamburger rechts bleibt */}
+            <div className="flex-1 min-w-0 md:hidden" aria-hidden />
             </>
           ) : (
             <>

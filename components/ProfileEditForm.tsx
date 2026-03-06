@@ -333,41 +333,6 @@ export function ProfileEditForm() {
         </div>
       )}
 
-      {/* Paar: Tendenz pro Person (Devot / Dominant / Switcher) */}
-      {isCouple && (
-        <div className="space-y-4 rounded-xl border border-gray-700 p-4">
-          <h3 className="text-sm font-semibold text-white">Tendenz pro Person</h3>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm text-gray-300">Erste Person (Du)</label>
-              <select
-                value={coupleFirstTendency}
-                onChange={(e) => setCoupleFirstTendency(e.target.value)}
-                className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
-              >
-                <option value="">— Auswählen —</option>
-                <option value="devot">Devot</option>
-                <option value="dominant">Dominant</option>
-                <option value="switcher">Switcher</option>
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-sm text-gray-300">Zweite Person (Partner)</label>
-              <select
-                value={couplePartnerTendency}
-                onChange={(e) => setCouplePartnerTendency(e.target.value)}
-                className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
-              >
-                <option value="">— Auswählen —</option>
-                <option value="devot">Devot</option>
-                <option value="dominant">Dominant</option>
-                <option value="switcher">Switcher</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Alter + Geschlecht (nur Anzeige, nicht änderbar) – bei Paar nur wenn Single */}
       {!isCouple && (getAgeFromDateOfBirth(dateOfBirth) != null || getGenderSymbol(gender)) && (
         <p className="text-sm text-gray-500">
@@ -381,16 +346,25 @@ export function ProfileEditForm() {
         </p>
       )}
 
-      {/* Pro Partner: bei Paar zweispaltig (links Frau, rechts Mann) mit Körper, Vorlieben, Erfahrungslevel, Über mich */}
-      {isCouple && (
-        <h2 className="text-xl font-semibold text-white">Pro Partner</h2>
-      )}
+      {/* Paar: zweispaltig (links Frau, rechts Mann) – Tendenz in Kachel integriert, dann Körper/Vorlieben/Erfahrung/Über mich */}
       {isCoupleWomanMan ? (
         <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
-          <legend className="text-lg font-semibold text-white">Körper</legend>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
               <h3 className="text-sm font-semibold text-white">Frau</h3>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Tendenz</label>
+                <select
+                  value={womanFirst ? coupleFirstTendency : couplePartnerTendency}
+                  onChange={(e) => (womanFirst ? setCoupleFirstTendency(e.target.value) : setCouplePartnerTendency(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Auswählen —</option>
+                  <option value="devot">Devot</option>
+                  <option value="dominant">Dominant</option>
+                  <option value="switcher">Switcher</option>
+                </select>
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
@@ -476,6 +450,19 @@ export function ProfileEditForm() {
             </div>
             <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
               <h3 className="text-sm font-semibold text-white">Mann</h3>
+              <div>
+                <label className="mb-1 block text-sm text-gray-300">Tendenz</label>
+                <select
+                  value={womanFirst ? couplePartnerTendency : coupleFirstTendency}
+                  onChange={(e) => (womanFirst ? setCouplePartnerTendency(e.target.value) : setCoupleFirstTendency(e.target.value))}
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+                >
+                  <option value="">— Auswählen —</option>
+                  <option value="devot">Devot</option>
+                  <option value="dominant">Dominant</option>
+                  <option value="switcher">Switcher</option>
+                </select>
+              </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-sm text-gray-300">Größe (cm)</label>
