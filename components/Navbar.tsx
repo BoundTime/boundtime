@@ -242,8 +242,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 </RefreshNavLink>
             </div>
             {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
-            <div className="hidden md:flex md:shrink-0 md:basis-[220px] md:items-center md:justify-end">
-              <div className="flex flex-shrink-0 items-center gap-1.5 border-l border-gray-700 pl-2">
+            <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
+              <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -268,7 +268,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                       )}
                     </div>
                     </AvatarWithVerified>
-                    <span className="flex min-w-0 max-w-[88px] items-center gap-1 rounded px-1.5 py-0.5 text-xs">
+                    <span className="flex min-w-0 max-w-[140px] items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
                       <span className="min-w-0 truncate" title={nick}>{nick}</span>
                       <span className="shrink-0"><RoleIcon role={role} size={12} /></span>
                     </span>
