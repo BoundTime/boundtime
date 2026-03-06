@@ -709,149 +709,159 @@ export function ProfileEditForm() {
       )}
 
 
-      {/* Gemeinsam: Ort, Wen sucht ihr, Was vom Gegenüber erwartet wird (bei Paar) */}
+      {/* Gemeinsam: Ort, Suche, Erwartungen – einheitlicher Karten-Stil wie „Angaben zur Person“ */}
       {isCouple && (
         <h2 className="text-xl font-semibold text-white">Gemeinsam</h2>
       )}
-      <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
-        <legend className="text-lg font-semibold text-white">Ort</legend>
-        <p className="text-xs text-gray-500">
-          PLZ oder Ort eingeben – nur gültige Einträge aus unserer Datenbasis sind wählbar. Andere können Stadt und PLZ sehen (für Suche „in der Nähe“).
-        </p>
-        <div>
-          <label htmlFor="plz_ort" className="mb-1 block text-sm text-gray-300">
-            Postleitzahl oder Ort
-          </label>
-          <PlzOrtAutocomplete
-            id="plz_ort"
-            postalCode={postalCode}
-            city={city}
-            onSelect={(plz, ort) => {
-              setPostalCode(plz);
-              setCity(ort);
-            }}
-            placeholder="z. B. 10115 oder Berlin"
-          />
-        </div>
-      </fieldset>
-
-      {/* Suche / Wen sucht ihr */}
-      <fieldset className="space-y-4 rounded-xl border border-gray-700 p-4">
-        <legend className="text-lg font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</legend>
-        <div>
-          <label htmlFor="looking_for_gender" className="mb-1 block text-sm text-gray-300">
-            {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
-          </label>
-          <select
-            id="looking_for_gender"
-            value={lookingForGender}
-            onChange={(e) => setLookingForGender(e.target.value)}
-            className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
-          >
-            <option value="">— Keine Angabe —</option>
-            {LOOKING_FOR_GENDER_OPTIONS.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <span className="mb-2 block text-sm text-gray-300">
-            {isCouple ? "Was sucht ihr? (Mehrfachauswahl)" : "Was suchst du? (Mehrfachauswahl)"}
-          </span>
-          <div className="flex flex-wrap gap-3">
-            {LOOKING_FOR_OPTIONS.map((option) => (
-              <label
-                key={option}
-                className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-gray-300 hover:border-gray-500"
-              >
-                <input
-                  type="checkbox"
-                  checked={lookingFor.includes(option)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setLookingFor((prev) => [...prev, option]);
-                    } else {
-                      setLookingFor((prev) => prev.filter((x) => x !== option));
-                    }
-                  }}
-                  className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
-                />
-                {option}
-              </label>
-            ))}
+      <div className="space-y-4">
+        {/* Karte: Ort */}
+        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+          <h3 className="text-sm font-semibold text-white">Ort</h3>
+          <p className="text-xs text-gray-500">
+            PLZ oder Ort eingeben – nur gültige Einträge aus unserer Datenbasis sind wählbar. Andere können Stadt und PLZ sehen (für Suche „in der Nähe“).
+          </p>
+          <div>
+            <label htmlFor="plz_ort" className="mb-1 block text-sm text-gray-300">
+              Postleitzahl oder Ort
+            </label>
+            <PlzOrtAutocomplete
+              id="plz_ort"
+              postalCode={postalCode}
+              city={city}
+              onSelect={(plz, ort) => {
+                setPostalCode(plz);
+                setCity(ort);
+              }}
+              placeholder="z. B. 10115 oder Berlin"
+            />
           </div>
         </div>
 
-        {!isCouple && (
-        <div>
-          <span className="mb-2 block text-sm text-gray-300">
-            Vorlieben (worauf stehst du? Mehrfachauswahl)
-          </span>
-          <input
-            type="search"
-            placeholder="Vorlieben filtern …"
-            value={preferencesFilter}
-            onChange={(e) => setPreferencesFilter(e.target.value)}
-            className="mb-2 w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder-gray-500"
-          />
-          <div className="max-h-96 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
-            <div className="flex flex-wrap gap-2">
-              {PREFERENCES_OPTIONS.filter(
-                (option) =>
-                  !preferencesFilter.trim() ||
-                  option.toLowerCase().includes(preferencesFilter.trim().toLowerCase())
-              ).map((option) => (
-                <label
-                  key={option}
-                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-gray-300 hover:border-gray-500"
-                >
-                  <input
-                    type="checkbox"
-                    checked={preferences.includes(option)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setPreferences((prev) => [...prev, option]);
-                      } else {
-                        setPreferences((prev) => prev.filter((x) => x !== option));
-                      }
-                    }}
-                    className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
-                  />
-                  {option}
-                </label>
+        {/* Karte: Suche / Wen sucht ihr */}
+        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+          <h3 className="text-sm font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</h3>
+          <div>
+            <label htmlFor="looking_for_gender" className="mb-1 block text-sm text-gray-300">
+              {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
+            </label>
+            <select
+              id="looking_for_gender"
+              value={lookingForGender}
+              onChange={(e) => setLookingForGender(e.target.value)}
+              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+            >
+              <option value="">— Keine Angabe —</option>
+              {LOOKING_FOR_GENDER_OPTIONS.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
               ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm text-gray-300">
+              {isCouple ? "Was sucht ihr? (Mehrfachauswahl)" : "Was suchst du? (Mehrfachauswahl)"}
+            </label>
+            <div className="max-h-80 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+              <div className="flex flex-wrap gap-2">
+                {LOOKING_FOR_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={lookingFor.includes(option)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setLookingFor((prev) => [...prev, option]);
+                        } else {
+                          setLookingFor((prev) => prev.filter((x) => x !== option));
+                        }
+                      }}
+                      className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
             </div>
-            {PREFERENCES_OPTIONS.filter(
-              (o) =>
-                !preferencesFilter.trim() ||
-                o.toLowerCase().includes(preferencesFilter.trim().toLowerCase())
-            ).length === 0 && (
-              <p className="py-2 text-center text-sm text-gray-500">Keine Treffer</p>
-            )}
+          </div>
+
+          {!isCouple && (
+            <div>
+              <label className="mb-1 block text-sm text-gray-300">
+                Vorlieben (worauf stehst du? Mehrfachauswahl)
+              </label>
+              <input
+                type="search"
+                placeholder="Vorlieben filtern …"
+                value={preferencesFilter}
+                onChange={(e) => setPreferencesFilter(e.target.value)}
+                className="mb-2 w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-sm text-white placeholder-gray-500"
+              />
+              <div className="max-h-80 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
+                <div className="flex flex-wrap gap-2">
+                  {PREFERENCES_OPTIONS.filter(
+                    (option) =>
+                      !preferencesFilter.trim() ||
+                      option.toLowerCase().includes(preferencesFilter.trim().toLowerCase())
+                  ).map((option) => (
+                    <label
+                      key={option}
+                      className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={preferences.includes(option)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setPreferences((prev) => [...prev, option]);
+                          } else {
+                            setPreferences((prev) => prev.filter((x) => x !== option));
+                          }
+                        }}
+                        className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+                {PREFERENCES_OPTIONS.filter(
+                  (o) =>
+                    !preferencesFilter.trim() ||
+                    o.toLowerCase().includes(preferencesFilter.trim().toLowerCase())
+                ).length === 0 && (
+                  <p className="py-2 text-center text-sm text-gray-500">Keine Treffer</p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Karte: Erwartungen */}
+        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+          <h3 className="text-sm font-semibold text-white">
+            {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
+          </h3>
+          <div>
+            <label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">
+              Deine Angaben
+            </label>
+            <textarea
+              id="expectations_text"
+              value={expectationsText}
+              onChange={(e) => setExpectationsText(e.target.value)}
+              maxLength={MAX_TEXT_LENGTH}
+              rows={3}
+              placeholder="z. B. Ein Dom beschreibt, wofür der Sub zur Verfügung stehen soll …"
+              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              {expectationsText.length}/{MAX_TEXT_LENGTH} Zeichen
+            </p>
           </div>
         </div>
-        )}
-      </fieldset>
-
-      {/* Was erwartest du von deinem Gesuchten? */}
-      <div>
-        <label htmlFor="expectations_text" className="mb-1 block text-sm font-medium text-gray-300">
-          {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
-        </label>
-        <textarea
-          id="expectations_text"
-          value={expectationsText}
-          onChange={(e) => setExpectationsText(e.target.value)}
-          maxLength={MAX_TEXT_LENGTH}
-          rows={3}
-          placeholder="z. B. Ein Dom beschreibt, wofür der Sub zur Verfügung stehen soll …"
-          className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
-        />
-        <p className="mt-1 text-xs text-gray-500">
-          {expectationsText.length}/{MAX_TEXT_LENGTH} Zeichen
-        </p>
       </div>
 
       {/* Über mich: bei Paar Frau+Mann zweispaltig (links Frau, rechts Mann), sonst einspaltig */}
