@@ -38,7 +38,7 @@ export default async function RootLayout({
       if (!user) return null;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified")
+        .select("nick, avatar_url, avatar_photo_id, role, verified, account_type, restriction_enabled")
         .eq("id", user.id)
         .single();
       const avatarUrl = profile
@@ -53,6 +53,8 @@ export default async function RootLayout({
         avatarUrl,
         role: profile?.role ?? null,
         verified: profile?.verified ?? false,
+        accountType: profile?.account_type ?? null,
+        restrictionEnabled: profile?.restriction_enabled ?? false,
       };
     })(),
   ]);

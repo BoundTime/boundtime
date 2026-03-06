@@ -21,29 +21,30 @@ export function SettingsRestrictionSection() {
   const [enabled, setEnabled] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
 
-  useEffect(() => {
+  async function loadProfile() {
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("account_type, restriction_enabled, restriction_recovery_email")
+      .eq("id", user.id)
+      .single();
+    if (p) {
+      setProfile({
+        account_type: p.account_type,
+        restriction_enabled: p.restriction_enabled ?? false,
+        restriction_recovery_email: p.restriction_recovery_email,
+        has_restriction_password: p.restriction_enabled,
+      });
+      setRecoveryEmail(p.restriction_recovery_email ?? "");
+      setEnabled(p.restriction_enabled ?? false);
+    }
+  }
+
+  useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      const { data: p } = await supabase
-        .from("profiles")
-        .select("account_type, restriction_enabled, restriction_recovery_email")
-        .eq("id", user.id)
-        .single();
-      if (p) {
-        setProfile({
-          account_type: p.account_type,
-          restriction_enabled: p.restriction_enabled ?? false,
-          restriction_recovery_email: p.restriction_recovery_email,
-          has_restriction_password: p.restriction_enabled,
-        });
-        setRecoveryEmail(p.restriction_recovery_email ?? "");
-        setEnabled(p.restriction_enabled ?? false);
-      }
+      await loadProfile();
       setLoading(false);
     })();
   }, []);
@@ -61,6 +62,7 @@ export function SettingsRestrictionSection() {
         p_enabled: enabled,
         p_current_password: profile?.restriction_enabled ? currentPassword || null : null,
       });
+      await loadProfile();
       setSuccess("Einstellungen gespeichert.");
       setPassword("");
       setCurrentPassword("");
@@ -81,6 +83,22 @@ export function SettingsRestrictionSection() {
         Mit einem Restriction-Passwort kannst du den Schreibzugriff einschränken. Im eingeschränkten Modus
         können Nachrichten, Posts und Kommentare nur nach Passwort-Eingabe verfasst werden.
       </p>
+
+      {/* Status: aktiv / nicht aktiv – deutlich sichtbar */}
+      <div
+        className={`rounded-lg border px-4 py-3 text-sm ${
+          profile.restriction_enabled
+            ? "border-amber-500/50 bg-amber-500/10 text-amber-200"
+            : "border-gray-600 bg-gray-800/40 text-gray-300"
+        }`}
+        role="status"
+      >
+        {profile.restriction_enabled ? (
+          <>Aktuell: Zugriffsbeschränkung ist <strong>aktiv</strong> – Schreiben nur mit Passwort.</>
+        ) : (
+          <>Aktuell: Zugriffsbeschränkung ist <strong>nicht aktiv</strong>.</>
+        )}
+      </div>
 
       {profile.restriction_enabled && (
         <div>

@@ -48,6 +48,8 @@ export function ProfileEditForm() {
   const [partnerAboutMe, setPartnerAboutMe] = useState("");
   const [partnerPreferences, setPartnerPreferences] = useState<string[]>([]);
   const [partnerExperienceLevel, setPartnerExperienceLevel] = useState("");
+  const [coupleFirstTendency, setCoupleFirstTendency] = useState<string>("");
+  const [couplePartnerTendency, setCouplePartnerTendency] = useState<string>("");
 
   const isCouple = accountType === "couple";
   const isCoupleWomanMan = isCouple && coupleType === "man_woman";
@@ -64,7 +66,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency"
         )
         .eq("id", user.id)
         .single()
@@ -73,7 +75,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency"
               )
               .eq("id", user.id)
               .single();
@@ -102,17 +104,23 @@ export function ProfileEditForm() {
                 partner_about_me?: string | null;
                 partner_preferences?: string[] | null;
                 partner_experience_level?: string | null;
+                couple_first_tendency?: string | null;
+                couple_partner_tendency?: string | null;
               };
               setAccountType(fallback.account_type ?? null);
               setCoupleType(fallback.couple_type ?? null);
               setCoupleFirstIs(fallback.couple_first_is ?? null);
               setPartnerDateOfBirth(fallback.partner_date_of_birth ?? null);
+              setCoupleFirstTendency(fallback.couple_first_tendency ?? "");
+              setCouplePartnerTendency(fallback.couple_partner_tendency ?? "");
               setPartnerHeightCm(fallback.partner_height_cm != null ? String(fallback.partner_height_cm) : "");
               setPartnerWeightKg(fallback.partner_weight_kg != null ? String(fallback.partner_weight_kg) : "");
               setPartnerBodyType(fallback.partner_body_type ?? "");
               setPartnerAboutMe(fallback.partner_about_me ?? "");
               setPartnerPreferences(Array.isArray(fallback.partner_preferences) ? fallback.partner_preferences : []);
               setPartnerExperienceLevel(fallback.partner_experience_level ?? "");
+              setCoupleFirstTendency((fallback as { couple_first_tendency?: string | null }).couple_first_tendency ?? "");
+              setCouplePartnerTendency((fallback as { couple_partner_tendency?: string | null }).couple_partner_tendency ?? "");
               const url = await resolveProfileAvatarUrl(
                 { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
                 supabase
@@ -145,11 +153,15 @@ export function ProfileEditForm() {
               partner_about_me?: string | null;
               partner_preferences?: string[] | null;
               partner_experience_level?: string | null;
+              couple_first_tendency?: string | null;
+              couple_partner_tendency?: string | null;
             };
             setAccountType(d.account_type ?? null);
             setCoupleType(d.couple_type ?? null);
             setCoupleFirstIs(d.couple_first_is ?? null);
             setPartnerDateOfBirth(d.partner_date_of_birth ?? null);
+            setCoupleFirstTendency(d.couple_first_tendency ?? "");
+            setCouplePartnerTendency(d.couple_partner_tendency ?? "");
             setPartnerHeightCm(d.partner_height_cm != null ? String(d.partner_height_cm) : "");
             setPartnerWeightKg(d.partner_weight_kg != null ? String(d.partner_weight_kg) : "");
             setPartnerBodyType(d.partner_body_type ?? "");
@@ -225,6 +237,15 @@ export function ProfileEditForm() {
         updates.partner_experience_level = partnerExp;
         if (partnerPrefs.length > 0) updates.partner_preferences = partnerPrefs;
         else updates.partner_preferences = null;
+        const firstTendency = ["devot", "dominant", "switcher"].includes(coupleFirstTendency) ? coupleFirstTendency : null;
+        const partnerTendency = ["devot", "dominant", "switcher"].includes(couplePartnerTendency) ? couplePartnerTendency : null;
+        if (isCoupleWomanMan && !womanFirst) {
+          updates.couple_first_tendency = partnerTendency;
+          updates.couple_partner_tendency = firstTendency;
+        } else {
+          updates.couple_first_tendency = firstTendency;
+          updates.couple_partner_tendency = partnerTendency;
+        }
       }
 
       const { error: updateError } = await supabase
@@ -297,8 +318,8 @@ export function ProfileEditForm() {
         </p>
       )}
 
-      {/* Rolle (nur Anzeige; Bull kann nur durch Support geändert werden) */}
-      {role && (
+      {/* Rolle (nur Anzeige bei Single; Bull kann nur durch Support geändert werden) */}
+      {!isCouple && role && (
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">Rolle</label>
           <p className="rounded-lg border border-gray-600 bg-gray-800/50 px-4 py-2 text-sm text-white">
@@ -309,6 +330,41 @@ export function ProfileEditForm() {
               </span>
             )}
           </p>
+        </div>
+      )}
+
+      {/* Paar: Tendenz pro Person (Devot / Dominant / Switcher) */}
+      {isCouple && (
+        <div className="space-y-4 rounded-xl border border-gray-700 p-4">
+          <h3 className="text-sm font-semibold text-white">Tendenz pro Person</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm text-gray-300">Erste Person (Du)</label>
+              <select
+                value={coupleFirstTendency}
+                onChange={(e) => setCoupleFirstTendency(e.target.value)}
+                className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+              >
+                <option value="">— Auswählen —</option>
+                <option value="devot">Devot</option>
+                <option value="dominant">Dominant</option>
+                <option value="switcher">Switcher</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-gray-300">Zweite Person (Partner)</label>
+              <select
+                value={couplePartnerTendency}
+                onChange={(e) => setCouplePartnerTendency(e.target.value)}
+                className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+              >
+                <option value="">— Auswählen —</option>
+                <option value="devot">Devot</option>
+                <option value="dominant">Dominant</option>
+                <option value="switcher">Switcher</option>
+              </select>
+            </div>
+          </div>
         </div>
       )}
 

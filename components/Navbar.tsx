@@ -23,6 +23,8 @@ type InitialNavData = {
   avatarUrl: string | null;
   role: string | null;
   verified: boolean;
+  accountType?: string | null;
+  restrictionEnabled?: boolean;
 };
 
 export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavData | null }) {
@@ -35,6 +37,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialNavData?.avatarUrl ?? null);
   const [role, setRole] = useState<string | null>(initialNavData?.role ?? null);
   const [verified, setVerified] = useState(initialNavData?.verified ?? false);
+  const [accountType, setAccountType] = useState<string | null>(initialNavData?.accountType ?? null);
+  const [restrictionEnabled, setRestrictionEnabled] = useState(initialNavData?.restrictionEnabled ?? false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);

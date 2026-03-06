@@ -70,6 +70,18 @@
 - [ ] Zugriffsbeschränkung: Deaktivieren möglich (Häkchen abwählen → Speichern → restriction_enabled = false)
 - [ ] Navbar: Indikator für Paar-Accounts – Grün = keine Beschränkung, Rot = Beschränkung aktiv; optional Tooltip
 - [ ] Navbar: Link „Community“ → `/community-regeln`; Link „Sicherheit“ → `/datenschutz` (Desktop + Mobile)
+- [ ] Navbar Mobile: Menü-Icon (Hamburger, drei Striche) wieder rechts positionieren
+
+---
+
+## 5. Mobile Navbar: Menü-Button (Hamburger) wieder rechts positionieren
+
+**Anforderung:** In der mobilen Ansicht ist das Menü-Icon (die drei Striche / Hamburger) nicht mehr auf der rechten Seite, sondern „irgendwo“. Es soll wieder **rechts** in der Navbar sitzen.
+
+**Umsetzung:**
+- **Betroffene Komponente:** `components/Navbar.tsx`. Die `<nav>` ist ein Flex-Container; links steht z. B. „BoundTime“, rechts soll auf Mobile (unter `md`) der Hamburger-Button erscheinen.
+- **Lösung:** Auf Mobile (z. B. mit `md:hidden` / ohne `md:`) zwischen dem linken Block (Logo/BoundTime) und dem Hamburger-Button einen **Spacer** einbauen, der den verfügbaren Platz einnimmt (z. B. `<div className="flex-1 min-w-0 md:hidden" />` oder `flex-1` auf einem vorhandenen Wrapper), sodass der Hamburger-Button durch den Flex-Layout automatisch **rechts** gedrückt wird. Alternativ: Den rechten Bereich (in dem der Hamburger liegt) mit `ml-auto` oder `justify-end` auf der mobilen Navbar ausrichten, sodass der Hamburger immer rechts bleibt.
+- **Ergebnis:** Auf kleinen Bildschirmen: BoundTime links, Menü-Icon (drei Striche) klar **rechts** in der gleichen Zeile.
 
 ---
 
