@@ -15,6 +15,16 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("restriction_enabled, restriction_password_hash")
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.restriction_enabled && (profile?.restriction_password_hash == null || (profile.restriction_password_hash ?? "").trim() === "")) {
+    return NextResponse.json({ ok: false, noPasswordSet: true });
+  }
+
   const password = typeof body.password === "string" ? body.password.trim() : "";
   if (!password) {
     return NextResponse.json({ ok: false }, { status: 400 });

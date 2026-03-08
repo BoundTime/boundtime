@@ -143,6 +143,8 @@ export function RestrictionProvider({
       setIsUnlocked(true);
       setModalOpen(false);
       onUnlockSuccess?.();
+    } else if (data.noPasswordSet === true) {
+      setError("Es ist kein Passwort hinterlegt. Bitte in Einstellungen unter Zugriffsbeschränkung ein Passwort eintragen und speichern.");
     } else {
       setError("Passwort falsch.");
     }
