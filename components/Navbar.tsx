@@ -68,6 +68,13 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   }, [closeMenu]);
 
   useEffect(() => {
+    if (initialNavData) {
+      setAccountType(initialNavData.accountType ?? null);
+      setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
+    }
+  }, [initialNavData?.accountType, initialNavData?.restrictionEnabled]);
+
+  useEffect(() => {
     const supabase = createClient();
 
     async function loadProfile(userId: string) {
@@ -253,11 +260,18 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                 {/* Paar-Account: Indikator Zugriffsbeschränkung (Grün = nicht aktiv, Rot = aktiv) */}
                 {accountType === "couple" && (
                   <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
+                    className="flex items-center gap-1.5 shrink-0"
                     title={restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
-                    aria-label={restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
-                  />
+                  >
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
+                      aria-hidden
+                    />
+                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={restrictionEnabled ? "Beschränkung an" : "Beschränkung aus"}>
+                      {restrictionEnabled ? "Beschränkung an" : "Beschränkung aus"}
+                    </span>
+                  </span>
                 )}
                 <LockDurationBadge />
                 {nick && (

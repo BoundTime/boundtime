@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type ProfileRestriction = {
@@ -11,6 +12,7 @@ type ProfileRestriction = {
 };
 
 export function SettingsRestrictionSection() {
+  const router = useRouter();
   const [profile, setProfile] = useState<ProfileRestriction | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -63,9 +65,14 @@ export function SettingsRestrictionSection() {
         p_current_password: profile?.restriction_enabled ? currentPassword || null : null,
       });
       await loadProfile();
-      setSuccess("Einstellungen gespeichert.");
+      setSuccess(
+        enabled
+          ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar oben wird rot."
+          : "Gespeichert. Zugriffsbeschränkung ist jetzt aus – der Punkt in der Navbar wird grün."
+      );
       setPassword("");
       setCurrentPassword("");
+      router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Fehler beim Speichern.");
     } finally {
@@ -78,10 +85,12 @@ export function SettingsRestrictionSection() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-semibold text-white">Zugriffsbeschränkung</h3>
+      <h3 className="font-semibold text-white">Zugriffsbeschränkung – Schreiben nur mit Passwort</h3>
       <p className="text-sm text-gray-400">
-        Mit einem Restriction-Passwort kannst du den Schreibzugriff einschränken. Im eingeschränkten Modus
-        können Nachrichten, Posts und Kommentare nur nach Passwort-Eingabe verfasst werden.
+        Wenn aktiv, kann dein Partner (z. B. Cuckold) nur noch lesen; zum Schreiben muss das Passwort eingegeben werden. Der Punkt in der Navbar oben zeigt den Status: Grün = nicht aktiv, Rot = aktiv.
+      </p>
+      <p className="text-xs text-gray-500">
+        Schritt 1: Passwort festlegen. Schritt 2: Optional Recovery-E-Mail. Schritt 3: Häkchen setzen und Speichern.
       </p>
 
       {/* Status: aktiv / nicht aktiv – deutlich sichtbar */}
@@ -135,17 +144,22 @@ export function SettingsRestrictionSection() {
         />
       </div>
 
-      <div className="flex items-center gap-2">
-        <input
-          id="restriction-enabled"
-          type="checkbox"
-          checked={enabled}
-          onChange={(e) => setEnabled(e.target.checked)}
-          className="rounded border-gray-600 bg-background text-accent"
-        />
-        <label htmlFor="restriction-enabled" className="text-sm text-gray-300">
-          Zugriff einschränken (Schreiben nur nach Passwort)
-        </label>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <input
+            id="restriction-enabled"
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+            className="rounded border-gray-600 bg-background text-accent"
+          />
+          <label htmlFor="restriction-enabled" className="text-sm text-gray-300">
+            Zugriff einschränken (Schreiben nur nach Passwort)
+          </label>
+        </div>
+        {enabled && !profile.has_restriction_password && !password && (
+          <p className="text-xs text-amber-400">Zum Aktivieren zuerst ein Passwort eintragen.</p>
+        )}
       </div>
 
       {error && <p className="text-sm text-red-400">{error}</p>}
