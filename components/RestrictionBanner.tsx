@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRestriction } from "@/lib/restriction-context";
 
 export function RestrictionBanner() {
-  const { isRestricted, isUnlocked, isLoading, requestUnlock } = useRestriction();
+  const { isRestricted, isUnlocked, isLoading } = useRestriction();
 
   if (isLoading || !isRestricted || isUnlocked) return null;
 
@@ -11,13 +12,12 @@ export function RestrictionBanner() {
     <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center">
       <p className="text-sm text-amber-200">
         <span className="font-medium text-amber-100">Cuckymode aktiv.</span>{" "}
-        <button
-          type="button"
-          onClick={() => requestUnlock()}
+        <Link
+          href="/dashboard/einstellungen"
           className="font-medium text-amber-100 underline hover:text-white"
         >
-          Passwort eingeben, um schreiben zu können
-        </button>
+          Zu den Einstellungen – Passwort eingeben oder Cuckymode aufheben
+        </Link>
       </p>
     </div>
   );
