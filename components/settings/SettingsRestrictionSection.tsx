@@ -64,6 +64,12 @@ export function SettingsRestrictionSection() {
         p_enabled: enabled,
         p_current_password: profile?.restriction_enabled ? currentPassword || null : null,
       });
+      await fetch("/api/me/restriction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ restrictionEnabled: enabled }),
+      });
       await loadProfile();
       setSuccess(
         enabled
