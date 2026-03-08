@@ -67,47 +67,36 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
 
+  const fetchRestrictionFromApi = useCallback(() => {
+    fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" })
+      .then((res) => res.json())
+      .then((data: { accountType?: string | null; restrictionEnabled?: boolean }) => {
+        setAccountType(data.accountType ?? null);
+        setRestrictionEnabled(data.restrictionEnabled ?? false);
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
-    if (initialNavData) {
-      setAccountType(initialNavData.accountType ?? null);
-      setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
-    }
-  }, [initialNavData?.accountType, initialNavData?.restrictionEnabled]);
+    if (!(user?.id ?? initialNavData?.userId)) return;
+    fetchRestrictionFromApi();
+    const onVisible = () => fetchRestrictionFromApi();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [user?.id, initialNavData?.userId, fetchRestrictionFromApi]);
 
   useEffect(() => {
     const handler = (e: Event) => {
       const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
-      if (typeof d?.restrictionEnabled === "boolean") setRestrictionEnabled(d.restrictionEnabled);
+      if (typeof d?.restrictionEnabled === "boolean") {
+        setRestrictionEnabled(d.restrictionEnabled);
+      } else {
+        fetchRestrictionFromApi();
+      }
     };
     window.addEventListener("bt-restriction-changed", handler);
     return () => window.removeEventListener("bt-restriction-changed", handler);
-  }, []);
-
-  const uid = user?.id ?? initialNavData?.userId;
-  useEffect(() => {
-    if (!uid) return;
-    const supabase = createClient();
-    let cancelled = false;
-    const syncRestriction = () => {
-      supabase
-        .from("profiles")
-        .select("account_type, restriction_enabled")
-        .eq("id", uid)
-        .single()
-        .then(({ data }) => {
-          if (!cancelled && data) {
-            setAccountType((data as { account_type?: string | null }).account_type ?? null);
-            setRestrictionEnabled((data as { restriction_enabled?: boolean }).restriction_enabled ?? false);
-          }
-        });
-    };
-    syncRestriction();
-    const t = window.setTimeout(syncRestriction, 400);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(t);
-    };
-  }, [uid]);
+  }, [fetchRestrictionFromApi]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -115,15 +104,14 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     async function loadProfile(userId: string) {
       const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified, account_type, restriction_enabled")
+        .select("nick, avatar_url, avatar_photo_id, role, verified")
         .eq("id", userId)
         .single();
 
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
-      setAccountType((data as { account_type?: string | null })?.account_type ?? null);
-      setRestrictionEnabled((data as { restriction_enabled?: boolean })?.restriction_enabled ?? false);
+      fetchRestrictionFromApi();
       const url = data
         ? await resolveProfileAvatarUrl(
             { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },

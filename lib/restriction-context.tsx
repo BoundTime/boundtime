@@ -38,14 +38,20 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
       setIsLoading(false);
       return;
     }
-    const { data } = await supabase.rpc("is_restriction_blocking_write", { p_user_id: user.id });
-    const restricted = data === true;
-    setIsRestricted(restricted);
-    if (restricted && typeof sessionStorage !== "undefined") {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
-      setIsUnlocked(stored === user.id);
-    } else {
-      setIsUnlocked(!restricted);
+    try {
+      const res = await fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" });
+      const data = (await res.json()) as { isBlockingWrite?: boolean };
+      const restricted = data.isBlockingWrite === true;
+      setIsRestricted(restricted);
+      if (restricted && typeof sessionStorage !== "undefined") {
+        const stored = sessionStorage.getItem(STORAGE_KEY);
+        setIsUnlocked(stored === user.id);
+      } else {
+        setIsUnlocked(!restricted);
+      }
+    } catch {
+      setIsRestricted(false);
+      setIsUnlocked(true);
     }
     setIsLoading(false);
   }, []);
@@ -58,13 +64,15 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
         init();
       } else {
         if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(STORAGE_KEY);
+        setIsRestricted(false);
         setIsUnlocked(false);
       }
     });
-    const t = window.setTimeout(init, 500);
+    const onVisible = () => init();
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       subscription.unsubscribe();
-      window.clearTimeout(t);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [init, pathname]);
 
