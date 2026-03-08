@@ -63,7 +63,14 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
   }, [init, pathname]);
 
   useEffect(() => {
-    const handler = () => init();
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
+      if (d?.restrictionEnabled === true) {
+        if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(STORAGE_KEY);
+        setIsUnlocked(false);
+      }
+      init();
+    };
     window.addEventListener("bt-restriction-changed", handler);
     return () => window.removeEventListener("bt-restriction-changed", handler);
   }, [init]);
