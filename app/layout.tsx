@@ -9,6 +9,8 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
+export const dynamic = "force-dynamic";
+
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
