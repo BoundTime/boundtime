@@ -17,8 +17,14 @@ type RestrictionContextValue = {
 
 const RestrictionContext = createContext<RestrictionContextValue | null>(null);
 
-export function RestrictionProvider({ children }: { children: React.ReactNode }) {
-  const [isRestricted, setIsRestricted] = useState(false);
+export function RestrictionProvider({
+  children,
+  initialRestrictionBlocking = false,
+}: {
+  children: React.ReactNode;
+  initialRestrictionBlocking?: boolean;
+}) {
+  const [isRestricted, setIsRestricted] = useState(initialRestrictionBlocking);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -51,9 +57,21 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
   }, []);
 
   useEffect(() => {
-    init();
-    const t1 = window.setTimeout(init, 400);
-    const t2 = window.setTimeout(init, 1200);
+    setIsRestricted(initialRestrictionBlocking);
+    if (initialRestrictionBlocking && typeof sessionStorage !== "undefined") {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) {
+          setIsUnlocked(sessionStorage.getItem(STORAGE_KEY) === user.id);
+        }
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(false);
+    }
+  }, [initialRestrictionBlocking]);
+
+  useEffect(() => {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session?.user) {
@@ -69,8 +87,6 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
     return () => {
       subscription.unsubscribe();
       document.removeEventListener("visibilitychange", onVisible);
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
     };
   }, [init, pathname]);
 

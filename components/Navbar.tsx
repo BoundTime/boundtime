@@ -78,14 +78,9 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   }, []);
 
   useEffect(() => {
-    fetchRestrictionFromApi();
     const onVisible = () => fetchRestrictionFromApi();
     document.addEventListener("visibilitychange", onVisible);
-    const t = window.setTimeout(fetchRestrictionFromApi, 300);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisible);
-      window.clearTimeout(t);
-    };
+    return () => document.removeEventListener("visibilitychange", onVisible);
   }, [fetchRestrictionFromApi]);
 
   useEffect(() => {
