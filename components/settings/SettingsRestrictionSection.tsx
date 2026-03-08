@@ -63,13 +63,9 @@ export function SettingsRestrictionSection() {
     setSaving(true);
     const supabase = createClient();
     const pwdTrim = password.trim();
+    const isFall2 = profile?.restriction_enabled === true;
     try {
-      // Reparatur: Wenn Beschränkung aktiv ist aber noch kein Passwort-Hash existiert, zuerst Hash setzen (funktioniert auch ohne Migration 072)
-      if (
-        profile?.restriction_enabled &&
-        !profile?.has_restriction_password &&
-        pwdTrim
-      ) {
+      if (isFall2 && !profile?.has_restriction_password && pwdTrim) {
         const repairRes = await fetch("/api/me/restriction/set-password", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -87,11 +83,9 @@ export function SettingsRestrictionSection() {
         p_password: pwdTrim || null,
         p_recovery_email: recoveryEmail.trim() || null,
         p_enabled: enabled,
-        // Aktuelles Passwort: wenn schon Hash existiert = Feld "Aktuelles Passwort"; wenn wir gerade repariert haben = das soeben gesetzte Passwort
-        p_current_password:
-          profile?.restriction_enabled
-            ? (profile?.has_restriction_password ? currentPassword?.trim() || null : pwdTrim || null)
-            : null,
+        p_current_password: isFall2
+          ? (profile?.has_restriction_password ? currentPassword?.trim() || null : pwdTrim || null)
+          : null,
       });
       if (rpcError) {
         const msg = rpcError.message ?? "Fehler beim Speichern.";
@@ -99,11 +93,11 @@ export function SettingsRestrictionSection() {
           typeof msg === "string" &&
           (msg.includes("Aktuelles Passwort") || msg.includes("Passwort ist falsch")) &&
           profile &&
-          profile.restriction_enabled &&
+          isFall2 &&
           !profile.has_restriction_password
         ) {
           setError(
-            "Es ist noch kein Passwort hinterlegt. Bitte nur im Feld „Neues Restriction-Passwort“ ein Passwort eintragen („Aktuelles Passwort“ leer lassen) und Speichern klicken. Wichtig: In der Datenbank muss die Migration 072_restriction_enabled_requires_hash.sql angewendet sein, sonst wird das Passwort nicht übernommen."
+            "Es ist noch kein Passwort hinterlegt. Bitte im Feld „Neues Passwort“ ein Passwort eintragen („Aktuelles Passwort“ leer lassen) und Speichern klicken."
           );
         } else {
           setError(msg);
@@ -119,15 +113,15 @@ export function SettingsRestrictionSection() {
       await loadProfile();
       const restrictionRes = await fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json());
       const hasPasswordSetNow = (restrictionRes as { hasPasswordSet?: boolean }).hasPasswordSet === true;
-      if (enabled && password.trim() && !hasPasswordSetNow) {
+      if (enabled && pwdTrim && !hasPasswordSetNow) {
         setError(
-          "Passwort wurde nicht in der Datenbank gespeichert. Bitte Migration 072_restriction_enabled_requires_hash.sql anwenden (z. B. mit „npx supabase db push“ oder im Supabase-Dashboard) und dann erneut speichern."
+          "Passwort wurde nicht gespeichert. Bitte erneut versuchen oder Migration 072/073 anwenden."
         );
       } else {
         setSuccess(
           enabled
-            ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar oben wird rot."
-            : "Gespeichert. Zugriffsbeschränkung ist jetzt aus – der Punkt in der Navbar wird grün."
+            ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar wird rot."
+            : "Gespeichert. Zugriffsbeschränkung ist aus – der Punkt in der Navbar wird grün."
         );
         setPassword("");
         setCurrentPassword("");
@@ -137,8 +131,7 @@ export function SettingsRestrictionSection() {
         }
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Fehler beim Speichern.";
-      setError(msg);
+      setError(err instanceof Error ? err.message : "Fehler beim Speichern.");
     } finally {
       setSaving(false);
     }
@@ -147,17 +140,21 @@ export function SettingsRestrictionSection() {
   if (loading || !profile) return null;
   if (profile.account_type !== "couple") return null;
 
+  const isFirstTime = !profile.restriction_enabled;
+  const isChanging = profile.restriction_enabled;
+
+  const needPasswordToEnable = enabled && isFirstTime && !password.trim();
+  const needCurrentPasswordToChange = isChanging && profile.has_restriction_password && !currentPassword.trim();
+  const submitDisabled = saving || needPasswordToEnable || needCurrentPasswordToChange;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="font-semibold text-white">Zugriffsbeschränkung – Schreiben nur mit Passwort</h3>
       <p className="text-sm text-gray-400">
-        Wenn aktiv, kann dein Partner (z. B. Cuckold) nur noch lesen; zum Schreiben muss das Passwort eingegeben werden. Der Punkt in der Navbar oben zeigt den Status: Grün = nicht aktiv, Rot = aktiv.
-      </p>
-      <p className="text-xs text-gray-500">
-        Schritt 1: Passwort festlegen. Schritt 2: Optional Recovery-E-Mail. Schritt 3: Häkchen setzen und Speichern.
+        Wenn aktiv, kann dein Partner nur lesen; zum Schreiben muss das Passwort eingegeben werden. Punkt in der Navbar: Grün = aus, Rot = aktiv.
       </p>
 
-      {/* Status: aktiv / nicht aktiv – deutlich sichtbar */}
+      {/* Status: aktiv / nicht aktiv */}
       <div
         className={`rounded-lg border px-4 py-3 text-sm ${
           profile.restriction_enabled
@@ -173,39 +170,68 @@ export function SettingsRestrictionSection() {
         )}
       </div>
 
-      {profile.restriction_enabled && (
-        <div>
-          {profile.has_restriction_password && (
-            <p className="mb-2 text-xs text-gray-400">Du hast bereits ein Passwort. Nur ausfüllen, wenn du es ändern willst.</p>
-          )}
-          <label className="mb-1 block text-xs text-gray-500">
-            {profile.has_restriction_password
-              ? "Aktuelles Passwort (nur nötig zum Ändern – sonst leer lassen)"
-              : "Aktuelles Passwort – leer lassen, unten neues Passwort eintragen"}
-          </label>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            placeholder={profile.has_restriction_password ? "Nur zum Ändern eintragen" : "••••••••"}
-            className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-          />
-        </div>
+      {/* ========== Fall 1: Noch nicht aktiv – erstes Einrichten ========== */}
+      {isFirstTime && (
+        <>
+          <p className="text-xs text-gray-500">
+            Schritt 1: Passwort festlegen. Schritt 2: Optional Recovery-E-Mail. Schritt 3: Häkchen setzen und Speichern.
+          </p>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
+            <p className="mb-2 text-xs text-gray-500">
+              Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es später zum Schreiben, wenn die Beschränkung aktiv ist.
+            </p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Passwort wählen"
+              className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+              autoComplete="new-password"
+            />
+          </div>
+        </>
       )}
 
-      <div>
-        <label className="mb-1 block text-xs text-gray-500">
-          Neues Restriction-Passwort {profile.has_restriction_password ? "(leer lassen = Passwort bleibt unverändert)" : ""}
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-        />
-      </div>
+      {/* ========== Fall 2: Bereits aktiv – Einstellungen ändern ========== */}
+      {isChanging && (
+        <>
+          <p className="text-xs text-gray-500">
+            Zum Ändern oder Ausschalten: Aktuelles Passwort eintragen. Neues Passwort nur, wenn du es ändern willst.
+          </p>
+          <div className="rounded-lg border border-gray-600 bg-gray-800/40 p-4 space-y-4">
+            <h4 className="text-sm font-medium text-white">Einstellungen ändern</h4>
+            <div>
+              <label className="mb-1 block text-xs text-gray-500">
+                Aktuelles Passwort (zum Bestätigen – nur du kennst es)
+              </label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                autoComplete="current-password"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-500">
+                Neues Passwort (leer lassen = Passwort bleibt wie es ist)
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nur zum Ändern eintragen"
+                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                autoComplete="new-password"
+              />
+            </div>
+          </div>
+        </>
+      )}
 
+      {/* Recovery-E-Mail (in beiden Fällen) */}
       <div>
         <label className="mb-1 block text-xs text-gray-500">Recovery-E-Mail (optional, für Passwort-Reset)</label>
         <input
@@ -217,6 +243,7 @@ export function SettingsRestrictionSection() {
         />
       </div>
 
+      {/* Checkbox */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <input
@@ -230,8 +257,11 @@ export function SettingsRestrictionSection() {
             Zugriff einschränken (Schreiben nur nach Passwort)
           </label>
         </div>
-        {enabled && !profile.has_restriction_password && !password && (
-          <p className="text-xs text-amber-400">Zum Aktivieren zuerst ein Passwort eintragen.</p>
+        {needPasswordToEnable && (
+          <p className="text-xs text-amber-400">Bitte Passwort festlegen, um die Beschränkung zu aktivieren.</p>
+        )}
+        {needCurrentPasswordToChange && (
+          <p className="text-xs text-amber-400">Bitte aktuelles Passwort eintragen, um etwas zu ändern.</p>
         )}
       </div>
 
@@ -240,7 +270,7 @@ export function SettingsRestrictionSection() {
 
       <button
         type="submit"
-        disabled={saving || (enabled && !profile.has_restriction_password && !password)}
+        disabled={submitDisabled}
         className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
       >
         {saving ? "Wird gespeichert …" : "Speichern"}
