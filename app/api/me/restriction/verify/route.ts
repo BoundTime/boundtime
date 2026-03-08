@@ -15,20 +15,30 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+  const password = typeof body.password === "string" ? body.password.trim() : "";
+  if (!password) {
+    return NextResponse.json({ ok: false }, { status: 400 });
+  }
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("restriction_enabled, restriction_password_hash")
     .eq("id", user.id)
     .single();
 
-  if (profile?.restriction_enabled && (profile?.restriction_password_hash == null || (profile.restriction_password_hash ?? "").trim() === "")) {
-    return NextResponse.json({ ok: false, noPasswordSet: true });
+  const noHash = profile?.restriction_enabled && (profile?.restriction_password_hash == null || (profile.restriction_password_hash ?? "").trim() === "");
+
+  if (noHash) {
+    // Reparatur: Noch kein Passwort hinterlegt – das eingegebene Passwort jetzt setzen und Nutzer freischalten
+    const { error: repairError } = await supabase.rpc("set_restriction_password_hash_only", {
+      p_password: password,
+    });
+    if (repairError) {
+      return NextResponse.json({ ok: false, noPasswordSet: true });
+    }
+    return NextResponse.json({ ok: true });
   }
 
-  const password = typeof body.password === "string" ? body.password.trim() : "";
-  if (!password) {
-    return NextResponse.json({ ok: false }, { status: 400 });
-  }
   const { data } = await supabase.rpc("check_restriction_password", {
     p_user_id: user.id,
     p_password: password,

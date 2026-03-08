@@ -144,7 +144,7 @@ export function RestrictionProvider({
       setModalOpen(false);
       onUnlockSuccess?.();
     } else if (data.noPasswordSet === true) {
-      setError("Es ist kein Passwort hinterlegt. Bitte in Einstellungen unter Zugriffsbeschränkung ein Passwort eintragen und speichern.");
+      setError("Es ist noch kein Passwort hinterlegt. Einmal das gewünschte Passwort hier eintragen und „Freischalten“ klicken – es wird dann gesetzt. Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Zugriffsbeschränkung Passwort eintragen und speichern.");
     } else {
       setError("Passwort falsch.");
     }

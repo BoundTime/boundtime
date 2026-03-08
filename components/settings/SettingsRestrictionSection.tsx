@@ -62,14 +62,54 @@ export function SettingsRestrictionSection() {
     setSuccess(null);
     setSaving(true);
     const supabase = createClient();
+    const pwdTrim = password.trim();
     try {
-      await supabase.rpc("set_restriction_password", {
-        p_password: password.trim() || null,
+      // Reparatur: Wenn Beschränkung aktiv ist aber noch kein Passwort-Hash existiert, zuerst Hash setzen (funktioniert auch ohne Migration 072)
+      if (
+        profile?.restriction_enabled &&
+        !profile?.has_restriction_password &&
+        pwdTrim
+      ) {
+        const repairRes = await fetch("/api/me/restriction/set-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ password: pwdTrim }),
+        });
+        const repairData = (await repairRes.json()) as { ok?: boolean; error?: string };
+        if (!repairRes.ok || !repairData.ok) {
+          setError(repairData.error ?? "Passwort konnte nicht gesetzt werden.");
+          return;
+        }
+      }
+
+      const { error: rpcError } = await supabase.rpc("set_restriction_password", {
+        p_password: pwdTrim || null,
         p_recovery_email: recoveryEmail.trim() || null,
         p_enabled: enabled,
-        // Nur aktuelles Passwort verlangen, wenn bereits ein Hash gesetzt ist (sonst kann man aus "aktiv ohne Hash" nicht raus)
-        p_current_password: profile?.restriction_enabled && profile?.has_restriction_password ? currentPassword?.trim() || null : null,
+        // Aktuelles Passwort: wenn schon Hash existiert = Feld "Aktuelles Passwort"; wenn wir gerade repariert haben = das soeben gesetzte Passwort
+        p_current_password:
+          profile?.restriction_enabled
+            ? (profile?.has_restriction_password ? currentPassword?.trim() || null : pwdTrim || null)
+            : null,
       });
+      if (rpcError) {
+        const msg = rpcError.message ?? "Fehler beim Speichern.";
+        if (
+          typeof msg === "string" &&
+          (msg.includes("Aktuelles Passwort") || msg.includes("Passwort ist falsch")) &&
+          profile &&
+          profile.restriction_enabled &&
+          !profile.has_restriction_password
+        ) {
+          setError(
+            "Es ist noch kein Passwort hinterlegt. Bitte nur im Feld „Neues Restriction-Passwort“ ein Passwort eintragen („Aktuelles Passwort“ leer lassen) und Speichern klicken. Wichtig: In der Datenbank muss die Migration 072_restriction_enabled_requires_hash.sql angewendet sein, sonst wird das Passwort nicht übernommen."
+          );
+        } else {
+          setError(msg);
+        }
+        return;
+      }
       await fetch("/api/me/restriction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,32 +117,28 @@ export function SettingsRestrictionSection() {
         body: JSON.stringify({ restrictionEnabled: enabled }),
       });
       await loadProfile();
-      setSuccess(
-        enabled
-          ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar oben wird rot."
-          : "Gespeichert. Zugriffsbeschränkung ist jetzt aus – der Punkt in der Navbar wird grün."
-      );
-      setPassword("");
-      setCurrentPassword("");
-      router.refresh();
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: enabled } }));
+      const restrictionRes = await fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json());
+      const hasPasswordSetNow = (restrictionRes as { hasPasswordSet?: boolean }).hasPasswordSet === true;
+      if (enabled && password.trim() && !hasPasswordSetNow) {
+        setError(
+          "Passwort wurde nicht in der Datenbank gespeichert. Bitte Migration 072_restriction_enabled_requires_hash.sql anwenden (z. B. mit „npx supabase db push“ oder im Supabase-Dashboard) und dann erneut speichern."
+        );
+      } else {
+        setSuccess(
+          enabled
+            ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar oben wird rot."
+            : "Gespeichert. Zugriffsbeschränkung ist jetzt aus – der Punkt in der Navbar wird grün."
+        );
+        setPassword("");
+        setCurrentPassword("");
+        router.refresh();
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: enabled } }));
+        }
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Fehler beim Speichern.";
-      if (
-        typeof msg === "string" &&
-        (msg.includes("Aktuelles Passwort") || msg.includes("Passwort ist falsch")) &&
-        profile &&
-        profile.restriction_enabled &&
-        !profile.has_restriction_password
-      ) {
-        setError(
-          "Es ist noch kein Passwort hinterlegt. Bitte nur im Feld „Neues Restriction-Passwort“ ein Passwort eintragen („Aktuelles Passwort“ leer lassen) und Speichern klicken. Falls die Meldung bleibt: Datenbank-Migration 072 anwenden."
-        );
-      } else {
-        setError(msg);
-      }
+      setError(msg);
     } finally {
       setSaving(false);
     }
