@@ -219,7 +219,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
         {user ? (
           <>
             {/* Left (Desktop): Brand – feste Basisbreite für symmetrische Mitte */}
-            <div className="hidden md:flex md:shrink-0 md:basis-[220px] md:items-center md:justify-start">
+            <div className="hidden md:flex md:shrink-0 md:basis-[240px] md:items-center md:justify-start">
               <RefreshNavLink
                 href="/dashboard"
                 className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
@@ -304,19 +304,21 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   Einstellungen
                 </RefreshNavLink>
             </div>
-            {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
-            <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
-              <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
-                {/* Wert: Event (nach Speichern) > API (nach Refresh) > Server-Slot */}
-                {effectiveRestriction !== null ? (
-                  <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv – Passwort nötig"}>
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }} aria-hidden />
-                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}>
-                      {dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}
+            {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig; nur Restriction-Status bei Paarprofilen */}
+            <div className="hidden md:flex md:shrink-0 md:min-w-[280px] md:basis-[280px] md:items-center md:justify-end">
+              <div className="flex flex-shrink-0 items-center gap-3 border-l border-gray-700 pl-3">
+                {/* Restriction-Status nur bei accountType === 'couple' */}
+                {accountType === "couple" && (
+                  effectiveRestriction !== null ? (
+                    <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv – Passwort nötig"}>
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }} aria-hidden />
+                      <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}>
+                        {dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}
+                      </span>
                     </span>
-                  </span>
-                ) : (
-                  restrictionDotSlot
+                  ) : (
+                    restrictionDotSlot
+                  )
                 )}
                 <LockDurationBadge />
                 {nick && (
@@ -342,7 +344,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       )}
                     </div>
                     </AvatarWithVerified>
-                    <span className="flex min-w-0 max-w-[140px] items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
+                    <span className="flex min-w-0 max-w-[180px] items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
                       <span className="min-w-0 truncate" title={nick}>{nick}</span>
                       <span className="shrink-0"><RoleIcon role={role} size={12} /></span>
                     </span>
@@ -490,7 +492,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />
                   </div>
-                  {(restrictionDotMobileSlot || effectiveRestriction !== null) && (
+                  {accountType === "couple" && (restrictionDotMobileSlot || effectiveRestriction !== null) && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
                       {effectiveRestriction !== null ? (
                         <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv"}>
