@@ -15,19 +15,18 @@ export default async function AppLayout({
   let initialRestrictionBlocking = false;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const h = await headers();
+  const headerRestriction = h.get("x-bt-restriction-enabled") === "1";
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("account_type, restriction_enabled")
       .eq("id", user.id)
       .single();
-    initialRestrictionBlocking =
-      profile?.account_type === "couple" && (profile?.restriction_enabled ?? false);
-  } else {
-    const h = await headers();
-    if (h.get("x-bt-user-id") && h.get("x-bt-account-type") === "couple") {
-      initialRestrictionBlocking = h.get("x-bt-restriction-enabled") === "1";
-    }
+    const fromProfile = profile?.account_type === "couple" && (profile?.restriction_enabled ?? false);
+    initialRestrictionBlocking = fromProfile || (profile?.account_type === "couple" && headerRestriction);
+  } else if (h.get("x-bt-user-id") && h.get("x-bt-account-type") === "couple") {
+    initialRestrictionBlocking = headerRestriction;
   }
   return (
     <RestrictionProvider initialRestrictionBlocking={initialRestrictionBlocking}>
