@@ -59,6 +59,8 @@ export function SettingsAccountSection({
         setDeleteError(data.error ?? "Fehler beim Löschen.");
         return;
       }
+      const supabase = createClient();
+      await supabase.auth.signOut();
       window.location.href = "/";
     } catch (e) {
       setDeleteError("Netzwerkfehler.");

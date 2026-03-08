@@ -73,13 +73,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     async function loadProfile(userId: string) {
       const { data } = await supabase
         .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified")
+        .select("nick, avatar_url, avatar_photo_id, role, verified, account_type, restriction_enabled")
         .eq("id", userId)
         .single();
 
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
+      setAccountType((data as { account_type?: string | null })?.account_type ?? null);
+      setRestrictionEnabled((data as { restriction_enabled?: boolean })?.restriction_enabled ?? false);
       const url = data
         ? await resolveProfileAvatarUrl(
             { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
@@ -98,6 +100,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
+        setAccountType(null);
+        setRestrictionEnabled(false);
       }
     });
 
@@ -112,6 +116,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setAvatarUrl(null);
         setRole(null);
         setVerified(false);
+        setAccountType(null);
+        setRestrictionEnabled(false);
       }
     });
 
@@ -244,6 +250,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
             <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
               <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
+                {/* Paar-Account: Indikator Zugriffsbeschränkung (Grün = nicht aktiv, Rot = aktiv) */}
+                {accountType === "couple" && (
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
+                    title={restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
+                    aria-label={restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
+                  />
+                )}
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -416,6 +431,16 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />
                   </div>
+                  {accountType === "couple" && (
+                    <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
+                        aria-hidden
+                      />
+                      {restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
+                    </p>
+                  )}
                   {nick && (
                     <RefreshNavLink href="/dashboard" onClick={closeMenu} className="mt-4 flex items-center gap-3 rounded-lg border border-gray-700 p-3 hover:bg-gray-800">
                       <AvatarWithVerified verified={verified} size="sm" className="h-10 w-10 shrink-0">
