@@ -44,6 +44,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   const [role, setRole] = useState<string | null>(initialNavData?.role ?? null);
   const [verified, setVerified] = useState(initialNavData?.verified ?? false);
   const [accountType, setAccountType] = useState<string | null>(initialNavData?.accountType ?? null);
+  const [restrictionFromEvent, setRestrictionFromEvent] = useState<boolean | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
@@ -71,6 +72,15 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
+      if (typeof d?.restrictionEnabled === "boolean") setRestrictionFromEvent(d.restrictionEnabled);
+    };
+    window.addEventListener("bt-restriction-changed", handler);
+    return () => window.removeEventListener("bt-restriction-changed", handler);
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -257,8 +267,17 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
             <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
               <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
-                {/* Paar-Account: Punkt nur vom Server (Slot), damit Client ihn nicht überschreibt */}
-                {restrictionDotSlot}
+                {/* Server-Slot für ersten Paint/Refresh; nach Speichern in Einstellungen: Event-Wert */}
+                {restrictionFromEvent !== null ? (
+                  <span className="flex items-center gap-1.5 shrink-0" title={restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: restrictionFromEvent ? "#ef4444" : "#22c55e" }} aria-hidden />
+                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={restrictionFromEvent ? "Beschränkung an" : "Beschränkung aus"}>
+                      {restrictionFromEvent ? "Beschränkung an" : "Beschränkung aus"}
+                    </span>
+                  </span>
+                ) : (
+                  restrictionDotSlot
+                )}
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -431,9 +450,16 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />
                   </div>
-                  {restrictionDotMobileSlot && (
+                  {(restrictionDotMobileSlot || restrictionFromEvent !== null) && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
-                      {restrictionDotMobileSlot}
+                      {restrictionFromEvent !== null ? (
+                        <span className="flex items-center gap-1.5 shrink-0" title={restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
+                          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: restrictionFromEvent ? "#ef4444" : "#22c55e" }} aria-hidden />
+                          <span>{restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}</span>
+                        </span>
+                      ) : (
+                        restrictionDotMobileSlot
+                      )}
                     </p>
                   )}
                   {nick && (
