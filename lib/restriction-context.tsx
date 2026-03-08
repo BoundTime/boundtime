@@ -71,12 +71,11 @@ export function RestrictionProvider({
     }
   }, [initialRestrictionBlocking]);
 
+  // Restriction-Status nicht bei Auth-Change per API überschreiben (API könnte falsch liefern). Nur bei Tab-Wechsel und Event aktualisieren. Bei Logout: State leeren.
   useEffect(() => {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session?.user) {
-        init();
-      } else {
+      if (!session?.user) {
         if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(STORAGE_KEY);
         setIsRestricted(false);
         setIsUnlocked(false);

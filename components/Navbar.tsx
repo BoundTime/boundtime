@@ -123,6 +123,10 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
       setUser(session?.user ?? null);
       if (session?.user) {
         loadProfile(session.user.id);
+        if (initialNavData) {
+          setAccountType(initialNavData.accountType ?? null);
+          setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
+        }
       } else {
         setNick(null);
         setAvatarUrl(null);
@@ -139,6 +143,10 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
       setUser(session?.user ?? null);
       if (session?.user) {
         loadProfile(session.user.id);
+        if (initialNavData) {
+          setAccountType(initialNavData.accountType ?? null);
+          setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
+        }
       } else {
         setNick(null);
         setAvatarUrl(null);
@@ -150,7 +158,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [initialNavData]);
 
   useEffect(() => {
     const uid = user?.id ?? initialNavData?.userId;
