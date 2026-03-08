@@ -67,6 +67,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
 
+  // Restriction-Status nur hier aktualisieren: visibilitychange + Event. Nicht in loadProfile o.ä., sonst überschreibt ein API-Call den korrekten Server-Wert (initialNavData).
   const fetchRestrictionFromApi = useCallback(() => {
     fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" })
       .then((res) => res.json())
@@ -109,7 +110,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
       setNick(data?.nick ?? null);
       setRole(data?.role ?? null);
       setVerified(data?.verified ?? false);
-      fetchRestrictionFromApi();
       const url = data
         ? await resolveProfileAvatarUrl(
             { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
