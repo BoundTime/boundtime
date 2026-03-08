@@ -27,17 +27,22 @@ export function SettingsRestrictionSection() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    const { data: p } = await supabase
-      .from("profiles")
-      .select("account_type, restriction_enabled, restriction_recovery_email")
-      .eq("id", user.id)
-      .single();
+    const [profilesRes, restrictionRes] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("account_type, restriction_enabled, restriction_recovery_email")
+        .eq("id", user.id)
+        .single(),
+      fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json()),
+    ]);
+    const p = profilesRes.data;
+    const restriction = restrictionRes as { hasPasswordSet?: boolean };
     if (p) {
       setProfile({
         account_type: p.account_type,
         restriction_enabled: p.restriction_enabled ?? false,
         restriction_recovery_email: p.restriction_recovery_email,
-        has_restriction_password: p.restriction_enabled,
+        has_restriction_password: restriction?.hasPasswordSet === true,
       });
       setRecoveryEmail(p.restriction_recovery_email ?? "");
       setEnabled(p.restriction_enabled ?? false);
@@ -59,10 +64,11 @@ export function SettingsRestrictionSection() {
     const supabase = createClient();
     try {
       await supabase.rpc("set_restriction_password", {
-        p_password: password || null,
+        p_password: password.trim() || null,
         p_recovery_email: recoveryEmail.trim() || null,
         p_enabled: enabled,
-        p_current_password: profile?.restriction_enabled ? currentPassword || null : null,
+        // Nur aktuelles Passwort verlangen, wenn bereits ein Hash gesetzt ist (sonst kann man aus "aktiv ohne Hash" nicht raus)
+        p_current_password: profile?.restriction_enabled && profile?.has_restriction_password ? currentPassword?.trim() || null : null,
       });
       await fetch("/api/me/restriction", {
         method: "POST",
@@ -83,7 +89,20 @@ export function SettingsRestrictionSection() {
         window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: enabled } }));
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Fehler beim Speichern.");
+      const msg = err instanceof Error ? err.message : "Fehler beim Speichern.";
+      if (
+        typeof msg === "string" &&
+        (msg.includes("Aktuelles Passwort") || msg.includes("Passwort ist falsch")) &&
+        profile &&
+        profile.restriction_enabled &&
+        !profile.has_restriction_password
+      ) {
+        setError(
+          "Es ist noch kein Passwort hinterlegt. Bitte nur im Feld „Neues Restriction-Passwort“ ein Passwort eintragen („Aktuelles Passwort“ leer lassen) und Speichern klicken. Falls die Meldung bleibt: Datenbank-Migration 072 anwenden."
+        );
+      } else {
+        setError(msg);
+      }
     } finally {
       setSaving(false);
     }
@@ -120,7 +139,9 @@ export function SettingsRestrictionSection() {
 
       {profile.restriction_enabled && (
         <div>
-          <label className="mb-1 block text-xs text-gray-500">Aktuelles Passwort (zum Ändern)</label>
+          <label className="mb-1 block text-xs text-gray-500">
+            Aktuelles Passwort (zum Ändern){!profile.has_restriction_password && " – leer lassen, unten neues Passwort eintragen"}
+          </label>
           <input
             type="password"
             value={currentPassword}

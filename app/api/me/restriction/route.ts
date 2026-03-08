@@ -43,7 +43,7 @@ export async function GET() {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json(
-      { accountType: null, restrictionEnabled: false, isBlockingWrite: false },
+      { accountType: null, restrictionEnabled: false, isBlockingWrite: false, hasPasswordSet: false },
       {
         status: 200,
         headers: {
@@ -54,17 +54,19 @@ export async function GET() {
   }
   const { data: profile } = await supabase
     .from("profiles")
-    .select("account_type, restriction_enabled")
+    .select("account_type, restriction_enabled, restriction_password_hash")
     .eq("id", user.id)
     .single();
   const accountType = profile?.account_type ?? null;
   const restrictionEnabled = profile?.restriction_enabled ?? false;
+  const hasPasswordSet = Boolean(profile?.restriction_password_hash && profile.restriction_password_hash.trim() !== "");
   const isBlockingWrite = accountType === "couple" && restrictionEnabled;
   return NextResponse.json(
     {
       accountType,
       restrictionEnabled,
       isBlockingWrite,
+      hasPasswordSet,
     },
     {
       headers: {

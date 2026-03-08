@@ -23,7 +23,10 @@ begin
   into v_current_enabled, v_current_hash
   from public.profiles where id = v_user_id;
 
-  if v_current_enabled then
+  v_has_hash := (v_current_hash is not null and trim(v_current_hash) <> '');
+
+  -- Aktuelles Passwort nur verlangen, wenn Beschränkung aktiv UND ein Hash gesetzt ist (sonst kann man aus dem Zustand "aktiv ohne Hash" nicht raus)
+  if v_current_enabled and v_has_hash then
     if p_current_password is null or trim(p_current_password) = '' then
       raise exception 'Aktuelles Passwort erforderlich um Einstellungen zu ändern';
     end if;
@@ -35,7 +38,6 @@ begin
 
   -- Aktivierung nur, wenn bereits ein Hash existiert ODER ein neues Passwort gesetzt wird
   if p_enabled then
-    v_has_hash := (v_current_hash is not null and trim(v_current_hash) <> '');
     if not v_has_hash and (v_pwd_trim is null or v_pwd_trim = '') then
       raise exception 'Zum Aktivieren der Zugriffsbeschränkung muss ein Passwort gesetzt werden.';
     end if;
