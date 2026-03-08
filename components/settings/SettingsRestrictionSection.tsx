@@ -122,10 +122,14 @@ export function SettingsRestrictionSection() {
         setSuccess(
           enabled
             ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar wird rot."
-            : "Gespeichert. Zugriffsbeschränkung ist aus – der Punkt in der Navbar wird grün."
+            : "Zugriffsbeschränkung wurde aufgehoben. Der Punkt in der Navbar wird grün."
         );
         setPassword("");
         setCurrentPassword("");
+        if (!enabled && profile) {
+          setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
+          setEnabled(false);
+        }
         router.refresh();
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: enabled } }));
@@ -133,6 +137,51 @@ export function SettingsRestrictionSection() {
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Fehler beim Speichern.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleLiftRestriction() {
+    const cur = currentPassword.trim();
+    if (!cur) {
+      setError("Bitte aktuelles Passwort eintragen, um die Beschränkung aufzuheben.");
+      return;
+    }
+    setError(null);
+    setSuccess(null);
+    setSaving(true);
+    const supabase = createClient();
+    try {
+      const { error: rpcError } = await supabase.rpc("set_restriction_password", {
+        p_password: null,
+        p_recovery_email: null,
+        p_enabled: false,
+        p_current_password: cur,
+      });
+      if (rpcError) {
+        setError(rpcError.message ?? "Beschränkung konnte nicht aufgehoben werden.");
+        return;
+      }
+      await fetch("/api/me/restriction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ restrictionEnabled: false }),
+      });
+      await loadProfile();
+      setSuccess("Zugriffsbeschränkung wurde aufgehoben. Der Punkt in der Navbar wird grün.");
+      setCurrentPassword("");
+      setEnabled(false);
+      if (profile) {
+        setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
+      }
+      router.refresh();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: false } }));
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Fehler beim Aufheben.");
     } finally {
       setSaving(false);
     }
@@ -183,6 +232,7 @@ export function SettingsRestrictionSection() {
   const needCurrentPasswordToChange = isChanging && profile.has_restriction_password && !currentPassword.trim();
   const submitDisabled = saving || needPasswordToEnable || needRecoveryEmailToEnable || needCurrentPasswordToChange;
   const changePasswordDisabled = changingPassword || !currentPassword.trim() || !password.trim();
+  const liftRestrictionDisabled = saving || !currentPassword.trim();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -274,6 +324,17 @@ export function SettingsRestrictionSection() {
                 {changingPassword ? "Wird geändert …" : "Passwort ändern"}
               </button>
             )}
+            <div className="pt-2 border-t border-gray-600">
+              <button
+                type="button"
+                onClick={handleLiftRestriction}
+                disabled={liftRestrictionDisabled}
+                className="rounded-lg border border-amber-500/60 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-200 hover:bg-amber-500/20 disabled:opacity-50"
+              >
+                {saving ? "Wird aufgehoben …" : "Zugriffsbeschränkung aufheben"}
+              </button>
+              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – die Beschränkung ist dann aus.</p>
+            </div>
           </div>
         </>
       )}
