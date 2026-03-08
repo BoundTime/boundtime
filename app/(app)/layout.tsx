@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/BottomNav";
 import { UpdateLastSeen } from "@/components/UpdateLastSeen";
@@ -22,6 +23,11 @@ export default async function AppLayout({
       .single();
     initialRestrictionBlocking =
       profile?.account_type === "couple" && (profile?.restriction_enabled ?? false);
+  } else {
+    const h = await headers();
+    if (h.get("x-bt-user-id") && h.get("x-bt-account-type") === "couple") {
+      initialRestrictionBlocking = h.get("x-bt-restriction-enabled") === "1";
+    }
   }
   return (
     <RestrictionProvider initialRestrictionBlocking={initialRestrictionBlocking}>

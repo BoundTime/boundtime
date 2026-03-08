@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -41,26 +42,39 @@ export default async function RootLayout({
     (async () => {
       const supabase = await createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("nick, avatar_url, avatar_photo_id, role, verified, account_type, restriction_enabled")
-        .eq("id", user.id)
-        .single();
-      const avatarUrl = profile
-        ? await resolveProfileAvatarUrl(
-            { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
-            supabase
-          )
-        : null;
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nick, avatar_url, avatar_photo_id, role, verified, account_type, restriction_enabled")
+          .eq("id", user.id)
+          .single();
+        const avatarUrl = profile
+          ? await resolveProfileAvatarUrl(
+              { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
+              supabase
+            )
+          : null;
+        return {
+          userId: user.id,
+          nick: profile?.nick ?? null,
+          avatarUrl,
+          role: profile?.role ?? null,
+          verified: profile?.verified ?? false,
+          accountType: profile?.account_type ?? null,
+          restrictionEnabled: profile?.restriction_enabled ?? false,
+        };
+      }
+      const h = await headers();
+      const headerUserId = h.get("x-bt-user-id");
+      if (!headerUserId) return null;
       return {
-        userId: user.id,
-        nick: profile?.nick ?? null,
-        avatarUrl,
-        role: profile?.role ?? null,
-        verified: profile?.verified ?? false,
-        accountType: profile?.account_type ?? null,
-        restrictionEnabled: profile?.restriction_enabled ?? false,
+        userId: headerUserId,
+        nick: null,
+        avatarUrl: null,
+        role: null,
+        verified: false,
+        accountType: h.get("x-bt-account-type") ?? null,
+        restrictionEnabled: h.get("x-bt-restriction-enabled") === "1",
       };
     })(),
   ]);
