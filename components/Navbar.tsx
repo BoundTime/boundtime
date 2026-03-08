@@ -45,11 +45,14 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   const [verified, setVerified] = useState(initialNavData?.verified ?? false);
   const [accountType, setAccountType] = useState<string | null>(initialNavData?.accountType ?? null);
   const [restrictionFromEvent, setRestrictionFromEvent] = useState<boolean | null>(null);
+  const [restrictionFromApi, setRestrictionFromApi] = useState<boolean | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  const effectiveRestriction = restrictionFromEvent ?? restrictionFromApi;
 
   const nav = {
     isDashboard: pathname === "/dashboard",
@@ -81,6 +84,19 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     window.addEventListener("bt-restriction-changed", handler);
     return () => window.removeEventListener("bt-restriction-changed", handler);
   }, []);
+
+  // Nach Refresh: Layout sieht oft keine Middleware-Header (Next.js-Bug). Einmal API aufrufen –
+  // die API bekommt die Cookies aus der Antwort, liefert den richtigen Restriction-Status.
+  useEffect(() => {
+    if (!initialNavData?.userId) return;
+    fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" })
+      .then((res) => res.json())
+      .then((data: { restrictionEnabled?: boolean; accountType?: string | null }) => {
+        if (typeof data.restrictionEnabled === "boolean") setRestrictionFromApi(data.restrictionEnabled);
+        if (data.accountType != null) setAccountType(data.accountType);
+      })
+      .catch(() => {});
+  }, [initialNavData?.userId]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -267,12 +283,12 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
             <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
               <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
-                {/* Server-Slot für ersten Paint/Refresh; nach Speichern in Einstellungen: Event-Wert */}
-                {restrictionFromEvent !== null ? (
-                  <span className="flex items-center gap-1.5 shrink-0" title={restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: restrictionFromEvent ? "#ef4444" : "#22c55e" }} aria-hidden />
-                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={restrictionFromEvent ? "Beschränkung an" : "Beschränkung aus"}>
-                      {restrictionFromEvent ? "Beschränkung an" : "Beschränkung aus"}
+                {/* Wert: Event (nach Speichern) > API (nach Refresh) > Server-Slot */}
+                {effectiveRestriction !== null ? (
+                  <span className="flex items-center gap-1.5 shrink-0" title={effectiveRestriction ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: effectiveRestriction ? "#ef4444" : "#22c55e" }} aria-hidden />
+                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={effectiveRestriction ? "Beschränkung an" : "Beschränkung aus"}>
+                      {effectiveRestriction ? "Beschränkung an" : "Beschränkung aus"}
                     </span>
                   </span>
                 ) : (
@@ -450,12 +466,12 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />
                   </div>
-                  {(restrictionDotMobileSlot || restrictionFromEvent !== null) && (
+                  {(restrictionDotMobileSlot || effectiveRestriction !== null) && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
-                      {restrictionFromEvent !== null ? (
-                        <span className="flex items-center gap-1.5 shrink-0" title={restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
-                          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: restrictionFromEvent ? "#ef4444" : "#22c55e" }} aria-hidden />
-                          <span>{restrictionFromEvent ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}</span>
+                      {effectiveRestriction !== null ? (
+                        <span className="flex items-center gap-1.5 shrink-0" title={effectiveRestriction ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}>
+                          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: effectiveRestriction ? "#ef4444" : "#22c55e" }} aria-hidden />
+                          <span>{effectiveRestriction ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}</span>
                         </span>
                       ) : (
                         restrictionDotMobileSlot
