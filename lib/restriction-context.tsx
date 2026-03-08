@@ -131,11 +131,14 @@ export function RestrictionProvider({
       setUnlockLoading(false);
       return;
     }
-    const { data } = await supabase.rpc("check_restriction_password", {
-      p_user_id: user.id,
-      p_password: password.trim(),
+    const res = await fetch("/api/me/restriction/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ password: password.trim() }),
     });
-    if (data === true) {
+    const data = await res.json().catch(() => ({ ok: false }));
+    if (data.ok === true) {
       sessionStorage.setItem(STORAGE_KEY, user.id);
       setIsUnlocked(true);
       setModalOpen(false);
