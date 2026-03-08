@@ -118,6 +118,9 @@ export function RestrictionProvider({
   const lock = useCallback(() => {
     sessionStorage.removeItem(STORAGE_KEY);
     setIsUnlocked(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("bt-restriction-locked"));
+    }
   }, []);
 
   const handleUnlock = async (e: React.FormEvent) => {
@@ -142,6 +145,9 @@ export function RestrictionProvider({
       sessionStorage.setItem(STORAGE_KEY, user.id);
       setIsUnlocked(true);
       setModalOpen(false);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("bt-restriction-unlocked"));
+      }
       onUnlockSuccess?.();
     } else if (data.noPasswordSet === true) {
       setError("Es ist noch kein Passwort hinterlegt. Einmal das gewünschte Passwort hier eintragen und „Freischalten“ klicken – es wird dann gesetzt. Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Zugriffsbeschränkung Passwort eintragen und speichern.");

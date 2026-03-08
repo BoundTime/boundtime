@@ -175,21 +175,28 @@ export function SettingsRestrictionSection() {
 
       {profile.restriction_enabled && (
         <div>
+          {profile.has_restriction_password && (
+            <p className="mb-2 text-xs text-gray-400">Du hast bereits ein Passwort. Nur ausfüllen, wenn du es ändern willst.</p>
+          )}
           <label className="mb-1 block text-xs text-gray-500">
-            Aktuelles Passwort (zum Ändern){!profile.has_restriction_password && " – leer lassen, unten neues Passwort eintragen"}
+            {profile.has_restriction_password
+              ? "Aktuelles Passwort (nur nötig zum Ändern – sonst leer lassen)"
+              : "Aktuelles Passwort – leer lassen, unten neues Passwort eintragen"}
           </label>
           <input
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder={profile.has_restriction_password ? "Nur zum Ändern eintragen" : "••••••••"}
             className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
           />
         </div>
       )}
 
       <div>
-        <label className="mb-1 block text-xs text-gray-500">Neues Restriction-Passwort {profile.has_restriction_password ? "(leer = unverändert)" : ""}</label>
+        <label className="mb-1 block text-xs text-gray-500">
+          Neues Restriction-Passwort {profile.has_restriction_password ? "(leer lassen = Passwort bleibt unverändert)" : ""}
+        </label>
         <input
           type="password"
           value={password}
