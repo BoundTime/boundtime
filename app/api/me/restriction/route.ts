@@ -9,7 +9,15 @@ export async function GET() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ accountType: null, restrictionEnabled: false, isBlockingWrite: false }, { status: 200 });
+    return NextResponse.json(
+      { accountType: null, restrictionEnabled: false, isBlockingWrite: false },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   }
   const { data: profile } = await supabase
     .from("profiles")
@@ -19,9 +27,17 @@ export async function GET() {
   const accountType = profile?.account_type ?? null;
   const restrictionEnabled = profile?.restriction_enabled ?? false;
   const isBlockingWrite = accountType === "couple" && restrictionEnabled;
-  return NextResponse.json({
-    accountType,
-    restrictionEnabled,
-    isBlockingWrite,
-  });
+  return NextResponse.json(
+    {
+      accountType,
+      restrictionEnabled,
+      isBlockingWrite,
+    },
+    {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        Pragma: "no-cache",
+      },
+    }
+  );
 }

@@ -78,12 +78,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   }, []);
 
   useEffect(() => {
-    if (!(user?.id ?? initialNavData?.userId)) return;
     fetchRestrictionFromApi();
     const onVisible = () => fetchRestrictionFromApi();
     document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, [user?.id, initialNavData?.userId, fetchRestrictionFromApi]);
+    const t = window.setTimeout(fetchRestrictionFromApi, 300);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.clearTimeout(t);
+    };
+  }, [fetchRestrictionFromApi]);
 
   useEffect(() => {
     const handler = (e: Event) => {

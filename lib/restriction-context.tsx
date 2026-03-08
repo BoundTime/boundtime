@@ -30,22 +30,16 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
   const pathname = usePathname();
 
   const init = useCallback(async () => {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setIsRestricted(false);
-      setIsUnlocked(false);
-      setIsLoading(false);
-      return;
-    }
     try {
       const res = await fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" });
       const data = (await res.json()) as { isBlockingWrite?: boolean };
       const restricted = data.isBlockingWrite === true;
       setIsRestricted(restricted);
       if (restricted && typeof sessionStorage !== "undefined") {
-        const stored = sessionStorage.getItem(STORAGE_KEY);
-        setIsUnlocked(stored === user.id);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        const stored = user ? sessionStorage.getItem(STORAGE_KEY) : null;
+        setIsUnlocked(stored === (user?.id ?? ""));
       } else {
         setIsUnlocked(!restricted);
       }
@@ -58,6 +52,8 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     init();
+    const t1 = window.setTimeout(init, 400);
+    const t2 = window.setTimeout(init, 1200);
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session?.user) {
@@ -73,6 +69,8 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
     return () => {
       subscription.unsubscribe();
       document.removeEventListener("visibilitychange", onVisible);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
     };
   }, [init, pathname]);
 
