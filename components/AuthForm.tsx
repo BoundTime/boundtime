@@ -292,7 +292,7 @@ function validate(): boolean {
               ))}
             </select>
             <p className="mt-1 text-xs text-gray-500">
-              Paarprofil: Gemeinsamer Account. Später in den Einstellungen kann ein Zugriffs-Passwort festgelegt werden (z. B. nur Hotwife schreibt, Cuckold nur lesen).
+              Paarprofil: Gemeinsamer Account. Später in den Einstellungen: Cuckymode einrichten – z. B. nur Hotwife schreibt, Cucky nur mit Passwort.
             </p>
             {errors.accountType && (
               <p className="mt-1 text-sm text-red-400">{errors.accountType}</p>

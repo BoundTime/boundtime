@@ -120,7 +120,7 @@ export function NewPostForm() {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder={canWrite ? "Was möchtest du teilen?" : "Passwort eingeben um zu posten"}
+            placeholder={canWrite ? "Was möchtest du teilen?" : "Passwort eingeben (Cuckymode)"}
             maxLength={POST_CONTENT_MAX}
             rows={2}
             className="w-full resize-none rounded-xl border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"

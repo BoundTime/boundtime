@@ -150,7 +150,7 @@ export function RestrictionProvider({
       }
       onUnlockSuccess?.();
     } else if (data.noPasswordSet === true) {
-      setError("Es ist noch kein Passwort hinterlegt. Einmal das gewünschte Passwort hier eintragen und „Freischalten“ klicken – es wird dann gesetzt. Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Zugriffsbeschränkung Passwort eintragen und speichern.");
+      setError("Es ist noch kein Passwort hinterlegt. Einmal das gewünschte Passwort hier eintragen und „Freischalten“ klicken – es wird dann gesetzt. Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Cuckymode Passwort eintragen und speichern.");
     } else {
       setError("Passwort falsch.");
     }
@@ -183,10 +183,10 @@ export function RestrictionProvider({
             className="w-full max-w-md rounded-xl border border-gray-700 bg-card p-6 shadow-xl"
           >
             <h2 id="restriction-modal-title" className="text-lg font-semibold text-white">
-              Zugriff freischalten
+              Cuckymode freischalten
             </h2>
             <p className="mt-2 text-sm text-gray-400">
-              Gib das Restriction-Passwort ein, um Schreiben zu ermöglichen.
+              Gib das Passwort ein, um schreiben zu können.
             </p>
             <input
               type="password"

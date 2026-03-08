@@ -121,8 +121,8 @@ export function SettingsRestrictionSection() {
       } else {
         setSuccess(
           enabled
-            ? "Gespeichert. Zugriffsbeschränkung ist jetzt aktiv – der Punkt in der Navbar wird rot."
-            : "Zugriffsbeschränkung wurde aufgehoben. Der Punkt in der Navbar wird grün."
+            ? "Gespeichert. Cuckymode ist jetzt aktiv – der Punkt in der Navbar wird rot."
+            : "Cuckymode wurde aufgehoben. Der Punkt in der Navbar wird grün."
         );
         setPassword("");
         setCurrentPassword("");
@@ -145,7 +145,7 @@ export function SettingsRestrictionSection() {
   async function handleLiftRestriction() {
     const cur = currentPassword.trim();
     if (!cur) {
-      setError("Bitte aktuelles Passwort eintragen, um die Beschränkung aufzuheben.");
+      setError("Bitte aktuelles Passwort eintragen, um Cuckymode aufzuheben.");
       return;
     }
     setError(null);
@@ -160,7 +160,7 @@ export function SettingsRestrictionSection() {
         p_current_password: cur,
       });
       if (rpcError) {
-        setError(rpcError.message ?? "Beschränkung konnte nicht aufgehoben werden.");
+        setError(rpcError.message ?? "Cuckymode konnte nicht aufgehoben werden.");
         return;
       }
       await fetch("/api/me/restriction", {
@@ -170,7 +170,7 @@ export function SettingsRestrictionSection() {
         body: JSON.stringify({ restrictionEnabled: false }),
       });
       await loadProfile();
-      setSuccess("Zugriffsbeschränkung wurde aufgehoben. Der Punkt in der Navbar wird grün.");
+      setSuccess("Cuckymode wurde aufgehoben. Der Punkt in der Navbar wird grün.");
       setCurrentPassword("");
       setEnabled(false);
       if (profile) {
@@ -236,9 +236,9 @@ export function SettingsRestrictionSection() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-semibold text-white">Zugriffsbeschränkung – Schreiben nur mit Passwort</h3>
+      <h3 className="font-semibold text-white">Cuckymode – Schreiben nur mit Passwort</h3>
       <p className="text-sm text-gray-400">
-        Wenn aktiv, kann dein Partner nur lesen; zum Schreiben muss das Passwort eingegeben werden. Punkt in der Navbar: Grün = aus, Rot = aktiv.
+        Nur du (z. B. Hotwife) kennst das Passwort; dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Punkt in der Navbar: Grün = aus, Rot = aktiv.
       </p>
 
       {/* Status: aktiv / nicht aktiv */}
@@ -251,9 +251,9 @@ export function SettingsRestrictionSection() {
         role="status"
       >
         {profile.restriction_enabled ? (
-          <>Aktuell: Zugriffsbeschränkung ist <strong>aktiv</strong> – Schreiben nur mit Passwort.</>
+          <>Aktuell: Cuckymode ist <strong>aktiv</strong> – Schreiben nur mit Passwort.</>
         ) : (
-          <>Aktuell: Zugriffsbeschränkung ist <strong>nicht aktiv</strong>.</>
+          <>Aktuell: Cuckymode ist <strong>nicht aktiv</strong>.</>
         )}
       </div>
 
@@ -266,7 +266,7 @@ export function SettingsRestrictionSection() {
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
             <p className="mb-2 text-xs text-gray-500">
-              Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es später zum Schreiben, wenn die Beschränkung aktiv ist.
+              Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es später zum Schreiben, wenn Cuckymode aktiv ist.
             </p>
             <input
               type="password"
@@ -331,9 +331,9 @@ export function SettingsRestrictionSection() {
                 disabled={liftRestrictionDisabled}
                 className="rounded-lg border border-amber-500/60 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-200 hover:bg-amber-500/20 disabled:opacity-50"
               >
-                {saving ? "Wird aufgehoben …" : "Zugriffsbeschränkung aufheben"}
+                {saving ? "Wird aufgehoben …" : "Cuckymode aufheben"}
               </button>
-              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – die Beschränkung ist dann aus.</p>
+              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – Cuckymode ist dann aus.</p>
             </div>
           </div>
         </>
@@ -366,14 +366,14 @@ export function SettingsRestrictionSection() {
             className="rounded border-gray-600 bg-background text-accent"
           />
           <label htmlFor="restriction-enabled" className="text-sm text-gray-300">
-            Zugriff einschränken (Schreiben nur nach Passwort)
+            Cuckymode aktivieren (Schreiben nur nach Passwort)
           </label>
         </div>
         {needPasswordToEnable && (
-          <p className="text-xs text-amber-400">Bitte Passwort festlegen, um die Beschränkung zu aktivieren.</p>
+          <p className="text-xs text-amber-400">Bitte Passwort festlegen, um Cuckymode zu aktivieren.</p>
         )}
         {needRecoveryEmailToEnable && (
-          <p className="text-xs text-amber-400">Bitte Recovery-E-Mail angeben, um die Beschränkung zu aktivieren.</p>
+          <p className="text-xs text-amber-400">Bitte Recovery-E-Mail angeben, um Cuckymode zu aktivieren.</p>
         )}
         {needCurrentPasswordToChange && (
           <p className="text-xs text-amber-400">Bitte aktuelles Passwort eintragen, um etwas zu ändern.</p>

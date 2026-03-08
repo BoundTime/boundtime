@@ -132,7 +132,7 @@ export function MessageInput({
               ? "Als Bull musst du verifiziert sein, um Nachrichten zu senden."
               : canWrite
                 ? "Nachricht schreiben…"
-                : "Passwort eingeben um zu schreiben"
+                : "Passwort eingeben (Cuckymode)"
           }
           maxLength={POST_CONTENT_MAX}
           className="max-h-[200px] w-full resize-none rounded-lg border border-gray-600 bg-background px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"

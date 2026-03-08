@@ -310,10 +310,10 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 {/* Restriction-Status nur bei accountType === 'couple' */}
                 {accountType === "couple" && (
                   effectiveRestriction !== null ? (
-                    <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv – Passwort nötig"}>
+                    <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Cuckymode aus") : "Cuckymode aktiv – Passwort nötig zum Schreiben"}>
                       <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }} aria-hidden />
-                      <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}>
-                        {dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Beschränkung aus") : "Beschränkung an"}
+                      <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Cuckymode aus") : "Cuckymode an"}>
+                        {dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Cuckymode aus") : "Cuckymode an"}
                       </span>
                     </span>
                   ) : (
@@ -495,9 +495,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   {accountType === "couple" && (restrictionDotMobileSlot || effectiveRestriction !== null) && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
                       {effectiveRestriction !== null ? (
-                        <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv"}>
+                        <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Cuckymode aus") : "Cuckymode aktiv"}>
                           <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }} aria-hidden />
-                          <span>{dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Keine Zugriffsbeschränkung") : "Zugriffsbeschränkung aktiv"}</span>
+                          <span>{dotGreen ? (effectiveRestriction ? "Freigeschaltet" : "Cuckymode aus") : "Cuckymode aktiv"}</span>
                         </span>
                       ) : (
                         restrictionDotMobileSlot
