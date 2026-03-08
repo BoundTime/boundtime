@@ -111,6 +111,10 @@ export function SettingsRestrictionSection() {
         credentials: "same-origin",
         body: JSON.stringify({ restrictionEnabled: enabled }),
       });
+      if (!enabled && profile) {
+        setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
+        setEnabled(false);
+      }
       await loadProfile();
       const restrictionRes = await fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json());
       const hasPasswordSetNow = (restrictionRes as { hasPasswordSet?: boolean }).hasPasswordSet === true;
@@ -126,7 +130,7 @@ export function SettingsRestrictionSection() {
         );
         setPassword("");
         setCurrentPassword("");
-        if (!enabled && profile) {
+        if (!enabled) {
           setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
           setEnabled(false);
         }
@@ -169,13 +173,12 @@ export function SettingsRestrictionSection() {
         credentials: "same-origin",
         body: JSON.stringify({ restrictionEnabled: false }),
       });
-      await loadProfile();
-      setSuccess("Cuckymode wurde aufgehoben. Der Punkt in der Navbar wird grün.");
-      setCurrentPassword("");
+      setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
       setEnabled(false);
-      if (profile) {
-        setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
-      }
+      setCurrentPassword("");
+      setSuccess("Cuckymode wurde aufgehoben. Der Punkt in der Navbar wird grün.");
+      await loadProfile();
+      setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
       router.refresh();
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: false } }));
