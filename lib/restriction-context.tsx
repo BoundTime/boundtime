@@ -133,7 +133,7 @@ export function RestrictionProvider({
     }
     const { data } = await supabase.rpc("check_restriction_password", {
       p_user_id: user.id,
-      p_password: password,
+      p_password: password.trim(),
     });
     if (data === true) {
       sessionStorage.setItem(STORAGE_KEY, user.id);
