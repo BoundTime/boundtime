@@ -108,7 +108,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         loadProfile(session.user.id);
         if (initialNavData) {
           setAccountType(initialNavData.accountType ?? null);
-          setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
         }
       } else {
         setNick(null);
@@ -116,7 +115,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setRole(null);
         setVerified(false);
         setAccountType(null);
-        setRestrictionEnabled(initialNavData?.restrictionEnabled ?? false);
       }
     });
 
@@ -128,7 +126,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         loadProfile(session.user.id);
         if (initialNavData) {
           setAccountType(initialNavData.accountType ?? null);
-          setRestrictionEnabled(initialNavData.restrictionEnabled ?? false);
         }
       } else {
         setNick(null);
@@ -136,7 +133,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setRole(null);
         setVerified(false);
         setAccountType(null);
-        setRestrictionEnabled(initialNavData?.restrictionEnabled ?? false);
       }
     });
 
