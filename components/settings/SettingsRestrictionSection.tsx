@@ -22,6 +22,7 @@ export function SettingsRestrictionSection() {
   const [recoveryEmail, setRecoveryEmail] = useState("");
   const [enabled, setEnabled] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
 
   async function loadProfile() {
     const supabase = createClient();
@@ -137,6 +138,40 @@ export function SettingsRestrictionSection() {
     }
   }
 
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    const cur = currentPassword.trim();
+    const neu = password.trim();
+    if (!cur || !neu) {
+      setError("Bitte aktuelles und neues Passwort eintragen.");
+      return;
+    }
+    setChangingPassword(true);
+    const supabase = createClient();
+    try {
+      const { error: rpcError } = await supabase.rpc("set_restriction_password", {
+        p_password: neu,
+        p_recovery_email: null,
+        p_enabled: true,
+        p_current_password: cur,
+      });
+      if (rpcError) {
+        setError(rpcError.message ?? "Passwort konnte nicht geändert werden.");
+        return;
+      }
+      setSuccess("Passwort wurde geändert.");
+      setPassword("");
+      setCurrentPassword("");
+      await loadProfile();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Fehler beim Ändern.");
+    } finally {
+      setChangingPassword(false);
+    }
+  }
+
   if (loading || !profile) return null;
   if (profile.account_type !== "couple") return null;
 
@@ -144,8 +179,10 @@ export function SettingsRestrictionSection() {
   const isChanging = profile.restriction_enabled;
 
   const needPasswordToEnable = enabled && isFirstTime && !password.trim();
+  const needRecoveryEmailToEnable = enabled && isFirstTime && !recoveryEmail.trim();
   const needCurrentPasswordToChange = isChanging && profile.has_restriction_password && !currentPassword.trim();
-  const submitDisabled = saving || needPasswordToEnable || needCurrentPasswordToChange;
+  const submitDisabled = saving || needPasswordToEnable || needRecoveryEmailToEnable || needCurrentPasswordToChange;
+  const changePasswordDisabled = changingPassword || !currentPassword.trim() || !password.trim();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,7 +211,7 @@ export function SettingsRestrictionSection() {
       {isFirstTime && (
         <>
           <p className="text-xs text-gray-500">
-            Schritt 1: Passwort festlegen. Schritt 2: Optional Recovery-E-Mail. Schritt 3: Häkchen setzen und Speichern.
+            Schritt 1: Passwort festlegen. Schritt 2: Recovery-E-Mail für Passwort-Reset angeben. Schritt 3: Häkchen setzen und Speichern.
           </p>
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
@@ -216,24 +253,38 @@ export function SettingsRestrictionSection() {
             </div>
             <div>
               <label className="mb-1 block text-xs text-gray-500">
-                Neues Passwort (leer lassen = Passwort bleibt wie es ist)
+                Neues Passwort
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nur zum Ändern eintragen"
+                placeholder="Neues Passwort eintragen"
                 className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
                 autoComplete="new-password"
               />
             </div>
+            {profile.has_restriction_password && (
+              <button
+                type="button"
+                onClick={handleChangePassword}
+                disabled={changePasswordDisabled}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+              >
+                {changingPassword ? "Wird geändert …" : "Passwort ändern"}
+              </button>
+            )}
           </div>
         </>
       )}
 
-      {/* Recovery-E-Mail (in beiden Fällen) */}
+      {/* Recovery-E-Mail (in beiden Fällen; bei erster Vergabe Pflicht) */}
       <div>
-        <label className="mb-1 block text-xs text-gray-500">Recovery-E-Mail (optional, für Passwort-Reset)</label>
+        <label className="mb-1 block text-xs text-gray-500">
+          {isFirstTime
+            ? "Recovery-E-Mail (für Passwort-Reset erforderlich)"
+            : "Recovery-E-Mail (optional, für Passwort-Reset)"}
+        </label>
         <input
           type="email"
           value={recoveryEmail}
@@ -259,6 +310,9 @@ export function SettingsRestrictionSection() {
         </div>
         {needPasswordToEnable && (
           <p className="text-xs text-amber-400">Bitte Passwort festlegen, um die Beschränkung zu aktivieren.</p>
+        )}
+        {needRecoveryEmailToEnable && (
+          <p className="text-xs text-amber-400">Bitte Recovery-E-Mail angeben, um die Beschränkung zu aktivieren.</p>
         )}
         {needCurrentPasswordToChange && (
           <p className="text-xs text-amber-400">Bitte aktuelles Passwort eintragen, um etwas zu ändern.</p>
