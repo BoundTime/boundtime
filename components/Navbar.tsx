@@ -67,35 +67,18 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
 
-  // Restriction-Status nur hier aktualisieren: visibilitychange + Event. Nicht in loadProfile o.ä., sonst überschreibt ein API-Call den korrekten Server-Wert (initialNavData).
-  const fetchRestrictionFromApi = useCallback(() => {
-    fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" })
-      .then((res) => res.json())
-      .then((data: { accountType?: string | null; restrictionEnabled?: boolean }) => {
-        setAccountType(data.accountType ?? null);
-        setRestrictionEnabled(data.restrictionEnabled ?? false);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    const onVisible = () => fetchRestrictionFromApi();
-    document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, [fetchRestrictionFromApi]);
-
+  // Restriction-Status NUR aus initialNavData (Server) und aus bt-restriction-changed (nach Speichern).
+  // Kein API-Call und kein visibilitychange – die haben den Server-Wert nach dem Laden überschrieben (rot → grün).
   useEffect(() => {
     const handler = (e: Event) => {
       const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
       if (typeof d?.restrictionEnabled === "boolean") {
         setRestrictionEnabled(d.restrictionEnabled);
-      } else {
-        fetchRestrictionFromApi();
       }
     };
     window.addEventListener("bt-restriction-changed", handler);
     return () => window.removeEventListener("bt-restriction-changed", handler);
-  }, [fetchRestrictionFromApi]);
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();

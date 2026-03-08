@@ -71,7 +71,8 @@ export function RestrictionProvider({
     }
   }, [initialRestrictionBlocking]);
 
-  // Restriction-Status nicht bei Auth-Change per API überschreiben (API könnte falsch liefern). Nur bei Tab-Wechsel und Event aktualisieren. Bei Logout: State leeren.
+  // Restriction-Status nicht bei Auth-Change per API überschreiben. Bei Logout: State leeren.
+  // visibilitychange erst 2s nach Mount, damit kein API-Call den Server-Wert sofort überschreibt.
   useEffect(() => {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -81,11 +82,16 @@ export function RestrictionProvider({
         setIsUnlocked(false);
       }
     });
-    const onVisible = () => init();
-    document.addEventListener("visibilitychange", onVisible);
+    let removeVisibility: (() => void) | null = null;
+    const t = window.setTimeout(() => {
+      const onVisible = () => init();
+      document.addEventListener("visibilitychange", onVisible);
+      removeVisibility = () => document.removeEventListener("visibilitychange", onVisible);
+    }, 2000);
     return () => {
+      window.clearTimeout(t);
+      removeVisibility?.();
       subscription.unsubscribe();
-      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [init, pathname]);
 
