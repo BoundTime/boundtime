@@ -12,7 +12,7 @@ import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
 const SUB_GESUCHT = "Keuschhalten anbieten (Keyholder)";
 
-type SearchParams = { role?: string; gender?: string; plz_prefix?: string; preference?: string; experience?: string; keuschhaltung?: string };
+type SearchParams = { role?: string; gender?: string; account_type?: string; plz_prefix?: string; preference?: string; experience?: string; keuschhaltung?: string };
 
 export default async function EntdeckenPage({
   searchParams,
@@ -28,6 +28,7 @@ export default async function EntdeckenPage({
   const params = await searchParams;
   const roleFilter = params.role && ["Dom", "Sub", "Switcher", "Bull"].includes(params.role) ? params.role : null;
   const genderFilter = params.gender && ["Mann", "Frau", "Divers"].includes(params.gender) ? params.gender : null;
+  const accountTypeFilter = params.account_type === "couple" ? "couple" : params.account_type === "single" ? "single" : null;
   const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 3) || null;
   const preferenceFilter = params.preference?.trim() || null;
   const experienceFilter = params.experience && ["beginner", "experienced", "advanced"].includes(params.experience) ? params.experience : null;
@@ -56,6 +57,7 @@ export default async function EntdeckenPage({
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
   if (roleFilter) query = query.eq("role", roleFilter);
   if (genderFilter) query = query.eq("gender", genderFilter);
+  if (accountTypeFilter) query = query.eq("account_type", accountTypeFilter);
   if (plzPrefix) query = query.like("postal_code", `${plzPrefix}%`);
   if (preferenceFilter) query = query.contains("preferences", [preferenceFilter]);
   if (experienceFilter) query = query.eq("experience_level", experienceFilter);
@@ -91,6 +93,7 @@ export default async function EntdeckenPage({
       <EntdeckenFilterSection
         roleFilter={roleFilter}
         genderFilter={genderFilter}
+        accountTypeFilter={accountTypeFilter}
         experienceFilter={experienceFilter}
         preferenceFilter={preferenceFilter}
         plzPrefix={plzPrefix}

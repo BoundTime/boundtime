@@ -8,6 +8,7 @@ import { PREFERENCES_OPTIONS } from "@/types";
 type Props = {
   roleFilter: string | null;
   genderFilter: string | null;
+  accountTypeFilter: "single" | "couple" | null;
   experienceFilter: string | null;
   preferenceFilter: string | null;
   plzPrefix: string | null;
@@ -18,6 +19,7 @@ type Props = {
 export function EntdeckenFilterSection({
   roleFilter,
   genderFilter,
+  accountTypeFilter,
   experienceFilter,
   preferenceFilter,
   plzPrefix,
@@ -60,6 +62,19 @@ export function EntdeckenFilterSection({
           <option value="Mann">Mann</option>
           <option value="Frau">Frau</option>
           <option value="Divers">Divers</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor={`account_type-${idSuffix}`} className="mb-1 block text-xs text-gray-500">Profiltyp</label>
+        <select
+          id={`account_type-${idSuffix}`}
+          name="account_type"
+          defaultValue={accountTypeFilter ?? ""}
+          className="rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+        >
+          <option value="">Alle</option>
+          <option value="single">Einzel</option>
+          <option value="couple">Paar</option>
         </select>
       </div>
       <div>
