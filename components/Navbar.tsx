@@ -83,6 +83,32 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     return () => window.removeEventListener("bt-restriction-changed", handler);
   }, []);
 
+  const uid = user?.id ?? initialNavData?.userId;
+  useEffect(() => {
+    if (!uid) return;
+    const supabase = createClient();
+    let cancelled = false;
+    const syncRestriction = () => {
+      supabase
+        .from("profiles")
+        .select("account_type, restriction_enabled")
+        .eq("id", uid)
+        .single()
+        .then(({ data }) => {
+          if (!cancelled && data) {
+            setAccountType((data as { account_type?: string | null }).account_type ?? null);
+            setRestrictionEnabled((data as { restriction_enabled?: boolean }).restriction_enabled ?? false);
+          }
+        });
+    };
+    syncRestriction();
+    const t = window.setTimeout(syncRestriction, 400);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, [uid]);
+
   useEffect(() => {
     const supabase = createClient();
 

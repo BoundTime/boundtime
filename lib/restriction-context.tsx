@@ -54,12 +54,18 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
     init();
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (!session?.user) {
+      if (session?.user) {
+        init();
+      } else {
         if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(STORAGE_KEY);
         setIsUnlocked(false);
       }
     });
-    return () => subscription.unsubscribe();
+    const t = window.setTimeout(init, 500);
+    return () => {
+      subscription.unsubscribe();
+      window.clearTimeout(t);
+    };
   }, [init, pathname]);
 
   useEffect(() => {
