@@ -218,8 +218,8 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
       <nav className="mx-auto flex max-w-6xl items-center gap-3 py-2.5 pl-3 pr-3 sm:pl-4 sm:pr-4">
         {user ? (
           <>
-            {/* Left (Desktop): Brand – schmal, Reiter rücken nach links */}
-            <div className="hidden md:flex md:shrink-0 md:basis-[160px] md:items-center md:justify-start">
+            {/* Left (Desktop): Brand – nur Inhaltsbreite, Reiter starten direkt daneben */}
+            <div className="hidden md:flex md:shrink-0 md:items-center md:justify-start">
               <RefreshNavLink
                 href="/dashboard"
                 className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"

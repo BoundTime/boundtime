@@ -1,1 +1,1 @@
-# Erledigt: Navbar – linker Brand-Bereich schmaler (160px), Reiter weiter links.
+# Erledigt: Navbar – linker Block ohne feste Breite (nur Inhaltsbreite), Reiter deutlich weiter links.
