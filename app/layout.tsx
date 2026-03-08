@@ -6,6 +6,7 @@ import { getMessages } from "next-intl/server";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { RestrictionDot, RestrictionDotMobile } from "@/components/RestrictionDot";
 import { CookieBanner } from "@/components/CookieBanner";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -79,13 +80,21 @@ export default async function RootLayout({
     })(),
   ]);
 
+  const accountType = initialNavData?.accountType ?? null;
+  const restrictionEnabled = initialNavData?.restrictionEnabled ?? false;
+  const showRestrictionDot = accountType === "couple";
+
   return (
     <html lang="de" className="dark">
       <body
         className={`${plusJakarta.variable} antialiased min-h-screen flex flex-col overflow-x-hidden bg-background text-gray-200 font-sans text-base leading-relaxed`}
       >
         <NextIntlClientProvider messages={messages}>
-          <Navbar initialNavData={initialNavData} />
+          <Navbar
+            initialNavData={initialNavData}
+            restrictionDotSlot={showRestrictionDot ? <RestrictionDot enabled={restrictionEnabled} /> : null}
+            restrictionDotMobileSlot={showRestrictionDot ? <RestrictionDotMobile enabled={restrictionEnabled} /> : null}
+          />
           <main className="relative z-10 flex-1">{children}</main>
           <Footer className="relative z-10" />
           <CookieBanner />

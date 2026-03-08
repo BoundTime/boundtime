@@ -27,7 +27,13 @@ type InitialNavData = {
   restrictionEnabled?: boolean;
 };
 
-export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavData | null }) {
+type NavbarProps = {
+  initialNavData?: InitialNavData | null;
+  restrictionDotSlot?: React.ReactNode;
+  restrictionDotMobileSlot?: React.ReactNode;
+};
+
+export function Navbar({ initialNavData = null, restrictionDotSlot = null, restrictionDotMobileSlot = null }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(
@@ -38,7 +44,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   const [role, setRole] = useState<string | null>(initialNavData?.role ?? null);
   const [verified, setVerified] = useState(initialNavData?.verified ?? false);
   const [accountType, setAccountType] = useState<string | null>(initialNavData?.accountType ?? null);
-  const [restrictionEnabled, setRestrictionEnabled] = useState(initialNavData?.restrictionEnabled ?? false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
@@ -66,19 +71,6 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
-
-  // Restriction-Status NUR aus initialNavData (Server) und aus bt-restriction-changed (nach Speichern).
-  // Kein API-Call und kein visibilitychange – die haben den Server-Wert nach dem Laden überschrieben (rot → grün).
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
-      if (typeof d?.restrictionEnabled === "boolean") {
-        setRestrictionEnabled(d.restrictionEnabled);
-      }
-    };
-    window.addEventListener("bt-restriction-changed", handler);
-    return () => window.removeEventListener("bt-restriction-changed", handler);
-  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -265,22 +257,8 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
             {/* Right (Desktop): User-Block – feste Basisbreite, rechtsbündig */}
             <div className="hidden md:flex md:shrink-0 md:basis-[260px] md:items-center md:justify-end">
               <div className="flex flex-shrink-0 items-center gap-2 border-l border-gray-700 pl-2">
-                {/* Paar-Account: Indikator Zugriffsbeschränkung (Grün = nicht aktiv, Rot = aktiv) */}
-                {accountType === "couple" && (
-                  <span
-                    className="flex items-center gap-1.5 shrink-0"
-                    title={restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
-                  >
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
-                      aria-hidden
-                    />
-                    <span className="hidden text-[10px] text-gray-400 lg:inline" aria-label={restrictionEnabled ? "Beschränkung an" : "Beschränkung aus"}>
-                      {restrictionEnabled ? "Beschränkung an" : "Beschränkung aus"}
-                    </span>
-                  </span>
-                )}
+                {/* Paar-Account: Punkt nur vom Server (Slot), damit Client ihn nicht überschreibt */}
+                {restrictionDotSlot}
                 <LockDurationBadge />
                 {nick && (
                     <RefreshNavLink
@@ -453,14 +431,9 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
                   <div className="py-2" onClick={closeMenu}>
                     <LockDurationBadge onClick={closeMenu} />
                   </div>
-                  {accountType === "couple" && (
+                  {restrictionDotMobileSlot && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: restrictionEnabled ? "#ef4444" : "#22c55e" }}
-                        aria-hidden
-                      />
-                      {restrictionEnabled ? "Zugriffsbeschränkung aktiv" : "Keine Zugriffsbeschränkung"}
+                      {restrictionDotMobileSlot}
                     </p>
                   )}
                   {nick && (
