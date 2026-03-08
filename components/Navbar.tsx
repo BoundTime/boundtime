@@ -133,7 +133,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setRole(null);
         setVerified(false);
         setAccountType(null);
-        setRestrictionEnabled(false);
+        setRestrictionEnabled(initialNavData?.restrictionEnabled ?? false);
       }
     });
 
@@ -153,7 +153,7 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
         setRole(null);
         setVerified(false);
         setAccountType(null);
-        setRestrictionEnabled(false);
+        setRestrictionEnabled(initialNavData?.restrictionEnabled ?? false);
       }
     });
 
