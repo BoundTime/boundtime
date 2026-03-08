@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   title: "BoundTime – Netzwerk für diskrete und respektvolle BDSM-Kontakte",
   description:
     "Deutschsprachige BDSM-Community mit Keuschhaltung: Austausch, Begegnung und Vertrauen. Keuschhaltung mit Aufgaben und Belohnungen gemeinsam vereinbaren und umsetzen.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   verification:
     process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
