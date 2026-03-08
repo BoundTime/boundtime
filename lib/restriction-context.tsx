@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEY = "bt_restriction_unlocked";
@@ -26,28 +27,32 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
   const [error, setError] = useState<string | null>(null);
   const [unlockLoading, setUnlockLoading] = useState(false);
 
-  useEffect(() => {
+  const pathname = usePathname();
+
+  const init = useCallback(async () => {
     const supabase = createClient();
-    const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsRestricted(false);
-        setIsUnlocked(false);
-        setIsLoading(false);
-        return;
-      }
-      const { data } = await supabase.rpc("is_restriction_blocking_write", { p_user_id: user.id });
-      const restricted = data === true;
-      setIsRestricted(restricted);
-      if (restricted && typeof sessionStorage !== "undefined") {
-        const stored = sessionStorage.getItem(STORAGE_KEY);
-        setIsUnlocked(stored === user.id);
-      } else {
-        setIsUnlocked(!restricted);
-      }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setIsRestricted(false);
+      setIsUnlocked(false);
       setIsLoading(false);
-    };
+      return;
+    }
+    const { data } = await supabase.rpc("is_restriction_blocking_write", { p_user_id: user.id });
+    const restricted = data === true;
+    setIsRestricted(restricted);
+    if (restricted && typeof sessionStorage !== "undefined") {
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      setIsUnlocked(stored === user.id);
+    } else {
+      setIsUnlocked(!restricted);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
     init();
+    const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       if (!session?.user) {
         if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(STORAGE_KEY);
@@ -55,7 +60,13 @@ export function RestrictionProvider({ children }: { children: React.ReactNode })
       }
     });
     return () => subscription.unsubscribe();
-  }, []);
+  }, [init, pathname]);
+
+  useEffect(() => {
+    const handler = () => init();
+    window.addEventListener("bt-restriction-changed", handler);
+    return () => window.removeEventListener("bt-restriction-changed", handler);
+  }, [init]);
 
   const requestUnlock = useCallback((onSuccess?: () => void) => {
     setOnUnlockSuccess(() => onSuccess ?? undefined);

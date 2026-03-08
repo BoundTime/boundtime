@@ -73,6 +73,9 @@ export function SettingsRestrictionSection() {
       setPassword("");
       setCurrentPassword("");
       router.refresh();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("bt-restriction-changed", { detail: { restrictionEnabled: enabled } }));
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Fehler beim Speichern.");
     } finally {

@@ -75,6 +75,15 @@ export function Navbar({ initialNavData = null }: { initialNavData?: InitialNavD
   }, [initialNavData?.accountType, initialNavData?.restrictionEnabled]);
 
   useEffect(() => {
+    const handler = (e: Event) => {
+      const d = (e as CustomEvent<{ restrictionEnabled?: boolean }>).detail;
+      if (typeof d?.restrictionEnabled === "boolean") setRestrictionEnabled(d.restrictionEnabled);
+    };
+    window.addEventListener("bt-restriction-changed", handler);
+    return () => window.removeEventListener("bt-restriction-changed", handler);
+  }, []);
+
+  useEffect(() => {
     const supabase = createClient();
 
     async function loadProfile(userId: string) {
