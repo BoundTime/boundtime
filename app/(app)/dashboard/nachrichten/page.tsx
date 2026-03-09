@@ -14,6 +14,31 @@ export default async function NachrichtenPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: myProfile } = await supabase
+    .from("profiles")
+    .select("restriction_enabled, restriction_no_messages")
+    .eq("id", user.id)
+    .single();
+  if (myProfile?.restriction_enabled === true && myProfile?.restriction_no_messages === true) {
+    return (
+      <Container className="py-16">
+        <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 hover:text-white">
+          ← MyBound
+        </Link>
+        <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
+          <h1 className="text-2xl font-bold text-white">Nachrichten</h1>
+          <p className="mt-1 text-sm text-amber-200/90">Nachrichten sind im Cuckymode eingeschränkt.</p>
+        </div>
+        <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
+          <p className="text-gray-400">Du darfst keine Nachrichten lesen oder schreiben. In den Einstellungen kann die Hotwife/der Dom diese Einschränkung anpassen.</p>
+          <Link href="/dashboard/einstellungen" className="mt-4 inline-block text-accent hover:underline">
+            Einstellungen →
+          </Link>
+        </div>
+      </Container>
+    );
+  }
+
   const params = await searchParams;
   const withUserId = params.with;
 

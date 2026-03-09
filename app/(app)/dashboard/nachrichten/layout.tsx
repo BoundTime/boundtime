@@ -117,7 +117,15 @@ export default async function NachrichtenLayout({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const list = await getConversationList(user.id);
+  const { data: myProfile } = await supabase
+    .from("profiles")
+    .select("restriction_enabled, restriction_no_messages")
+    .eq("id", user.id)
+    .single();
+  const messagesRestricted =
+    myProfile?.restriction_enabled === true && myProfile?.restriction_no_messages === true;
+
+  const list = messagesRestricted ? [] : await getConversationList(user.id);
 
   if (!list || list.length === 0) {
     return <>{children}</>;

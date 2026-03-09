@@ -18,6 +18,23 @@ export default async function ChatPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: restrictionProfile } = await supabase
+    .from("profiles")
+    .select("restriction_enabled, restriction_no_messages")
+    .eq("id", user.id)
+    .single();
+  if (restrictionProfile?.restriction_enabled === true && restrictionProfile?.restriction_no_messages === true) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center p-6">
+        <p className="text-center text-amber-200/90">Nachrichten sind im Cuckymode eingeschränkt.</p>
+        <p className="mt-2 text-center text-sm text-gray-400">Du darfst keine Nachrichten lesen oder schreiben.</p>
+        <Link href="/dashboard/einstellungen" className="mt-4 text-accent hover:underline">
+          Einstellungen →
+        </Link>
+      </div>
+    );
+  }
+
   const { data: conv } = await supabase
     .from("conversations")
     .select("id, participant_a, participant_b")

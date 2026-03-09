@@ -36,7 +36,7 @@ export default async function EntdeckenPage({
 
   const myProfile = await supabase
     .from("profiles")
-    .select("postal_code")
+    .select("postal_code, account_type, restriction_enabled, restriction_no_single_female_profiles, restriction_no_couple_profiles, restriction_no_images")
     .eq("id", user.id)
     .single();
 
@@ -66,12 +66,30 @@ export default async function EntdeckenPage({
 
   const { data: profilesRaw } = await query.order("nick");
 
+  const isRestrictedViewer =
+    myProfile.data?.account_type === "couple" &&
+    myProfile.data?.restriction_enabled === true;
+  const noSingleFemale = isRestrictedViewer && (myProfile.data?.restriction_no_single_female_profiles === true);
+  const noCouple = isRestrictedViewer && (myProfile.data?.restriction_no_couple_profiles === true);
+  const noImages = isRestrictedViewer && (myProfile.data?.restriction_no_images === true);
+
+  let filteredRaw = profilesRaw ?? [];
+  if (noSingleFemale || noCouple) {
+    filteredRaw = filteredRaw.filter((p: { account_type?: string; gender?: string }) => {
+      if (noSingleFemale && p.account_type === "single" && p.gender === "Frau") return false;
+      if (noCouple && p.account_type === "couple") return false;
+      return true;
+    });
+  }
+
   const profiles = await Promise.all(
-    (profilesRaw ?? []).map(async (p) => {
-      const avatarUrl = await resolveProfileAvatarUrl(
-        { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
-        supabase
-      );
+    filteredRaw.map(async (p) => {
+      const avatarUrl = noImages
+        ? null
+        : await resolveProfileAvatarUrl(
+            { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+            supabase
+          );
       return { ...p, avatarUrl };
     })
   );

@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+type RestrictionFlags = {
+  noSingleFemaleProfiles: boolean;
+  noMessages: boolean;
+  noCoupleProfiles: boolean;
+  noImages: boolean;
+};
+
 type ProfileRestriction = {
   account_type: string | null;
   restriction_enabled: boolean;
@@ -23,6 +30,10 @@ export function SettingsRestrictionSection() {
   const [enabled, setEnabled] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [noSingleFemaleProfiles, setNoSingleFemaleProfiles] = useState(false);
+  const [noMessages, setNoMessages] = useState(false);
+  const [noCoupleProfiles, setNoCoupleProfiles] = useState(false);
+  const [noImages, setNoImages] = useState(false);
 
   async function loadProfile() {
     const supabase = createClient();
@@ -37,7 +48,7 @@ export function SettingsRestrictionSection() {
       fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json()),
     ]);
     const p = profilesRes.data;
-    const restriction = restrictionRes as { hasPasswordSet?: boolean };
+    const restriction = restrictionRes as { hasPasswordSet?: boolean; restrictionFlags?: RestrictionFlags };
     if (p) {
       setProfile({
         account_type: p.account_type,
@@ -47,6 +58,13 @@ export function SettingsRestrictionSection() {
       });
       setRecoveryEmail(p.restriction_recovery_email ?? "");
       setEnabled(p.restriction_enabled ?? false);
+      const flags = restriction?.restrictionFlags;
+      if (flags) {
+        setNoSingleFemaleProfiles(flags.noSingleFemaleProfiles ?? false);
+        setNoMessages(flags.noMessages ?? false);
+        setNoCoupleProfiles(flags.noCoupleProfiles ?? false);
+        setNoImages(flags.noImages ?? false);
+      }
     }
   }
 
@@ -111,6 +129,23 @@ export function SettingsRestrictionSection() {
         credentials: "same-origin",
         body: JSON.stringify({ restrictionEnabled: enabled }),
       });
+      const flagsRes = await fetch("/api/me/restriction/flags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          noSingleFemaleProfiles,
+          noMessages,
+          noCoupleProfiles,
+          noImages,
+          currentPassword: isFall2 && profile?.has_restriction_password ? currentPassword?.trim() || undefined : undefined,
+        }),
+      });
+      if (!flagsRes.ok) {
+        const flagsErr = (await flagsRes.json().catch(() => ({}))) as { error?: string };
+        setError(flagsErr.error ?? "Einschränkungs-Optionen konnten nicht gespeichert werden.");
+        return;
+      }
       if (!enabled && profile) {
         setProfile((prev) => (prev ? { ...prev, restriction_enabled: false } : null));
         setEnabled(false);
@@ -358,7 +393,7 @@ export function SettingsRestrictionSection() {
         />
       </div>
 
-      {/* Checkbox */}
+      {/* Checkbox Cuckymode aktivieren */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <input
@@ -372,6 +407,27 @@ export function SettingsRestrictionSection() {
             Cuckymode aktivieren (Schreiben nur nach Passwort)
           </label>
         </div>
+        {enabled && (
+          <div className="ml-6 mt-3 space-y-2 rounded-lg border border-gray-600 bg-gray-800/30 p-3">
+            <p className="text-xs font-medium text-gray-400">Zusätzliche Einschränkungen (was der Cucky nicht darf)</p>
+            <label className="flex items-center gap-2 text-sm text-gray-300">
+              <input type="checkbox" checked={noSingleFemaleProfiles} onChange={(e) => setNoSingleFemaleProfiles(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
+              Keine Single-Frauen-Profile ansehen
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-300">
+              <input type="checkbox" checked={noMessages} onChange={(e) => setNoMessages(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
+              Keine Nachrichten lesen oder schreiben
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-300">
+              <input type="checkbox" checked={noCoupleProfiles} onChange={(e) => setNoCoupleProfiles(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
+              Keine Paar-Profile ansehen
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-300">
+              <input type="checkbox" checked={noImages} onChange={(e) => setNoImages(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
+              Keine Bilder ansehen
+            </label>
+          </div>
+        )}
         {needPasswordToEnable && (
           <p className="text-xs text-amber-400">Bitte Passwort festlegen, um Cuckymode zu aktivieren.</p>
         )}
