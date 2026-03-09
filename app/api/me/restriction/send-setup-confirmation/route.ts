@@ -1,12 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { sendEmail } from "@/lib/send-email";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Sendet eine Bestätigungs-E-Mail an die Account-E-Mail des Nutzers,
  * wenn Cuckymode zum ersten Mal eingerichtet wurde.
- * Optional: RESEND_API_KEY setzen, um E-Mails über Resend zu versenden.
+ * Nutzt RESEND_API_KEY (Resend) oder SMTP (z. B. IONOS: SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM).
  */
 export async function POST() {
   const supabase = await createClient();
@@ -27,33 +28,14 @@ export async function POST() {
     return NextResponse.json({ error: "Kein Cuckymode-Passwort gesetzt" }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL ?? "noreply@boundtime.app";
-  if (apiKey) {
-    try {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          from: fromEmail,
-          to: [user.email],
-          subject: "Cuckymode eingerichtet – BoundTime",
-          text: `Hallo,\n\nCuckymode wurde erfolgreich für dein BoundTime-Paarprofil eingerichtet. Das Passwort ist gesetzt und aktiv.\n\nBei Fragen: Einstellungen → Cuckymode.\n\n– BoundTime`,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.text();
-        console.error("Resend send-setup-confirmation:", res.status, err);
-        return NextResponse.json({ error: "E-Mail konnte nicht versendet werden" }, { status: 500 });
-      }
-    } catch (e) {
-      console.error("Resend send-setup-confirmation:", e);
-      return NextResponse.json({ error: "E-Mail konnte nicht versendet werden" }, { status: 500 });
-    }
-  }
+  const result = await sendEmail({
+    to: user.email,
+    subject: "Cuckymode eingerichtet – BoundTime",
+    text: `Hallo,\n\nCuckymode wurde erfolgreich für dein BoundTime-Paarprofil eingerichtet. Das Passwort ist gesetzt und aktiv.\n\nBei Fragen: Einstellungen → Cuckymode.\n\n– BoundTime`,
+  });
 
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error ?? "E-Mail konnte nicht versendet werden" }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }
