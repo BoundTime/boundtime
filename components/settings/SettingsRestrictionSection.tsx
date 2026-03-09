@@ -14,7 +14,6 @@ type RestrictionFlags = {
 type ProfileRestriction = {
   account_type: string | null;
   restriction_enabled: boolean;
-  restriction_recovery_email: string | null;
   has_restriction_password: boolean;
 };
 
@@ -26,7 +25,6 @@ export function SettingsRestrictionSection() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [password, setPassword] = useState("");
-  const [recoveryEmail, setRecoveryEmail] = useState("");
   const [enabled, setEnabled] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
@@ -38,6 +36,8 @@ export function SettingsRestrictionSection() {
   const [modalCurrentPwd, setModalCurrentPwd] = useState("");
   const [modalNewPwd, setModalNewPwd] = useState("");
   const [modalError, setModalError] = useState<string | null>(null);
+  const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState<string | null>(null);
 
   async function loadProfile() {
     const supabase = createClient();
@@ -46,7 +46,7 @@ export function SettingsRestrictionSection() {
     const [profilesRes, restrictionRes] = await Promise.all([
       supabase
         .from("profiles")
-        .select("account_type, restriction_enabled, restriction_recovery_email")
+        .select("account_type, restriction_enabled")
         .eq("id", user.id)
         .single(),
       fetch("/api/me/restriction", { cache: "no-store", credentials: "same-origin" }).then((r) => r.json()),
@@ -57,10 +57,8 @@ export function SettingsRestrictionSection() {
       setProfile({
         account_type: p.account_type,
         restriction_enabled: p.restriction_enabled ?? false,
-        restriction_recovery_email: p.restriction_recovery_email,
         has_restriction_password: restriction?.hasPasswordSet === true,
       });
-      setRecoveryEmail(p.restriction_recovery_email ?? "");
       setEnabled(p.restriction_enabled ?? false);
       const flags = restriction?.restrictionFlags;
       if (flags) {
@@ -110,7 +108,7 @@ export function SettingsRestrictionSection() {
             : null;
       const { error: rpcError } = await supabase.rpc("set_restriction_password", {
         p_password: pwdTrim || null,
-        p_recovery_email: recoveryEmail.trim() || null,
+        p_recovery_email: null,
         p_enabled: enabled,
         p_current_password: currentPwdForRpc,
       });
@@ -174,6 +172,10 @@ export function SettingsRestrictionSection() {
           "Passwort wurde nicht gespeichert. Bitte erneut versuchen oder Migration 072/073 anwenden."
         );
       } else {
+        const wasFirstTimeSetup = enabled && isFirstTime && !profile?.has_restriction_password && !!pwdTrim;
+        if (wasFirstTimeSetup) {
+          fetch("/api/me/restriction/send-setup-confirmation", { method: "POST", credentials: "same-origin" }).catch(() => {});
+        }
         setSuccess(
           enabled
             ? "Gespeichert. Cuckymode ist jetzt aktiv – der Punkt in der Navbar wird rot."
@@ -241,6 +243,25 @@ export function SettingsRestrictionSection() {
     }
   }
 
+  async function handleForgotPassword() {
+    setForgotPasswordSuccess(null);
+    setError(null);
+    setForgotPasswordLoading(true);
+    try {
+      const res = await fetch("/api/me/restriction/forgot-password", { method: "POST", credentials: "same-origin" });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (res.ok && data.ok) {
+        setForgotPasswordSuccess("Falls ein E-Mail-Dienst konfiguriert ist, wurde eine E-Mail an deine Account-Adresse gesendet.");
+      } else {
+        setError(data.error ?? "Anfrage konnte nicht gesendet werden.");
+      }
+    } catch {
+      setError("Anfrage konnte nicht gesendet werden.");
+    } finally {
+      setForgotPasswordLoading(false);
+    }
+  }
+
   async function handleChangePasswordInModal(e: React.FormEvent) {
     e.preventDefault();
     setModalError(null);
@@ -282,10 +303,9 @@ export function SettingsRestrictionSection() {
   const isChanging = profile.restriction_enabled;
 
   const needPasswordToEnable = enabled && isFirstTime && !profile.has_restriction_password && !password.trim();
-  const needRecoveryEmailToEnable = enabled && isFirstTime && !recoveryEmail.trim();
   const needCurrentPasswordToReEnable = enabled && isFirstTime && profile.has_restriction_password && !currentPassword.trim();
   const needCurrentPasswordToChange = isChanging && profile.has_restriction_password && !currentPassword.trim();
-  const submitDisabled = saving || needPasswordToEnable || needRecoveryEmailToEnable || needCurrentPasswordToReEnable || needCurrentPasswordToChange;
+  const submitDisabled = saving || needPasswordToEnable || needCurrentPasswordToReEnable || needCurrentPasswordToChange;
   const liftRestrictionDisabled = saving || !currentPassword.trim();
 
   return (
@@ -317,7 +337,7 @@ export function SettingsRestrictionSection() {
           <p className="text-xs text-gray-500">
             {profile.has_restriction_password
               ? "Passwort wurde bereits festgelegt und bleibt gültig. Zur Bestätigung aktuelles Passwort eintragen, Häkchen setzen und Speichern."
-              : "Schritt 1: Passwort festlegen. Schritt 2: Recovery-E-Mail für Passwort-Reset angeben. Schritt 3: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
+              : "Schritt 1: Passwort festlegen. Schritt 2: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
           </p>
           {!profile.has_restriction_password ? (
             <div>
@@ -350,13 +370,24 @@ export function SettingsRestrictionSection() {
                   autoComplete="current-password"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
-              >
-                Passwort ändern
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
+                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+                >
+                  Passwort ändern
+                </button>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={forgotPasswordLoading}
+                  className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {forgotPasswordLoading ? "…" : "Passwort vergessen"}
+                </button>
+              </div>
+              {forgotPasswordSuccess && <p className="mt-2 text-sm text-green-400">{forgotPasswordSuccess}</p>}
             </>
           )}
         </>
@@ -384,13 +415,26 @@ export function SettingsRestrictionSection() {
               />
             </div>
             {profile.has_restriction_password && (
-              <button
-                type="button"
-                onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
-              >
-                Passwort ändern
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
+                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+                >
+                  Passwort ändern
+                </button>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={forgotPasswordLoading}
+                  className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                >
+                  {forgotPasswordLoading ? "…" : "Passwort vergessen"}
+                </button>
+              </div>
+            )}
+            {(forgotPasswordSuccess || forgotPasswordLoading) && (
+              <p className="text-sm text-green-400">{forgotPasswordSuccess ?? "…"}</p>
             )}
             <div className="pt-2 border-t border-gray-600">
               <button
@@ -406,22 +450,6 @@ export function SettingsRestrictionSection() {
           </div>
         </>
       )}
-
-      {/* Recovery-E-Mail (in beiden Fällen; bei erster Vergabe Pflicht) */}
-      <div>
-        <label className="mb-1 block text-xs text-gray-500">
-          {isFirstTime
-            ? "Recovery-E-Mail (für Passwort-Reset erforderlich)"
-            : "Recovery-E-Mail (optional, für Passwort-Reset)"}
-        </label>
-        <input
-          type="email"
-          value={recoveryEmail}
-          onChange={(e) => setRecoveryEmail(e.target.value)}
-          placeholder="email@beispiel.de"
-          className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-        />
-      </div>
 
       {/* Checkbox Cuckymode aktivieren */}
       <div className="space-y-1">
@@ -460,9 +488,6 @@ export function SettingsRestrictionSection() {
         )}
         {needPasswordToEnable && (
           <p className="text-xs text-amber-400">Bitte Passwort festlegen, um Cuckymode zu aktivieren.</p>
-        )}
-        {needRecoveryEmailToEnable && (
-          <p className="text-xs text-amber-400">Bitte Recovery-E-Mail angeben, um Cuckymode zu aktivieren.</p>
         )}
         {needCurrentPasswordToReEnable && (
           <p className="text-xs text-amber-400">Bitte aktuelles Passwort zur Bestätigung eintragen, um Cuckymode zu aktivieren.</p>

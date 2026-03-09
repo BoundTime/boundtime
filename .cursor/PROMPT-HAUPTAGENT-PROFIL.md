@@ -37,3 +37,11 @@
 - **Reaktivieren:** Wenn Passwort existiert, nur „Aktuelles Passwort zur Bestätigung“; kein neues Passwort.
 - **Aufheben:** Aktuelles Passwort nötig; Hinweis „Das Passwort bleibt gespeichert“.
 - **Passwort ändern:** Button „Passwort ändern“ (wenn Passwort gesetzt), öffnet Modal (wie Freischalten) mit Aktuelles Passwort + Neues Passwort, Buttons „Ändern“ und „Abbrechen“. Nur dort wird der Hash aktualisiert.
+
+---
+
+# Erledigt: Recovery-E-Mail entfernen, Bestätigungsmail, Button „Passwort vergessen“
+
+- **Recovery-E-Mail:** Feld und Label aus der Cuckymode-UI entfernt; keine Anzeige und keine Speicherung mehr (`p_recovery_email: null`). DB-Spalte bleibt vorerst.
+- **Bestätigungsmail:** Bei erster Einrichtung (erstes Aktivieren mit Passwort) wird `POST /api/me/restriction/send-setup-confirmation` aufgerufen; die Route sendet bei gesetztem `RESEND_API_KEY` eine Bestätigungs-E-Mail an die Account-E-Mail.
+- **Passwort vergessen:** Button „Passwort vergessen“ neben „Passwort ändern“, immer sichtbar wenn `restriction_password_hash` gesetzt (aktiv oder inaktiv). Ruft `POST /api/me/restriction/forgot-password` auf; bei `RESEND_API_KEY` wird eine Hinweis-Mail versendet.
