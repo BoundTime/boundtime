@@ -48,8 +48,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ ok: boolea
   if (smtpHost && smtpUser && smtpPass) {
     try {
       const nodemailer = await import("nodemailer");
-      const port = Number(process.env.SMTP_PORT) || 587;
-      const secure = process.env.SMTP_SECURE === "true";
+      const port = Number(process.env.SMTP_PORT) || 465;
+      const secure = process.env.SMTP_SECURE !== "false";
       const fromEmail = from ?? process.env.SMTP_FROM ?? smtpUser;
       const transporter = nodemailer.default.createTransport({
         host: smtpHost,

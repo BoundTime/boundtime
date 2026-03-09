@@ -17,7 +17,7 @@ type ProfileRestriction = {
   has_restriction_password: boolean;
 };
 
-export function SettingsRestrictionSection() {
+export function SettingsRestrictionSection({ showResetSuccess = false }: { showResetSuccess?: boolean }) {
   const router = useRouter();
   const [profile, setProfile] = useState<ProfileRestriction | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,6 +76,13 @@ export function SettingsRestrictionSection() {
       setLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    if (showResetSuccess) {
+      setSuccess("Passwort wurde zurückgesetzt. Du kannst jetzt ein neues Passwort festlegen (als wäre es noch nie gesetzt).");
+      router.replace("/dashboard/einstellungen", { scroll: false });
+    }
+  }, [showResetSuccess, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -248,11 +255,16 @@ export function SettingsRestrictionSection() {
     setError(null);
     setForgotPasswordLoading(true);
     try {
-      const res = await fetch("/api/me/restriction/forgot-password", { method: "POST", credentials: "same-origin" });
+      const res = await fetch("/api/me/restriction/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ origin: typeof window !== "undefined" ? window.location.origin : "" }),
+      });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; email?: string };
       if (res.ok && data.ok) {
         const email = data.email ?? "deine Account-Adresse";
-        setForgotPasswordSuccess(`Eine E-Mail mit Hinweisen zum Zurücksetzen wurde an ${email} gesendet.`);
+        setForgotPasswordSuccess(`Eine E-Mail mit Reset-Link wurde an ${email} gesendet. Der Link ist 1 Stunde gültig.`);
       } else {
         setError(data.error ?? "Anfrage konnte nicht gesendet werden.");
       }

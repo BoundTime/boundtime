@@ -9,7 +9,13 @@ import { SettingsBlockedUsersSection } from "@/components/settings/SettingsBlock
 import { SettingsRestrictionSection } from "@/components/settings/SettingsRestrictionSection";
 import { CollapsibleSection } from "@/components/settings/CollapsibleSection";
 
-export default async function EinstellungenPage() {
+export default async function EinstellungenPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cuckymode_reset?: string }>;
+}) {
+  const params = await searchParams;
+  const showCuckymodeResetSuccess = params.cuckymode_reset === "ok";
   const supabase = await createClient();
   const {
     data: { user },
@@ -66,7 +72,7 @@ export default async function EinstellungenPage() {
 
         {profile?.account_type === "couple" && (
           <CollapsibleSection title="Zugriffsbeschränkung">
-            <SettingsRestrictionSection />
+            <SettingsRestrictionSection showResetSuccess={showCuckymodeResetSuccess} />
           </CollapsibleSection>
         )}
 
