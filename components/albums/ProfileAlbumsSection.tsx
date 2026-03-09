@@ -22,6 +22,7 @@ export function ProfileAlbumsSection({
   requestStatusByAlbum,
   ownerAvatarUrl = null,
   isViewerVerified = false,
+  viewerNoImages = false,
 }: {
   ownerId: string;
   viewerId: string;
@@ -29,6 +30,7 @@ export function ProfileAlbumsSection({
   requestStatusByAlbum: Record<string, RequestStatus>;
   ownerAvatarUrl?: string | null;
   isViewerVerified?: boolean;
+  viewerNoImages?: boolean;
 }) {
   const router = useRouter();
   const [loadingAlbumId, setLoadingAlbumId] = useState<string | null>(null);
@@ -51,6 +53,27 @@ export function ProfileAlbumsSection({
   const otherAlbums = albums.filter((a) => !a.is_main);
 
   if (albums.length === 0) return null;
+
+  if (viewerNoImages) {
+    return (
+      <div>
+        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+          Fotoalben
+        </h2>
+        <p className="mt-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200/90">
+          Bilder sind im Cuckymode für dich eingeschränkt. Du kannst keine Alben ansehen und keine Album-Anfragen senden.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {mainAlbum && (
+            <AlbumTile album={mainAlbum} ownerId={ownerId} canView={false} avatarUrl={null} noImagesRestricted />
+          )}
+          {otherAlbums.map((album) => (
+            <AlbumTile key={album.id} album={album} ownerId={ownerId} canView={false} avatarUrl={null} noImagesRestricted />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -111,14 +134,16 @@ function AlbumTile({
   ownerId,
   canView,
   avatarUrl = null,
+  noImagesRestricted = false,
 }: {
   album: Album;
   ownerId: string;
   canView: boolean;
   avatarUrl?: string | null;
+  noImagesRestricted?: boolean;
 }) {
   const coverUrl = (album.is_main && avatarUrl) ? avatarUrl : (album.coverUrl ?? null);
-  const href = canView ? `/dashboard/entdecken/${ownerId}/alben/${album.id}` : undefined;
+  const href = !noImagesRestricted && canView ? `/dashboard/entdecken/${ownerId}/alben/${album.id}` : undefined;
 
   const content = (
     <div className="flex h-24 w-24 flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-800 sm:h-28 sm:w-28">

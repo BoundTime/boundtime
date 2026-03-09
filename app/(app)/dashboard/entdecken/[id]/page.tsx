@@ -62,9 +62,18 @@ export default async function ProfilDetailPage({
 
   const { data: myProfile } = await supabase
     .from("profiles")
-    .select("role, verified, account_type, gender")
+    .select("role, verified, account_type, gender, restriction_enabled, restriction_no_messages, restriction_no_images")
     .eq("id", user.id)
     .single();
+
+  const viewerNoImages =
+    myProfile?.account_type === "couple" &&
+    myProfile?.restriction_enabled === true &&
+    myProfile?.restriction_no_images === true;
+  const viewerNoMessages =
+    myProfile?.account_type === "couple" &&
+    myProfile?.restriction_enabled === true &&
+    myProfile?.restriction_no_messages === true;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -76,10 +85,11 @@ export default async function ProfilDetailPage({
 
   if (!profile) notFound();
 
-  const avatarUrl = await resolveProfileAvatarUrl(
+  const avatarUrlResolved = await resolveProfileAvatarUrl(
     { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
     supabase
   );
+  const avatarUrl = viewerNoImages ? null : avatarUrlResolved;
 
   if (user.id !== profile.id) {
     // Profilbesuch clientseitig erfassen (JWT des Besuchers)
@@ -196,6 +206,7 @@ export default async function ProfilDetailPage({
 
   const albumsWithCovers = await Promise.all(
     (albums ?? []).map(async (album) => {
+      if (viewerNoImages) return { ...album, coverUrl: null as string | null };
       let coverUrl: string | null = null;
       if (album.is_main && avatarUrl) {
         coverUrl = avatarUrl;
@@ -328,12 +339,18 @@ export default async function ProfilDetailPage({
               initialLiked={profileLikedByMe}
               initialCount={profileLikeCount}
             />
-            <Link
-              href={`/dashboard/nachrichten?with=${profile.id}`}
-              className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
-            >
-              Nachricht senden
-            </Link>
+            {viewerNoMessages ? (
+              <span className="min-h-[44px] flex items-center rounded-lg border border-gray-600 bg-gray-800/60 px-4 py-3 text-sm text-gray-400 sm:py-2" title="Nachrichten sind im Cuckymode eingeschränkt">
+                Nachricht senden (eingeschränkt)
+              </span>
+            ) : (
+              <Link
+                href={`/dashboard/nachrichten?with=${profile.id}`}
+                className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
+              >
+                Nachricht senden
+              </Link>
+            )}
             {hasExistingChastityConnection ? (
               <span className="flex items-center gap-2 text-sm text-gray-400">
                 Es besteht bereits eine Verbindung.
@@ -420,7 +437,7 @@ export default async function ProfilDetailPage({
                       </div>
                         <div className="border-t border-gray-700 px-4 pb-4 pt-1">
                         <p className="whitespace-pre-wrap text-gray-300">{post.content}</p>
-                        {post.image_url && (
+                        {post.image_url && !viewerNoImages && (
                           <div className="mt-4 overflow-hidden rounded-lg">
                             <img
                               src={
@@ -431,6 +448,11 @@ export default async function ProfilDetailPage({
                               alt=""
                               className="max-h-[28rem] w-full object-contain"
                             />
+                          </div>
+                        )}
+                        {post.image_url && viewerNoImages && (
+                          <div className="mt-4 rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-3 text-sm text-amber-200/90">
+                            Bild im Cuckymode für dich ausgeblendet.
                           </div>
                         )}
                         <div className="mt-3 flex items-center gap-4">
@@ -579,15 +601,16 @@ export default async function ProfilDetailPage({
               </div>
             );
 
+            const infoAvatarUrl = viewerNoImages ? null : avatarUrl;
             return (
             <div className="space-y-6">
               {isCouple ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
-                  {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
+                  {renderPartnerCard(left, leftLabel, leftHasAvatar ? infoAvatarUrl : null)}
+                  {renderPartnerCard(right, rightLabel, rightHasAvatar ? infoAvatarUrl : null)}
                 </div>
               ) : (
-                renderPartnerCard(singleData, "Profil", avatarUrl)
+                renderPartnerCard(singleData, "Profil", infoAvatarUrl)
               )}
 
               {isCouple && (profile.city || profile.postal_code) && (
@@ -659,6 +682,7 @@ export default async function ProfilDetailPage({
               requestStatusByAlbum={requestStatusByAlbum}
               ownerAvatarUrl={avatarUrl}
               isViewerVerified={myProfile?.verified ?? false}
+              viewerNoImages={viewerNoImages}
             />
           )}
         </div>

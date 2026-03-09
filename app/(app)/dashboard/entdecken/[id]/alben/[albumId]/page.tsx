@@ -18,6 +18,16 @@ export default async function AlbumViewPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: viewerProfile } = await supabase
+    .from("profiles")
+    .select("account_type, restriction_enabled, restriction_no_images")
+    .eq("id", user.id)
+    .single();
+  const viewerNoImages =
+    viewerProfile?.account_type === "couple" &&
+    viewerProfile?.restriction_enabled === true &&
+    viewerProfile?.restriction_no_images === true;
+
   const { data: album } = await supabase
     .from("photo_albums")
     .select("id, name, is_main, owner_id")
@@ -42,6 +52,38 @@ export default async function AlbumViewPage({
 
   if (!canView) notFound();
 
+  const { data: ownerProfile } = await supabase
+    .from("profiles")
+    .select("nick, avatar_url, avatar_photo_id")
+    .eq("id", ownerId)
+    .single();
+
+  if (viewerNoImages) {
+    return (
+      <Container className="py-16">
+        <Link
+          href={`/dashboard/entdecken/${ownerId}`}
+          className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
+        >
+          ← Zurück zu {ownerProfile?.nick ?? "Profil"}
+        </Link>
+        <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-6">
+          <h1 className="text-xl font-bold text-white">{album.name}</h1>
+          <p className="mt-1 text-sm text-gray-400">Album von {ownerProfile?.nick ?? "?"}</p>
+          <p className="mt-4 text-amber-200/90">
+            Du darfst im Cuckymode keine Bilder ansehen. Die Fotos in diesem Album sind für dich ausgeblendet.
+          </p>
+          <Link
+            href="/dashboard/einstellungen"
+            className="mt-4 inline-block text-sm text-accent hover:underline"
+          >
+            Einstellungen →
+          </Link>
+        </div>
+      </Container>
+    );
+  }
+
   const { data: photos } = await supabase
     .from("photo_album_photos")
     .select("id, storage_path, fsk18, sort_order, title, caption")
@@ -49,11 +91,6 @@ export default async function AlbumViewPage({
     .order("sort_order")
     .order("created_at");
 
-  const { data: ownerProfile } = await supabase
-    .from("profiles")
-    .select("nick, avatar_url, avatar_photo_id")
-    .eq("id", ownerId)
-    .single();
   const avatarPhotoId = ownerProfile?.avatar_photo_id ?? null;
 
   const avatarUrl = ownerProfile
