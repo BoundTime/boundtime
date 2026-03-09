@@ -129,6 +129,14 @@ export function SettingsRestrictionSection() {
         credentials: "same-origin",
         body: JSON.stringify({ restrictionEnabled: enabled }),
       });
+      // Beim ersten Aktivieren hat die DB nach set_restriction_password bereits Hash + enabled;
+      // die Flags-API verlangt dann ein Passwort – dafür das gerade gesetzte Passwort mitschicken.
+      const passwordForFlags =
+        isFall2 && profile?.has_restriction_password
+          ? currentPassword?.trim() || undefined
+          : enabled && pwdTrim
+            ? pwdTrim
+            : undefined;
       const flagsRes = await fetch("/api/me/restriction/flags", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,7 +146,7 @@ export function SettingsRestrictionSection() {
           noMessages,
           noCoupleProfiles,
           noImages,
-          currentPassword: isFall2 && profile?.has_restriction_password ? currentPassword?.trim() || undefined : undefined,
+          currentPassword: passwordForFlags,
         }),
       });
       if (!flagsRes.ok) {
