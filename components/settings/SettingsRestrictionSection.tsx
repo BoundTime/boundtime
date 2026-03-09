@@ -282,7 +282,7 @@ export function SettingsRestrictionSection() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-semibold text-white">Cuckymode – Schreiben nur mit Passwort</h3>
+      <h3 className="font-semibold text-white">Cuckymode</h3>
       <p className="text-sm text-gray-400">
         Nur du (z. B. Hotwife) kennst das Passwort; dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Punkt in der Navbar: Grün = aus, Rot = aktiv.
       </p>
@@ -297,7 +297,7 @@ export function SettingsRestrictionSection() {
         role="status"
       >
         {profile.restriction_enabled ? (
-          <>Aktuell: Cuckymode ist <strong>aktiv</strong> – Schreiben nur mit Passwort.</>
+          <>Aktuell: Cuckymode ist <strong>aktiv</strong>.</>
         ) : (
           <>Aktuell: Cuckymode ist <strong>nicht aktiv</strong>.</>
         )}
