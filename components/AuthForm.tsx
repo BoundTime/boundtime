@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { AuthMode } from "@/types";
 
@@ -28,6 +28,7 @@ const COUPLE_TYPE_OPTIONS = [
 
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [nick, setNick] = useState("");
   const [gender, setGender] = useState<string>("");
@@ -49,6 +50,17 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [rawError, setRawError] = useState<string | null>(null); // zum Debuggen
 
   const isRegister = mode === "register";
+
+  useEffect(() => {
+    if (mode !== "login") return;
+    const cuckymodeReset = searchParams.get("cuckymode_reset");
+    const errorParam = searchParams.get("error");
+    if (cuckymodeReset === "ok") {
+      setSubmitSuccess("Cuckymode-Passwort wurde zurückgesetzt. Melde dich an – du kannst in den Einstellungen unter Cuckymode ein neues Passwort festlegen.");
+    } else if (errorParam === "invalid-reset-link") {
+      setSubmitError("Der Reset-Link ist abgelaufen oder wurde bereits verwendet. Bitte fordere einen neuen Link an (Einstellungen → Cuckymode → Passwort vergessen).");
+    }
+  }, [mode, searchParams]);
 
   function toGermanError(raw: string): string {
   const m = raw.toLowerCase();

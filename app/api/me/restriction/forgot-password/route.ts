@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Erzeugt Reset-Token, speichert ihn, sendet E-Mail mit Link.
- * Der Link führt zu /reset-cuckymode?token=xxx – dort wird der Hash gelöscht.
+ * Der Link führt zu /api/restriction/reset?token=xxx – dort wird Cuckymode vollständig zurückgesetzt.
  */
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Token konnte nicht erstellt werden" }, { status: 500 });
   }
 
-  const resetUrl = `${baseUrl.replace(/\/$/, "")}/reset-cuckymode?token=${token}`;
+  const resetUrl = `${baseUrl.replace(/\/$/, "")}/api/restriction/reset?token=${token}`;
   const result = await sendEmail({
     to: user.email,
     subject: "Cuckymode-Passwort zurücksetzen – BoundTime",
