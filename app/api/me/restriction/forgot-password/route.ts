@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
   const { data: profile } = await supabase
     .from("profiles")
-    .select("account_type, restriction_password_hash")
+    .select("account_type, restriction_password_hash, nick")
     .eq("id", user.id)
     .single();
   if (profile?.account_type !== "couple") {
@@ -54,10 +54,11 @@ export async function POST(request: Request) {
   }
 
   const resetUrl = `${baseUrl.replace(/\/$/, "")}/api/restriction/reset?token=${token}`;
+  const greeting = profile?.nick?.trim() ? `Hallo ${profile.nick.trim()},` : "Hallo,";
   const result = await sendEmail({
     to: user.email,
     subject: "Cuckymode-Passwort zurücksetzen – BoundTime",
-    text: `Hallo,\n\ndu hast angefordert, das Cuckymode-Passwort zurückzusetzen.\n\nKlicke auf den folgenden Link, um das Passwort zu löschen. Danach kannst du in den Einstellungen unter Cuckymode ein neues Passwort festlegen – als wäre es noch nie gesetzt worden.\n\n${resetUrl}\n\nDer Link ist 1 Stunde gültig und kann nur einmal verwendet werden.\n\nFalls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.\n\n– BoundTime`,
+    text: `${greeting}\n\ndu hast angefordert, das Cuckymode-Passwort zurückzusetzen.\n\nKlicke auf den folgenden Link, um das Passwort zu löschen. Danach kannst du in den Einstellungen unter Cuckymode ein neues Passwort festlegen – als wäre es noch nie gesetzt worden.\n\n${resetUrl}\n\nDer Link ist 1 Stunde gültig und kann nur einmal verwendet werden.\n\nFalls du die Anfrage nicht gestellt hast, ignoriere diese E-Mail.\n\n– BoundTime`,
   });
 
   if (!result.ok) {
