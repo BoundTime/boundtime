@@ -55,6 +55,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ ok: boolea
         host: smtpHost,
         port,
         secure,
+        requireTLS: port === 587,
         auth: { user: smtpUser, pass: smtpPass },
       });
       await transporter.sendMail({
@@ -65,8 +66,9 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ ok: boolea
       });
       return { ok: true };
     } catch (e) {
-      console.error("SMTP sendEmail:", e);
-      return { ok: false, error: "E-Mail konnte nicht versendet werden" };
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("SMTP sendEmail:", msg, e);
+      return { ok: false, error: `E-Mail konnte nicht versendet werden. ${msg}` };
     }
   }
 
