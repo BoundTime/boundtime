@@ -249,9 +249,10 @@ export function SettingsRestrictionSection() {
     setForgotPasswordLoading(true);
     try {
       const res = await fetch("/api/me/restriction/forgot-password", { method: "POST", credentials: "same-origin" });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; email?: string };
       if (res.ok && data.ok) {
-        setForgotPasswordSuccess("Falls ein E-Mail-Dienst konfiguriert ist, wurde eine E-Mail an deine Account-Adresse gesendet.");
+        const email = data.email ?? "deine Account-Adresse";
+        setForgotPasswordSuccess(`Eine E-Mail mit Hinweisen zum Zurücksetzen wurde an ${email} gesendet.`);
       } else {
         setError(data.error ?? "Anfrage konnte nicht gesendet werden.");
       }

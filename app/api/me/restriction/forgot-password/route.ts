@@ -36,5 +36,5 @@ export async function POST() {
   if (!result.ok) {
     return NextResponse.json({ error: result.error ?? "E-Mail konnte nicht versendet werden" }, { status: 500 });
   }
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, email: user.email });
 }
