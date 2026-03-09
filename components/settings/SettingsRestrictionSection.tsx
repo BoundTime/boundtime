@@ -34,6 +34,10 @@ export function SettingsRestrictionSection() {
   const [noMessages, setNoMessages] = useState(false);
   const [noCoupleProfiles, setNoCoupleProfiles] = useState(false);
   const [noImages, setNoImages] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [modalCurrentPwd, setModalCurrentPwd] = useState("");
+  const [modalNewPwd, setModalNewPwd] = useState("");
+  const [modalError, setModalError] = useState<string | null>(null);
 
   async function loadProfile() {
     const supabase = createClient();
@@ -98,13 +102,17 @@ export function SettingsRestrictionSection() {
         }
       }
 
+      const currentPwdForRpc =
+        profile?.has_restriction_password && (isFall2 || enabled)
+          ? currentPassword?.trim() || null
+          : isFall2 && !profile?.has_restriction_password
+            ? pwdTrim || null
+            : null;
       const { error: rpcError } = await supabase.rpc("set_restriction_password", {
         p_password: pwdTrim || null,
         p_recovery_email: recoveryEmail.trim() || null,
         p_enabled: enabled,
-        p_current_password: isFall2
-          ? (profile?.has_restriction_password ? currentPassword?.trim() || null : pwdTrim || null)
-          : null,
+        p_current_password: currentPwdForRpc,
       });
       if (rpcError) {
         const msg = rpcError.message ?? "Fehler beim Speichern.";
@@ -233,14 +241,13 @@ export function SettingsRestrictionSection() {
     }
   }
 
-  async function handleChangePassword(e: React.FormEvent) {
+  async function handleChangePasswordInModal(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    const cur = currentPassword.trim();
-    const neu = password.trim();
+    setModalError(null);
+    const cur = modalCurrentPwd.trim();
+    const neu = modalNewPwd.trim();
     if (!cur || !neu) {
-      setError("Bitte aktuelles und neues Passwort eintragen.");
+      setModalError("Bitte aktuelles und neues Passwort eintragen.");
       return;
     }
     setChangingPassword(true);
@@ -249,19 +256,20 @@ export function SettingsRestrictionSection() {
       const { error: rpcError } = await supabase.rpc("set_restriction_password", {
         p_password: neu,
         p_recovery_email: null,
-        p_enabled: true,
+        p_enabled: profile?.restriction_enabled ?? false,
         p_current_password: cur,
       });
       if (rpcError) {
-        setError(rpcError.message ?? "Passwort konnte nicht geändert werden.");
+        setModalError(rpcError.message ?? "Passwort konnte nicht geändert werden.");
         return;
       }
       setSuccess("Passwort wurde geändert.");
-      setPassword("");
-      setCurrentPassword("");
+      setChangePasswordModalOpen(false);
+      setModalCurrentPwd("");
+      setModalNewPwd("");
       await loadProfile();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Fehler beim Ändern.");
+      setModalError(err instanceof Error ? err.message : "Fehler beim Ändern.");
     } finally {
       setChangingPassword(false);
     }
@@ -273,18 +281,18 @@ export function SettingsRestrictionSection() {
   const isFirstTime = !profile.restriction_enabled;
   const isChanging = profile.restriction_enabled;
 
-  const needPasswordToEnable = enabled && isFirstTime && !password.trim();
+  const needPasswordToEnable = enabled && isFirstTime && !profile.has_restriction_password && !password.trim();
   const needRecoveryEmailToEnable = enabled && isFirstTime && !recoveryEmail.trim();
+  const needCurrentPasswordToReEnable = enabled && isFirstTime && profile.has_restriction_password && !currentPassword.trim();
   const needCurrentPasswordToChange = isChanging && profile.has_restriction_password && !currentPassword.trim();
-  const submitDisabled = saving || needPasswordToEnable || needRecoveryEmailToEnable || needCurrentPasswordToChange;
-  const changePasswordDisabled = changingPassword || !currentPassword.trim() || !password.trim();
+  const submitDisabled = saving || needPasswordToEnable || needRecoveryEmailToEnable || needCurrentPasswordToReEnable || needCurrentPasswordToChange;
   const liftRestrictionDisabled = saving || !currentPassword.trim();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="font-semibold text-white">Cuckymode</h3>
       <p className="text-sm text-gray-400">
-        Nur du (z. B. Hotwife) kennst das Passwort; dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Punkt in der Navbar: Grün = aus, Rot = aktiv.
+        Nur du (z. B. Hotwife) kennst das Passwort; dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Das Passwort wird beim ersten Aktivieren festgelegt und bleibt gültig, bis du es unter „Passwort ändern“ änderst. Punkt in der Navbar: Grün = aus, Rot = aktiv.
       </p>
 
       {/* Status: aktiv / nicht aktiv */}
@@ -303,26 +311,54 @@ export function SettingsRestrictionSection() {
         )}
       </div>
 
-      {/* ========== Fall 1: Noch nicht aktiv – erstes Einrichten ========== */}
+      {/* ========== Fall 1: Noch nicht aktiv – erstes Einrichten oder Reaktivieren ========== */}
       {isFirstTime && (
         <>
           <p className="text-xs text-gray-500">
-            Schritt 1: Passwort festlegen. Schritt 2: Recovery-E-Mail für Passwort-Reset angeben. Schritt 3: Häkchen setzen und Speichern.
+            {profile.has_restriction_password
+              ? "Passwort wurde bereits festgelegt und bleibt gültig. Zur Bestätigung aktuelles Passwort eintragen, Häkchen setzen und Speichern."
+              : "Schritt 1: Passwort festlegen. Schritt 2: Recovery-E-Mail für Passwort-Reset angeben. Schritt 3: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
           </p>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
-            <p className="mb-2 text-xs text-gray-500">
-              Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es später zum Schreiben, wenn Cuckymode aktiv ist.
-            </p>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Passwort wählen"
-              className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-              autoComplete="new-password"
-            />
-          </div>
+          {!profile.has_restriction_password ? (
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
+              <p className="mb-2 text-xs text-gray-500">
+                Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Wird einmal gesetzt und bleibt bis „Passwort ändern“.
+              </p>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Passwort wählen"
+                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                autoComplete="new-password"
+              />
+            </div>
+          ) : (
+            <>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-gray-300">Aktuelles Passwort zur Bestätigung</label>
+                <p className="mb-2 text-xs text-gray-500">
+                  Nur nötig, um Cuckymode wieder zu aktivieren. Kein neues Passwort – das bestehende bleibt gültig.
+                </p>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                  autoComplete="current-password"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+              >
+                Passwort ändern
+              </button>
+            </>
+          )}
         </>
       )}
 
@@ -330,7 +366,7 @@ export function SettingsRestrictionSection() {
       {isChanging && (
         <>
           <p className="text-xs text-gray-500">
-            Zum Ändern oder Ausschalten: Aktuelles Passwort eintragen. Neues Passwort nur, wenn du es ändern willst.
+            Zum Ausschalten: Aktuelles Passwort eintragen und „Cuckymode aufheben“ klicken. Das Passwort bleibt gespeichert, Cuckymode kann später ohne neues Passwort wieder aktiviert werden. Änderung des Passworts nur über „Passwort ändern“.
           </p>
           <div className="rounded-lg border border-gray-600 bg-gray-800/40 p-4 space-y-4">
             <h4 className="text-sm font-medium text-white">Einstellungen ändern</h4>
@@ -347,27 +383,13 @@ export function SettingsRestrictionSection() {
                 autoComplete="current-password"
               />
             </div>
-            <div>
-              <label className="mb-1 block text-xs text-gray-500">
-                Neues Passwort
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Neues Passwort eintragen"
-                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-                autoComplete="new-password"
-              />
-            </div>
             {profile.has_restriction_password && (
               <button
                 type="button"
-                onClick={handleChangePassword}
-                disabled={changePasswordDisabled}
+                onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
                 className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
               >
-                {changingPassword ? "Wird geändert …" : "Passwort ändern"}
+                Passwort ändern
               </button>
             )}
             <div className="pt-2 border-t border-gray-600">
@@ -379,7 +401,7 @@ export function SettingsRestrictionSection() {
               >
                 {saving ? "Wird aufgehoben …" : "Cuckymode aufheben"}
               </button>
-              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – Cuckymode ist dann aus.</p>
+              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – Cuckymode ist dann aus. Das Passwort bleibt gespeichert.</p>
             </div>
           </div>
         </>
@@ -442,6 +464,9 @@ export function SettingsRestrictionSection() {
         {needRecoveryEmailToEnable && (
           <p className="text-xs text-amber-400">Bitte Recovery-E-Mail angeben, um Cuckymode zu aktivieren.</p>
         )}
+        {needCurrentPasswordToReEnable && (
+          <p className="text-xs text-amber-400">Bitte aktuelles Passwort zur Bestätigung eintragen, um Cuckymode zu aktivieren.</p>
+        )}
         {needCurrentPasswordToChange && (
           <p className="text-xs text-amber-400">Bitte aktuelles Passwort eintragen, um etwas zu ändern.</p>
         )}
@@ -457,6 +482,68 @@ export function SettingsRestrictionSection() {
       >
         {saving ? "Wird gespeichert …" : "Speichern"}
       </button>
+
+      {/* Modal: Passwort ändern */}
+      {changePasswordModalOpen && (
+        <div
+          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="change-password-modal-title"
+        >
+          <form
+            onSubmit={handleChangePasswordInModal}
+            className="w-full max-w-md rounded-xl border border-gray-700 bg-card p-6 shadow-xl"
+          >
+            <h2 id="change-password-modal-title" className="text-lg font-semibold text-white">
+              Passwort ändern
+            </h2>
+            <p className="mt-2 text-sm text-gray-400">
+              Aktuelles Cuckymode-Passwort zur Bestätigung und neues Passwort eintragen.
+            </p>
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="mb-1 block text-xs text-gray-400">Aktuelles Passwort</label>
+                <input
+                  type="password"
+                  value={modalCurrentPwd}
+                  onChange={(e) => { setModalCurrentPwd(e.target.value); setModalError(null); }}
+                  placeholder="••••••••"
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs text-gray-400">Neues Passwort</label>
+                <input
+                  type="password"
+                  value={modalNewPwd}
+                  onChange={(e) => { setModalNewPwd(e.target.value); setModalError(null); }}
+                  placeholder="Neues Passwort"
+                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+              </div>
+            </div>
+            {modalError && <p className="mt-2 text-sm text-red-400">{modalError}</p>}
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() => { setChangePasswordModalOpen(false); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
+                className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                disabled={changingPassword || !modalCurrentPwd.trim() || !modalNewPwd.trim()}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+              >
+                {changingPassword ? "…" : "Ändern"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </form>
   );
 }

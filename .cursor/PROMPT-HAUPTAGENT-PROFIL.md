@@ -27,3 +27,13 @@
 - **Frontend:** Entdecken, Nachrichten, Profil-/Bild-Seiten so anpassen, dass die Beschränkungen durchgesetzt werden (keine angezeigten Profile/Bilder/Nachrichten, wenn die jeweilige Option aktiv ist).
 
 **Umsetzung:** Vier Checkboxen + Datenmodell + RPC/API; Entdecken filtert Single-/Paar-Profile und blendet bei „Keine Bilder“ Avatare aus (Initialen); Nachrichten-Layout/Seiten blockieren bei „Keine Nachrichten“ (Hinweis + keine Liste); Galerien/Anhänge bei „Keine Bilder“ optional erweiterbar.
+
+---
+
+# Erledigt: Cuckymode-Passwort – einmal festlegen, bleibt bis zur Änderung
+
+- **Backend (078):** Bei Reaktivierung (Hash existiert) verlangt die RPC aktuelles Passwort; Hash wird nur bei expliziter Übergabe von `p_password` geändert.
+- **Erstes Aktivieren:** Nur wenn noch kein Passwort gesetzt ist, wird „Passwort festlegen“ angezeigt; Texte erklären „bleibt bis Passwort ändern“.
+- **Reaktivieren:** Wenn Passwort existiert, nur „Aktuelles Passwort zur Bestätigung“; kein neues Passwort.
+- **Aufheben:** Aktuelles Passwort nötig; Hinweis „Das Passwort bleibt gespeichert“.
+- **Passwort ändern:** Button „Passwort ändern“ (wenn Passwort gesetzt), öffnet Modal (wie Freischalten) mit Aktuelles Passwort + Neues Passwort, Buttons „Ändern“ und „Abbrechen“. Nur dort wird der Hash aktualisiert.
