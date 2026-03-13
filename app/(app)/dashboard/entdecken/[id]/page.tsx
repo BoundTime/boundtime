@@ -589,8 +589,14 @@ export default async function ProfilDetailPage({
                       </div>
                     </div>
                   )}
+                  {data.about_me && (
+                    <div className="mt-6">
+                      <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
+                      <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center text-sm leading-relaxed text-gray-300">{data.about_me}</p>
+                    </div>
+                  )}
                   {data.preferences && data.preferences.length > 0 && (
-                    <div className="mt-4 border-t border-gray-700 pt-4">
+                    <div className="mt-6 border-t border-gray-700 pt-4">
                       <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
                       <div className="mt-3 flex flex-wrap justify-center gap-2">
                         {data.preferences.map((pref) => (
@@ -601,14 +607,8 @@ export default async function ProfilDetailPage({
                       </div>
                     </div>
                   )}
-                  {data.about_me && (
-                    <div className="mt-4 border-t border-gray-700 pt-4">
-                      <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
-                      <p className="mx-auto mt-3 max-w-2xl whitespace-pre-wrap text-center text-sm leading-relaxed text-gray-300">{data.about_me}</p>
-                    </div>
-                  )}
                   {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
-                    <p className="mt-4 border-t border-gray-700 pt-4 text-center text-sm text-gray-500">Keine Angaben</p>
+                    <p className="mt-6 border-t border-gray-700 pt-4 text-center text-sm text-gray-500">Keine Angaben</p>
                   )}
                 </div>
               </div>
