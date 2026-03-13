@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Mail, ArrowLeft } from "lucide-react";
+import { ResendVerificationButton } from "@/components/auth/ResendVerificationButton";
 
 export default async function RegisterCheckEmailPage({
   searchParams,
@@ -30,7 +31,8 @@ export default async function RegisterCheckEmailPage({
           </p>
           <ul className="list-inside list-disc space-y-1 text-sm text-gray-400">
             <li>Schau in deinem Posteingang nach</li>
-            <li>Prüfe auch den <strong>Spam-</strong> oder{" "}
+            <li>
+              Prüfe auch den <strong>Spam-</strong> oder{" "}
               <strong>Junk-Ordner</strong>
             </li>
           </ul>
@@ -39,6 +41,11 @@ export default async function RegisterCheckEmailPage({
               Gesendet an: {email}
             </p>
           )}
+          <p className="mt-2 text-xs text-gray-400">
+            Du hast keine E-Mail erhalten? Prüfe auch deinen Spam-Ordner oder
+            sende die Bestätigungs-E-Mail erneut:
+          </p>
+          <ResendVerificationButton email={email} />
         </div>
         <Link
           href="/login"
