@@ -33,23 +33,38 @@ export async function POST(request: Request) {
   const supabase = await createClient();
 
   try {
-    // Supabase Auth v2: Verifizierungs-E-Mail für Signup erneut senden.
-    const { error } = await supabase.auth.resend({
+    const { data, error } = await supabase.auth.resend({
       type: "signup",
       email,
     });
 
     if (error) {
-      console.error("resend verification error", error);
+      console.error("[resend-verification] Supabase error:", error.message, error.status);
+      // Rate-Limit: Nutzer informieren, dass sie warten sollen
+      if (error.message?.toLowerCase().includes("rate") || error.status === 429) {
+        return NextResponse.json({
+          ok: true,
+          message:
+            "Es wurden zu viele E-Mails angefordert. Bitte warte etwa 60 Minuten und versuche es dann erneut. Prüfe auch deinen Spam-Ordner.",
+        });
+      }
+      // Bereits bestätigt oder anderes bekanntes Problem
+      if (error.message?.toLowerCase().includes("already") || error.message?.toLowerCase().includes("confirmed")) {
+        return NextResponse.json({
+          ok: true,
+          message: "Dieses Konto ist bereits bestätigt. Du kannst dich anmelden.",
+        });
+      }
+      // Sonst: gleiche neutrale Meldung, aber wir haben geloggt
     }
   } catch (e) {
-    console.error("resend verification exception", e);
+    console.error("[resend-verification] Exception:", e);
   }
 
   return NextResponse.json({
     ok: true,
     message:
-      "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt.",
+      "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt. Prüfe deinen Spam-Ordner.",
   });
 }
 
