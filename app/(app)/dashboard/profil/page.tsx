@@ -8,6 +8,7 @@ import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { Pencil, Images, User } from "lucide-react";
 import { PostDeleteButton } from "@/components/PostDeleteButton";
+import { CouplePartnerAvatarPicker } from "@/components/profil/CouplePartnerAvatarPicker";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -54,7 +55,7 @@ export default async function ProfilPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
     )
     .eq("id", user.id)
     .single();
@@ -65,6 +66,15 @@ export default async function ProfilPage({
     { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
     supabase
   );
+
+  const profileWithCoupleAvatars = profile as typeof profile & {
+    couple_female_avatar_photo_id?: string | null;
+    couple_male_avatar_photo_id?: string | null;
+  };
+  const [femaleAvatarUrl, maleAvatarUrl] = await Promise.all([
+    resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_female_avatar_photo_id ?? null }, supabase),
+    resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_male_avatar_photo_id ?? null }, supabase),
+  ]);
 
   const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
     supabase
@@ -324,31 +334,42 @@ export default async function ProfilPage({
               : { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined };
             const leftLabel = isCoupleWomanMan ? "Frau" : "Partner:in 1";
             const rightLabel = isCoupleWomanMan ? "Mann" : "Partner:in 2";
-            const leftHasAvatar = isCoupleWomanMan ? womanFirst : true;
-            const rightHasAvatar = isCoupleWomanMan ? !womanFirst : false;
+            const leftAvatarUrlResolved = isCoupleWomanMan ? (womanFirst ? femaleAvatarUrl : maleAvatarUrl) : avatarUrl;
+            const rightAvatarUrlResolved = isCoupleWomanMan ? (womanFirst ? maleAvatarUrl : femaleAvatarUrl) : avatarUrl;
 
-            const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
+            const isOwner = true;
+            const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null, slot?: "female" | "male") => (
               <div key={label} className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm">
                 <div className="flex flex-col p-5">
-                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
-                    <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
-                      {cardAvatarUrl ? (
-                        <img src={cardAvatarUrl} alt="" className="h-full w-full object-cover" />
-                      ) : (
-                        <span className="flex h-full w-full items-center justify-center text-gray-500">
-                          <User className="h-10 w-10 sm:h-12 sm:w-12" strokeWidth={1.5} aria-hidden />
-                        </span>
-                      )}
+                  {slot && isOwner ? (
+                    <CouplePartnerAvatarPicker
+                      slot={slot}
+                      currentImageUrl={cardAvatarUrl}
+                      ownerId={profile.id}
+                      label={label}
+                      age={getAgeFromDateOfBirth(data.date_of_birth ?? null) ?? undefined}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
+                      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
+                        {cardAvatarUrl ? (
+                          <img src={cardAvatarUrl} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <span className="flex h-full w-full items-center justify-center text-gray-500">
+                            <User className="h-10 w-10 sm:h-12 sm:w-12" strokeWidth={1.5} aria-hidden />
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3 sm:ml-4 sm:mt-0">
+                        <h3 className="text-base font-semibold text-white">{label}</h3>
+                        {getAgeFromDateOfBirth(data.date_of_birth ?? null) != null && (
+                          <p className="mt-0.5 text-sm text-gray-400">
+                            {getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-3 sm:ml-4 sm:mt-0">
-                      <h3 className="text-base font-semibold text-white">{label}</h3>
-                      {getAgeFromDateOfBirth(data.date_of_birth ?? null) != null && (
-                        <p className="mt-0.5 text-sm text-gray-400">
-                          {getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  )}
                   <div className="mt-4 max-w-sm rounded-lg border border-gray-700/60 bg-gray-900/40 px-3 py-3">
                     <dl className="space-y-2">
                       {data.height_cm != null && data.height_cm > 0 && (
@@ -422,8 +443,8 @@ export default async function ProfilPage({
             <div className="space-y-6">
               {isCouple ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {renderPartnerCard(left, leftLabel, leftHasAvatar ? avatarUrl : null)}
-                  {renderPartnerCard(right, rightLabel, rightHasAvatar ? avatarUrl : null)}
+                  {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "female" : "male") : undefined)}
+                  {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "male" : "female") : undefined)}
                 </div>
               ) : (
                 renderPartnerCard(singleData, "Profil", avatarUrl)

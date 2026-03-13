@@ -78,7 +78,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
     )
     .eq("id", id)
     .single();
@@ -90,6 +90,17 @@ export default async function ProfilDetailPage({
     supabase
   );
   const avatarUrl = viewerNoImages ? null : avatarUrlResolved;
+
+  const profileWithCoupleAvatars = profile as typeof profile & {
+    couple_female_avatar_photo_id?: string | null;
+    couple_male_avatar_photo_id?: string | null;
+  };
+  const [femaleAvatarResolved, maleAvatarResolved] = await Promise.all([
+    resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_female_avatar_photo_id ?? null }, supabase),
+    resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_male_avatar_photo_id ?? null }, supabase),
+  ]);
+  const femaleAvatarUrl = viewerNoImages ? null : femaleAvatarResolved;
+  const maleAvatarUrl = viewerNoImages ? null : maleAvatarResolved;
 
   if (user.id !== profile.id) {
     // Profilbesuch clientseitig erfassen (JWT des Besuchers)
@@ -507,8 +518,8 @@ export default async function ProfilDetailPage({
               : { height_cm: p.partner_height_cm, weight_kg: p.partner_weight_kg, body_type: p.partner_body_type ?? undefined, date_of_birth: p.partner_date_of_birth ?? undefined, preferences: Array.isArray(p.partner_preferences) ? p.partner_preferences : [], experience_level: p.partner_experience_level ?? undefined, about_me: p.partner_about_me ?? undefined };
             const leftLabel = isCoupleWomanMan ? "Frau" : "Partner:in 1";
             const rightLabel = isCoupleWomanMan ? "Mann" : "Partner:in 2";
-            const leftHasAvatar = isCoupleWomanMan ? womanFirst : true;
-            const rightHasAvatar = isCoupleWomanMan ? !womanFirst : false;
+            const leftAvatarUrlResolved = isCoupleWomanMan ? (womanFirst ? femaleAvatarUrl : maleAvatarUrl) : (isCouple ? avatarUrl : null);
+            const rightAvatarUrlResolved = isCoupleWomanMan ? (womanFirst ? maleAvatarUrl : femaleAvatarUrl) : (isCouple ? avatarUrl : null);
             const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher", Bull: "Bull" };
             const singleData: PartnerData = {
               height_cm: p.height_cm,
@@ -606,8 +617,8 @@ export default async function ProfilDetailPage({
             <div className="space-y-6">
               {isCouple ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {renderPartnerCard(left, leftLabel, leftHasAvatar ? infoAvatarUrl : null)}
-                  {renderPartnerCard(right, rightLabel, rightHasAvatar ? infoAvatarUrl : null)}
+                  {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
+                  {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null)}
                 </div>
               ) : (
                 renderPartnerCard(singleData, "Profil", infoAvatarUrl)
