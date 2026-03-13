@@ -171,11 +171,15 @@ function validate(): boolean {
           setLoading(false);
           return;
         }
+        const baseUrl =
+          typeof process.env.NEXT_PUBLIC_APP_URL === "string" && process.env.NEXT_PUBLIC_APP_URL
+            ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "")
+            : window.location.origin;
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            emailRedirectTo: `${baseUrl}/dashboard`,
             data: {
               nick: nickTrim,
               gender: accountType === "couple" ? "Divers" : (gender as "Mann" | "Frau" | "Divers"),
