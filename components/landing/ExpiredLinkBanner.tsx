@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Mail, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const RESEND_MSG =
-  "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt.";
+  "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt. Prüfe deinen Posteingang und den Spam-Ordner.";
 
 /**
  * Zeigt eine Meldung, wenn der Nutzer mit abgelaufenem Bestätigungslink
  * (#error=access_denied&error_code=otp_expired) auf die Startseite geleitet wurde.
+ * Resend wird clientseitig aufgerufen (Supabase sendet so zuverlässiger).
  */
 export function ExpiredLinkBanner() {
   const [show, setShow] = useState(false);
@@ -35,13 +37,22 @@ export function ExpiredLinkBanner() {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: trimmed,
       });
-      const data = await res.json().catch(() => ({}));
-      setMessage(data?.message ?? RESEND_MSG);
+      if (error) {
+        if (error.message?.toLowerCase().includes("rate") || error.status === 429) {
+          setMessage("Zu viele Anfragen. Bitte warte etwa 1 Minute und versuche es erneut.");
+          return;
+        }
+        if (error.message?.toLowerCase().includes("already") || error.message?.toLowerCase().includes("confirmed")) {
+          setMessage("Dieses Konto ist bereits bestätigt. Du kannst dich anmelden.");
+          return;
+        }
+      }
+      setMessage(RESEND_MSG);
     } catch {
       setMessage("Die Anfrage konnte nicht gesendet werden. Bitte versuche es später erneut.");
     } finally {

@@ -1,6 +1,10 @@
- "use client";
+"use client";
 
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+const RESEND_MSG =
+  "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt. Prüfe Posteingang und Spam-Ordner.";
 
 interface ResendVerificationButtonProps {
   email: string | null;
@@ -16,28 +20,30 @@ export function ResendVerificationButton({ email }: ResendVerificationButtonProp
   }
 
   async function handleClick() {
+    const e = email;
+    if (!e) return;
     setLoading(true);
     setMessage(null);
     setError(null);
     try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+      const supabase = createClient();
+      const { error: resendError } = await supabase.auth.resend({
+        type: "signup",
+        email: e,
       });
-      if (!res.ok) {
-        // Neutrale Meldung, kein Account-Leak nach außen.
-        setMessage(
-          "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt."
-        );
-        return;
+      if (resendError) {
+        if (resendError.message?.toLowerCase().includes("rate") || resendError.status === 429) {
+          setMessage("Zu viele Anfragen. Bitte warte etwa 1 Minute und versuche es erneut.");
+          return;
+        }
+        if (resendError.message?.toLowerCase().includes("already") || resendError.message?.toLowerCase().includes("confirmed")) {
+          setMessage("Dieses Konto ist bereits bestätigt. Du kannst dich anmelden.");
+          return;
+        }
       }
-      setMessage(
-        "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt."
-      );
+      setMessage(RESEND_MSG);
     } catch (e) {
       console.error(e);
-      // Neutrale Fehlermeldung, ohne technische Details anzuzeigen.
       setError("Die Anfrage konnte nicht verarbeitet werden. Bitte versuche es später erneut.");
     } finally {
       setLoading(false);
