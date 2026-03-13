@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Mail, X } from "lucide-react";
 
 const RESEND_MSG =
   "Wenn ein Konto mit dieser E-Mail existiert und noch nicht bestätigt ist, haben wir dir die E-Mail erneut geschickt.";
@@ -51,47 +52,68 @@ export function ExpiredLinkBanner() {
   if (!show) return null;
 
   return (
-    <div className="fixed left-0 right-0 top-0 z-50 border-b border-amber-500/30 bg-amber-950/90 px-4 py-3 shadow-lg backdrop-blur sm:px-6">
-      <div className="mx-auto max-w-3xl space-y-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-amber-100">
-            <strong>Der Bestätigungslink ist abgelaufen.</strong> Neue E-Mail anfordern oder zum Login, falls du bereits bestätigt hast.
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
+    <div className="fixed left-0 right-0 top-0 z-50 border-b border-gray-700 bg-card/98 px-4 py-3 shadow-lg backdrop-blur sm:px-6">
+      <div className="mx-auto max-w-2xl">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-white">
+              Der Bestätigungslink ist abgelaufen
+            </p>
+            <p className="mt-0.5 text-xs text-gray-400">
+              Der Link aus der E-Mail war nur begrenzt gültig. Gib deine E-Mail ein und fordere einen neuen Link an – oder melde dich an, falls du bereits bestätigt hast.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShow(false)}
+            className="shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-700/50 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent"
+            aria-label="Hinweis schließen"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="min-w-0 flex-1">
+            <label htmlFor="expired-banner-email" className="sr-only">
+              E-Mail für neuen Bestätigungslink
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" aria-hidden />
+              <input
+                id="expired-banner-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="deine@email.de"
+                autoComplete="email"
+                className="w-full rounded-lg border border-gray-600 bg-background py-2.5 pl-10 pr-3 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={loading || !email.trim()}
+              className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Wird gesendet …" : "Neue E-Mail senden"}
+            </button>
             <Link
               href="/login"
-              className="rounded-lg border border-amber-500/50 bg-amber-900/50 px-4 py-2 text-sm font-medium text-amber-100 hover:bg-amber-800/50"
+              className="rounded-lg border border-gray-600 bg-background px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:border-gray-500 hover:bg-gray-800/50 hover:text-white"
             >
               Zum Login
             </Link>
-            <button
-              type="button"
-              onClick={() => setShow(false)}
-              className="rounded-lg px-3 py-2 text-sm text-amber-200 hover:bg-amber-800/30"
-              aria-label="Hinweis schließen"
-            >
-              Schließen
-            </button>
           </div>
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-Mail für neuen Bestätigungslink"
-            className="rounded-lg border border-amber-600/50 bg-amber-900/30 px-3 py-2 text-sm text-white placeholder-amber-300/60 focus:border-amber-500 focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={loading || !email.trim()}
-            className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
-          >
-            {loading ? "Wird gesendet …" : "Neue Bestätigungs-E-Mail senden"}
-          </button>
-        </div>
-        {message && <p className="text-xs text-amber-200">{message}</p>}
+
+        {message && (
+          <p className="mt-3 text-xs text-gray-400">
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );
