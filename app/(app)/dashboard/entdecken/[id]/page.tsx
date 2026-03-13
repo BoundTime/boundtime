@@ -534,7 +534,7 @@ export default async function ProfilDetailPage({
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
               <div key={label} className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm">
                 <div className="flex flex-col p-5">
-                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
+                  <div className="flex flex-col items-center text-center">
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
                       {cardAvatarUrl ? (
                         <img src={cardAvatarUrl} alt="" className="h-full w-full object-cover" />
@@ -544,7 +544,7 @@ export default async function ProfilDetailPage({
                         </span>
                       )}
                     </div>
-                    <div className="mt-3 sm:ml-4 sm:mt-0">
+                    <div className="mt-3">
                       <h3 className="text-base font-semibold text-white">{label}</h3>
                       {getAgeFromDateOfBirth(data.date_of_birth ?? null) != null && (
                         <p className="mt-0.5 text-sm text-gray-400">
@@ -553,28 +553,28 @@ export default async function ProfilDetailPage({
                       )}
                     </div>
                   </div>
-                  <div className="mt-4 max-w-sm rounded-lg border border-gray-700/60 bg-gray-900/40 px-3 py-3">
-                    <dl className="space-y-2">
+                  <div className="mt-4 rounded-lg border border-gray-700/60 bg-gray-900/40 px-4 py-3">
+                    <dl className="mx-auto flex max-w-xs flex-col items-center space-y-2 text-center text-sm">
                       {data.height_cm != null && data.height_cm > 0 && (
-                        <div className="flex justify-between gap-4 text-sm">
+                        <div className="flex w-full justify-center gap-4">
                           <dt className="text-gray-400">Größe</dt>
                           <dd className="text-white">{data.height_cm} cm</dd>
                         </div>
                       )}
                       {data.weight_kg != null && data.weight_kg > 0 && (
-                        <div className="flex justify-between gap-4 text-sm">
+                        <div className="flex w-full justify-center gap-4">
                           <dt className="text-gray-400">Gewicht</dt>
                           <dd className="text-white">{data.weight_kg} kg</dd>
                         </div>
                       )}
                       {data.body_type && (
-                        <div className="flex justify-between gap-4 text-sm">
+                        <div className="flex w-full justify-center gap-4">
                           <dt className="text-gray-400">Figur</dt>
                           <dd className="text-white">{data.body_type}</dd>
                         </div>
                       )}
                       {getExperienceLabel(data.experience_level ?? null) && (
-                        <div className="flex justify-between gap-4 text-sm">
+                        <div className="flex w-full justify-center gap-4">
                           <dt className="text-gray-400">Erfahrung</dt>
                           <dd className="text-white">{getExperienceLabel(data.experience_level ?? null)}</dd>
                         </div>
@@ -582,17 +582,19 @@ export default async function ProfilDetailPage({
                     </dl>
                   </div>
                   {profile.role && (
-                    <div className="mt-3 flex items-center gap-1.5 border-t border-gray-700 pt-3">
-                      <RoleIcon role={profile.role} size={16} className="text-gray-400" />
-                      <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                    <div className="mt-4 flex justify-center border-t border-gray-700 pt-4">
+                      <div className="flex items-center gap-1.5">
+                        <RoleIcon role={profile.role} size={16} className="text-accent" />
+                        <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                      </div>
                     </div>
                   )}
                   {data.preferences && data.preferences.length > 0 && (
                     <div className="mt-4 border-t border-gray-700 pt-4">
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
-                      <div className="mt-2 flex flex-wrap gap-2">
+                      <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
+                      <div className="mt-3 flex flex-wrap justify-center gap-2">
                         {data.preferences.map((pref) => (
-                          <span key={pref} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">
+                          <span key={pref} className="rounded-full bg-accent/20 px-3 py-1.5 text-sm text-accent">
                             {pref}
                           </span>
                         ))}
@@ -601,8 +603,8 @@ export default async function ProfilDetailPage({
                   )}
                   {data.about_me && (
                     <div className="mt-4 border-t border-gray-700 pt-4">
-                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
-                      <p className="mt-2 whitespace-pre-wrap text-sm text-gray-300">{data.about_me}</p>
+                      <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
+                      <p className="mx-auto mt-3 max-w-2xl whitespace-pre-wrap text-center text-sm leading-relaxed text-gray-300">{data.about_me}</p>
                     </div>
                   )}
                   {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
@@ -614,7 +616,7 @@ export default async function ProfilDetailPage({
 
             const infoAvatarUrl = viewerNoImages ? null : avatarUrl;
             return (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {isCouple ? (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
@@ -625,36 +627,36 @@ export default async function ProfilDetailPage({
               )}
 
               {isCouple && (profile.city || profile.postal_code) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
-                  <p className="mt-2 text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
+                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
                 </div>
               )}
 
               {profile.looking_for_gender && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen sucht die Person?"}
                   </h2>
-                  <p className="mt-2 text-white">{profile.looking_for_gender}</p>
+                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{profile.looking_for_gender}</p>
                 </div>
               )}
 
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was sucht ihr?" : "Was sucht die Person?"}
                   </h2>
-                  <p className="mt-2 text-white">{profile.looking_for.join(", ")}</p>
+                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
                 </div>
               )}
 
               {profile.expectations_text && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-4">
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartet die Person von ihrem Gesuchten?"}
                   </h2>
-                  <p className="mt-2 whitespace-pre-wrap text-gray-300">{profile.expectations_text}</p>
+                  <p className="mx-auto mt-3 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
                 </div>
               )}
 
