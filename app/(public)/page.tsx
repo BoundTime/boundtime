@@ -4,6 +4,7 @@ import { ShieldCheck, HeartHandshake, UsersRound, Info, Users } from "lucide-rea
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { CommunityRegelnTile } from "@/components/landing/CommunityRegelnTile";
+import { ExpiredLinkBanner } from "@/components/landing/ExpiredLinkBanner";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -12,6 +13,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <ExpiredLinkBanner />
       <section className="relative overflow-hidden py-12 sm:py-28">
         <div
           className="pointer-events-none absolute inset-0 -top-20"
