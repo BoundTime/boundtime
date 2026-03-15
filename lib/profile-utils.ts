@@ -26,7 +26,7 @@ export function getLookingForGenderDisplay(
 ): string | null {
   if (Array.isArray(value) && value.length > 0) return value.join(", ");
   if (typeof value === "string" && value) {
-    if (value.toLowerCase() === "alle") return "Mann, Frau, Divers";
+    if (value.toLowerCase() === "alle") return "Mann, Frau, Paar, Divers";
     return value;
   }
   return null;

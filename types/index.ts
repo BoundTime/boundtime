@@ -10,7 +10,7 @@ export interface AuthFormData {
 export const BODY_TYPES = ["schlank", "sportlich", "kräftig", "mollig", "keine Angabe"] as const;
 export const AGE_RANGES = ["18-25", "26-35", "36-45", "46+"] as const;
 /** Optionen für „Wen suchst du?“ (Mehrfachauswahl mit Checkboxen) */
-export const LOOKING_FOR_GENDER_OPTIONS = ["Mann", "Frau", "Divers"] as const;
+export const LOOKING_FOR_GENDER_OPTIONS = ["Mann", "Frau", "Paar", "Divers"] as const;
 
 /** Vorgegebene Optionen für „Was suchst du?“ (Mehrfachauswahl) */
 export const LOOKING_FOR_OPTIONS = [
