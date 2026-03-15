@@ -6,4 +6,4 @@ Prompts für den Hauptagenten. **Nach Umsetzung nur den Prompt-Inhalt (ab „# P
 
 ---
 
-
+**Ideen für später (nicht umgesetzt):** Verifizierte User könnten das Profil selbst gestalten (z. B. Schriftart wählen, evtl. Akzentfarbe, Anordnung; Auswahl aus mehreren Fonts, Größe, optional Layout-Optionen). Was genau möglich sein soll, später gemeinsam überlegen.

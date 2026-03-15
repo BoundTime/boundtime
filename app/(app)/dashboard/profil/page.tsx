@@ -364,8 +364,8 @@ export default async function ProfilPage({
 
             const isOwner = true;
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null, slot?: "female" | "male") => (
-              <div key={label} className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm">
-                <div className="flex flex-col p-5">
+              <div key={label} className="overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
+                <div className="flex flex-col">
                   {slot && isOwner ? (
                     <CouplePartnerAvatarPicker
                       slot={slot}
@@ -392,7 +392,19 @@ export default async function ProfilPage({
                             {getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre
                           </p>
                         )}
+                        {profile.role && (
+                          <div className="mt-2 flex items-center justify-center gap-1.5">
+                            <RoleIcon role={profile.role} size={18} className="text-accent" />
+                            <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                          </div>
+                        )}
                       </div>
+                    </div>
+                  )}
+                  {profile.role && slot && isOwner && (
+                    <div className="mt-2 flex justify-center gap-1.5">
+                      <RoleIcon role={profile.role} size={18} className="text-accent" />
+                      <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
                     </div>
                   )}
                   <div className="mt-4 rounded-lg border border-gray-700/60 bg-gray-900/40 px-4 py-3">
@@ -423,14 +435,6 @@ export default async function ProfilPage({
                       )}
                     </dl>
                   </div>
-                  {profile.role && (
-                    <div className="mt-4 flex justify-center border-t border-gray-700 pt-4">
-                      <div className="flex items-center gap-1.5">
-                        <RoleIcon role={profile.role} size={16} className="text-accent" />
-                        <span className="text-center text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
-                      </div>
-                    </div>
-                  )}
                   <div className="min-h-[200px]">
                     {data.preferences && data.preferences.length > 0 ? (
                       <div className="mt-6 border-t border-gray-700 pt-4">
@@ -471,17 +475,18 @@ export default async function ProfilPage({
             };
 
             return (
-            <div className="space-y-8">
-              {isCouple ? (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "female" : "male") : undefined)}
-                  {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "male" : "female") : undefined)}
-                </div>
-              ) : (
-                renderPartnerCard(singleData, "Profil", avatarUrl)
-              )}
+            <div className="rounded-xl border border-gray-700 bg-card p-6">
+              <div className="space-y-8">
+                {isCouple ? (
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "female" : "male") : undefined)}
+                    {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "male" : "female") : undefined)}
+                  </div>
+                ) : (
+                  renderPartnerCard(singleData, "Profil", avatarUrl)
+                )}
 
-              {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
+                {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">
@@ -526,9 +531,10 @@ export default async function ProfilPage({
                 </section>
               )}
 
-              {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
-                <p className="text-center text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
-              )}
+                {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
+                  <p className="text-center text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
+                )}
+              </div>
             </div>
             );
           })()}

@@ -553,8 +553,8 @@ export default async function ProfilDetailPage({
             };
 
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
-              <div key={label} className="overflow-hidden rounded-xl border border-gray-700 bg-card shadow-sm">
-                <div className="flex flex-col p-5">
+              <div key={label} className="overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
+                <div className="flex flex-col">
                   <div className="flex flex-col items-center text-center">
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
                       {cardAvatarUrl ? (
@@ -571,6 +571,12 @@ export default async function ProfilDetailPage({
                         <p className="mt-0.5 text-sm text-gray-400">
                           {getAgeFromDateOfBirth(data.date_of_birth ?? null)} Jahre
                         </p>
+                      )}
+                      {profile.role && (
+                        <div className="mt-2 flex items-center justify-center gap-1.5">
+                          <RoleIcon role={profile.role} size={18} className="text-accent" />
+                          <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -602,14 +608,6 @@ export default async function ProfilDetailPage({
                       )}
                     </dl>
                   </div>
-                  {profile.role && (
-                    <div className="mt-4 flex justify-center border-t border-gray-700 pt-4">
-                      <div className="flex items-center gap-1.5">
-                        <RoleIcon role={profile.role} size={16} className="text-accent" />
-                        <span className="text-center text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
-                      </div>
-                    </div>
-                  )}
                   <div className="min-h-[200px]">
                     {data.preferences && data.preferences.length > 0 ? (
                       <div className="mt-6 border-t border-gray-700 pt-4">
@@ -641,17 +639,18 @@ export default async function ProfilDetailPage({
 
             const infoAvatarUrl = viewerNoImages ? null : avatarUrl;
             return (
-            <div className="space-y-8">
-              {isCouple ? (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
-                  {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null)}
-                </div>
-              ) : (
-                renderPartnerCard(singleData, "Profil", infoAvatarUrl)
-              )}
+            <div className="rounded-xl border border-gray-700 bg-card p-6">
+              <div className="space-y-8">
+                {isCouple ? (
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
+                    {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null)}
+                  </div>
+                ) : (
+                  renderPartnerCard(singleData, "Profil", infoAvatarUrl)
+                )}
 
-              {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
+                {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">
@@ -696,8 +695,8 @@ export default async function ProfilDetailPage({
                 </section>
               )}
 
-              {profile.role === "Bull" && (
-                <BullRatingsSection
+                {profile.role === "Bull" && (
+                  <BullRatingsSection
                   bullId={profile.id}
                   ratings={bullRatings}
                   myRating={bullRatings.find((r) => r.rater_id === user.id) ?? null}
@@ -714,11 +713,12 @@ export default async function ProfilDetailPage({
                   isOwnProfile={user.id === profile.id}
                   raterNickById={bullRaterNickById}
                 />
-              )}
+                )}
 
-              {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
-                <p className="text-center text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
-              )}
+                {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
+                  <p className="text-center text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
+                )}
+              </div>
             </div>
             );
           })()}
