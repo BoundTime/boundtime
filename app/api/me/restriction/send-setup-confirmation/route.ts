@@ -31,7 +31,7 @@ export async function POST() {
   const result = await sendEmail({
     to: user.email,
     subject: "Cuckymode eingerichtet – BoundTime",
-    text: `Hallo,\n\nCuckymode wurde erfolgreich für dein BoundTime-Paarprofil eingerichtet. Das Passwort ist gesetzt und aktiv.\n\nBei Fragen: Einstellungen → Cuckymode.\n\n– BoundTime`,
+    text: `Hallo,\n\nCuckymode wurde erfolgreich für dein BoundTime-Paar eingerichtet. Das Passwort ist gesetzt und aktiv.\n\nBei Fragen: Einstellungen → Cuckymode.\n\n– BoundTime`,
   });
 
   if (!result.ok) {

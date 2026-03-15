@@ -313,7 +313,7 @@ export default async function ProfilDetailPage({
             </h1>
             <p className="mt-1 text-gray-400">
               {(profile as { account_type?: string }).account_type === "couple" ? (
-                <span>Paarprofil</span>
+                <span>Paar</span>
               ) : (
                 <>
                   {roleLabel && (
@@ -559,8 +559,8 @@ export default async function ProfilDetailPage({
             };
 
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
-              <div key={label} className="overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
-                <div className="flex flex-col">
+              <div key={label} className="flex flex-col overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
+                <div className="flex flex-1 flex-col">
                   <div className="flex flex-col items-center text-center">
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
                       {cardAvatarUrl ? (
@@ -639,6 +639,7 @@ export default async function ProfilDetailPage({
                   {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
                     <p className="mt-6 border-t border-gray-700 pt-4 text-center text-sm text-gray-500">Keine Angaben</p>
                   )}
+                  <div className="mt-6 flex-1 border-t border-gray-700/60 min-h-[1px]" aria-hidden />
                 </div>
               </div>
             );
@@ -648,7 +649,7 @@ export default async function ProfilDetailPage({
             <div className="rounded-xl border border-gray-700 bg-card p-6">
               <div className="space-y-8">
                 {isCouple ? (
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
                     {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
                     {renderPartnerCard(right, rightLabel, rightAvatarUrlResolved ?? null)}
                   </div>
@@ -656,22 +657,22 @@ export default async function ProfilDetailPage({
                   renderPartnerCard(singleData, "Profil", infoAvatarUrl)
                 )}
 
+                {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
+                  <section>
+                    <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
+                      Wen sucht {profile.nick ?? "…"}?
+                    </h2>
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
+                    {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
+                  </p>
+                </section>
+              )}
+
                 {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">
                     {getOrientationLabel((profile as { orientation?: string | null }).orientation)}
-                  </p>
-                </section>
-              )}
-
-              {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Wen sucht {profile.nick ?? "…"}?
-                  </h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
-                    {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
                   </p>
                 </section>
               )}

@@ -18,7 +18,7 @@ const GENDER_OPTIONS = ["Mann", "Frau", "Divers"] as const;
 const ROLE_OPTIONS = ["Dom", "Sub", "Switcher", "Bull"] as const;
 const ACCOUNT_TYPE_OPTIONS = [
   { value: "single", label: "Singleprofil" },
-  { value: "couple", label: "Paarprofil" },
+  { value: "couple", label: "Paar" },
 ] as const;
 const COUPLE_TYPE_OPTIONS = [
   { value: "man_woman", label: "Frau + Mann" },
@@ -106,7 +106,7 @@ function validate(): boolean {
         next.nick = `Der Nick muss zwischen ${NICK_MIN} und ${NICK_MAX} Zeichen haben.`;
       else if (!NICK_REGEX.test(nickTrim))
         next.nick = "Erlaubt sind nur Buchstaben, Zahlen und Unterstriche.";
-      if (!accountType) next.accountType = "Bitte wähle Paarprofil oder Singleprofil.";
+      if (!accountType) next.accountType = "Bitte wähle Paar oder Singleprofil.";
       if (accountType === "couple") {
         if (!coupleType) next.coupleType = "Bitte wähle die Art des Paars.";
       } else if (accountType === "single") {
@@ -288,7 +288,7 @@ function validate(): boolean {
       {isRegister && registerStep === 1 && (
         <>
           <p className="text-gray-300">
-            Möchtest du ein <strong>Paarprofil</strong> oder ein <strong>Singleprofil</strong> anlegen?
+            Möchtest du ein <strong>Paar</strong> oder ein <strong>Singleprofil</strong> anlegen?
           </p>
           <div>
             <label htmlFor="accountType" className="mb-1 block text-sm font-medium text-gray-300">
@@ -308,7 +308,7 @@ function validate(): boolean {
               ))}
             </select>
             <p className="mt-1 text-xs text-gray-500">
-              Paarprofil: Gemeinsamer Account. Später in den Einstellungen: Cuckymode einrichten – z. B. nur Hotwife schreibt, Cucky nur mit Passwort.
+              Paar: Gemeinsamer Account. Später in den Einstellungen: Cuckymode einrichten – z. B. nur Hotwife schreibt, Cucky nur mit Passwort.
             </p>
             {errors.accountType && (
               <p className="mt-1 text-sm text-red-400">{errors.accountType}</p>
@@ -319,7 +319,7 @@ function validate(): boolean {
             onClick={() => {
               setErrors((e) => ({ ...e, accountType: "" }));
               if (!accountType) {
-                setErrors((e) => ({ ...e, accountType: "Bitte wähle Paarprofil oder Singleprofil." }));
+                setErrors((e) => ({ ...e, accountType: "Bitte wähle Paar oder Singleprofil." }));
                 return;
               }
               setRegisterStep(2);
@@ -462,7 +462,7 @@ function validate(): boolean {
                   maxLength={NICK_MAX}
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  {NICK_MIN}–{NICK_MAX} Zeichen, nur Buchstaben, Zahlen und Unterstriche. Ein Nickname für das Paarprofil.
+                  {NICK_MIN}–{NICK_MAX} Zeichen, nur Buchstaben, Zahlen und Unterstriche. Ein Nickname für das Paar.
                 </p>
                 {errors.nick && (
                   <p className="mt-1 text-sm text-red-400">{errors.nick}</p>
