@@ -50,7 +50,7 @@ export function MessageInput({
       requestUnlock();
       return;
     }
-    if (bullNeedsVerification) return;
+    if (!canSend) return;
     setError(null);
     const trimContent = content.trim();
     // Aktuell: Inhalt bleibt Pflicht (DB-Constraint). Anhänge sind optional.
@@ -170,20 +170,29 @@ export function MessageInput({
             </p>
           )}
         </div>
-        {!canSend && (
+        {(bullNeedsVerification || unverifiedManLimitReached) && (
           <p className="text-xs text-gray-400">
-            {bullNeedsVerification && (
-              <Link href="/dashboard/verifizierung" className="text-accent hover:underline">
-                Zur Verifizierung →
-              </Link>
+            {canSend ? (
+              <>Du kannst heute noch eine Nachricht senden.{" "}
+                <Link href="/dashboard/verifizierung" className="text-accent hover:underline">
+                  Zur Verifizierung
+                </Link>
+                {" "}(dann unbegrenzt schreiben).</>
+            ) : (
+              <>Verifiziere dich, um unbegrenzt Nachrichten zu senden.{" "}
+                <Link href="/dashboard/verifizierung" className="text-accent hover:underline">
+                  Zur Verifizierung →
+                </Link>
+              </>
             )}
-            {unverifiedManLimitReached && (
-              <span>Verifiziere dich, um unbegrenzt Nachrichten zu senden.</span>
-            )}
-            {!canWrite && !bullNeedsVerification && !unverifiedManLimitReached && (
+          </p>
+        )}
+        {!canSend && !bullNeedsVerification && !unverifiedManLimitReached && (
+          <p className="text-xs text-gray-400">
+            {!canWrite && (
               <span>Passwort in den Einstellungen eingeben, um Nachrichten freizuschalten.</span>
             )}
-            {oneMessageOnlyReached && !bullNeedsVerification && canWrite && !unverifiedManLimitReached && (
+            {oneMessageOnlyReached && canWrite && (
               <span>Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.</span>
             )}
           </p>
@@ -194,7 +203,7 @@ export function MessageInput({
         disabled={loading || !canSend || (canWrite && !content.trim())}
         className="shrink-0 self-end rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
       >
-        {loading ? "…" : bullNeedsVerification ? "Verifizierung nötig" : canWrite ? "Senden" : "Freischalten"}
+        {loading ? "…" : canSend ? "Senden" : bullNeedsVerification || unverifiedManLimitReached ? "Verifizierung nötig" : canWrite ? "Senden" : "Freischalten"}
       </button>
       {error && <p className="mt-2 w-full text-sm text-red-400">{error}</p>}
     </form>
