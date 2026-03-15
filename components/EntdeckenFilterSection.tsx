@@ -125,7 +125,7 @@ export function EntdeckenFilterSection({
         </select>
       </div>
       <div>
-        <label htmlFor={`plz_prefix-${idSuffix}`} className="mb-1 block text-xs text-gray-500">PLZ (Anfang oder vollständig)</label>
+        <label htmlFor={`plz_prefix-${idSuffix}`} className="mb-1 block text-xs text-gray-500">PLZ</label>
         <input
           id={`plz_prefix-${idSuffix}`}
           name="plz_prefix"
@@ -134,11 +134,11 @@ export function EntdeckenFilterSection({
           maxLength={5}
           defaultValue={plzPrefix ?? ""}
           placeholder="z. B. 80 oder 80331"
-          className="w-24 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+          className="w-32 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder:text-gray-500"
         />
       </div>
       <div>
-        <label htmlFor={`radius_km-${idSuffix}`} className="mb-1 block text-xs text-gray-500">Suchradius (km)</label>
+        <label htmlFor={`radius_km-${idSuffix}`} className="mb-1 block text-xs text-gray-500">Suchradius</label>
         <input
           id={`radius_km-${idSuffix}`}
           name="radius_km"
@@ -147,7 +147,7 @@ export function EntdeckenFilterSection({
           max={500}
           defaultValue={radiusKm ?? ""}
           placeholder="z. B. 20"
-          className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+          className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         />
       </div>
       <div>
