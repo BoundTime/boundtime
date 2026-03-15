@@ -370,7 +370,7 @@ export default async function ProfilPage({
 
             const isOwner = true;
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null, slot?: "female" | "male") => (
-              <div key={label} className="flex flex-col overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
+              <div key={label} className="flex h-full flex-col overflow-hidden border-b border-gray-700/60 pb-8">
                 <div className="flex flex-1 flex-col">
                   {slot && isOwner ? (
                     <CouplePartnerAvatarPicker

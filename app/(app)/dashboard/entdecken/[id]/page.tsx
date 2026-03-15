@@ -559,7 +559,7 @@ export default async function ProfilDetailPage({
             };
 
             const renderPartnerCard = (data: PartnerData, label: string, cardAvatarUrl: string | null) => (
-              <div key={label} className="flex flex-col overflow-hidden border-b border-gray-700/60 pb-8 last:border-b-0 last:pb-0">
+              <div key={label} className="flex h-full flex-col overflow-hidden border-b border-gray-700/60 pb-8">
                 <div className="flex flex-1 flex-col">
                   <div className="flex flex-col items-center text-center">
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background sm:h-24 sm:w-24">
