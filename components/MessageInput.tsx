@@ -10,13 +10,15 @@ import { useRestriction } from "@/lib/restriction-context";
 export function MessageInput({
   conversationId,
   bullNeedsVerification = false,
+  oneMessageOnlyReached = false,
 }: {
   conversationId: string;
   bullNeedsVerification?: boolean;
+  oneMessageOnlyReached?: boolean;
 }) {
   const router = useRouter();
   const { canWrite, requestUnlock } = useRestriction();
-  const canSend = canWrite && !bullNeedsVerification;
+  const canSend = canWrite && !bullNeedsVerification && !oneMessageOnlyReached;
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);

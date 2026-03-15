@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay } from "@/lib/profile-utils";
+import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay, getOrientationLabel } from "@/lib/profile-utils";
 import { ChastityRequestButton } from "@/components/chastity/ChastityRequestButton";
 import { FollowButton } from "@/components/FollowButton";
 import { BlockButton } from "@/components/BlockButton";
@@ -78,7 +78,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation, profile_private"
     )
     .eq("id", id)
     .single();
@@ -106,12 +106,18 @@ export default async function ProfilDetailPage({
     // Profilbesuch clientseitig erfassen (JWT des Besuchers)
   }
 
-  const [{ data: followRow }, { data: blockRow }] = await Promise.all([
+  const [{ data: followRow }, { data: reverseFollowRow }, { data: blockRow }] = await Promise.all([
     supabase
       .from("follows")
       .select("follower_id")
       .eq("follower_id", user.id)
       .eq("following_id", profile.id)
+      .maybeSingle(),
+    supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("follower_id", profile.id)
+      .eq("following_id", user.id)
       .maybeSingle(),
     supabase
       .from("blocked_users")
@@ -121,7 +127,11 @@ export default async function ProfilDetailPage({
       .maybeSingle(),
   ]);
   const isFollowing = !!followRow;
+  const profileFollowsMe = !!reverseFollowRow;
+  const isConnected = isFollowing && profileFollowsMe; // Verbunden = gegenseitiges Folgen
   const isBlockedByMe = !!blockRow;
+  const profilePrivate = (profile as { profile_private?: boolean }).profile_private === true;
+  const showLimitedProfile = profilePrivate && !isConnected && user.id !== profile.id;
 
   let profileLikeCount = 0;
   let profileLikedByMe = false;
@@ -330,8 +340,11 @@ export default async function ProfilDetailPage({
           </div>
         </div>
 
-        {/* Statistik-Zeile: Follower / folgt */}
-        <div className="flex items-center justify-center gap-8 border-t border-gray-700 px-6 py-4">
+        {/* Statistik-Zeile: Follower / folgt / Verbunden */}
+        <div className="flex flex-wrap items-center justify-center gap-6 border-t border-gray-700 px-6 py-4">
+          {isConnected && user.id !== profile.id && (
+            <span className="rounded-full bg-accent/20 px-3 py-1 text-sm font-medium text-accent">Verbunden</span>
+          )}
           <span className="text-gray-400">
             <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
           </span>
@@ -401,6 +414,14 @@ export default async function ProfilDetailPage({
         )}
       </div>
 
+      {showLimitedProfile ? (
+        <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6">
+          <p className="text-center text-sm text-gray-400">
+            Dieses Profil ist gesperrt. Du siehst nur Profilbild, Ort und Alter. Sende eine Nachricht oder folge, um verbunden zu werden und das vollständige Profil zu sehen.
+          </p>
+        </div>
+      ) : (
+      <>
       {/* Tabs */}
       <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card shadow-sm">
         <div className="flex border-b border-gray-700">
@@ -630,6 +651,15 @@ export default async function ProfilDetailPage({
                 renderPartnerCard(singleData, "Profil", infoAvatarUrl)
               )}
 
+              {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
+                <section>
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
+                    {getOrientationLabel((profile as { orientation?: string | null }).orientation)}
+                  </p>
+                </section>
+              )}
+
               {(profile.city || profile.postal_code) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
@@ -706,6 +736,8 @@ export default async function ProfilDetailPage({
           )}
         </div>
       </div>
+      </>
+      )}
     </Container>
   );
 }

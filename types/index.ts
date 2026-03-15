@@ -12,6 +12,17 @@ export const AGE_RANGES = ["18-25", "26-35", "36-45", "46+"] as const;
 /** Optionen für „Wen suchst du?“ (Mehrfachauswahl mit Checkboxen) */
 export const LOOKING_FOR_GENDER_OPTIONS = ["Mann", "Frau", "Paar", "Divers"] as const;
 
+/** Optionen für Neigung/Orientierung */
+export const ORIENTATION_OPTIONS = [
+  { value: "hetero", label: "Hetero" },
+  { value: "bi", label: "Bi" },
+  { value: "lesbisch", label: "Lesbisch" },
+  { value: "schwul", label: "Schwul" },
+  { value: "pan", label: "Pan" },
+  { value: "divers", label: "Divers" },
+  { value: "frage_mich", label: "Frage mich" },
+] as const;
+
 /** Vorgegebene Optionen für „Was suchst du?“ (Mehrfachauswahl) */
 export const LOOKING_FOR_OPTIONS = [
   "Online Domina / Dom",

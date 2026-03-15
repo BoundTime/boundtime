@@ -43,6 +43,21 @@ export function getExperienceLabel(level: string | null | undefined): string | n
   return EXPERIENCE_LABELS[level] ?? null;
 }
 
+const ORIENTATION_LABELS: Record<string, string> = {
+  hetero: "Hetero",
+  bi: "Bi",
+  lesbisch: "Lesbisch",
+  schwul: "Schwul",
+  pan: "Pan",
+  divers: "Divers",
+  frage_mich: "Frage mich",
+};
+
+export function getOrientationLabel(orientation: string | null | undefined): string | null {
+  if (!orientation) return null;
+  return ORIENTATION_LABELS[orientation] ?? orientation;
+}
+
 /** Anzahl Slots für Profil-Fortschritt (muss mit getProfileProgress übereinstimmen) */
 const PROFILE_SLOTS = 10;
 

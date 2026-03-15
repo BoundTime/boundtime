@@ -55,9 +55,18 @@ export default async function ChatPage({
   const otherId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
   const { data: otherProfile } = await supabase
     .from("profiles")
-    .select("id, nick, avatar_url, avatar_photo_id, verified")
+    .select("id, nick, avatar_url, avatar_photo_id, verified, profile_private")
     .eq("id", otherId)
     .single();
+
+  const profilePrivate = (otherProfile as { profile_private?: boolean } | null)?.profile_private === true;
+  const [{ data: followRow }, { data: reverseFollowRow }] = await Promise.all([
+    supabase.from("follows").select("follower_id").eq("follower_id", user.id).eq("following_id", otherId).maybeSingle(),
+    supabase.from("follows").select("follower_id").eq("follower_id", otherId).eq("following_id", user.id).maybeSingle(),
+  ]);
+  const isConnected = !!followRow && !!reverseFollowRow;
+  const myMessageCount = (messages ?? []).filter((m) => m.sender_id === user.id).length;
+  const oneMessageOnlyReached = profilePrivate && !isConnected && myMessageCount >= 1;
   const otherAvatarUrl = otherProfile
     ? await resolveProfileAvatarUrl(
         { avatar_url: otherProfile.avatar_url, avatar_photo_id: otherProfile.avatar_photo_id },
@@ -140,7 +149,16 @@ export default async function ChatPage({
         />
 
         <div className="shrink-0 border-t border-gray-700 p-4">
-          <MessageInput conversationId={id} bullNeedsVerification={bullNeedsVerification} />
+          {oneMessageOnlyReached && (
+            <p className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-200/90">
+              Du kannst nur eine Nachricht senden, bis ihr verbunden seid. Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.
+            </p>
+          )}
+          <MessageInput
+            conversationId={id}
+            bullNeedsVerification={bullNeedsVerification}
+            oneMessageOnlyReached={oneMessageOnlyReached}
+          />
         </div>
       </div>
     </div>

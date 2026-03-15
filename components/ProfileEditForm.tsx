@@ -8,6 +8,7 @@ import {
   BODY_TYPES,
   LOOKING_FOR_GENDER_OPTIONS,
   LOOKING_FOR_OPTIONS,
+  ORIENTATION_OPTIONS,
   PREFERENCES_OPTIONS,
   MAX_TEXT_LENGTH,
 } from "@/types";
@@ -50,6 +51,8 @@ export function ProfileEditForm() {
   const [partnerExperienceLevel, setPartnerExperienceLevel] = useState("");
   const [coupleFirstTendency, setCoupleFirstTendency] = useState<string>("");
   const [couplePartnerTendency, setCouplePartnerTendency] = useState<string>("");
+  const [orientation, setOrientation] = useState<string>("");
+  const [profilePrivate, setProfilePrivate] = useState(false);
 
   const isCouple = accountType === "couple";
   const isCoupleWomanMan = isCouple && coupleType === "man_woman";
@@ -66,7 +69,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
         )
         .eq("id", user.id)
         .single()
@@ -75,7 +78,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
               )
               .eq("id", user.id)
               .single();
@@ -129,6 +132,8 @@ export function ProfileEditForm() {
               setPartnerExperienceLevel(fallback.partner_experience_level ?? "");
               setCoupleFirstTendency((fallback as { couple_first_tendency?: string | null }).couple_first_tendency ?? "");
               setCouplePartnerTendency((fallback as { couple_partner_tendency?: string | null }).couple_partner_tendency ?? "");
+              setOrientation((fallback as { orientation?: string | null }).orientation ?? "");
+              setProfilePrivate((fallback as { profile_private?: boolean }).profile_private ?? false);
               const url = await resolveProfileAvatarUrl(
                 { avatar_url: fallbackData.avatar_url, avatar_photo_id: fallbackData.avatar_photo_id },
                 supabase
@@ -184,6 +189,8 @@ export function ProfileEditForm() {
             setPartnerAboutMe(d.partner_about_me ?? "");
             setPartnerPreferences(Array.isArray(d.partner_preferences) ? d.partner_preferences : []);
             setPartnerExperienceLevel(d.partner_experience_level ?? "");
+            setOrientation((data as { orientation?: string | null }).orientation ?? "");
+            setProfilePrivate((data as { profile_private?: boolean }).profile_private ?? false);
             const url = await resolveProfileAvatarUrl(
               { avatar_url: data.avatar_url, avatar_photo_id: data.avatar_photo_id },
               supabase
@@ -243,6 +250,8 @@ export function ProfileEditForm() {
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
         about_me: mainAbout,
         experience_level: mainExp,
+        orientation: orientation && ORIENTATION_OPTIONS.some((o) => o.value === orientation) ? orientation : null,
+        profile_private: profilePrivate,
       };
       if (mainPrefs.length > 0) updates.preferences = mainPrefs;
       if (isCouple) {
@@ -355,6 +364,37 @@ export function ProfileEditForm() {
           </p>
         </div>
       )}
+
+      {/* Neigung (Orientierung) */}
+      <section>
+        <label className="mb-1 block text-sm font-medium text-gray-300">Neigung</label>
+        <select
+          value={orientation}
+          onChange={(e) => setOrientation(e.target.value)}
+          className="w-full max-w-xs rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+        >
+          <option value="">— Keine Angabe —</option>
+          {ORIENTATION_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+      </section>
+
+      {/* Sichtbarkeit: Profil für alle oder gesperrt */}
+      <section>
+        <label className="mb-2 flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={!profilePrivate}
+            onChange={(e) => setProfilePrivate(!e.target.checked)}
+            className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+          />
+          <span className="text-sm font-medium text-gray-300">Profil für alle sichtbar (Bilder, Posts, Angaben)</span>
+        </label>
+        <p className="text-xs text-gray-500">
+          Wenn deaktiviert: Dein Profil ist „gesperrt“. Andere sehen nur Profilbild, Ort, Alter und können dir eine Nachricht senden. Nach „Verbunden“ (gegenseitiges Folgen) sehen sie dein volles Profil.
+        </p>
+      </section>
 
       {/* Alter + Geschlecht (nur Anzeige, nicht änderbar) – bei Paar nur wenn Single */}
       {!isCouple && (getAgeFromDateOfBirth(dateOfBirth) != null || getGenderSymbol(gender)) && (

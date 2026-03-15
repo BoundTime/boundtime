@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay } from "@/lib/profile-utils";
+import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay, getOrientationLabel } from "@/lib/profile-utils";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -55,7 +55,7 @@ export default async function ProfilPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation"
     )
     .eq("id", user.id)
     .single();
@@ -76,7 +76,7 @@ export default async function ProfilPage({
     resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_male_avatar_photo_id ?? null }, supabase),
   ]);
 
-  const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
+  const [{ count: followerCount }, { count: followingCount }, { data: myFollowing }, { data: myFollowers }] = await Promise.all([
     supabase
       .from("follows")
       .select("*", { count: "exact", head: true })
@@ -85,7 +85,17 @@ export default async function ProfilPage({
       .from("follows")
       .select("*", { count: "exact", head: true })
       .eq("follower_id", profile.id),
+    supabase.from("follows").select("following_id").eq("follower_id", profile.id),
+    supabase.from("follows").select("follower_id").eq("following_id", profile.id),
   ]);
+  const followingIds = new Set((myFollowing ?? []).map((r: { following_id: string }) => r.following_id));
+  const followerIds = new Set((myFollowers ?? []).map((r: { follower_id: string }) => r.follower_id));
+  const connectedIds = [...followingIds].filter((id) => followerIds.has(id));
+  const { data: connectedProfiles } =
+    connectedIds.length > 0
+      ? await supabase.from("profiles").select("id, nick").in("id", connectedIds)
+      : { data: [] };
+  const connectedNicks = (connectedProfiles ?? []) as { id: string; nick: string | null }[];
 
   const initials = (profile.nick ?? "?")
     .split(/[\s_]+/)
@@ -194,14 +204,29 @@ export default async function ProfilPage({
           </div>
         </div>
 
-        {/* Statistik-Zeile */}
-        <div className="flex items-center justify-center gap-8 border-t border-gray-700 px-6 py-4">
-          <span className="text-gray-400">
-            <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
-          </span>
-          <span className="text-gray-400">
-            <span className="font-semibold text-white">{followingCount ?? 0}</span> folgt
-          </span>
+        {/* Statistik-Zeile + Verbunden mit */}
+        <div className="flex flex-col items-center gap-3 border-t border-gray-700 px-6 py-4">
+          <div className="flex items-center justify-center gap-8">
+            <span className="text-gray-400">
+              <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
+            </span>
+            <span className="text-gray-400">
+              <span className="font-semibold text-white">{followingCount ?? 0}</span> folgt
+            </span>
+          </div>
+          {connectedNicks.length > 0 && (
+            <p className="text-center text-sm text-gray-400">
+              Verbunden mit:{" "}
+              {connectedNicks.map((p, i) => (
+                <span key={p.id}>
+                  {i > 0 && ", "}
+                  <Link href={`/dashboard/entdecken/${p.id}`} className="font-medium text-accent hover:text-accent-hover">
+                    {p.nick ?? "—"}
+                  </Link>
+                </span>
+              ))}
+            </p>
+          )}
         </div>
 
         {/* Aktionen: Profil bearbeiten, Meine Alben, ggf. Verifizierung */}
@@ -454,6 +479,15 @@ export default async function ProfilPage({
                 </div>
               ) : (
                 renderPartnerCard(singleData, "Profil", avatarUrl)
+              )}
+
+              {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
+                <section>
+                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
+                    {getOrientationLabel((profile as { orientation?: string | null }).orientation)}
+                  </p>
+                </section>
               )}
 
               {(profile.city || profile.postal_code) && (

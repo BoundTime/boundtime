@@ -4,3 +4,4 @@ Prompts für den Hauptagenten. **Nach Umsetzung nur den Prompt-Inhalt (ab „# P
 
 **Immer gültig (nicht löschen):** Nach der Umsetzung eines Prompts schreibt der Hauptagent **in den Chat**, was alles geändert wurde, und listet eine **Checkliste** der konkreten Änderungen auf – damit du einen Überblick hast, was du testen musst.
 
+---
