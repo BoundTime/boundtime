@@ -639,7 +639,6 @@ export default async function ProfilDetailPage({
                   {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
                     <p className="mt-6 border-t border-gray-700 pt-4 text-center text-sm text-gray-500">Keine Angaben</p>
                   )}
-                  <div className="mt-6 flex-1 border-t border-gray-700/60 min-h-[1px]" aria-hidden />
                 </div>
               </div>
             );
