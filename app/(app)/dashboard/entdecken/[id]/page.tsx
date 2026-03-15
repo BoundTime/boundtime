@@ -279,7 +279,7 @@ export default async function ProfilDetailPage({
 
       {/* Header: dezenter Gradient, großer Avatar, Nick, Rolle, Ort */}
       <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card">
-        <div className="flex flex-col items-center p-6 text-center sm:flex-row sm:items-start sm:text-left">
+        <div className="flex flex-col items-center p-6 text-center">
           <AvatarWithVerified
             verified={profile.verified}
             size="lg"
@@ -295,8 +295,8 @@ export default async function ProfilDetailPage({
             )}
           </div>
           </AvatarWithVerified>
-          <div className="mt-4 sm:ml-6 sm:mt-0">
-            <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
+          <div className="mt-4">
+            <h1 className="flex flex-wrap items-center justify-center gap-2 text-2xl font-bold text-white sm:text-3xl">
               {profile.nick ?? "—"}
               {profile.verified && <VerifiedBadge size={20} showLabel />}
               <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
@@ -331,7 +331,7 @@ export default async function ProfilDetailPage({
         </div>
 
         {/* Statistik-Zeile: Follower / folgt */}
-        <div className="flex items-center justify-center gap-8 border-t border-gray-700 px-6 py-4 sm:justify-start">
+        <div className="flex items-center justify-center gap-8 border-t border-gray-700 px-6 py-4">
           <span className="text-gray-400">
             <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
           </span>
@@ -342,7 +342,7 @@ export default async function ProfilDetailPage({
 
         {/* Aktionen (Folgen, Nachricht, Keuschhaltung) */}
         {profile.id !== user.id && (
-          <div className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-700 px-4 py-4 sm:justify-start sm:gap-3 sm:px-6">
+          <div className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-700 px-4 py-4 sm:gap-3 sm:px-6">
             <FollowButton followingId={profile.id} initialIsFollowing={isFollowing} />
             <BlockButton blockedId={profile.id} initialBlocked={isBlockedByMe} />
             <ProfileLikeButton
@@ -585,26 +585,30 @@ export default async function ProfilDetailPage({
                     <div className="mt-4 flex justify-center border-t border-gray-700 pt-4">
                       <div className="flex items-center gap-1.5">
                         <RoleIcon role={profile.role} size={16} className="text-accent" />
-                        <span className="text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
+                        <span className="text-center text-sm text-gray-300">{profile.role === "Switcher" && isCouple ? "Paar" : (roleLabels[profile.role] ?? profile.role)}</span>
                       </div>
                     </div>
                   )}
+                  <div className="min-h-[200px]">
+                    {data.preferences && data.preferences.length > 0 ? (
+                      <div className="mt-6 border-t border-gray-700 pt-4">
+                        <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
+                        <div className="mt-3 flex flex-wrap justify-center gap-2">
+                          {data.preferences.map((pref) => (
+                            <span key={pref} className="rounded-full bg-accent/20 px-3 py-1.5 text-sm text-accent">
+                              {pref}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-6 border-t border-gray-700 pt-4" />
+                    )}
+                  </div>
                   {data.about_me && (
                     <div className="mt-6">
                       <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Über mich</h4>
                       <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center text-sm leading-relaxed text-gray-300">{data.about_me}</p>
-                    </div>
-                  )}
-                  {data.preferences && data.preferences.length > 0 && (
-                    <div className="mt-6 border-t border-gray-700 pt-4">
-                      <h4 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Vorlieben</h4>
-                      <div className="mt-3 flex flex-wrap justify-center gap-2">
-                        {data.preferences.map((pref) => (
-                          <span key={pref} className="rounded-full bg-accent/20 px-3 py-1.5 text-sm text-accent">
-                            {pref}
-                          </span>
-                        ))}
-                      </div>
                     </div>
                   )}
                   {!data.height_cm && !data.weight_kg && !data.body_type && getAgeFromDateOfBirth(data.date_of_birth ?? null) == null && !getExperienceLabel(data.experience_level ?? null) && (!data.preferences || data.preferences.length === 0) && !data.about_me && (
@@ -683,7 +687,7 @@ export default async function ProfilDetailPage({
               )}
 
               {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
-                <p className="text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
+                <p className="text-center text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
               )}
             </div>
             );
