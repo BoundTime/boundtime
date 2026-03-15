@@ -11,14 +11,16 @@ export function MessageInput({
   conversationId,
   bullNeedsVerification = false,
   oneMessageOnlyReached = false,
+  unverifiedManLimitReached = false,
 }: {
   conversationId: string;
   bullNeedsVerification?: boolean;
   oneMessageOnlyReached?: boolean;
+  unverifiedManLimitReached?: boolean;
 }) {
   const router = useRouter();
   const { canWrite, requestUnlock } = useRestriction();
-  const canSend = canWrite && !bullNeedsVerification && !oneMessageOnlyReached;
+  const canSend = canWrite && !bullNeedsVerification && !oneMessageOnlyReached && !unverifiedManLimitReached;
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
@@ -126,9 +128,11 @@ export function MessageInput({
       ? "Verifizierung nötig, um Nachrichten zu senden."
       : oneMessageOnlyReached
         ? "Du kannst nur eine Nachricht senden, bis ihr verbunden seid."
-        : !canWrite
-          ? "Passwort eingeben zum Freischalten (Cuckymode)."
-          : "Nachricht schreiben…";
+        : unverifiedManLimitReached
+          ? "Du kannst als nicht verifizierter Mann nur eine Nachricht pro Tag senden."
+          : !canWrite
+            ? "Passwort eingeben zum Freischalten (Cuckymode)."
+            : "Nachricht schreiben…";
 
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
@@ -171,10 +175,13 @@ export function MessageInput({
                 Zur Verifizierung →
               </Link>
             )}
-            {!canWrite && !bullNeedsVerification && (
+            {unverifiedManLimitReached && (
+              <span>Verifiziere dich, um unbegrenzt Nachrichten zu senden.</span>
+            )}
+            {!canWrite && !bullNeedsVerification && !unverifiedManLimitReached && (
               <span>Passwort in den Einstellungen eingeben, um Nachrichten freizuschalten.</span>
             )}
-            {oneMessageOnlyReached && !bullNeedsVerification && canWrite && (
+            {oneMessageOnlyReached && !bullNeedsVerification && canWrite && !unverifiedManLimitReached && (
               <span>Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.</span>
             )}
           </p>

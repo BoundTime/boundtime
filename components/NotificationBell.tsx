@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { NOTIFICATION_LABELS, type NotificationType } from "@/types";
+import { getNotificationMessage, NOTIFICATION_TYPES_WITH_ACTOR } from "@/lib/notification-utils";
 
 type NotificationRow = {
   id: string;
@@ -78,19 +79,20 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
         .is("read_at", null)
         .order("created_at", { ascending: false });
       const rows = (data ?? []) as NotificationRow[];
-      const likerIds = Array.from(new Set(rows.filter((r) => r.type === "post_like" && r.related_user_id).map((r) => r.related_user_id!)));
+      const actorIds = Array.from(new Set(
+        rows
+          .filter((r) => r.related_user_id && NOTIFICATION_TYPES_WITH_ACTOR.includes(r.type as NotificationType))
+          .map((r) => r.related_user_id!)
+      ));
       const nickById: Record<string, string> = {};
-      if (likerIds.length > 0) {
-        const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", likerIds);
-        for (const p of profs ?? []) {
-          nickById[p.id] = p.nick ?? "?";
-        }
+      if (actorIds.length > 0) {
+        const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", actorIds);
+        for (const p of profs ?? []) nickById[p.id] = p.nick ?? "?";
       }
-      const withNick = rows.map((r) =>
-        r.type === "post_like" && r.related_user_id
-          ? { ...r, related_user_nick: nickById[r.related_user_id] ?? "?" }
-          : r
-      );
+      const withNick = rows.map((r) => ({
+        ...r,
+        related_user_nick: r.related_user_id ? nickById[r.related_user_id] ?? null : null,
+      }));
       setUnreadCount(count ?? 0);
       setList(withNick);
       setLoading(false);
@@ -211,9 +213,10 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
                         onClick={() => { setOpen(false); markAllRead(); }}
                         className="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
                       >
-                        {n.type === "post_like" && n.related_user_nick
-                          ? `${n.related_user_nick} hat deinen Post geliked`
-                          : NOTIFICATION_LABELS[n.type]}
+                        {(() => {
+                          const msg = getNotificationMessage(n.type as NotificationType, n.related_user_nick ?? (n.related_user_id ? undefined : null));
+                          return msg || NOTIFICATION_LABELS[n.type as NotificationType] || n.type;
+                        })()}
                         <span className="mt-0.5 block text-xs text-gray-500">
                           {formatTimeAgo(new Date(n.created_at))}
                         </span>

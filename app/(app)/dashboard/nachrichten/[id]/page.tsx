@@ -46,11 +46,24 @@ export default async function ChatPage({
 
   const { data: myProfile } = await supabase
     .from("profiles")
-    .select("role, verified")
+    .select("role, verified, gender")
     .eq("id", user.id)
     .single();
   const bullNeedsVerification =
     myProfile?.role === "Bull" && !myProfile?.verified;
+
+  const isUnverifiedMan = (myProfile?.gender === "Mann" && myProfile?.verified === false);
+  let unverifiedManLimitReached = false;
+  if (isUnverifiedMan) {
+    const now = new Date();
+    const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
+    const { count } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("sender_id", user.id)
+      .gte("created_at", todayStart.toISOString());
+    unverifiedManLimitReached = (count ?? 0) >= 1;
+  }
 
   const otherId = conv.participant_a === user.id ? conv.participant_b : conv.participant_a;
   const { data: otherProfile } = await supabase
@@ -154,10 +167,20 @@ export default async function ChatPage({
               Du kannst nur eine Nachricht senden, bis ihr verbunden seid. Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.
             </p>
           )}
+          {unverifiedManLimitReached && (
+            <p className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-200/90">
+              Du kannst als nicht verifizierter Mann nur eine Nachricht pro Tag senden.{" "}
+              <Link href="/dashboard/verifizierung" className="font-medium text-accent hover:underline">
+                Verifiziere dich
+              </Link>
+              , um unbegrenzt zu schreiben.
+            </p>
+          )}
           <MessageInput
             conversationId={id}
             bullNeedsVerification={bullNeedsVerification}
             oneMessageOnlyReached={oneMessageOnlyReached}
+            unverifiedManLimitReached={unverifiedManLimitReached}
           />
         </div>
       </div>

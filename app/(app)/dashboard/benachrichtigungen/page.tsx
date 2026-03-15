@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { NOTIFICATION_LABELS, type NotificationType } from "@/types";
+import { getNotificationMessage, NOTIFICATION_TYPES_WITH_ACTOR } from "@/lib/notification-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -77,11 +78,21 @@ export default async function BenachrichtigungenPage() {
     related_user_id: string | null;
     related_id: string | null;
   }>;
-  const postLikeLikerIds = Array.from(new Set(list.filter((n) => n.type === "post_like" && n.related_user_id).map((n) => n.related_user_id!)));
+  const actorIds = Array.from(new Set(
+    list
+      .filter((n) => n.related_user_id && NOTIFICATION_TYPES_WITH_ACTOR.includes(n.type))
+      .map((n) => n.related_user_id!)
+  ));
   const nickById: Record<string, string> = {};
-  if (postLikeLikerIds.length > 0) {
-    const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", postLikeLikerIds);
+  if (actorIds.length > 0) {
+    const { data: profs } = await supabase.from("profiles").select("id, nick").in("id", actorIds);
     for (const p of profs ?? []) nickById[p.id] = p.nick ?? "?";
+  }
+
+  function getDisplayText(n: (typeof list)[0]): string {
+    const msg = getNotificationMessage(n.type, n.related_user_id ? nickById[n.related_user_id] : null);
+    if (msg) return msg;
+    return NOTIFICATION_LABELS[n.type] ?? n.type;
   }
 
   return (
@@ -110,9 +121,7 @@ export default async function BenachrichtigungenPage() {
                   className="flex items-center justify-between rounded-xl border border-gray-700 bg-background/50 px-4 py-3 text-left transition-colors hover:border-gray-600"
                 >
                   <span className="text-sm text-white">
-                    {n.type === "post_like" && n.related_user_id && nickById[n.related_user_id]
-                      ? `${nickById[n.related_user_id]} hat deinen Post geliked`
-                      : NOTIFICATION_LABELS[n.type]}
+                    {getDisplayText(n)}
                   </span>
                   <span className="text-xs text-gray-500">{formatTimeAgo(new Date(n.created_at))}</span>
                 </Link>
