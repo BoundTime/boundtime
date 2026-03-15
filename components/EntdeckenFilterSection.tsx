@@ -134,7 +134,7 @@ export function EntdeckenFilterSection({
           maxLength={5}
           defaultValue={plzPrefix ?? ""}
           placeholder="z. B. 80 oder 80331"
-          className="w-32 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white placeholder:text-gray-500"
+          className="w-32 rounded-lg border border-gray-600 bg-background px-3 py-2 text-xs text-white placeholder:text-gray-500"
         />
       </div>
       <div>
@@ -147,7 +147,7 @@ export function EntdeckenFilterSection({
           max={500}
           defaultValue={radiusKm ?? ""}
           placeholder="z. B. 20"
-          className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-xs text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         />
       </div>
       <div>
@@ -158,7 +158,7 @@ export function EntdeckenFilterSection({
           type="text"
           defaultValue={radiusCenter ?? ""}
           placeholder="für Radius-Suche"
-          className="w-32 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+          className="min-w-[8rem] w-36 rounded-lg border border-gray-600 bg-background px-3 py-2 text-xs text-white placeholder:text-gray-500"
         />
       </div>
       <div className={idSuffix === "mobile" ? "flex flex-col gap-2" : "contents"}>
