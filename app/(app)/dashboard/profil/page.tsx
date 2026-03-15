@@ -90,7 +90,7 @@ export default async function ProfilPage({
   ]);
   const followingIds = new Set((myFollowing ?? []).map((r: { following_id: string }) => r.following_id));
   const followerIds = new Set((myFollowers ?? []).map((r: { follower_id: string }) => r.follower_id));
-  const connectedIds = [...followingIds].filter((id) => followerIds.has(id));
+  const connectedIds = Array.from(followingIds).filter((id) => followerIds.has(id));
   const { data: connectedProfiles } =
     connectedIds.length > 0
       ? await supabase.from("profiles").select("id, nick").in("id", connectedIds)
