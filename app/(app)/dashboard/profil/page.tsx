@@ -55,7 +55,7 @@ export default async function ProfilPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation"
+      "id, nick, role, gender, city, postal_code, current_postal_code, current_city, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, experience_level, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation"
     )
     .eq("id", user.id)
     .single();
@@ -201,6 +201,12 @@ export default async function ProfilPage({
                 {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
               </p>
             )}
+            {(profile as { current_postal_code?: string | null; current_city?: string | null }).current_postal_code || (profile as { current_city?: string | null }).current_city ? (
+              <p className="mt-1 text-sm text-gray-500">
+                <span className="text-gray-400">Aktuell hier: </span>
+                {[(profile as { current_postal_code?: string | null }).current_postal_code, (profile as { current_city?: string | null }).current_city].filter(Boolean).join(" ")}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -495,17 +501,10 @@ export default async function ProfilPage({
                 </section>
               )}
 
-              {(profile.city || profile.postal_code) && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
-                </section>
-              )}
-
               {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
+                    Wen sucht …?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">
                     {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
@@ -516,7 +515,7 @@ export default async function ProfilPage({
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    {isCouple ? "Was sucht ihr?" : "Was suchst du?"}
+                    Was sucht …?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
                 </section>
@@ -525,13 +524,13 @@ export default async function ProfilPage({
               {profile.expectations_text && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
+                    Was erwartet … von seinem Gesuchten?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
                 </section>
               )}
 
-                {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
+                {isCouple && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
                   <p className="text-center text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
                 )}
               </div>

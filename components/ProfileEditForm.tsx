@@ -28,6 +28,8 @@ export function ProfileEditForm() {
   const [bodyType, setBodyType] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
+  const [currentPostalCode, setCurrentPostalCode] = useState("");
+  const [currentCity, setCurrentCity] = useState("");
   const [lookingForGenders, setLookingForGenders] = useState<string[]>([]);
   const [lookingFor, setLookingFor] = useState<string[]>([]);
   const [preferences, setPreferences] = useState<string[]>([]);
@@ -69,7 +71,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
         )
         .eq("id", user.id)
         .single()
@@ -78,7 +80,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
               )
               .eq("id", user.id)
               .single();
@@ -90,6 +92,8 @@ export function ProfileEditForm() {
               setGender(fallbackData.gender ?? null);
               setPostalCode(fallbackData.postal_code ?? "");
               setCity(fallbackData.city ?? "");
+              setCurrentPostalCode((fallbackData as { current_postal_code?: string }).current_postal_code ?? "");
+              setCurrentCity((fallbackData as { current_city?: string }).current_city ?? "");
               setLookingForGenders(
                 Array.isArray((fallbackData as { looking_for_genders?: string[] }).looking_for_genders)
                   ? (fallbackData as { looking_for_genders: string[] }).looking_for_genders
@@ -148,6 +152,8 @@ export function ProfileEditForm() {
             setGender(data.gender ?? null);
             setPostalCode(data.postal_code ?? "");
             setCity(data.city ?? "");
+            setCurrentPostalCode((data as { current_postal_code?: string }).current_postal_code ?? "");
+            setCurrentCity((data as { current_city?: string }).current_city ?? "");
             setLookingForGenders(
               Array.isArray((data as { looking_for_genders?: string[] }).looking_for_genders)
                 ? (data as { looking_for_genders: string[] }).looking_for_genders
@@ -245,6 +251,8 @@ export function ProfileEditForm() {
         body_type: mainBody,
         postal_code: postalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
         city: city.trim().slice(0, 200) || null,
+        current_postal_code: currentPostalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
+        current_city: currentCity.trim().slice(0, 200) || null,
         looking_for_genders: lookingForGenders.length > 0 ? lookingForGenders : null,
         looking_for: lookingFor.length > 0 ? lookingFor : null,
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
@@ -797,13 +805,31 @@ export function ProfileEditForm() {
               placeholder="z. B. 10115 oder Berlin"
             />
           </div>
+          <div className="mt-4">
+            <label htmlFor="plz_ort_current" className="mb-1 block text-sm text-gray-300">
+              Aktueller Aufenthaltsort (Zweitort, optional)
+            </label>
+            <p className="mb-2 text-xs text-gray-500">
+              z. B. wenn du gerade woanders bist (Urlaub, Reise). Wird als „Aktuell hier“ angezeigt.
+            </p>
+            <PlzOrtAutocomplete
+              id="plz_ort_current"
+              postalCode={currentPostalCode}
+              city={currentCity}
+              onSelect={(plz, ort) => {
+                setCurrentPostalCode(plz);
+                setCurrentCity(ort);
+              }}
+              placeholder="z. B. 80331 oder München"
+            />
+          </div>
         </section>
 
         <section>
-          <h3 className="text-sm font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</h3>
+          <h3 className="text-sm font-semibold text-white">Wen sucht …? / Was sucht …?</h3>
           <div>
             <label className="mb-1 block text-sm text-gray-300">
-              {isCouple ? "Wen sucht ihr? (Mehrfachauswahl)" : "Wen suchst du? (Mehrfachauswahl)"}
+              Wen sucht …? (Mehrfachauswahl)
             </label>
             <div className="flex flex-wrap gap-2 rounded-lg border border-gray-600 bg-background/50 p-2">
               {LOOKING_FOR_GENDER_OPTIONS.map((g) => (
@@ -830,7 +856,7 @@ export function ProfileEditForm() {
           </div>
           <div>
             <label className="mb-1 block text-sm text-gray-300">
-              {isCouple ? "Was sucht ihr? (Mehrfachauswahl)" : "Was suchst du? (Mehrfachauswahl)"}
+              Was sucht …? (Mehrfachauswahl)
             </label>
             <div className="max-h-80 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
               <div className="flex flex-wrap gap-2">
@@ -911,7 +937,7 @@ export function ProfileEditForm() {
 
         <section>
           <h3 className="text-sm font-semibold text-white">
-            {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
+            Was erwartet … von seinem Gesuchten?
           </h3>
           <div className="mt-2">
             <label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">
