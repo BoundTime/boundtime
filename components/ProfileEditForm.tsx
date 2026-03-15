@@ -280,6 +280,13 @@ export function ProfileEditForm() {
       }
       setSuccessMessage("Ihre Angaben wurden gespeichert.");
       router.refresh();
+      if (updates.postal_code != null || updates.city != null) {
+        try {
+          await fetch("/api/me/geocode");
+        } catch {
+          // Geocoding optional, kein Fehler anzeigen
+        }
+      }
       const { data: profileData } = await supabase.from("profiles").select("avatar_url, avatar_photo_id").eq("id", userId).single();
       if (profileData) {
         const url = await resolveProfileAvatarUrl(profileData, supabase);

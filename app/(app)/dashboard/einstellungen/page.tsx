@@ -47,7 +47,7 @@ export default async function EinstellungenPage({
 
       <div className="mt-8 space-y-4">
         {isDomOrSwitcher ? (
-          <CollapsibleSection title="Belohnungskatalog" defaultOpen>
+          <CollapsibleSection title="Belohnungskatalog">
             <ChastityCatalogManager domId={user.id} embedded />
           </CollapsibleSection>
         ) : (
@@ -58,7 +58,7 @@ export default async function EinstellungenPage({
           </CollapsibleSection>
         )}
 
-        <CollapsibleSection title="Konto" defaultOpen>
+        <CollapsibleSection title="Konto">
           <SettingsAccountSection email={user.email} />
         </CollapsibleSection>
 

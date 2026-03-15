@@ -8,11 +8,12 @@ import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { geocodeDe, haversineKm } from "@/lib/geocode";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
 const SUB_GESUCHT = "Keuschhalten anbieten (Keyholder)";
 
-type SearchParams = { role?: string; gender?: string; account_type?: string; plz_prefix?: string; preference?: string; experience?: string; keuschhaltung?: string };
+type SearchParams = { role?: string; gender?: string; account_type?: string; plz_prefix?: string; preference?: string; experience?: string; keuschhaltung?: string; radius_km?: string; radius_center?: string };
 
 export default async function EntdeckenPage({
   searchParams,
@@ -29,7 +30,10 @@ export default async function EntdeckenPage({
   const roleFilter = params.role && ["Dom", "Sub", "Switcher", "Bull"].includes(params.role) ? params.role : null;
   const genderFilter = params.gender && ["Mann", "Frau", "Divers"].includes(params.gender) ? params.gender : null;
   const accountTypeFilter = params.account_type === "couple" ? "couple" : params.account_type === "single" ? "single" : null;
-  const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 3) || null;
+  const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 5) || null;
+  const radiusKmParam = params.radius_km?.replace(/\D/g, "");
+  const radiusKm = radiusKmParam ? Math.min(500, Math.max(1, parseInt(radiusKmParam, 10))) : null;
+  const radiusCenter = params.radius_center?.trim() || null;
   const preferenceFilter = params.preference?.trim() || null;
   const experienceFilter = params.experience && ["beginner", "experienced", "advanced"].includes(params.experience) ? params.experience : null;
   const keuschhaltungFilter = params.keuschhaltung === "keyholder_gesucht" ? "keyholder_gesucht" : params.keuschhaltung === "sub_gesucht" ? "sub_gesucht" : null;
@@ -49,22 +53,36 @@ export default async function EntdeckenPage({
     ...(blockedMe ?? []).map((r: { blocker_id: string }) => r.blocker_id),
   ]);
 
+  const selectWithCoords = "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at, account_type, latitude, longitude";
   let query = supabase
     .from("profiles")
-    .select("id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at, account_type")
+    .select(selectWithCoords)
     .neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
   if (roleFilter) query = query.eq("role", roleFilter);
   if (genderFilter) query = query.eq("gender", genderFilter);
   if (accountTypeFilter) query = query.eq("account_type", accountTypeFilter);
-  if (plzPrefix) query = query.like("postal_code", `${plzPrefix}%`);
+  if (plzPrefix && !radiusKm) query = query.like("postal_code", `${plzPrefix}%`);
+  if (radiusKm) query = query.not("latitude", "is", null).not("longitude", "is", null);
   if (preferenceFilter) query = query.contains("preferences", [preferenceFilter]);
   if (experienceFilter) query = query.eq("experience_level", experienceFilter);
   if (keuschhaltungFilter === "keyholder_gesucht") query = query.contains("looking_for", [KEYHOLDER_GESUCHT]);
   if (keuschhaltungFilter === "sub_gesucht") query = query.contains("looking_for", [SUB_GESUCHT]);
 
-  const { data: profilesRaw } = await query.order("nick");
+  let { data: profilesRaw } = await query.order("nick");
+
+  if (radiusKm != null && profilesRaw && profilesRaw.length > 0) {
+    const centerQuery = (radiusCenter || plzPrefix || "").trim();
+    const isPlz = /^\d{1,5}$/.test(centerQuery);
+    const coords = await geocodeDe(isPlz ? centerQuery : null, isPlz ? null : centerQuery || null);
+    if (coords) {
+      profilesRaw = profilesRaw.filter((p: { latitude?: number | null; longitude?: number | null }) => {
+        if (p.latitude == null || p.longitude == null) return false;
+        return haversineKm(coords.lat, coords.lon, p.latitude, p.longitude) <= radiusKm;
+      });
+    }
+  }
 
   const isRestrictedViewer =
     myProfile.data?.account_type === "couple" &&
@@ -117,6 +135,8 @@ export default async function EntdeckenPage({
         plzPrefix={plzPrefix}
         myPlzPrefix={myPlzPrefix}
         keuschhaltungFilter={keuschhaltungFilter}
+        radiusKm={radiusKm}
+        radiusCenter={radiusCenter}
       />
 
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

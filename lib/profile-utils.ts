@@ -20,6 +20,13 @@ export function getGenderSymbol(gender: string | null | undefined): string | nul
   return GENDER_SYMBOLS[gender] ?? null;
 }
 
+/** Anzeigetext für „Wen suchst du?“ – bei „alle“ die einzelnen Optionen anzeigen */
+export function getLookingForGenderDisplay(value: string | null | undefined): string | null {
+  if (!value) return null;
+  if (value.toLowerCase() === "alle") return "Mann, Frau, Divers";
+  return value;
+}
+
 const EXPERIENCE_LABELS: Record<string, string> = {
   beginner: "Einsteiger:in",
   experienced: "Erfahren",

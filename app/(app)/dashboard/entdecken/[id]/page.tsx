@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel } from "@/lib/profile-utils";
+import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay } from "@/lib/profile-utils";
 import { ChastityRequestButton } from "@/components/chastity/ChastityRequestButton";
 import { FollowButton } from "@/components/FollowButton";
 import { BlockButton } from "@/components/BlockButton";
@@ -638,7 +638,7 @@ export default async function ProfilDetailPage({
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen sucht die Person?"}
                   </h2>
-                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{profile.looking_for_gender}</p>
+                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{getLookingForGenderDisplay(profile.looking_for_gender)}</p>
                 </div>
               )}
 

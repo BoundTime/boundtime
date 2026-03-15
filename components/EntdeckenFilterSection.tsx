@@ -14,6 +14,8 @@ type Props = {
   plzPrefix: string | null;
   myPlzPrefix: string | null;
   keuschhaltungFilter: "keyholder_gesucht" | "sub_gesucht" | null;
+  radiusKm: number | null;
+  radiusCenter: string | null;
 };
 
 export function EntdeckenFilterSection({
@@ -25,6 +27,8 @@ export function EntdeckenFilterSection({
   plzPrefix,
   myPlzPrefix,
   keuschhaltungFilter,
+  radiusKm,
+  radiusCenter,
 }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -121,16 +125,40 @@ export function EntdeckenFilterSection({
         </select>
       </div>
       <div>
-        <label htmlFor={`plz_prefix-${idSuffix}`} className="mb-1 block text-xs text-gray-500">PLZ (Anfang)</label>
+        <label htmlFor={`plz_prefix-${idSuffix}`} className="mb-1 block text-xs text-gray-500">PLZ (Anfang oder vollständig)</label>
         <input
           id={`plz_prefix-${idSuffix}`}
           name="plz_prefix"
           type="text"
           inputMode="numeric"
-          maxLength={3}
+          maxLength={5}
           defaultValue={plzPrefix ?? ""}
-          placeholder="z. B. 80"
+          placeholder="z. B. 80 oder 80331"
           className="w-24 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+        />
+      </div>
+      <div>
+        <label htmlFor={`radius_km-${idSuffix}`} className="mb-1 block text-xs text-gray-500">Suchradius (km)</label>
+        <input
+          id={`radius_km-${idSuffix}`}
+          name="radius_km"
+          type="number"
+          min={1}
+          max={500}
+          defaultValue={radiusKm ?? ""}
+          placeholder="z. B. 20"
+          className="w-20 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+        />
+      </div>
+      <div>
+        <label htmlFor={`radius_center-${idSuffix}`} className="mb-1 block text-xs text-gray-500">Ort/PLZ (Zentrum)</label>
+        <input
+          id={`radius_center-${idSuffix}`}
+          name="radius_center"
+          type="text"
+          defaultValue={radiusCenter ?? ""}
+          placeholder="für Radius-Suche"
+          className="w-32 rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
         />
       </div>
       <div className={idSuffix === "mobile" ? "flex flex-col gap-2" : "contents"}>

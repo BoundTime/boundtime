@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel } from "@/lib/profile-utils";
+import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay } from "@/lib/profile-utils";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -462,7 +462,7 @@ export default async function ProfilPage({
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
                   </h2>
-                  <p className="mt-2 text-white">{profile.looking_for_gender}</p>
+                  <p className="mt-2 text-white">{getLookingForGenderDisplay(profile.looking_for_gender)}</p>
                 </div>
               )}
 
