@@ -20,7 +20,7 @@ export function MessageInput({
 }) {
   const router = useRouter();
   const { canWrite, requestUnlock } = useRestriction();
-  const canSend = canWrite && !bullNeedsVerification && !oneMessageOnlyReached && !unverifiedManLimitReached;
+  const canSend = canWrite && !oneMessageOnlyReached && !unverifiedManLimitReached;
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
@@ -134,6 +134,8 @@ export function MessageInput({
             ? "Passwort eingeben zum Freischalten (Cuckymode)."
             : "Nachricht schreiben…";
 
+  const placeholder = !canSend ? placeholderDisabled : "Nachricht schreiben…";
+
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
       <div className="flex-1 space-y-1 min-w-0">
@@ -142,7 +144,7 @@ export function MessageInput({
           rows={3}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={placeholderDisabled}
+          placeholder={placeholder}
           maxLength={POST_CONTENT_MAX}
           readOnly={!canSend}
           aria-label="Nachricht eingeben"
