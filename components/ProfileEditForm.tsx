@@ -27,7 +27,7 @@ export function ProfileEditForm() {
   const [bodyType, setBodyType] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
-  const [lookingForGender, setLookingForGender] = useState("");
+  const [lookingForGenders, setLookingForGenders] = useState<string[]>([]);
   const [lookingFor, setLookingFor] = useState<string[]>([]);
   const [preferences, setPreferences] = useState<string[]>([]);
   const [expectationsText, setExpectationsText] = useState("");
@@ -66,7 +66,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency"
+          "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency"
         )
         .eq("id", user.id)
         .single()
@@ -75,7 +75,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency"
+                "height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency"
               )
               .eq("id", user.id)
               .single();
@@ -87,7 +87,15 @@ export function ProfileEditForm() {
               setGender(fallbackData.gender ?? null);
               setPostalCode(fallbackData.postal_code ?? "");
               setCity(fallbackData.city ?? "");
-              setLookingForGender(fallbackData.looking_for_gender ?? "");
+              setLookingForGenders(
+                Array.isArray((fallbackData as { looking_for_genders?: string[] }).looking_for_genders)
+                  ? (fallbackData as { looking_for_genders: string[] }).looking_for_genders
+                  : fallbackData.looking_for_gender === "alle"
+                    ? ["Mann", "Frau", "Divers"]
+                    : fallbackData.looking_for_gender
+                      ? [fallbackData.looking_for_gender]
+                      : []
+              );
               setLookingFor(Array.isArray(fallbackData.looking_for) ? fallbackData.looking_for : []);
               setExpectationsText(fallbackData.expectations_text ?? "");
               setAboutMe(fallbackData.about_me ?? "");
@@ -135,7 +143,15 @@ export function ProfileEditForm() {
             setGender(data.gender ?? null);
             setPostalCode(data.postal_code ?? "");
             setCity(data.city ?? "");
-            setLookingForGender(data.looking_for_gender ?? "");
+            setLookingForGenders(
+              Array.isArray((data as { looking_for_genders?: string[] }).looking_for_genders)
+                ? (data as { looking_for_genders: string[] }).looking_for_genders
+                : data.looking_for_gender === "alle"
+                  ? ["Mann", "Frau", "Divers"]
+                  : data.looking_for_gender
+                    ? [data.looking_for_gender]
+                    : []
+            );
             setLookingFor(Array.isArray(data.looking_for) ? data.looking_for : []);
             setPreferences(Array.isArray(data.preferences) ? data.preferences : []);
             setExpectationsText(data.expectations_text ?? "");
@@ -222,7 +238,7 @@ export function ProfileEditForm() {
         body_type: mainBody,
         postal_code: postalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
         city: city.trim().slice(0, 200) || null,
-        looking_for_gender: lookingForGender || null,
+        looking_for_genders: lookingForGenders.length > 0 ? lookingForGenders : null,
         looking_for: lookingFor.length > 0 ? lookingFor : null,
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
         about_me: mainAbout,
@@ -748,22 +764,31 @@ export function ProfileEditForm() {
         <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
           <h3 className="text-sm font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</h3>
           <div>
-            <label htmlFor="looking_for_gender" className="mb-1 block text-sm text-gray-300">
-              {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
+            <label className="mb-1 block text-sm text-gray-300">
+              {isCouple ? "Wen sucht ihr? (Mehrfachauswahl)" : "Wen suchst du? (Mehrfachauswahl)"}
             </label>
-            <select
-              id="looking_for_gender"
-              value={lookingForGender}
-              onChange={(e) => setLookingForGender(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
-            >
-              <option value="">— Keine Angabe —</option>
+            <div className="flex flex-wrap gap-2 rounded-lg border border-gray-600 bg-background/50 p-2">
               {LOOKING_FOR_GENDER_OPTIONS.map((g) => (
-                <option key={g} value={g}>
+                <label
+                  key={g}
+                  className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1.5 text-sm text-gray-300 hover:border-gray-500"
+                >
+                  <input
+                    type="checkbox"
+                    checked={lookingForGenders.includes(g)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setLookingForGenders((prev) => [...prev, g]);
+                      } else {
+                        setLookingForGenders((prev) => prev.filter((x) => x !== g));
+                      }
+                    }}
+                    className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                  />
                   {g}
-                </option>
+                </label>
               ))}
-            </select>
+            </div>
           </div>
           <div>
             <label className="mb-1 block text-sm text-gray-300">

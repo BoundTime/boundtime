@@ -78,7 +78,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
+      "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id"
     )
     .eq("id", id)
     .single();
@@ -633,12 +633,14 @@ export default async function ProfilDetailPage({
                 </div>
               )}
 
-              {profile.looking_for_gender && (
+              {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
                 <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen sucht die Person?"}
                   </h2>
-                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{getLookingForGenderDisplay(profile.looking_for_gender)}</p>
+                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">
+                    {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
+                  </p>
                 </div>
               )}
 
@@ -680,7 +682,7 @@ export default async function ProfilDetailPage({
                 />
               )}
 
-              {isCouple && !(profile.city || profile.postal_code) && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
+              {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
                 <p className="text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
               )}
             </div>

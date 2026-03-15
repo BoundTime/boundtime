@@ -20,11 +20,16 @@ export function getGenderSymbol(gender: string | null | undefined): string | nul
   return GENDER_SYMBOLS[gender] ?? null;
 }
 
-/** Anzeigetext für „Wen suchst du?“ – bei „alle“ die einzelnen Optionen anzeigen */
-export function getLookingForGenderDisplay(value: string | null | undefined): string | null {
-  if (!value) return null;
-  if (value.toLowerCase() === "alle") return "Mann, Frau, Divers";
-  return value;
+/** Anzeigetext für „Wen suchst du?“ – Array oder Einzelwert; bei „alle“ die einzelnen Optionen */
+export function getLookingForGenderDisplay(
+  value: string | string[] | null | undefined
+): string | null {
+  if (Array.isArray(value) && value.length > 0) return value.join(", ");
+  if (typeof value === "string" && value) {
+    if (value.toLowerCase() === "alle") return "Mann, Frau, Divers";
+    return value;
+  }
+  return null;
 }
 
 const EXPERIENCE_LABELS: Record<string, string> = {
@@ -54,7 +59,9 @@ export function getProfileProgress(profile: Record<string, unknown> | null): num
   if (profile.weight_kg != null && profile.weight_kg !== "") filled++;
   if (profile.body_type) filled++;
   if (profile.date_of_birth || profile.age_range) filled++;
-  if (profile.looking_for_gender) filled++;
+  const lfg = profile.looking_for_genders;
+  if (Array.isArray(lfg) && lfg.length > 0) filled++;
+  else if (profile.looking_for_gender) filled++;
   const lf = profile.looking_for;
   if (Array.isArray(lf) && lf.length > 0) filled++;
   else if (lf) filled++;
