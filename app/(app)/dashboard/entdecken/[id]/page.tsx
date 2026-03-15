@@ -668,7 +668,7 @@ export default async function ProfilDetailPage({
               {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Wen sucht …?
+                    Wen sucht {profile.nick ?? "…"}?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">
                     {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
@@ -679,7 +679,7 @@ export default async function ProfilDetailPage({
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was sucht …?
+                    Was sucht {profile.nick ?? "…"}?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
                 </section>
@@ -688,7 +688,7 @@ export default async function ProfilDetailPage({
               {profile.expectations_text && (
                 <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was erwartet … von seinem Gesuchten?
+                    Was erwartet {profile.nick ?? "…"} von seinem Gesuchten?
                   </h2>
                   <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
                 </section>
