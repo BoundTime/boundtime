@@ -84,7 +84,7 @@ export function BullRatingsSection({
 
       {!canRate && canSeeSection && !isOwnProfile && (
         <p className="mt-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-sm text-amber-200">
-          Nur verifizierte Paare und Frauen können bewerten.{" "}
+          Nur verifizierte Mitglieder können bewerten.{" "}
           <Link href="/dashboard/verifizierung" className="font-medium underline hover:text-amber-100">
             Jetzt verifizieren
           </Link>

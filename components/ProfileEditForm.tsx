@@ -380,7 +380,7 @@ export function ProfileEditForm() {
         </select>
       </section>
 
-      {/* Sichtbarkeit: Profil für alle oder gesperrt */}
+      {/* Sichtbarkeit: Profil für alle oder privat */}
       <section>
         <label className="mb-2 flex cursor-pointer items-center gap-2">
           <input
@@ -392,7 +392,7 @@ export function ProfileEditForm() {
           <span className="text-sm font-medium text-gray-300">Profil für alle sichtbar (Bilder, Posts, Angaben)</span>
         </label>
         <p className="text-xs text-gray-500">
-          Wenn deaktiviert: Dein Profil ist „gesperrt“. Andere sehen nur Profilbild, Ort, Alter und können dir eine Nachricht senden. Nach „Verbunden“ (gegenseitiges Folgen) sehen sie dein volles Profil.
+          Wenn deaktiviert: Dein Profil ist dann privat. Andere sehen nur Profilbild, Ort, Alter und können dir eine Nachricht senden. Nach „Verbunden“ (gegenseitiges Folgen) sehen sie dein volles Profil.
         </p>
       </section>
 

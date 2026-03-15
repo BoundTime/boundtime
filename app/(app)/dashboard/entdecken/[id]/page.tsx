@@ -417,7 +417,7 @@ export default async function ProfilDetailPage({
       {showLimitedProfile ? (
         <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6">
           <p className="text-center text-sm text-gray-400">
-            Dieses Profil ist gesperrt. Du siehst nur Profilbild, Ort und Alter. Sende eine Nachricht oder folge, um verbunden zu werden und das vollständige Profil zu sehen.
+            Dieses Profil ist privat. Du siehst nur Profilbild, Ort und Alter. Sende eine Nachricht oder folge, um verbunden zu werden und das vollständige Profil zu sehen.
           </p>
         </div>
       ) : (
