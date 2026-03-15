@@ -59,6 +59,12 @@ export default async function ChatPage({
     .eq("id", otherId)
     .single();
 
+  const { data: messages } = await supabase
+    .from("messages")
+    .select("id, sender_id, content, created_at, delivered_at, read_at")
+    .eq("conversation_id", id)
+    .order("created_at", { ascending: true });
+
   const profilePrivate = (otherProfile as { profile_private?: boolean } | null)?.profile_private === true;
   const [{ data: followRow }, { data: reverseFollowRow }] = await Promise.all([
     supabase.from("follows").select("follower_id").eq("follower_id", user.id).eq("following_id", otherId).maybeSingle(),
@@ -75,12 +81,6 @@ export default async function ChatPage({
     : null;
   const otherNick = otherProfile?.nick ?? "?";
   const otherVerified = otherProfile?.verified ?? false;
-
-  const { data: messages } = await supabase
-    .from("messages")
-    .select("id, sender_id, content, created_at, delivered_at, read_at")
-    .eq("conversation_id", id)
-    .order("created_at", { ascending: true });
 
   // Anhänge zu den geladenen Nachrichten
   const messageIds = (messages ?? []).map((m) => m.id);
