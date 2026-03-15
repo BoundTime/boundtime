@@ -99,8 +99,10 @@ export default async function RootLayout({
             restrictionDotSlot={showRestrictionDot ? <RestrictionDot enabled={restrictionEnabled} /> : null}
             restrictionDotMobileSlot={showRestrictionDot ? <RestrictionDotMobile enabled={restrictionEnabled} /> : null}
           />
-          <main className="relative z-10 flex-1">{children}</main>
-          <Footer className="relative z-10" />
+          <div className="relative z-10 flex flex-1 flex-col origin-top" style={{ zoom: 0.9 }}>
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
           <CookieBanner />
         </NextIntlClientProvider>
       </body>

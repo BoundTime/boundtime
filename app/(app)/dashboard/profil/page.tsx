@@ -456,40 +456,40 @@ export default async function ProfilPage({
                 renderPartnerCard(singleData, "Profil", avatarUrl)
               )}
 
-              {isCouple && (profile.city || profile.postal_code) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+              {(profile.city || profile.postal_code) && (
+                <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Ort</h2>
-                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
-                </div>
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">{[profile.postal_code, profile.city].filter(Boolean).join(" ")}</p>
+                </section>
               )}
 
               {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Wen sucht ihr?" : "Wen suchst du?"}
                   </h2>
-                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
                     {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
                   </p>
-                </div>
+                </section>
               )}
 
               {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was sucht ihr?" : "Was suchst du?"}
                   </h2>
-                  <p className="mx-auto mt-3 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
-                </div>
+                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
+                </section>
               )}
 
               {profile.expectations_text && (
-                <div className="rounded-xl border border-gray-700 bg-card/50 p-5">
+                <section>
                   <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
                     {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
                   </h2>
-                  <p className="mx-auto mt-3 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
-                </div>
+                  <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
+                </section>
               )}
 
               {isCouple && !(profile.city || profile.postal_code) && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (

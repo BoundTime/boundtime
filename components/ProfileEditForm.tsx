@@ -732,18 +732,17 @@ export function ProfileEditForm() {
       )}
 
 
-      {/* Gemeinsam: Ort, Suche, Erwartungen – einheitlicher Karten-Stil wie „Angaben zur Person“ */}
+      {/* Ort, Suche, Erwartungen – nur Überschrift + Inhalt, ohne Kacheln */}
       {isCouple && (
         <h2 className="text-xl font-semibold text-white">Gemeinsam</h2>
       )}
-      <div className="space-y-4">
-        {/* Karte: Ort */}
-        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+      <div className="space-y-6">
+        <section>
           <h3 className="text-sm font-semibold text-white">Ort</h3>
-          <p className="text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500">
             PLZ oder Ort eingeben – nur gültige Einträge aus unserer Datenbasis sind wählbar. Andere können Stadt und PLZ sehen (für Suche „in der Nähe“).
           </p>
-          <div>
+          <div className="mt-2">
             <label htmlFor="plz_ort" className="mb-1 block text-sm text-gray-300">
               Postleitzahl oder Ort
             </label>
@@ -758,10 +757,9 @@ export function ProfileEditForm() {
               placeholder="z. B. 10115 oder Berlin"
             />
           </div>
-        </div>
+        </section>
 
-        {/* Karte: Suche / Wen sucht ihr */}
-        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+        <section>
           <h3 className="text-sm font-semibold text-white">{isCouple ? "Wen sucht ihr?" : "Suche"}</h3>
           <div>
             <label className="mb-1 block text-sm text-gray-300">
@@ -869,14 +867,13 @@ export function ProfileEditForm() {
               </div>
             </div>
           )}
-        </div>
+        </section>
 
-        {/* Karte: Erwartungen */}
-        <div className="space-y-4 rounded-lg border border-gray-600/60 bg-gray-900/30 p-4">
+        <section>
           <h3 className="text-sm font-semibold text-white">
             {isCouple ? "Was vom Gegenüber erwartet wird?" : "Was erwartest du von deinem Gesuchten?"}
           </h3>
-          <div>
+          <div className="mt-2">
             <label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">
               Deine Angaben
             </label>
@@ -893,7 +890,7 @@ export function ProfileEditForm() {
               {expectationsText.length}/{MAX_TEXT_LENGTH} Zeichen
             </p>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* Über mich: bei Paar Frau+Mann zweispaltig (links Frau, rechts Mann), sonst einspaltig */}
