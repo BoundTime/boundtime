@@ -121,26 +121,31 @@ export function MessageInput({
     router.refresh();
   }
 
+  const placeholderDisabled =
+    bullNeedsVerification
+      ? "Verifizierung nötig, um Nachrichten zu senden."
+      : oneMessageOnlyReached
+        ? "Du kannst nur eine Nachricht senden, bis ihr verbunden seid."
+        : !canWrite
+          ? "Passwort eingeben zum Freischalten (Cuckymode)."
+          : "Nachricht schreiben…";
+
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <div className="flex-1 space-y-1">
+      <div className="flex-1 space-y-1 min-w-0">
         <textarea
           ref={textareaRef}
-          rows={1}
+          rows={3}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={
-            bullNeedsVerification
-              ? "Als Bull musst du verifiziert sein, um Nachrichten zu senden."
-              : canWrite
-                ? "Nachricht schreiben…"
-                : "Passwort eingeben (Cuckymode)"
-          }
+          placeholder={placeholderDisabled}
           maxLength={POST_CONTENT_MAX}
-          className="max-h-[200px] w-full resize-none rounded-lg border border-gray-600 bg-background px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          readOnly={!canSend}
+          aria-label="Nachricht eingeben"
+          className={`min-h-[88px] max-h-[200px] w-full resize-none rounded-lg border border-gray-600 bg-background px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent ${!canSend ? "cursor-default opacity-90" : ""}`}
         />
         <div className="flex items-center justify-between gap-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-gray-400 hover:text-gray-200">
+          <label className={`inline-flex items-center gap-2 text-xs text-gray-400 ${canSend ? "cursor-pointer hover:text-gray-200" : "cursor-not-allowed opacity-70"}`}>
             <span className="rounded border border-gray-600 px-2 py-1 text-[11px] uppercase tracking-wide">
               Anhang
             </span>
@@ -149,31 +154,40 @@ export function MessageInput({
               multiple
               accept="image/*,application/pdf"
               onChange={handleFilesChange}
+              disabled={!canSend}
               className="hidden"
             />
           </label>
-          {files.length > 0 && (
+          {files.length > 0 && canSend && (
             <p className="text-xs text-gray-500">
               {files.length} Anhang{files.length > 1 ? "e" : ""} ausgewählt
             </p>
           )}
         </div>
+        {!canSend && (
+          <p className="text-xs text-gray-400">
+            {bullNeedsVerification && (
+              <Link href="/dashboard/verifizierung" className="text-accent hover:underline">
+                Zur Verifizierung →
+              </Link>
+            )}
+            {!canWrite && !bullNeedsVerification && (
+              <span>Passwort in den Einstellungen eingeben, um Nachrichten freizuschalten.</span>
+            )}
+            {oneMessageOnlyReached && !bullNeedsVerification && canWrite && (
+              <span>Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.</span>
+            )}
+          </p>
+        )}
       </div>
       <button
         type="submit"
         disabled={loading || !canSend || (canWrite && !content.trim())}
-        className="shrink-0 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+        className="shrink-0 self-end rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
       >
         {loading ? "…" : bullNeedsVerification ? "Verifizierung nötig" : canWrite ? "Senden" : "Freischalten"}
       </button>
       {error && <p className="mt-2 w-full text-sm text-red-400">{error}</p>}
-      {bullNeedsVerification && (
-        <p className="mt-2 w-full text-xs text-gray-400">
-          <Link href="/dashboard/verifizierung" className="text-accent hover:underline">
-            Zur Verifizierung →
-          </Link>
-        </p>
-      )}
     </form>
   );
 }
