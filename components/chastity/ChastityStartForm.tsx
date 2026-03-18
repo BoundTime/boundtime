@@ -169,7 +169,7 @@ export function ChastityStartForm({
           value={rewardDescription}
           onChange={(e) => setRewardDescription(e.target.value)}
           className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
-          placeholder="z.B. Eine Woche frei oder Vorlage anklicken"
+          placeholder="z.B. zeitlich begrenzte Freilassung aus dem Cage"
         />
       </div>
       <button

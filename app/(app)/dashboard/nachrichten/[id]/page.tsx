@@ -26,8 +26,8 @@ export default async function ChatPage({
   if (restrictionProfile?.restriction_enabled === true && restrictionProfile?.restriction_no_messages === true) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center p-6">
-        <p className="text-center text-amber-200/90">Nachrichten sind im Cuckymode eingeschränkt.</p>
-        <p className="mt-2 text-center text-sm text-gray-400">Du darfst keine Nachrichten lesen oder schreiben.</p>
+        <p className="text-center text-amber-200/90">Nachrichten sind im Cuckymode (für Paare) eingeschränkt.</p>
+        <p className="mt-2 text-center text-sm text-gray-400">Du darfst keine Nachrichten lesen oder schreiben (für dein Paar im Cuckymode).</p>
         <Link href="/dashboard/einstellungen" className="mt-4 text-accent hover:underline">
           Einstellungen →
         </Link>

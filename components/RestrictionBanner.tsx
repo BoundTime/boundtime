@@ -11,12 +11,12 @@ export function RestrictionBanner() {
   return (
     <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 text-center">
       <p className="text-sm text-amber-200">
-        <span className="font-medium text-amber-100">Cuckymode aktiv.</span>{" "}
+        <span className="font-medium text-amber-100">Cuckymode (Paar) aktiv.</span>{" "}
         <Link
           href="/dashboard/einstellungen"
           className="font-medium text-amber-100 underline hover:text-white"
         >
-          Zu den Einstellungen – Passwort eingeben oder Cuckymode aufheben
+          Zu den Einstellungen – Cuckymode-Paarpasswort eingeben (zum Schreiben/Kommunizieren) oder Cuckymode aufheben
         </Link>
       </p>
     </div>

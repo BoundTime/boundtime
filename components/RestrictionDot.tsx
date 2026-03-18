@@ -6,7 +6,7 @@ export function RestrictionDot({ enabled }: { enabled: boolean }) {
   return (
     <span
       className="flex items-center gap-1.5 shrink-0"
-      title={enabled ? "Cuckymode aktiv – Passwort nötig zum Schreiben" : "Cuckymode aus"}
+      title={enabled ? "Cuckymode aktiv – Passwort nötig zum Schreiben/Kommunizieren" : "Cuckymode aus"}
     >
       <span
         className="h-2.5 w-2.5 shrink-0 rounded-full"
@@ -25,7 +25,7 @@ export function RestrictionDotMobile({ enabled }: { enabled: boolean }) {
   return (
     <span
       className="flex items-center gap-1.5 shrink-0"
-      title={enabled ? "Cuckymode aktiv" : "Cuckymode aus"}
+      title={enabled ? "Cuckymode aktiv – Passwort nötig zum Schreiben/Kommunizieren" : "Cuckymode aus"}
     >
       <span
         className="h-2.5 w-2.5 shrink-0 rounded-full"

@@ -27,10 +27,10 @@ export default async function NachrichtenPage({
         </Link>
         <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
           <h1 className="text-2xl font-bold text-white">Nachrichten</h1>
-          <p className="mt-1 text-sm text-amber-200/90">Nachrichten sind im Cuckymode eingeschränkt.</p>
+          <p className="mt-1 text-sm text-amber-200/90">Nachrichten sind im Cuckymode (für Paare) eingeschränkt.</p>
         </div>
         <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
-          <p className="text-gray-400">Du darfst keine Nachrichten lesen oder schreiben. In den Einstellungen kann die Hotwife diese Einschränkung anpassen.</p>
+          <p className="text-gray-400">Du darfst keine Nachrichten lesen oder schreiben. In den Einstellungen kann die Hotwife die Cuckymode-Einschränkungen fürs Paar anpassen.</p>
           <Link href="/dashboard/einstellungen" className="mt-4 inline-block text-accent hover:underline">
             Einstellungen →
           </Link>

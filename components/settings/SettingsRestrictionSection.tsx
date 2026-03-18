@@ -325,7 +325,10 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
     <form onSubmit={handleSubmit} className="space-y-4">
       <h3 className="font-semibold text-white">Cuckymode</h3>
       <p className="text-sm text-gray-400">
-        Nur du (z. B. Hotwife) kennst das Passwort; dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Das Passwort wird beim ersten Aktivieren festgelegt und bleibt gültig, bis du es unter „Passwort ändern“ änderst. Punkt in der Navbar: Grün = aus, Rot = aktiv.
+        Cuckymode gibt es nur für Paare. Hotwife aktiviert den Modus und legt dabei das Cuckymode-Paarpasswort fest.
+        Damit kann Cucky beim Schreiben/Kommunizieren nur per Passwort (freigeschaltet) wieder aktiv werden – und
+        je nach deinen zusätzlichen Optionen auch beim Ansehen von Bildern eingeschränkt sein. Punkt in der Navbar:
+        Grün = aus, Rot = aktiv.
       </p>
 
       {/* Status: aktiv / nicht aktiv */}
@@ -349,14 +352,14 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
         <>
           <p className="text-xs text-gray-500">
             {profile.has_restriction_password
-              ? "Passwort wurde bereits festgelegt und bleibt gültig. Zur Bestätigung aktuelles Passwort eintragen, Häkchen setzen und Speichern."
-              : "Schritt 1: Passwort festlegen. Schritt 2: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
+              ? "Das Cuckymode-Paarpasswort ist bereits festgelegt und bleibt gültig. Zur Bestätigung aktuelles Passwort eintragen, Häkchen setzen und Speichern."
+              : "Schritt 1: Cuckymode-Paarpasswort festlegen. Schritt 2: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
           </p>
           {!profile.has_restriction_password ? (
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
               <p className="mb-2 text-xs text-gray-500">
-                Nur du (z. B. Hotwife) kennst es. Dein Partner braucht es zum Schreiben, wenn Cuckymode aktiv ist. Wird einmal gesetzt und bleibt bis „Passwort ändern“.
+                Hotwife setzt das Cuckymode-Paarpasswort. Cucky braucht es zum Schreiben/Kommunizieren, wenn Cuckymode aktiv ist. Wird einmal gesetzt und bleibt bis „Passwort ändern“.
               </p>
               <input
                 type="password"
@@ -372,7 +375,7 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
               <div>
                 <label className="mb-1 block text-xs font-medium text-gray-300">Aktuelles Passwort zur Bestätigung</label>
                 <p className="mb-2 text-xs text-gray-500">
-                  Nur nötig, um Cuckymode wieder zu aktivieren. Kein neues Passwort – das bestehende bleibt gültig.
+                  Nur nötig, um Cuckymode fürs Paar wieder zu aktivieren. Kein neues Passwort – das bestehende Cuckymode-Paarpasswort bleibt gültig.
                 </p>
                 <input
                   type="password"
@@ -410,7 +413,7 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
       {isChanging && (
         <>
           <p className="text-xs text-gray-500">
-            Zum Ausschalten: Aktuelles Passwort eintragen und „Cuckymode aufheben“ klicken. Das Passwort bleibt gespeichert, Cuckymode kann später ohne neues Passwort wieder aktiviert werden. Änderung des Passworts nur über „Passwort ändern“.
+            Zum Ausschalten: Aktuelles Cuckymode-Paarpasswort eintragen und „Cuckymode aufheben“ klicken. Das Passwort bleibt gespeichert, Cuckymode kann später ohne neues Passwort wieder aktiviert werden. Änderung des Passworts nur über „Passwort ändern“.
           </p>
           <div className="rounded-lg border border-gray-600 bg-gray-800/40 p-4 space-y-4">
             <h4 className="text-sm font-medium text-white">Einstellungen ändern</h4>
@@ -458,7 +461,7 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
               >
                 {saving ? "Wird aufgehoben …" : "Cuckymode aufheben"}
               </button>
-              <p className="mt-1 text-xs text-gray-500">Aktuelles Passwort eintragen und auf den Button klicken – Cuckymode ist dann aus. Das Passwort bleibt gespeichert.</p>
+              <p className="mt-1 text-xs text-gray-500">Aktuelles Cuckymode-Paarpasswort eintragen und auf den Button klicken – Cuckymode ist dann aus. Das Passwort bleibt gespeichert.</p>
             </div>
           </div>
         </>
@@ -475,7 +478,7 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
             className="rounded border-gray-600 bg-background text-accent"
           />
           <label htmlFor="restriction-enabled" className="text-sm text-gray-300">
-            Cuckymode aktivieren (Schreiben nur nach Passwort)
+            Cuckymode aktivieren (Paarpasswort für Schreiben/Kommunizieren)
           </label>
         </div>
         {enabled && (
@@ -500,13 +503,13 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
           </div>
         )}
         {needPasswordToEnable && (
-          <p className="text-xs text-amber-400">Bitte Passwort festlegen, um Cuckymode zu aktivieren.</p>
+          <p className="text-xs text-amber-400">Bitte Cuckymode-Paarpasswort festlegen, um Cuckymode zu aktivieren.</p>
         )}
         {needCurrentPasswordToReEnable && (
-          <p className="text-xs text-amber-400">Bitte aktuelles Passwort zur Bestätigung eintragen, um Cuckymode zu aktivieren.</p>
+          <p className="text-xs text-amber-400">Bitte aktuelles Cuckymode-Paarpasswort zur Bestätigung eintragen, um Cuckymode zu aktivieren.</p>
         )}
         {needCurrentPasswordToChange && (
-          <p className="text-xs text-amber-400">Bitte aktuelles Passwort eintragen, um etwas zu ändern.</p>
+          <p className="text-xs text-amber-400">Bitte aktuelles Cuckymode-Paarpasswort eintragen, um etwas zu ändern.</p>
         )}
       </div>
 

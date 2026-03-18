@@ -61,7 +61,7 @@ export function ProfileAlbumsSection({
           Fotoalben
         </h2>
         <p className="mt-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200/90">
-          Bilder sind im Cuckymode für dich eingeschränkt. Du kannst keine Alben ansehen und keine Album-Anfragen senden.
+          Bilder sind im Cuckymode (Paar) eingeschränkt. Du kannst keine Alben ansehen und keine Album-Anfragen senden.
         </p>
         <div className="mt-3 flex flex-wrap gap-3">
           {mainAlbum && (

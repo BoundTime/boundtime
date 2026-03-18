@@ -150,9 +150,11 @@ export function RestrictionProvider({
       }
       onUnlockSuccess?.();
     } else if (data.noPasswordSet === true) {
-      setError("Es ist noch kein Passwort hinterlegt. Einmal das gewünschte Passwort hier eintragen und „Freischalten“ klicken – es wird dann gesetzt. Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Cuckymode Passwort eintragen und speichern.");
+      setError(
+        "Es ist noch kein Cuckymode-Paarpasswort hinterlegt. Trage hier das gewünschte Passwort ein und klicke „Freischalten“ – damit wird das Cuckymode-Paarpasswort gesetzt (für Schreiben/Kommunizieren im Paar). Falls die Meldung bleibt: Migration 073 anwenden (npx supabase db push) oder in Einstellungen unter Cuckymode Passwort eintragen und speichern."
+      );
     } else {
-      setError("Passwort falsch.");
+      setError("Cuckymode-Paarpasswort falsch.");
     }
     setUnlockLoading(false);
   };
@@ -183,10 +185,10 @@ export function RestrictionProvider({
             className="w-full max-w-md rounded-xl border border-gray-700 bg-card p-6 shadow-xl"
           >
             <h2 id="restriction-modal-title" className="text-lg font-semibold text-white">
-              Cuckymode freischalten
+              Cuckymode-Paarpasswort freischalten
             </h2>
             <p className="mt-2 text-sm text-gray-400">
-              Gib das Passwort ein, um schreiben zu können.
+              Gib das Cuckymode-Paarpasswort ein, um für dein Paar wieder zu schreiben/zu kommunizieren.
             </p>
             <input
               type="password"
