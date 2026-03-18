@@ -31,15 +31,18 @@ export default function BoundTimeFeaturesPage() {
           <li>
             <strong>Keuschhaltungs-Vereinbarungen</strong>: Männer (Keuschlinge) lassen sich von <strong>Damen</strong> oder
             dominanten Herren keusch halten. Das funktioniert über <strong>Aufgaben</strong> und ihre
-            <strong>Ausführung</strong>. Für erledigte Aufgaben können <strong>Keuschlinge</strong> <strong>BoundDollars (BD)</strong> verdienen
-            und diese anschließend für <strong>Belohnungen</strong> nutzen, die <strong>Damen</strong> kaufen und anbieten (z. B. zeitlich
-            begrenzte Freilassung aus dem Cage).
+            <strong>Ausführung</strong>. Für erledigte Aufgaben können <strong>Keuschlinge</strong> <strong>BoundDollars (BD)</strong> verdienen.
+            Mit den BD können sie <strong>bestimmte Belohnungen</strong> kaufen, die von <strong>Damen</strong> angeboten werden
+            (z. B. zeitlich begrenzte Freilassung aus dem Cage).
+            <span className="block mt-2 text-gray-300/90">
+              BD sind keine echte Währung: Es ist eine reine Fantasywährung und kein Geld, das man außerhalb der Dynamik „für sich“ erwerben oder gegen echtes Geld kaufen kann.
+            </span>
           </li>
           <li>
             <strong>BoundDollars</strong>: BD sind die <strong>Währung</strong>, um Belohnungen im Rahmen der Dynamik zu
             ermöglichen. BD entstehen durch erledigte Aufgaben bei der Keuschhaltung und können anschließend für
-            Angebote/Belohnungen genutzt werden – damit können <strong>Damen</strong> z. B. zeitlich begrenzte Freilassung aus dem Cage
-            ermöglichen.
+            <strong>Angebote/Belohnungen</strong> genutzt werden – damit können <strong>Damen</strong> z. B. zeitlich begrenzte Freilassung aus dem Cage
+            ermöglichen. BD sind dabei kein echtes Geld, sondern nur Fantasiewerte innerhalb der Plattform.
           </li>
         </ul>
 
