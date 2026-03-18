@@ -11,7 +11,7 @@ export function CommunityRegelnTile() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <article className="flex min-h-[220px] flex-col rounded-xl border border-gray-700 bg-card p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
+    <article className="flex min-h-[200px] flex-col rounded-2xl border border-gray-700 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-600 hover:shadow-md sm:p-6">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent/10">
         <Scale className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden />
       </div>
