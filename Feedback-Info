@@ -1,0 +1,54 @@
+=== BEMERKUNG FÜR DEN ASSISTAGENTEN ===
+Diese Datei enthält analysiertes Feedback und eine strukturierte Aufbereitung.
+Gehe den Inhalt gemeinsam mit dem Nutzer durch, bevor ein Prompt für den Hauptagenten erstellt wird.
+Nach vollständigem Lesen und Verstehen muss ausschließlich der Inhaltsbereich entfernt werden.
+Diese Bemerkungen dürfen niemals gelöscht oder verändert werden.
+
+=== FEEDBACK INHALT ===
+
+1. ORIGINAL FEEDBACK
+okay... ich hänge wieder mal beim frontend und habe die startseite jetzt noch mal mit der joystartseite abgeglichen... grundsätzlich finde ich, dass du das so erstmal gut hinbekommen hast, ich würde es allerdings joy nachmachen und den button "jetzt registrieren" durch "kostenlos registrieren" ersetzen...  ansonsten habe ich mal angefangen, den paar- registrierungsprozess anzustoßen und stelle dabei fest, dass dieser zu irritationen führen kann, bspw. bei dem text mit "Paar: Gemeinsamer Account. Später in den Einstellungen: Cuckymode einrichten – z. B. nur Hotwife schreibt, Cucky nur mit Passwort." wir beide wissen, was gemeint ist, aber jemand, der sich als paar registriert und nicht weiss, was wir wissen, ist zunächst mal verwirrt... deswegen überlege ich, ob es sinn macht, auf der startseite noch eine unterseite mit erläuterungen zu basteln, wo die user-/innen nachlesen können, bevor sie sich registrieren... auch das thema "strenge prüfung" der solomänner, die du heute in der gruppe angesprochen hast, kann man über die startseite nicht ersehen. kannst du nachvollziehen, was ich meine?
+
+du könntest in der menuleiste eine weitere unterseite "boundtime- features" anlegen... also zwischen "community", "sicherheit" und "login"... dort könnten wir dann zum einen über diese unterseite alles erklären, zum anderen könntest du aus der kachel "was ist boundtime" auf diese Unterseite verlinken, indem du am ende des textes in der kachel den link zu "community- features" setzt
+
+ja, ich bin immer noch auf der startseite, bevor man sich registriert hat... ansonsten hantieren wir vor der registrierung mit zu vielen funktionen und begrifflichkeiten, wo nicht klar ist, was es damit auf sich hat... das beginnt damit, dass sich niemand, der es nicht weiß, genau etwas über keuschheits- vereinbarungen oder bound- dollars vorstellen kann... wir müssen aufpassen, dass wir bei besucher-/innen, die bspw cuckold deutschand bei google eingeben und auf der seite landen, nicht zu viel an wissen voraussetzen
+
+2. ZUSAMMENFASSUNG
+Der Stand der Startseite wird grundsätzlich als gut bewertet. Gewünscht ist eine konkrete UI-Änderung am Registrierungsbutton (Text auf „kostenlos registrieren“). Gleichzeitig wird festgestellt, dass Teile des Paar-Registrierungsprozesses und bestimmte Begriffe (z. B. „Cuckymode“, „Keuschheitsvereinbarungen“, „Bound-Dollars“) vor der Registrierung potenziell verwirren, insbesondere bei Nutzer-/innen ohne Vorwissen. Außerdem soll auf der Startseite bzw. via zusätzlicher Unterseite/Navigation transparenter werden, dass es für Solomänner eine „strenge Prüfung“ gibt. Dafür wird angeregt, eine erklärende Menü-Unterseite („boundtime-features“) zwischen bestehenden Punkten anzulegen und die „Was ist BoundTime“-Kachel darauf zu verlinken. Ziel ist, Besuchern vor der Registrierung nachlesbare Erläuterungen zu geben und nicht zu viel Wissen vorauszusetzen.
+
+3. INTERPRETATION
+- Erwartung an Verständlichkeit/Onboarding: Die Seite wirkt offenbar für vorinformierte Personen stimmig, für „kalte“ Besucher/innen (z. B. via Google-Suche) jedoch erklärungsbedürftig.
+- Risiko durch Fachbegriffe/Andeutungen: Formulierungen im Paar-Registrierungsprozess (z. B. Beschreibung zu „Cuckymode“ und Rollenverteilung) werden als missverständlich empfunden, weil sie in der aktuellen Form implizites Vorwissen voraussetzen.
+- Informationsarchitektur vor der Registrierung: Statt Informationen verstreut im Registrierungsprozess zu erklären, soll eine vorgelagerte Informations-/Erklärseite helfen, Begriffe und Regeln einzuordnen.
+- Compliance/Regeln sichtbar machen: Das Thema „strenge Prüfung“ (für Solomänner) wird als relevanter Vertrauens-/Regelhinweis gesehen, der derzeit auf der Startseite nicht erkennbar ist.
+- Navigation als Hebel: Eine zusätzliche Unterseite im Menü und ein klarer Link von der „Was ist BoundTime“-Kachel sollen Nutzer/innen zu den passenden Erklärungen führen.
+
+4. KONKRETE HANDLUNGSPUNKTE
+1. Button-Text auf der Startseite ändern: Statt „jetzt registrieren“ soll „kostenlos registrieren“ verwendet werden (an „Joy“-Vorbild angelehnt).
+2. Verständlichkeit des Paar-Registrierungsprozesses verbessern: Prüfen, ob die Textpassagen (insbesondere die Erklärung zu „Paar“, „Cuckymode“ inkl. Beispielen wie „Hotwife schreibt / Cucky nur mit Passwort“) für registrierende Paare ohne Vorwissen zu irritierend sind; Ziel ist eine Einordnung ohne implizites Vorwissen.
+3. Vor der Registrierung erklärende Inhalte verlagern/zugänglich machen:
+   - Überlegen, ob es sinnvoll ist, auf der Startseite (vor Registrierung) eine zusätzliche Unterseite mit Erläuterungen bereitzustellen, sodass User-/innen nachlesen können.
+   - Dabei explizit die erwarteten Begriffe/ Konzepte adressieren, die für Unkundige schwer vorstellbar sind (u. a. Keuschheitsvereinbarungen, Bound-Dollars).
+4. Regel-/Transparenz-Informationen zur „strengen Prüfung“ sichtbar machen: Sicherstellen, dass diese Information nicht nur intern „in der Gruppe“ erwähnt wird, sondern Besucher/innen bereits vor Registrierung nachvollziehen können, was für Solomänner gilt.
+5. Menüstruktur erweitern:
+   - Neue Menü-Unterseite „boundtime-features“ zwischen „community“, „sicherheit“ und „login“ platzieren.
+   - Inhalte auf dieser Unterseite bündeln (Erklärungen zu den relevanten Themen).
+6. Kontextualisierte Verlinkung ergänzen:
+   - Von der Kachel „was ist boundtime“ zur neuen Unterseite verlinken (gewünscht ist ein Link am Ende des Kacheltexts, der auf die erklärende Seite führt).
+
+5. NICHT UMZUSETZEN / ABGRENZUNG
+- Keine finalen Implementierungsentscheidungen: Es geht hier primär um eine Entscheidungsgrundlage (welche Inhalte/Struktur/UX-Prinzipien zuerst geklärt werden müssen), nicht um eine konkrete technische Umsetzung durch diesen Schritt.
+- Keine Annahme über endgültige Textänderungen ohne Rücksprache: Obwohl der Paar-Text als irritierend beschrieben wird, wird nicht festgelegt, wie genau er umformuliert werden soll (Grad der Erklärung, Tonalität, Umfang).
+- Keine Unterstellung über die inhaltliche Richtigkeit: Das Feedback beschreibt Verständlichkeit/Erwartungsrisiko, nicht, dass Inhalte fachlich falsch seien. Die Abgrenzung bleibt: Ziel ist bessere Einordnung vor Registrierung.
+
+6. OFFENE FRAGEN / KLÄRUNGSBEDARF
+1. Genau welcher Link/Bezeichner ist gemeint: In der Beschreibung werden „boundtime-features“ und zusätzlich „community-features“ erwähnt. Klärungsbedarf: Wie soll der Menüpunkt/Unterseitenname exakt heißen und wohin soll die Verlinkung führen?
+2. Ausmaß der Begriffs-Erklärungen: Wie tief soll erklärt werden, bevor man sich registriert (insbesondere bei sensiblen/mehrdeutigen Begriffen wie „Cuckymode“)?
+3. Zielgruppen-Tonalität: Welche Tonalität ist gewünscht (neutral/„leicht verständlich“, eher erklärend oder stärker warnend/handlungsorientiert), damit Besucher/innen nicht überfordert werden?
+4. Wo genau im Flow soll was sichtbar sein:
+   - Soll die „strenge Prüfung“ direkt auf der neuen „boundtime-features“-Seite stehen?
+   - Soll sie als kompakter Hinweis auf der Startseite erscheinen und Details auf die Unterseite verlinken?
+5. Umfang des Paar-Registrierungsprozesses: Soll die betreffende Formulierung nur verbessert werden, oder sollte der Prozess selbst durch vorgelagerte Hinweise geändert werden (z. B. „vorab lesen“)?
+6. SEO/Erwartung aus Suchanfragen: Wenn Besucher/innen über Suchbegriffe wie „cuckold deutschland“ kommen: Soll die Startseite/Unterseite eine explizite Begrüßungs-/Einordnungssektion für „Erstmalige Besucher“ enthalten?
+
+=== ENDE FEEDBACK INHALT ===

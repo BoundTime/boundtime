@@ -49,7 +49,7 @@ export default async function HomePage() {
                 href="/register"
                 className="w-full rounded-lg bg-accent px-6 py-3.5 text-center font-medium text-white transition-all duration-200 ease-out hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] sm:w-auto"
               >
-                Jetzt registrieren
+                kostenlos registrieren
               </Link>
               <Link
                 href="/login"
@@ -74,6 +74,13 @@ export default async function HomePage() {
               </h2>
               <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-400">
                 BoundTime ist die deutschsprachige Community für Cuckolding, Keuschhaltung und vernetzte Begegnung. Wir bieten einen diskreten Ort für Austausch, Dating und Vertrauen – mit Profilen, Nachrichten, Verifizierung und Features wie Keuschhaltungs-Vereinbarungen und BoundDollars. Seriös, auf Augenhöhe und mit Fokus auf Consent.
+              </p>
+              <p className="mt-3 text-sm text-gray-400">
+                Mehr zu Begriffen, Regeln und zur <span className="text-accent font-medium">strengen Prüfung</span>{" "}
+                findest du hier:{" "}
+                <Link className="text-accent hover:underline" href="/boundtime-features">
+                  boundtime-features
+                </Link>
               </p>
             </article>
             <article className="flex min-h-[200px] flex-col rounded-xl border border-gray-700 bg-card p-5 sm:p-6 shadow-sm transition-all duration-200 hover:border-gray-600 hover:shadow-md">
