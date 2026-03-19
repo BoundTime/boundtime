@@ -6,9 +6,11 @@ import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingF
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { Pencil, Images, User } from "lucide-react";
+import { Pencil, Images, User, ShieldCheck, BadgeCheck, Sparkles } from "lucide-react";
 import { PostDeleteButton } from "@/components/PostDeleteButton";
 import { CouplePartnerAvatarPicker } from "@/components/profil/CouplePartnerAvatarPicker";
+import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
+import { ProfileLikesBlock } from "@/components/ProfileLikesBlock";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -150,10 +152,44 @@ export default async function ProfilPage({
           .limit(50)
       : { data: [] };
 
+  const { data: recentProfileLikesRaw } = await supabase
+    .from("profile_likes")
+    .select("liker_id, liked_at")
+    .eq("liked_id", profile.id)
+    .order("liked_at", { ascending: false })
+    .limit(4);
+  const recentProfileLikes = (recentProfileLikesRaw ?? []) as { liker_id: string; liked_at: string }[];
+  const likerIds = Array.from(new Set(recentProfileLikes.map((l) => l.liker_id)));
+  const { data: recentLikerProfilesRaw } =
+    likerIds.length > 0
+      ? await supabase
+          .from("profiles")
+          .select("id, nick, avatar_url, avatar_photo_id, verified")
+          .in("id", likerIds)
+      : { data: [] };
+  const recentLikerProfiles = await Promise.all(
+    ((recentLikerProfilesRaw ?? []) as Array<{
+      id: string;
+      nick: string | null;
+      avatar_url: string | null;
+      avatar_photo_id: string | null;
+      verified: boolean | null;
+    }>).map(async (p) => ({
+      id: p.id,
+      nick: p.nick,
+      avatar_url: p.avatar_url,
+      avatar_display_url: await resolveProfileAvatarUrl(
+        { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+        supabase
+      ),
+      verified: p.verified ?? false,
+    }))
+  );
+
   const baseUrl = "/dashboard/profil";
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-14">
       <Link
         href="/dashboard"
         className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
@@ -161,9 +197,11 @@ export default async function ProfilPage({
         ← Zurück zu MyBound
       </Link>
 
-      {/* Header: eigenes Profil wie Profil-Detail */}
-      <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card">
-        <div className="flex flex-col items-center p-6 text-center">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#232323] via-[#1a1a1a] to-[#141414] shadow-[0_28px_60px_-40px_rgba(0,0,0,0.9)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
+        <div className="relative flex flex-col gap-6 p-6 md:p-8">
+          <div className="flex flex-col items-center gap-5 text-center md:flex-row md:items-end md:justify-between md:text-left">
+            <div className="flex flex-col items-center gap-4 md:flex-row md:items-end">
           <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background shadow-lg sm:h-28 sm:w-28">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -173,16 +211,20 @@ export default async function ProfilPage({
               </span>
             )}
           </div>
-          <div className="mt-4">
-            <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
-            <p className="mt-1 text-gray-400">
+              <div>
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
+                  <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
+                  Profil-Identitaet
+                </div>
+                <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
+                <p className="mt-1 text-gray-300">
               {(profile as { account_type?: string }).account_type === "couple" ? (
-                <span>Paar</span>
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">Paar</span>
               ) : (
                 <>
                   {roleLabel && (
-                    <span className="inline-flex items-center gap-1.5">
-                      <RoleIcon role={profile.role} size={18} className="text-gray-400" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">
+                      <RoleIcon role={profile.role} size={16} className="text-gray-300" />
                       {roleLabel}
                     </span>
                   )}
@@ -197,31 +239,52 @@ export default async function ProfilPage({
               )}
             </p>
             {(profile.city || profile.postal_code) && (
-              <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-400">
                 {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
               </p>
             )}
             {(profile as { current_postal_code?: string | null; current_city?: string | null }).current_postal_code || (profile as { current_city?: string | null }).current_city ? (
-              <p className="mt-1 text-sm text-gray-500">
-                <span className="text-gray-400">Aktuell hier: </span>
+                  <p className="mt-1 text-sm text-gray-400">
+                <span className="text-gray-300">Aktuell hier: </span>
                 {[(profile as { current_postal_code?: string | null }).current_postal_code, (profile as { current_city?: string | null }).current_city].filter(Boolean).join(" ")}
               </p>
             ) : null}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
+              <Link
+                href="/dashboard/profil/bearbeiten"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+              >
+                <Pencil className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+                Profil bearbeiten
+              </Link>
+              <Link
+                href="/dashboard/alben"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-gray-100 transition-colors hover:bg-white/10"
+              >
+                <Images className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+                Meine Alben
+              </Link>
+            </div>
           </div>
-        </div>
+          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
+              <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
+              <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Vertrauen</p>
+              <p className="mt-1 text-sm font-medium text-white">{myProfile?.verified ? "Verifiziertes Profil" : "Verifizierung ausstehend"}</p>
+            </div>
+          </div>
 
-        {/* Statistik-Zeile + Verbunden mit */}
-        <div className="flex flex-col items-center gap-3 border-t border-gray-700 px-6 py-4">
-          <div className="flex items-center justify-center gap-8">
-            <span className="text-gray-400">
-              <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
-            </span>
-            <span className="text-gray-400">
-              <span className="font-semibold text-white">{followingCount ?? 0}</span> folgt
-            </span>
-          </div>
           {connectedNicks.length > 0 && (
-            <p className="text-center text-sm text-gray-400">
+            <p className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center text-sm text-gray-300">
               Verbunden mit:{" "}
               {connectedNicks.map((p, i) => (
                 <span key={p.id}>
@@ -233,46 +296,49 @@ export default async function ProfilPage({
               ))}
             </p>
           )}
-        </div>
-
-        {/* Aktionen: Profil bearbeiten, Meine Alben, ggf. Verifizierung */}
-        <div className="flex flex-wrap items-center justify-center gap-3 border-t border-gray-700 px-6 py-4">
-          <Link
-            href="/dashboard/profil/bearbeiten"
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"
-          >
-            <Pencil className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-            Profil bearbeiten
-          </Link>
-          <Link
-            href="/dashboard/alben"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-gray-300 hover:border-gray-500 hover:text-white"
-          >
-            <Images className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-            Meine Alben
-          </Link>
-          {!myProfile?.verified && (
-            <Link
-              href="/dashboard/verifizierung"
-              className="rounded-lg border border-amber-600/50 px-4 py-2 text-sm text-amber-400 hover:border-amber-500 hover:bg-amber-950/30"
-            >
-              Verifizierung beantragen
-            </Link>
-          )}
+          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-2">
+            <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-emerald-200">
+                <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
+                Sicherheitsstatus
+              </p>
+              <p className="mt-1 text-sm text-emerald-100/90">
+                Dein Profil entspricht den aktuellen Community- und Schutzstandards.
+              </p>
+            </div>
+            <div className="rounded-xl border border-sky-400/25 bg-sky-500/10 px-4 py-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-sky-200">
+                <BadgeCheck className="h-4 w-4" strokeWidth={1.8} />
+                Verifizierung
+              </p>
+              <p className="mt-1 text-sm text-sky-100/90">
+                {myProfile?.verified
+                  ? "Dein Profil ist verifiziert und als vertrauenswuerdig gekennzeichnet."
+                  : "Aktiviere die Verifizierung fuer mehr Sichtbarkeit und Vertrauen."}
+              </p>
+              {!myProfile?.verified && (
+                <Link
+                  href="/dashboard/verifizierung"
+                  className="mt-3 inline-flex rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-1.5 text-sm text-amber-200 transition-colors hover:bg-amber-500/20"
+                >
+                  Verifizierung beantragen
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card shadow-sm">
-        <div className="flex border-b border-gray-700">
+      <div className="mt-6 rounded-2xl border border-white/10 bg-card/95 shadow-sm">
+        <div className="flex border-b border-white/10">
           {TABS.map((t) => (
             <Link
               key={t.id}
               href={`${baseUrl}?tab=${t.id}`}
               className={`flex-1 px-4 py-3 text-center text-sm font-medium transition-colors ${
                 tab === t.id
-                  ? "border-b-2 border-accent text-accent"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-b-2 border-accent text-white"
+                  : "text-gray-400 hover:text-gray-200"
               }`}
             >
               {t.label}
@@ -280,7 +346,7 @@ export default async function ProfilPage({
           ))}
         </div>
 
-        <div className="p-6">
+        <div className="p-5 md:p-6">
           {tab === "posts" && (
             <>
               {userPosts && userPosts.length > 0 ? (
@@ -481,8 +547,24 @@ export default async function ProfilPage({
             };
 
             return (
-            <div className="rounded-xl border border-gray-700 bg-card p-6">
-              <div className="space-y-8">
+            <div className="space-y-6">
+              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Interaktion</h2>
+                <p className="mt-1 text-sm text-gray-400">
+                  Relevante Rueckmeldungen zu deinem Profil auf einen Blick.
+                </p>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  <ProfileViewsBlock embeddedInLink />
+                  <ProfileLikesBlock likes={recentProfileLikes} profiles={recentLikerProfiles} embeddedInLink />
+                </div>
+              </section>
+
+              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Kerninformationen</h2>
+                <p className="mt-1 text-sm text-gray-400">
+                  Präzise Profilinformationen fuer schnelle Orientierung und klare Erwartungshaltung.
+                </p>
+                <div className="mt-5 space-y-8">
                 {isCouple ? (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
                     {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "female" : "male") : undefined)}
@@ -491,7 +573,15 @@ export default async function ProfilPage({
                 ) : (
                   renderPartnerCard(singleData, "Profil", avatarUrl)
                 )}
+                </div>
+              </section>
 
+              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Praeferenzen & Ausrichtung</h2>
+                <p className="mt-1 text-sm text-gray-400">
+                  Das Wesentliche zuerst, weitere Details klar gegliedert im zweiten Schritt.
+                </p>
+                <div className="mt-5 space-y-6">
                 {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
                   <section>
                     <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
@@ -533,8 +623,9 @@ export default async function ProfilPage({
                 {isCouple && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
                   <p className="text-center text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
                 )}
+                </div>
+              </section>
               </div>
-            </div>
             );
           })()}
 
