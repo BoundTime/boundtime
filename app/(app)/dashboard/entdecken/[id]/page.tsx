@@ -17,7 +17,7 @@ import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { BullRatingsSection } from "@/components/bull/BullRatingsSection";
-import { User } from "lucide-react";
+import { User, ShieldCheck, BadgeCheck, Sparkles } from "lucide-react";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -276,7 +276,7 @@ export default async function ProfilDetailPage({
   const baseUrl = `/dashboard/entdecken/${profile.id}`;
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-14">
       {user.id !== profile.id && (
         <RecordProfileView profileId={profile.id} viewerId={user.id} />
       )}
@@ -287,9 +287,11 @@ export default async function ProfilDetailPage({
         ← Zurück zu Entdecken
       </Link>
 
-      {/* Header: dezenter Gradient, großer Avatar, Nick, Rolle, Ort */}
-      <div className="relative overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card">
-        <div className="flex flex-col items-center p-6 text-center">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#232323] via-[#1a1a1a] to-[#141414] shadow-[0_28px_60px_-40px_rgba(0,0,0,0.9)]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
+        <div className="relative flex flex-col gap-6 p-6 md:p-8">
+          <div className="flex flex-col items-center gap-5 text-center md:flex-row md:items-end md:justify-between md:text-left">
+            <div className="flex flex-col items-center gap-4 md:flex-row md:items-end">
           <AvatarWithVerified
             verified={profile.verified}
             size="lg"
@@ -305,15 +307,19 @@ export default async function ProfilDetailPage({
             )}
           </div>
           </AvatarWithVerified>
-          <div className="mt-4">
-            <h1 className="flex flex-wrap items-center justify-center gap-2 text-2xl font-bold text-white sm:text-3xl">
+              <div>
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
+                  <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
+                  Profil-Identitaet
+                </div>
+                <h1 className="flex flex-wrap items-center justify-center gap-2 text-2xl font-bold text-white sm:text-3xl md:justify-start">
               {profile.nick ?? "—"}
               {profile.verified && <VerifiedBadge size={20} showLabel />}
               <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
             </h1>
-            <p className="mt-1 text-gray-400">
+            <p className="mt-1 text-gray-300">
               {(profile as { account_type?: string }).account_type === "couple" ? (
-                <span>Paar</span>
+                    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">Paar</span>
               ) : (
                 <>
                   {roleLabel && (
@@ -333,54 +339,82 @@ export default async function ProfilDetailPage({
               )}
             </p>
             {(profile.city || profile.postal_code) && (
-              <p className="mt-1 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-400">
                 {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
               </p>
             )}
             {(profile as { current_postal_code?: string | null; current_city?: string | null }).current_postal_code || (profile as { current_city?: string | null }).current_city ? (
-              <p className="mt-1 text-sm text-gray-500">
-                <span className="text-gray-400">Aktuell hier: </span>
+                  <p className="mt-1 text-sm text-gray-400">
+                <span className="text-gray-300">Aktuell hier: </span>
                 {[(profile as { current_postal_code?: string | null }).current_postal_code, (profile as { current_city?: string | null }).current_city].filter(Boolean).join(" ")}
               </p>
             ) : null}
-          </div>
-        </div>
-
-        {/* Statistik-Zeile: Follower / folgt / Verbunden */}
-        <div className="flex flex-wrap items-center justify-center gap-6 border-t border-gray-700 px-6 py-4">
-          {isConnected && user.id !== profile.id && (
-            <span className="rounded-full bg-accent/20 px-3 py-1 text-sm font-medium text-accent">Verbunden</span>
-          )}
-          <span className="text-gray-400">
-            <span className="font-semibold text-white">{followerCount ?? 0}</span> Follower
-          </span>
-          <span className="text-gray-400">
-            <span className="font-semibold text-white">{followingCount ?? 0}</span> folgt
-          </span>
-        </div>
-
-        {/* Aktionen (Folgen, Nachricht, Keuschhaltung) */}
-        {profile.id !== user.id && (
-          <div className="flex flex-wrap items-center justify-center gap-2 border-t border-gray-700 px-4 py-4 sm:gap-3 sm:px-6">
-            <FollowButton followingId={profile.id} initialIsFollowing={isFollowing} />
-            <BlockButton blockedId={profile.id} initialBlocked={isBlockedByMe} />
-            <ProfileLikeButton
-              profileId={profile.id}
-              initialLiked={profileLikedByMe}
-              initialCount={profileLikeCount}
-            />
-            {viewerNoMessages ? (
-              <span className="min-h-[44px] flex items-center rounded-lg border border-gray-600 bg-gray-800/60 px-4 py-3 text-sm text-gray-400 sm:py-2" title="Nachrichten sind im Cuckymode eingeschränkt">
-                Nachricht senden (eingeschränkt)
-              </span>
-            ) : (
-              <Link
-                href={`/dashboard/nachrichten?with=${profile.id}`}
-                className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
-              >
-                Nachricht senden
-              </Link>
+              </div>
+            </div>
+            {profile.id !== user.id && (
+              <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
+                <FollowButton followingId={profile.id} initialIsFollowing={isFollowing} />
+                <ProfileLikeButton
+                  profileId={profile.id}
+                  initialLiked={profileLikedByMe}
+                  initialCount={profileLikeCount}
+                />
+                {viewerNoMessages ? (
+                  <span className="min-h-[44px] flex items-center rounded-lg border border-gray-600 bg-gray-800/60 px-4 py-3 text-sm text-gray-400 sm:py-2" title="Nachrichten sind im Cuckymode eingeschränkt">
+                    Nachricht senden (eingeschränkt)
+                  </span>
+                ) : (
+                  <Link
+                    href={`/dashboard/nachrichten?with=${profile.id}`}
+                    className="min-h-[44px] flex items-center rounded-lg bg-accent px-4 py-3 text-sm font-medium text-white hover:bg-accent-hover sm:py-2"
+                  >
+                    Nachricht senden
+                  </Link>
+                )}
+              </div>
             )}
+          </div>
+          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
+              <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
+              <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Verbindung</p>
+              <p className="mt-1 text-sm font-medium text-white">{isConnected ? "Verbunden" : "Noch nicht verbunden"}</p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-2">
+            <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-emerald-200">
+                <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
+                Sicherheitsstatus
+              </p>
+              <p className="mt-1 text-sm text-emerald-100/90">
+                Profilstatus und Interaktionen sind klar gekennzeichnet und nachvollziehbar.
+              </p>
+            </div>
+            <div className="rounded-xl border border-sky-400/25 bg-sky-500/10 px-4 py-3">
+              <p className="flex items-center gap-2 text-sm font-medium text-sky-200">
+                <BadgeCheck className="h-4 w-4" strokeWidth={1.8} />
+                Vertrauensindikator
+              </p>
+              <p className="mt-1 text-sm text-sky-100/90">
+                {profile.verified
+                  ? "Dieses Profil ist verifiziert und als vertrauenswuerdig markiert."
+                  : "Profil ohne Verifizierung. Beachte dies bei sensiblen Interaktionen."}
+              </p>
+            </div>
+          </div>
+
+          {profile.id !== user.id && (
+            <div className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-5">
+              <BlockButton blockedId={profile.id} initialBlocked={isBlockedByMe} />
             {hasExistingChastityConnection ? (
               <span className="flex items-center gap-2 text-sm text-gray-400">
                 Es besteht bereits eine Verbindung.
@@ -416,29 +450,29 @@ export default async function ProfilDetailPage({
                   )}
               </>
             )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
 
       {showLimitedProfile ? (
-        <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6">
-          <p className="text-center text-sm text-gray-400">
+        <div className="mt-6 rounded-2xl border border-white/10 bg-card p-6">
+          <p className="text-center text-sm text-gray-300">
             Dieses Profil ist privat. Du siehst nur Profilbild, Ort und Alter. Sende eine Nachricht oder folge, um verbunden zu werden und das vollständige Profil zu sehen.
           </p>
         </div>
       ) : (
       <>
-      {/* Tabs */}
-      <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card shadow-sm">
-        <div className="flex border-b border-gray-700">
+      <div className="mt-6 rounded-2xl border border-white/10 bg-card shadow-sm">
+        <div className="flex border-b border-white/10">
           {TABS.map((t) => (
             <Link
               key={t.id}
               href={`${baseUrl}?tab=${t.id}`}
               className={`flex-1 px-4 py-3 text-center text-sm font-medium transition-colors ${
                 tab === t.id
-                  ? "border-b-2 border-accent text-accent"
-                  : "text-gray-400 hover:text-white"
+                  ? "border-b-2 border-accent text-white"
+                  : "text-gray-400 hover:text-gray-200"
               }`}
             >
               {t.label}
@@ -446,7 +480,7 @@ export default async function ProfilDetailPage({
           ))}
         </div>
 
-        <div className="p-6">
+        <div className="p-5 md:p-6">
           {tab === "posts" && (
             <>
               {userPosts && userPosts.length > 0 ? (
@@ -645,8 +679,13 @@ export default async function ProfilDetailPage({
 
             const infoAvatarUrl = viewerNoImages ? null : avatarUrl;
             return (
-            <div className="rounded-xl border border-gray-700 bg-card p-6">
-              <div className="space-y-8">
+            <div className="space-y-6">
+              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Kerninformationen</h2>
+                <p className="mt-1 text-sm text-gray-400">
+                  Präzise, scanbare Informationen im selben Premium-Raster wie im eigenen Profil.
+                </p>
+                <div className="mt-5 space-y-8">
                 {isCouple ? (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
                     {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
@@ -655,7 +694,15 @@ export default async function ProfilDetailPage({
                 ) : (
                   renderPartnerCard(singleData, "Profil", infoAvatarUrl)
                 )}
+                </div>
+              </section>
 
+              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Praeferenzen & Ausrichtung</h2>
+                <p className="mt-1 text-sm text-gray-400">
+                  Das Wesentliche zuerst, weiterfuehrende Details klar und ruhig gegliedert.
+                </p>
+                <div className="mt-5 space-y-6">
                 {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
                   <section>
                     <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
@@ -717,8 +764,9 @@ export default async function ProfilDetailPage({
                 {isCouple && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
                   <p className="text-center text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
                 )}
+                </div>
+              </section>
               </div>
-            </div>
             );
           })()}
 
