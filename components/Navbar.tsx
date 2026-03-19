@@ -226,7 +226,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   return (
     <header className="sticky top-0 z-[60] isolate antialiased">
       <nav
-        className={`mx-auto mt-2 flex max-w-6xl items-center gap-3 rounded-2xl border px-3 transition-all duration-200 sm:px-4 ${
+        className={`mx-auto mt-2 flex w-full max-w-6xl items-center gap-3 overflow-hidden rounded-2xl border px-3 transition-all duration-200 sm:px-4 ${
           scrolled
             ? "border-white/10 bg-[#111111]/95 py-2 shadow-[0_16px_30px_-22px_rgba(0,0,0,0.95)] backdrop-blur"
             : "border-white/8 bg-[#141414]/92 py-3 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.95)] backdrop-blur"
@@ -234,7 +234,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
       >
         {user ? (
           <>
-            <div className="hidden md:flex md:shrink-0 md:items-center md:justify-start">
+            <div className="hidden lg:flex lg:shrink-0 lg:items-center lg:justify-start">
               <RefreshNavLink
                 href="/dashboard"
                 className="group flex shrink-0 items-center gap-2 rounded-lg px-2 py-1 text-white transition-colors duration-150 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
@@ -245,7 +245,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <span className="text-base font-semibold tracking-[0.01em]">BoundTime</span>
               </RefreshNavLink>
             </div>
-            <div className="flex shrink-0 md:hidden">
+            <div className="flex shrink-0 lg:hidden">
               <RefreshNavLink
                 href="/dashboard"
                 className="flex items-center gap-2 rounded-lg px-1 py-1 text-white transition-colors duration-150 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
@@ -256,7 +256,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <span className="text-base font-semibold tracking-tight">BoundTime</span>
               </RefreshNavLink>
             </div>
-            <div className="hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-1">
+            <div className="hidden min-w-0 lg:flex lg:flex-1 lg:items-center lg:justify-center lg:gap-1">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex shrink-0 items-center gap-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-300/70 ${nav.isDashboard ? activeLink : inactiveLink}`}
@@ -325,8 +325,8 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   Einstellungen
                 </RefreshNavLink>
             </div>
-            <div className="hidden md:flex md:shrink-0 md:min-w-[280px] md:basis-[280px] md:items-center md:justify-end">
-              <div className="flex flex-shrink-0 items-center gap-3 border-l border-white/10 pl-3">
+            <div className="hidden min-w-0 lg:flex lg:shrink-0 lg:min-w-[260px] lg:basis-[260px] lg:items-center lg:justify-end">
+              <div className="flex min-w-0 flex-shrink-0 items-center gap-2 border-l border-white/10 pl-3">
                 {accountType === "couple" && (
                   effectiveRestriction !== null ? (
                     <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Cuckymode aus") : "Cuckymode aktiv – Passwort nötig zum Schreiben"}>
@@ -343,7 +343,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 {nick && (
                     <RefreshNavLink
                       href="/dashboard"
-                      className={`flex items-center gap-1.5 rounded-lg border px-1.5 py-1 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-sky-300/70 ${
+                      className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-1.5 py-1 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-sky-300/70 ${
                         nav.isDashboard
                           ? "border-white/20 bg-white/10 text-white"
                           : "border-white/10 bg-white/[0.03] text-gray-300 hover:bg-white/10 hover:text-white"
@@ -376,13 +376,13 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="whitespace-nowrap rounded-lg border border-red-500/35 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-200 transition-colors hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-300/60"
+                  className="shrink-0 whitespace-nowrap rounded-lg border border-red-500/35 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-200 transition-colors hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-300/60"
                 >
                   Abmelden
                 </button>
               </div>
             </div>
-            <div className="flex-1 min-w-0 md:hidden" aria-hidden />
+            <div className="flex-1 min-w-0 lg:hidden" aria-hidden />
             </>
           ) : (
             <>
@@ -393,7 +393,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 BoundTime
               </Link>
               <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2 min-w-0">
-              <div className="hidden md:flex md:items-center md:gap-4">
+              <div className="hidden lg:flex lg:items-center lg:gap-4">
               <Link
                 href="/community-regeln"
                 className="text-sm text-gray-300 transition-colors duration-150 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
@@ -426,7 +426,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
           {user && (
             <RefreshNavLink
               href="/dashboard/nachrichten"
-              className="relative mr-1 hidden h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-gray-200 transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sky-300/70 md:hidden"
+              className="relative mr-1 flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-gray-200 transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sky-300/70 lg:hidden"
               aria-label="Nachrichten"
             >
               <MessageSquare className="h-5 w-5" strokeWidth={1.5} aria-hidden />
@@ -442,7 +442,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             onClick={() => setMenuOpen((o) => !o)}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Menü schließen" : unreadNotifications > 0 ? "Menü öffnen (ungelesene Benachrichtigungen)" : "Menü öffnen"}
-            className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/5 p-2 text-gray-300 transition-colors duration-150 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-300/70 md:hidden"
+            className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/5 p-2 text-gray-300 transition-colors duration-150 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-300/70 lg:hidden"
           >
             {menuOpen ? <X className="h-6 w-6" strokeWidth={1.5} /> : <Menu className="h-6 w-6" strokeWidth={1.5} />}
             {unreadNotifications > 0 && (
@@ -455,7 +455,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 z-[100] md:hidden"
+            className="fixed inset-0 z-[100] lg:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Menü"
