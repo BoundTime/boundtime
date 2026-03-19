@@ -75,8 +75,7 @@ export function SettingsBlockedUsersSection() {
     <div>
       <h3 className="text-base font-semibold text-white">Blockierte Nutzer</h3>
       <p className="mt-1 text-sm text-gray-400">
-        Was ist passiert? Diese Profile sind fuer dich gesperrt. Was bedeutet das? Kein Kontakt und keine Sichtbarkeit
-        in relevanten Interaktionen. Nächster Schritt: Bei Bedarf gezielt entsperren.
+        Diese Profile sind fuer dich gesperrt. Bei Bedarf kannst du einzelne Nutzer wieder entsperren.
       </p>
       {loading ? (
         <p className="mt-4 text-sm text-gray-500">Wird geladen ...</p>

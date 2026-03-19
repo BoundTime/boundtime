@@ -82,8 +82,8 @@ export function SettingsAccountSection({
           <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
             <h3 className="text-base font-semibold text-white">Passwort aktualisieren</h3>
             <p className="mt-1 text-sm text-gray-400">
-              Was ist passiert? Du aenderst den Zugangsschutz deines Kontos. Was bedeutet das? Alte Sitzungen koennen
-              ungueltig werden. Nächster Schritt: Neues Passwort eintragen und bestaetigen.
+              Lege ein neues Passwort fest und bestaetige es. Bestehende Sitzungen auf anderen Geraeten koennen dadurch
+              beendet werden.
             </p>
             <form onSubmit={handlePasswordChange} className="mt-4 space-y-3">
               <input
@@ -126,9 +126,8 @@ export function SettingsAccountSection({
       <div className={`${dangerOnly ? "" : "mt-8"} rounded-xl border border-red-500/35 bg-red-500/[0.08] p-4 md:p-5`}>
         <h3 className="text-base font-semibold text-red-200">Account endgueltig loeschen</h3>
         <p className="mt-1 text-sm text-red-100/90">
-          Was ist passiert? Diese Aktion entfernt dein Profil dauerhaft. Was bedeutet das? Inhalte und Historie koennen
-          nicht wiederhergestellt werden. Nächster Schritt: Tippe <span className="font-semibold">LOESCHEN</span> zur
-          Bestaetigung ein.
+          Diese Aktion entfernt dein Profil dauerhaft. Inhalte und Historie koennen nicht wiederhergestellt werden.
+          Tippe <span className="font-semibold">LOESCHEN</span> zur Bestaetigung ein.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <input

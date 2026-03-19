@@ -27,8 +27,7 @@ export function SettingsSessionsSection() {
     <div>
       <h3 className="text-base font-semibold text-white">Sitzungen absichern</h3>
       <p className="mt-1 text-sm text-gray-400">
-        Was ist passiert? Du steuerst aktive Geraetezugriffe. Was bedeutet das? Alle fremden Sitzungen werden
-        sofort beendet. Nächster Schritt: Andere Geraete gezielt abmelden.
+        Melde alle anderen Geraete mit einem Klick ab. Dein aktuelles Geraet bleibt angemeldet.
       </p>
       <button
         type="button"

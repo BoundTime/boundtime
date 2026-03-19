@@ -47,12 +47,10 @@ export default async function EinstellungenPage({
             </p>
             <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">Sicherheit, Zugriff und Konto zentral steuern</h1>
             <p className="mt-3 text-sm leading-relaxed text-gray-300 md:text-base">
-              Alle sensiblen Aktionen sind klar getrennt, nachvollziehbar und auf Vertrauen ausgelegt. Aendere nur die
-              Bereiche, die du jetzt brauchst.
+              Alle sensiblen Aktionen sind klar getrennt, nachvollziehbar und auf Vertrauen ausgelegt.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs sm:w-auto sm:grid-cols-3">
-            <a href="#zugang-konto" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Zugang</a>
             <a href="#privatsphaere-schutz" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Privatsphaere</a>
             {profile?.account_type === "couple" && (
               <a href="#cuckymode-steuerung" className="rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-center text-amber-100 transition-colors hover:bg-amber-300/20">Cuckymode</a>
@@ -60,30 +58,12 @@ export default async function EinstellungenPage({
             {(isDomOrSwitcher || isAdmin) && (
               <a href="#rollenwerkzeuge" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Werkzeuge</a>
             )}
-            <a href="#danger-zone" className="rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 text-center text-red-200 transition-colors hover:bg-red-500/20">Danger Zone</a>
+            <a href="#zugang-konto" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Zugang</a>
           </div>
         </div>
       </header>
 
       <div className="mt-8 space-y-5 md:space-y-6">
-        <section id="zugang-konto" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
-          <div className="mb-4 border-b border-white/10 pb-4">
-            <div className="mb-2 inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-              Zugang & Konto
-            </div>
-            <h2 className="text-lg font-semibold text-white">Identitaet und Zugang absichern</h2>
-            <p className="mt-1 text-sm text-gray-400">
-              Verwalte E-Mail, Passwort und aktive Sitzungen. Aenderungen greifen sofort und erhoehen den Schutz deines Accounts.
-            </p>
-          </div>
-          <div className="space-y-6">
-            <SettingsAccountSection email={user.email} />
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
-              <SettingsSessionsSection />
-            </div>
-          </div>
-        </section>
-
         <section id="privatsphaere-schutz" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
           <div className="mb-4 border-b border-white/10 pb-4">
             <div className="mb-2 inline-flex items-center rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-300">
@@ -161,17 +141,22 @@ export default async function EinstellungenPage({
           </section>
         )}
 
-        <section id="danger-zone" className="rounded-2xl border border-red-500/35 bg-red-500/[0.07] p-5 md:p-6">
-          <div className="mb-4 border-b border-red-500/25 pb-4">
-            <div className="mb-2 inline-flex items-center rounded-full border border-red-500/40 bg-red-500/15 px-3 py-1 text-xs font-medium text-red-200">
-              Danger Zone
+        <section id="zugang-konto" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
+          <div className="mb-4 border-b border-white/10 pb-4">
+            <div className="mb-2 inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+              Zugang & Konto
             </div>
-            <h2 className="text-lg font-semibold text-white">Kritische Aktionen mit klarer Konsequenz</h2>
-            <p className="mt-1 text-sm text-red-100/80">
-              Dauerhafte oder schwer rueckgaengige Schritte sind bewusst abgesetzt und erfordern eine eindeutige Bestaetigung.
+            <h2 className="text-lg font-semibold text-white">Identitaet und Zugang absichern</h2>
+            <p className="mt-1 text-sm text-gray-400">
+              Verwalte E-Mail, Passwort und aktive Sitzungen zentral an einem Ort.
             </p>
           </div>
-          <SettingsAccountSection email={user.email} dangerOnly />
+          <div className="space-y-6">
+            <SettingsAccountSection email={user.email} />
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+              <SettingsSessionsSection />
+            </div>
+          </div>
         </section>
       </div>
     </Container>
