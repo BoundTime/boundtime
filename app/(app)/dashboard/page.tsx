@@ -236,6 +236,7 @@ export default async function DashboardPage() {
     <Container className="py-10 md:py-14">
       <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#242424] via-[#1a1a1a] to-[#121212] p-6 shadow-[0_30px_65px_-40px_rgba(0,0,0,0.95)] md:p-8">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-amber-200/35 to-transparent" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-100/90">MyBound Signature Feed</p>
@@ -256,6 +257,10 @@ export default async function DashboardPage() {
           </div>
         </div>
       </section>
+
+      <div className="mt-4 flex items-center justify-center">
+        <div className="h-px w-full max-w-3xl bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+      </div>
 
       {/* 1. Chastity-Status oben (nur für Sub oder Dom ohne Keuschlinge – Dom mit Keuschlingen sehen den Block „Ihre Keuschlinge“) */}
       {!(isDomOrSwitcher && asDomWithSub.length > 0) && (
@@ -441,12 +446,16 @@ export default async function DashboardPage() {
           </div>
           {posts.length > 0 ? (
             <ul className="mt-6 space-y-5 sm:space-y-7">
-              {posts.map((post) => (
+              {posts.map((post, index) => {
+                const isFeatureCard = index % 4 === 0;
+                const cardTone = index % 2 === 0 ? "from-white/[0.035] to-transparent" : "from-amber-300/[0.06] to-transparent";
+                return (
                 <li
                   key={post.id}
-                  className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-[0_18px_35px_-30px_rgba(0,0,0,0.95)]"
+                  className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-[0_18px_35px_-30px_rgba(0,0,0,0.95)] transition-colors hover:border-white/20 ${isFeatureCard ? "md:rounded-[1.1rem]" : ""}`}
                 >
-                  <div className="flex items-center gap-4 border-b border-white/10 p-4 sm:p-5">
+                  <div className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${cardTone}`} />
+                  <div className="relative flex items-center gap-4 border-b border-white/10 p-4 sm:p-5">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
                       <AvatarWithVerified verified={post.author_verified} size="md" className="h-12 w-12">
                       <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
@@ -464,7 +473,7 @@ export default async function DashboardPage() {
                       <span className="flex items-center gap-1.5">
                         <Link
                           href={`/dashboard/entdecken/${post.author_id}`}
-                          className="font-medium text-white hover:text-accent"
+                          className="font-medium text-white transition-colors hover:text-accent"
                         >
                           {post.author_nick ?? "?"}
                         </Link>
@@ -474,8 +483,11 @@ export default async function DashboardPage() {
                         {formatTimeAgo(new Date(post.created_at))}
                       </p>
                     </div>
+                    <span className="hidden rounded-full border border-white/10 bg-white/[0.03] px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-gray-400 sm:inline-flex">
+                      {isFeatureCard ? "Spotlight" : "Update"}
+                    </span>
                   </div>
-                  <div className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                  <div className="relative px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
                     <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-gray-200">{post.content}</p>
                     {post.image_url && (
                       <div className="relative mt-4 aspect-video w-full max-h-[28rem] overflow-hidden rounded-xl border border-white/10 bg-black/20">
@@ -503,7 +515,7 @@ export default async function DashboardPage() {
                     </div>
                   </div>
                 </li>
-              ))}
+              )})}
             </ul>
           ) : (
             <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-8 text-center">
