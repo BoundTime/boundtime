@@ -6,7 +6,7 @@ import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingF
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { Pencil, Images, User, ShieldCheck, BadgeCheck, Sparkles } from "lucide-react";
+import { Pencil, Images, User, BadgeCheck, Sparkles } from "lucide-react";
 import { PostDeleteButton } from "@/components/PostDeleteButton";
 import { CouplePartnerAvatarPicker } from "@/components/profil/CouplePartnerAvatarPicker";
 import { ProfileViewsBlock } from "@/components/ProfileViewsBlock";
@@ -217,6 +217,10 @@ export default async function ProfilPage({
                   Profil-Identitaet
                 </div>
                 <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
+                <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-gray-100">
+                  <BadgeCheck className={`h-3.5 w-3.5 ${myProfile?.verified ? "text-emerald-300" : "text-gray-400"}`} strokeWidth={1.8} />
+                  <span>{myProfile?.verified ? "Verifiziert" : "Nicht verifiziert"}</span>
+                </div>
                 <p className="mt-1 text-gray-300">
               {(profile as { account_type?: string }).account_type === "couple" ? (
                     <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">Paar</span>
@@ -296,36 +300,16 @@ export default async function ProfilPage({
               ))}
             </p>
           )}
-          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-2">
-            <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3">
-              <p className="flex items-center gap-2 text-sm font-medium text-emerald-200">
-                <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
-                Sicherheitsstatus
-              </p>
-              <p className="mt-1 text-sm text-emerald-100/90">
-                Dein Profil entspricht den aktuellen Community- und Schutzstandards.
-              </p>
+          {!myProfile?.verified && (
+            <div className="border-t border-white/10 pt-5">
+              <Link
+                href="/dashboard/verifizierung"
+                className="inline-flex rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-1.5 text-sm text-amber-200 transition-colors hover:bg-amber-500/20"
+              >
+                Verifizierung beantragen
+              </Link>
             </div>
-            <div className="rounded-xl border border-sky-400/25 bg-sky-500/10 px-4 py-3">
-              <p className="flex items-center gap-2 text-sm font-medium text-sky-200">
-                <BadgeCheck className="h-4 w-4" strokeWidth={1.8} />
-                Verifizierung
-              </p>
-              <p className="mt-1 text-sm text-sky-100/90">
-                {myProfile?.verified
-                  ? "Dein Profil ist verifiziert und als vertrauenswuerdig gekennzeichnet."
-                  : "Aktiviere die Verifizierung fuer mehr Sichtbarkeit und Vertrauen."}
-              </p>
-              {!myProfile?.verified && (
-                <Link
-                  href="/dashboard/verifizierung"
-                  className="mt-3 inline-flex rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-1.5 text-sm text-amber-200 transition-colors hover:bg-amber-500/20"
-                >
-                  Verifizierung beantragen
-                </Link>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -560,11 +544,7 @@ export default async function ProfilPage({
               </section>
 
               <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Kerninformationen</h2>
-                <p className="mt-1 text-sm text-gray-400">
-                  Präzise Profilinformationen fuer schnelle Orientierung und klare Erwartungshaltung.
-                </p>
-                <div className="mt-5 space-y-8">
+                <div className="space-y-8">
                 {isCouple ? (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
                     {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null, isCoupleWomanMan ? (womanFirst ? "female" : "male") : undefined)}
@@ -572,56 +552,6 @@ export default async function ProfilPage({
                   </div>
                 ) : (
                   renderPartnerCard(singleData, "Profil", avatarUrl)
-                )}
-                </div>
-              </section>
-
-              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Praeferenzen & Ausrichtung</h2>
-                <p className="mt-1 text-sm text-gray-400">
-                  Das Wesentliche zuerst, weitere Details klar gegliedert im zweiten Schritt.
-                </p>
-                <div className="mt-5 space-y-6">
-                {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
-                  <section>
-                    <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Wen sucht {profile.nick ?? "…"}?
-                    </h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
-                    {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
-                  </p>
-                </section>
-              )}
-
-                {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
-                    {getOrientationLabel((profile as { orientation?: string | null }).orientation)}
-                  </p>
-                </section>
-              )}
-
-              {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was sucht {profile.nick ?? "…"}?
-                  </h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
-                </section>
-              )}
-
-              {profile.expectations_text && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was erwartet {profile.nick ?? "…"} von seinem Gesuchten?
-                  </h2>
-                  <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
-                </section>
-              )}
-
-                {isCouple && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
-                  <p className="text-center text-sm text-gray-500">Noch keine weiteren Angaben hinterlegt.</p>
                 )}
                 </div>
               </section>

@@ -17,7 +17,7 @@ import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { BullRatingsSection } from "@/components/bull/BullRatingsSection";
-import { User, ShieldCheck, BadgeCheck, Sparkles } from "lucide-react";
+import { User, BadgeCheck, Sparkles } from "lucide-react";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -317,6 +317,10 @@ export default async function ProfilDetailPage({
               {profile.verified && <VerifiedBadge size={20} showLabel />}
               <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
             </h1>
+            <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-gray-100">
+              <BadgeCheck className={`h-3.5 w-3.5 ${profile.verified ? "text-emerald-300" : "text-gray-400"}`} strokeWidth={1.8} />
+              <span>{profile.verified ? "Verifiziert" : "Nicht verifiziert"}</span>
+            </div>
             <p className="mt-1 text-gray-300">
               {(profile as { account_type?: string }).account_type === "couple" ? (
                     <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">Paar</span>
@@ -386,29 +390,6 @@ export default async function ProfilDetailPage({
             <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
               <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Verbindung</p>
               <p className="mt-1 text-sm font-medium text-white">{isConnected ? "Verbunden" : "Noch nicht verbunden"}</p>
-            </div>
-          </div>
-
-          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-2">
-            <div className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-4 py-3">
-              <p className="flex items-center gap-2 text-sm font-medium text-emerald-200">
-                <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
-                Sicherheitsstatus
-              </p>
-              <p className="mt-1 text-sm text-emerald-100/90">
-                Profilstatus und Interaktionen sind klar gekennzeichnet und nachvollziehbar.
-              </p>
-            </div>
-            <div className="rounded-xl border border-sky-400/25 bg-sky-500/10 px-4 py-3">
-              <p className="flex items-center gap-2 text-sm font-medium text-sky-200">
-                <BadgeCheck className="h-4 w-4" strokeWidth={1.8} />
-                Vertrauensindikator
-              </p>
-              <p className="mt-1 text-sm text-sky-100/90">
-                {profile.verified
-                  ? "Dieses Profil ist verifiziert und als vertrauenswuerdig markiert."
-                  : "Profil ohne Verifizierung. Beachte dies bei sensiblen Interaktionen."}
-              </p>
             </div>
           </div>
 
@@ -681,11 +662,7 @@ export default async function ProfilDetailPage({
             return (
             <div className="space-y-6">
               <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Kerninformationen</h2>
-                <p className="mt-1 text-sm text-gray-400">
-                  Präzise, scanbare Informationen im selben Premium-Raster wie im eigenen Profil.
-                </p>
-                <div className="mt-5 space-y-8">
+                <div className="space-y-8">
                 {isCouple ? (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
                     {renderPartnerCard(left, leftLabel, leftAvatarUrlResolved ?? null)}
@@ -696,76 +673,27 @@ export default async function ProfilDetailPage({
                 )}
                 </div>
               </section>
-
-              <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Praeferenzen & Ausrichtung</h2>
-                <p className="mt-1 text-sm text-gray-400">
-                  Das Wesentliche zuerst, weiterfuehrende Details klar und ruhig gegliedert.
-                </p>
-                <div className="mt-5 space-y-6">
-                {((profile as { looking_for_genders?: string[] }).looking_for_genders?.length || profile.looking_for_gender) && (
-                  <section>
-                    <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                      Wen sucht {profile.nick ?? "…"}?
-                    </h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
-                    {getLookingForGenderDisplay((profile as { looking_for_genders?: string[] }).looking_for_genders ?? profile.looking_for_gender)}
-                  </p>
-                </section>
-              )}
-
-                {getOrientationLabel((profile as { orientation?: string | null }).orientation) && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">Neigung</h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">
-                    {getOrientationLabel((profile as { orientation?: string | null }).orientation)}
-                  </p>
-                </section>
-              )}
-
-              {Array.isArray(profile.looking_for) && profile.looking_for.length > 0 && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was sucht {profile.nick ?? "…"}?
-                  </h2>
-                  <p className="mx-auto mt-2 max-w-2xl text-center text-white">{profile.looking_for.join(", ")}</p>
-                </section>
-              )}
-
-              {profile.expectations_text && (
-                <section>
-                  <h2 className="text-center text-sm font-semibold uppercase tracking-wider text-gray-400">
-                    Was erwartet {profile.nick ?? "…"} von seinem Gesuchten?
-                  </h2>
-                  <p className="mx-auto mt-2 max-w-2xl whitespace-pre-wrap text-center leading-relaxed text-gray-300">{profile.expectations_text}</p>
-                </section>
-              )}
-
-                {profile.role === "Bull" && (
+              {profile.role === "Bull" && (
+                <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
                   <BullRatingsSection
-                  bullId={profile.id}
-                  ratings={bullRatings}
-                  myRating={bullRatings.find((r) => r.rater_id === user.id) ?? null}
-                  canSeeSection={
-                    user.id === profile.id ||
-                    myProfile?.account_type === "couple" ||
-                    myProfile?.gender === "Frau"
-                  }
-                  canRate={
-                    (myProfile?.account_type === "couple" || myProfile?.gender === "Frau") &&
-                    !!myProfile?.verified
-                  }
-                  viewerVerified={!!myProfile?.verified}
-                  isOwnProfile={user.id === profile.id}
-                  raterNickById={bullRaterNickById}
-                />
-                )}
-
-                {isCouple && !(profile as { looking_for_genders?: string[] }).looking_for_genders?.length && !profile.looking_for_gender && !(Array.isArray(profile.looking_for) && profile.looking_for.length) && !profile.expectations_text && (
-                  <p className="text-center text-sm text-gray-500">Keine weiteren Angaben hinterlegt.</p>
-                )}
-                </div>
-              </section>
+                    bullId={profile.id}
+                    ratings={bullRatings}
+                    myRating={bullRatings.find((r) => r.rater_id === user.id) ?? null}
+                    canSeeSection={
+                      user.id === profile.id ||
+                      myProfile?.account_type === "couple" ||
+                      myProfile?.gender === "Frau"
+                    }
+                    canRate={
+                      (myProfile?.account_type === "couple" || myProfile?.gender === "Frau") &&
+                      !!myProfile?.verified
+                    }
+                    viewerVerified={!!myProfile?.verified}
+                    isOwnProfile={user.id === profile.id}
+                    raterNickById={bullRaterNickById}
+                  />
+                </section>
+              )}
               </div>
             );
           })()}

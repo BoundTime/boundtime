@@ -5,37 +5,5 @@ Nach Umsetzung lösche nur den PROMPT-Inhalt.
 Diese Bemerkungen dürfen nicht verändert werden.
 
 === PROMPT ===
-ZIEL
-Überarbeite ausschließlich die Profilansicht mit folgenden Korrekturen: Entferne die gezeigten Informationskacheln und ersetze die große Verifizierungs-Kachel durch eine dezente, sofort erkennbare Verifizierungskennzeichnung.
 
-KONKRETE ENTFERNUNGEN (PFLICHT)
-Diese Bereiche/Elemente sollen in der aktuellen Form nicht mehr angezeigt werden:
-- „KERNINFORMATIONEN“
-- „PRAEFERENZEN & AUSRICHTUNG“
-- die große „Sicherheitsstatus“-Kachel
-
-WICHTIG
-- Diese Inhalte sollen nicht nur umbenannt werden, sondern als große Infoblöcke vollständig entfallen.
-- Keine neuen großen Ersatzkacheln für diese Punkte erzeugen.
-
-VERIFIZIERUNG NEU LÖSEN (PFLICHT)
-Der Verifizierungsstatus muss sofort sichtbar sein, aber ohne große Kachel:
-1) Verwende ein kompaktes Statussignal direkt im Profil-Header (nahe Name/Nick).
-2) Ergänze eine kleine, hochwertige Badge-/Icon-Kombination mit klarem Textstatus.
-3) Status muss auf den ersten Blick eindeutig sein:
-   - verifiziert
-   - nicht verifiziert
-4) Die Darstellung muss dezent, premium und platzsparend sein.
-5) Kein dominanter Banner, keine breite Alert-Box, keine große Card.
-
-DESIGNANFORDERUNG
-- Diskret, hochwertig, klar.
-- Hohe Erkennbarkeit ohne visuelle Überladung.
-- Einheitlich auf eigenem und fremdem Profil.
-
-ABNAHMEKRITERIEN
-1) Die drei genannten Infoblöcke sind entfernt.
-2) Verifizierung ist sofort erkennbar, ohne große Kachel.
-3) Profil wirkt ruhiger, aufgeräumter und weiterhin premium.
-4) Die Lösung ist auf Mobile und Desktop klar lesbar.
 === ENDE PROMPT ===
