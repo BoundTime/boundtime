@@ -98,9 +98,11 @@ export function ChatMessages({
   }, [messages, userId]);
 
   return (
-    <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto p-4 space-y-4">
+    <div ref={scrollRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.03),transparent_45%)] p-4">
       {!messages?.length ? (
-        <p className="text-center text-sm text-gray-500">Noch keine Nachrichten.</p>
+        <div className="mx-auto max-w-md rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center text-sm text-gray-400">
+          Diese Unterhaltung ist bereit. Schreibe die erste Nachricht in ruhigem, klarem Ton.
+        </div>
       ) : (
         messages.map((m) => {
           const isOwn = m.sender_id === userId;
@@ -117,14 +119,14 @@ export function ChatMessages({
               className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                className={`max-w-[82%] rounded-2xl px-4 py-2.5 shadow-[0_10px_20px_-18px_rgba(0,0,0,0.9)] ${
                   isOwn
-                    ? "bg-accent text-white"
+                    ? "border border-accent/40 bg-accent/90 text-white"
                     : "border border-gray-600 bg-background text-gray-200"
                 }`}
               >
                 {!isOwn && (
-                  <p className="text-xs font-medium text-accent">
+                  <p className="text-xs font-medium text-amber-200">
                     {nickById[m.sender_id] ?? "?"}
                   </p>
                 )}
@@ -149,7 +151,7 @@ export function ChatMessages({
                               <img
                                 src={publicUrl}
                                 alt={att.filename}
-                                className="max-h-48 w-full max-w-sm cursor-pointer rounded-md border border-gray-700 object-cover"
+                                className="max-h-48 w-full max-w-sm cursor-pointer rounded-lg border border-white/15 object-cover"
                               />
                             </button>
                           ) : (
@@ -157,7 +159,7 @@ export function ChatMessages({
                               href={publicUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-2 text-xs text-blue-200 underline"
+                              className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs text-gray-100 hover:bg-white/10"
                             >
                               {att.filename}
                             </a>
@@ -167,7 +169,7 @@ export function ChatMessages({
                     })}
                   </div>
                 ) : null}
-                <div className="mt-1 flex items-center gap-1.5">
+                <div className="mt-1.5 flex items-center gap-1.5">
                   <p className={`text-xs ${isOwn ? "text-white/80" : "text-gray-500"}`}>
                     {formatTime(new Date(m.created_at))}
                   </p>

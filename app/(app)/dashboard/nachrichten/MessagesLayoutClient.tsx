@@ -44,24 +44,28 @@ export function MessagesLayoutClient({
   const isChatView = pathSegments[pathSegments.length - 2] === "nachrichten" && pathSegments.length >= 3;
 
   return (
-    <Container className="py-16">
-      <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 hover:text-white">
+    <Container className="py-10 md:py-14">
+      <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 transition-colors hover:text-white">
         ← MyBound
       </Link>
 
-      <div className="flex max-h-[calc(100vh-10rem)] min-h-[350px] flex-col gap-0 overflow-hidden rounded-xl border border-gray-700 md:flex-row md:gap-0">
-        {/* Linke Spalte: Gesprächsliste – auf Mobile ausgeblendet wenn Chat sichtbar */}
+      <div className="mb-4 rounded-2xl border border-white/10 bg-gradient-to-b from-[#1f1f1f] to-[#151515] px-5 py-4 md:px-6">
+        <h1 className="text-xl font-bold text-white md:text-2xl">Conversation Suite</h1>
+        <p className="mt-1 text-sm text-gray-300">Diskrete, hochwertige Kommunikation mit klarer Priorisierung und ruhigem Lesefluss.</p>
+      </div>
+
+      <div className="flex max-h-[calc(100vh-11rem)] min-h-[360px] flex-col gap-0 overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.95)] md:flex-row md:gap-0">
         <aside
           className={`${
             isChatView ? "hidden md:flex" : "flex"
-          } w-full min-w-0 flex-col border-b border-gray-700 md:w-[300px] md:shrink-0 md:border-b-0 md:border-r`}
+          } w-full min-w-0 flex-col border-b border-white/10 bg-black/20 md:w-[340px] md:shrink-0 md:border-b-0 md:border-r`}
         >
-          <div className="bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
-            <h1 className="text-xl font-bold text-white">Nachrichten</h1>
-            <p className="mt-0.5 text-sm text-gray-400">Deine Unterhaltungen</p>
+          <div className="border-b border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent px-4 py-4 sm:px-5">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-amber-100/90">Inbox</h2>
+            <p className="mt-1 text-sm text-gray-300">Priorisierte Unterhaltungen</p>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-4 md:max-h-[70vh]">
-            <ul className="space-y-2">
+          <div className="min-h-0 flex-1 overflow-y-auto p-3 md:max-h-[70vh]">
+            <ul className="space-y-2.5">
               {list.map((item) => {
                 const avatarUrl = item.otherAvatarUrl;
                 const initials = (item.otherNick ?? "?")
@@ -79,10 +83,10 @@ export function MessagesLayoutClient({
                   <li key={item.id}>
                     <Link
                       href={`/dashboard/nachrichten/${item.id}`}
-                      className={`flex min-h-[44px] items-center gap-3 rounded-lg border p-3 transition-colors ${
+                      className={`flex min-h-[56px] items-center gap-3 rounded-xl border px-3 py-3 transition-all ${
                         isActive
-                          ? "border-accent/60 bg-accent/10"
-                          : "border-gray-700 bg-background/50 hover:border-gray-600"
+                          ? "border-amber-300/45 bg-amber-300/10 shadow-[0_10px_25px_-20px_rgba(212,175,55,0.8)]"
+                          : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]"
                       }`}
                     >
                       <AvatarWithVerified verified={item.otherVerified} size="sm" className="h-10 w-10 shrink-0">
@@ -100,13 +104,20 @@ export function MessagesLayoutClient({
                         <p className={`flex items-center gap-1.5 truncate ${item.hasUnread ? "font-semibold text-white" : "font-medium text-white"}`}>
                           {item.otherNick}
                           {item.hasUnread && (
-                            <span className="flex h-2 min-w-2 shrink-0 items-center justify-center rounded-full bg-accent" aria-label="Ungelesen" />
+                            <span className="flex h-2 min-w-2 shrink-0 items-center justify-center rounded-full bg-amber-300" aria-label="Ungelesen" />
                           )}
                           <OnlineIndicator lastSeenAt={item.otherLastSeenAt} variant="dot" />
                         </p>
-                        <p className={`truncate text-xs ${item.hasUnread ? "text-gray-300" : "text-gray-500"}`}>{preview}</p>
+                        <p className={`truncate text-xs ${item.hasUnread ? "text-gray-200" : "text-gray-400"}`}>{preview}</p>
                       </div>
-                      <p className="shrink-0 text-xs text-gray-500">{timeStr}</p>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <p className="text-xs text-gray-500">{timeStr}</p>
+                        {(item.unreadCount ?? 0) > 0 && (
+                          <span className="rounded-full border border-amber-300/40 bg-amber-300/15 px-1.5 py-0.5 text-[10px] font-medium text-amber-100">
+                            {item.unreadCount}
+                          </span>
+                        )}
+                      </div>
                     </Link>
                   </li>
                 );
@@ -119,7 +130,7 @@ export function MessagesLayoutClient({
         <main
           className={`${
             isChatView ? "flex" : "hidden md:flex"
-          } min-h-[300px] min-w-0 flex-1 flex-col overflow-hidden`}
+          } min-h-[300px] min-w-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-[#171717] to-[#121212]`}
         >
           {children}
         </main>

@@ -21,16 +21,16 @@ export default async function NachrichtenPage({
     .single();
   if (myProfile?.restriction_enabled === true && myProfile?.restriction_no_messages === true) {
     return (
-      <Container className="py-16">
-        <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 hover:text-white">
+      <Container className="py-10 md:py-14">
+        <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 transition-colors hover:text-white">
           ← MyBound
         </Link>
-        <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
+        <div className="overflow-hidden rounded-t-2xl border border-b-0 border-white/10 bg-gradient-to-b from-[#222] to-[#171717] p-6">
           <h1 className="text-2xl font-bold text-white">Nachrichten</h1>
           <p className="mt-1 text-sm text-amber-200/90">Nachrichten sind im Cuckymode (für Paare) eingeschränkt.</p>
         </div>
-        <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
-          <p className="text-gray-400">Du darfst keine Nachrichten lesen oder schreiben. In den Einstellungen kann die Hotwife die Cuckymode-Einschränkungen fürs Paar anpassen.</p>
+        <div className="rounded-b-2xl border border-t-0 border-white/10 bg-card p-6 shadow-sm">
+          <p className="text-gray-300">Du darfst keine Nachrichten lesen oder schreiben. In den Einstellungen kann die Hotwife die Cuckymode-Einschränkungen fürs Paar anpassen.</p>
           <Link href="/dashboard/einstellungen" className="mt-4 inline-block text-accent hover:underline">
             Einstellungen →
           </Link>
@@ -73,16 +73,16 @@ export default async function NachrichtenPage({
 
   if (convIds.length === 0) {
     return (
-      <Container className="py-16">
-        <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 hover:text-white">
+      <Container className="py-10 md:py-14">
+        <Link href="/dashboard" className="mb-6 inline-block text-sm text-gray-400 transition-colors hover:text-white">
           ← MyBound
         </Link>
-        <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
+        <div className="overflow-hidden rounded-t-2xl border border-b-0 border-white/10 bg-gradient-to-b from-[#222] to-[#171717] p-6">
           <h1 className="text-2xl font-bold text-white">Nachrichten</h1>
-          <p className="mt-1 text-sm text-gray-400">Deine Unterhaltungen</p>
+          <p className="mt-1 text-sm text-gray-300">Deine Unterhaltungen</p>
         </div>
-        <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
-          <p className="text-gray-400">Noch keine Unterhaltungen.</p>
+        <div className="rounded-b-2xl border border-t-0 border-white/10 bg-card p-6 shadow-sm">
+          <p className="text-gray-300">Noch keine Unterhaltung. Starte diskret und direkt aus Entdecken.</p>
           <Link href="/dashboard/entdecken" className="mt-4 inline-block text-accent hover:underline">
             Entdecken →
           </Link>
@@ -93,9 +93,9 @@ export default async function NachrichtenPage({
 
   // Liste wird vom Layout (MessagesLayoutClient) gerendert – hier nur Platzhalter für rechte Spalte
   return (
-    <div className="flex min-h-[300px] flex-1 flex-col items-center justify-center border-t border-gray-700 bg-card p-6 md:border-t-0 md:border-l">
-      <p className="text-center text-gray-400">Wähle eine Unterhaltung oder starte eine neue.</p>
-      <Link href="/dashboard/entdecken" className="mt-4 text-accent hover:underline">
+    <div className="flex min-h-[300px] flex-1 flex-col items-center justify-center border-t border-white/10 bg-gradient-to-b from-[#191919] to-[#131313] p-6 md:border-t-0 md:border-l">
+      <p className="max-w-sm text-center text-sm text-gray-300">Waehle eine Unterhaltung links oder starte eine neue Verbindung in Entdecken.</p>
+      <Link href="/dashboard/entdecken" className="mt-4 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-100 transition-colors hover:bg-white/10">
         Entdecken →
       </Link>
     </div>

@@ -137,8 +137,8 @@ export function MessageInput({
   const placeholder = !canSend ? placeholderDisabled : "Nachricht schreiben…";
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2">
-      <div className="flex-1 space-y-1 min-w-0">
+    <form onSubmit={handleSubmit} className="rounded-xl border border-white/10 bg-[#1a1a1a] p-3 shadow-[0_18px_40px_-30px_rgba(0,0,0,0.95)]">
+      <div className="min-w-0 space-y-2">
         <textarea
           ref={textareaRef}
           rows={3}
@@ -148,11 +148,11 @@ export function MessageInput({
           maxLength={POST_CONTENT_MAX}
           readOnly={!canSend}
           aria-label="Nachricht eingeben"
-          className={`min-h-[88px] max-h-[200px] w-full resize-none rounded-lg border border-gray-600 bg-background px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent ${!canSend ? "cursor-default opacity-90" : ""}`}
+          className={`min-h-[88px] max-h-[200px] w-full resize-none rounded-xl border border-white/10 bg-black/25 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 ${!canSend ? "cursor-default opacity-90" : ""}`}
         />
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <label className={`inline-flex items-center gap-2 text-xs text-gray-400 ${canSend ? "cursor-pointer hover:text-gray-200" : "cursor-not-allowed opacity-70"}`}>
-            <span className="rounded border border-gray-600 px-2 py-1 text-[11px] uppercase tracking-wide">
+            <span className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-[11px] uppercase tracking-wide">
               Anhang
             </span>
             <input
@@ -169,6 +169,13 @@ export function MessageInput({
               {files.length} Anhang{files.length > 1 ? "e" : ""} ausgewählt
             </p>
           )}
+          <button
+            type="submit"
+            disabled={loading || !canSend || (canWrite && !content.trim())}
+            className="ml-auto shrink-0 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+          >
+            {loading ? "..." : canSend ? "Senden" : bullNeedsVerification || unverifiedManLimitReached ? "Verifizierung nötig" : canWrite ? "Senden" : "Freischalten"}
+          </button>
         </div>
         {(bullNeedsVerification || unverifiedManLimitReached) && (
           <p className="text-xs text-gray-400">
@@ -198,13 +205,6 @@ export function MessageInput({
           </p>
         )}
       </div>
-      <button
-        type="submit"
-        disabled={loading || !canSend || (canWrite && !content.trim())}
-        className="shrink-0 self-end rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
-      >
-        {loading ? "…" : canSend ? "Senden" : bullNeedsVerification || unverifiedManLimitReached ? "Verifizierung nötig" : canWrite ? "Senden" : "Freischalten"}
-      </button>
       {error && <p className="mt-2 w-full text-sm text-red-400">{error}</p>}
     </form>
   );

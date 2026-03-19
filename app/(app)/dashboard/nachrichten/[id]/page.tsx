@@ -123,7 +123,7 @@ export default async function ChatPage({
   const nickById = new Map(senderProfiles?.map((p) => [p.id, p.nick]) ?? []);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col border-t border-gray-700 bg-card md:border-t-0 md:border-l">
+    <div className="flex min-h-0 flex-1 flex-col border-t border-white/10 bg-gradient-to-b from-[#181818] to-[#121212] md:border-t-0 md:border-l">
       <div className="shrink-0 p-4 md:hidden">
         <Link href="/dashboard/nachrichten" className="text-sm text-gray-400 hover:text-white">
           ← Nachrichten
@@ -131,10 +131,10 @@ export default async function ChatPage({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="flex shrink-0 items-center gap-4 border-b border-gray-700 p-4">
+        <div className="flex shrink-0 items-center gap-4 border-b border-white/10 bg-white/[0.03] p-4">
           <Link
             href={`/dashboard/entdecken/${otherId}`}
-            className="shrink-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-full"
+            className="shrink-0 rounded-full ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
             <AvatarWithVerified verified={otherVerified} size="sm" className="h-10 w-10 shrink-0">
             <div className="h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
@@ -148,9 +148,12 @@ export default async function ChatPage({
             </div>
             </AvatarWithVerified>
           </Link>
-          <Link href={`/dashboard/entdecken/${otherId}`} className="font-semibold text-white hover:text-accent">
-            {otherNick}
-          </Link>
+          <div className="min-w-0">
+            <Link href={`/dashboard/entdecken/${otherId}`} className="block truncate font-semibold text-white transition-colors hover:text-accent">
+              {otherNick}
+            </Link>
+            <p className="text-xs text-gray-400">Aktive Unterhaltung</p>
+          </div>
         </div>
 
         <ChatMessages
@@ -161,7 +164,7 @@ export default async function ChatPage({
           attachmentsByMessageId={attachmentsByMessageId}
         />
 
-        <div className="shrink-0 border-t border-gray-700 p-4">
+        <div className="shrink-0 border-t border-white/10 bg-white/[0.02] p-4">
           {oneMessageOnlyReached && (
             <p className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-200/90">
               Du kannst nur eine Nachricht senden, bis ihr verbunden seid. Folge der Person und bitte sie, dir zurückzufolgen – dann könnt ihr uneingeschränkt schreiben.
