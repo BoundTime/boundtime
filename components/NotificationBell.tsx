@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -62,6 +63,19 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [panelPos, setPanelPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+
+  function updatePanelPosition() {
+    if (!buttonRef.current || typeof window === "undefined") return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const panelWidth = 320;
+    const gap = 8;
+    const top = rect.bottom + gap;
+    const maxLeft = window.innerWidth - panelWidth - 8;
+    const left = Math.max(8, Math.min(rect.right - panelWidth, maxLeft));
+    setPanelPos({ top, left });
+  }
 
   useEffect(() => {
     const supabase = createClient();
@@ -134,6 +148,20 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    updatePanelPosition();
+    function handleReposition() {
+      updatePanelPosition();
+    }
+    window.addEventListener("resize", handleReposition);
+    window.addEventListener("scroll", handleReposition, true);
+    return () => {
+      window.removeEventListener("resize", handleReposition);
+      window.removeEventListener("scroll", handleReposition, true);
+    };
+  }, [open]);
+
   if (loading) {
     if (variant === "mobile") {
       return (
@@ -175,8 +203,15 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
   return (
     <div className="relative" ref={ref}>
       <button
+        ref={buttonRef}
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          setOpen((o) => {
+            const next = !o;
+            if (next) updatePanelPosition();
+            return next;
+          });
+        }}
         className="relative flex items-center justify-center rounded-lg p-2 text-gray-300 transition-colors hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
         aria-label={unreadCount > 0 ? `${unreadCount} ungelesene Benachrichtigungen` : "Benachrichtigungen"}
       >
@@ -188,9 +223,13 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
         )}
       </button>
 
-      {open && (
-        <>
-          <div className="absolute right-0 top-full z-50 mt-1 w-80 max-h-[70vh] overflow-hidden rounded-xl border border-gray-700 bg-card shadow-xl">
+      {open &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed z-[180] w-80 max-h-[70vh] overflow-hidden rounded-xl border border-gray-700 bg-card shadow-xl"
+            style={{ top: panelPos.top, left: panelPos.left }}
+          >
             <div className="flex items-center justify-between border-b border-gray-700 px-4 py-3">
               <span className="font-semibold text-white">Benachrichtigungen</span>
               <Link
@@ -226,9 +265,9 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
                 </ul>
               )}
             </div>
-          </div>
-        </>
-      )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

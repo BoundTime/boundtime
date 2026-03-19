@@ -51,7 +51,6 @@ export function MessagesLayoutClient({
 
       <div className="mb-4 rounded-2xl border border-white/10 bg-gradient-to-b from-[#1f1f1f] to-[#151515] px-5 py-4 md:px-6">
         <h1 className="text-xl font-bold text-white md:text-2xl">Conversation Suite</h1>
-        <p className="mt-1 text-sm text-gray-300">Diskrete, hochwertige Kommunikation mit klarer Priorisierung und ruhigem Lesefluss.</p>
       </div>
 
       <div className="flex max-h-[calc(100vh-11rem)] min-h-[360px] flex-col gap-0 overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.95)] md:flex-row md:gap-0">
@@ -62,7 +61,6 @@ export function MessagesLayoutClient({
         >
           <div className="border-b border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent px-4 py-4 sm:px-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-amber-100/90">Inbox</h2>
-            <p className="mt-1 text-sm text-gray-300">Priorisierte Unterhaltungen</p>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto p-3 md:max-h-[70vh]">
             <ul className="space-y-2.5">
