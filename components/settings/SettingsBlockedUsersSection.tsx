@@ -73,19 +73,23 @@ export function SettingsBlockedUsersSection() {
 
   return (
     <div>
-      <p className="text-sm text-gray-400">
-        Hier siehst du User, die du blockiert hast.
+      <h3 className="text-base font-semibold text-white">Blockierte Nutzer</h3>
+      <p className="mt-1 text-sm text-gray-400">
+        Was ist passiert? Diese Profile sind fuer dich gesperrt. Was bedeutet das? Kein Kontakt und keine Sichtbarkeit
+        in relevanten Interaktionen. Nächster Schritt: Bei Bedarf gezielt entsperren.
       </p>
       {loading ? (
-        <p className="mt-4 text-sm text-gray-500">Wird geladen…</p>
+        <p className="mt-4 text-sm text-gray-500">Wird geladen ...</p>
       ) : users.length === 0 ? (
-        <p className="mt-4 text-sm text-gray-500">Du hast niemanden blockiert.</p>
+        <p className="mt-4 rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-sm text-gray-400">
+          Aktuell ist kein Nutzer blockiert.
+        </p>
       ) : (
         <ul className="mt-4 space-y-3">
           {users.map((u) => (
             <li
               key={u.blocked_id}
-              className="flex items-center justify-between rounded-lg border border-gray-700 bg-background px-4 py-3"
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-4 py-3"
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gray-600 bg-background">
@@ -106,9 +110,9 @@ export function SettingsBlockedUsersSection() {
               <button
                 type="button"
                 onClick={() => unblock(u.blocked_id)}
-                className="rounded-lg border border-gray-600 px-3 py-1.5 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
+                className="rounded-lg border border-sky-400/35 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-100 transition-colors hover:bg-sky-500/20"
               >
-                Entblockieren
+                Entsperren
               </button>
             </li>
           ))}

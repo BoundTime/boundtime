@@ -5,8 +5,10 @@ import { createClient } from "@/lib/supabase/client";
 
 export function SettingsAccountSection({
   email,
+  dangerOnly = false,
 }: {
   email: string | undefined;
+  dangerOnly?: boolean;
 }) {
   const [pwSuccess, setPwSuccess] = useState<string | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
@@ -46,8 +48,8 @@ export function SettingsAccountSection({
   }
 
   async function handleAccountDelete() {
-    if (deleteConfirm !== "LÖSCHEN") {
-      setDeleteError('Bitte "LÖSCHEN" eintippen, um zu bestätigen.');
+    if (deleteConfirm !== "LOESCHEN") {
+      setDeleteError('Bitte "LOESCHEN" exakt eintippen, um fortzufahren.');
       return;
     }
     setDeleteLoading(true);
@@ -56,7 +58,7 @@ export function SettingsAccountSection({
       const res = await fetch("/api/account/delete", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setDeleteError(data.error ?? "Fehler beim Löschen.");
+        setDeleteError(data.error ?? "Fehler beim Loeschen.");
         return;
       }
       const supabase = createClient();
@@ -71,66 +73,85 @@ export function SettingsAccountSection({
 
   return (
     <div>
-      <p className="text-sm text-gray-400">
-        Angemeldet mit: <span className="text-white">{email ?? "—"}</span>
-      </p>
+      {!dangerOnly && (
+        <>
+          <p className="text-sm text-gray-400">
+            Angemeldet mit: <span className="font-medium text-white">{email ?? "—"}</span>
+          </p>
 
-      <div className="mt-6">
-        <h3 className="text-base font-medium text-white">Passwort ändern</h3>
-        <form onSubmit={handlePasswordChange} className="mt-2 space-y-2">
-          <input
-            type="password"
-            name="newPassword"
-            placeholder="Neues Passwort"
-            className="w-full max-w-sm rounded-lg border border-gray-700 bg-background px-3 py-2 text-white placeholder-gray-500"
-            required
-            minLength={6}
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Passwort bestätigen"
-            className="w-full max-w-sm rounded-lg border border-gray-700 bg-background px-3 py-2 text-white placeholder-gray-500"
-            required
-          />
-          <button
-            type="submit"
-            disabled={pwLoading}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
-          >
-            {pwLoading ? "…" : "Passwort ändern"}
-          </button>
-        </form>
-        {pwSuccess && <p className="mt-2 text-sm text-green-400">{pwSuccess}</p>}
-        {pwError && <p className="mt-2 text-sm text-red-400">{pwError}</p>}
-        <p className="mt-1 text-xs text-gray-500">
-          Nach der Änderung können andere Sitzungen ungültig werden.
-        </p>
-      </div>
+          <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+            <h3 className="text-base font-semibold text-white">Passwort aktualisieren</h3>
+            <p className="mt-1 text-sm text-gray-400">
+              Was ist passiert? Du aenderst den Zugangsschutz deines Kontos. Was bedeutet das? Alte Sitzungen koennen
+              ungueltig werden. Nächster Schritt: Neues Passwort eintragen und bestaetigen.
+            </p>
+            <form onSubmit={handlePasswordChange} className="mt-4 space-y-3">
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="Neues Passwort"
+                className="w-full max-w-md rounded-lg border border-gray-700 bg-background px-4 py-2.5 text-white placeholder-gray-500 focus:border-sky-400/60 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+                required
+                minLength={6}
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Passwort bestaetigen"
+                className="w-full max-w-md rounded-lg border border-gray-700 bg-background px-4 py-2.5 text-white placeholder-gray-500 focus:border-sky-400/60 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+                required
+              />
+              <button
+                type="submit"
+                disabled={pwLoading}
+                className="inline-flex rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+              >
+                {pwLoading ? "Wird gespeichert ..." : "Passwort speichern"}
+              </button>
+            </form>
+            {pwSuccess && (
+              <p className="mt-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+                {pwSuccess}
+              </p>
+            )}
+            {pwError && (
+              <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                Aenderungen konnten nicht gespeichert werden. {pwError}
+              </p>
+            )}
+          </div>
+        </>
+      )}
 
-      <div className="mt-8 border-t border-gray-700 pt-6">
-        <h3 className="text-base font-medium text-red-400">Account löschen</h3>
-        <p className="mt-1 text-sm text-gray-400">
-          Aktion unwiderruflich – alle deine Daten werden gelöscht.
+      <div className={`${dangerOnly ? "" : "mt-8"} rounded-xl border border-red-500/35 bg-red-500/[0.08] p-4 md:p-5`}>
+        <h3 className="text-base font-semibold text-red-200">Account endgueltig loeschen</h3>
+        <p className="mt-1 text-sm text-red-100/90">
+          Was ist passiert? Diese Aktion entfernt dein Profil dauerhaft. Was bedeutet das? Inhalte und Historie koennen
+          nicht wiederhergestellt werden. Nächster Schritt: Tippe <span className="font-semibold">LOESCHEN</span> zur
+          Bestaetigung ein.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <input
             type="text"
-            placeholder="LÖSCHEN eintippen"
+            placeholder="LOESCHEN eintippen"
             value={deleteConfirm}
             onChange={(e) => setDeleteConfirm(e.target.value.toUpperCase())}
-            className="w-full max-w-xs rounded-lg border border-gray-700 bg-background px-3 py-2 text-white placeholder-gray-500"
+            className="w-full max-w-xs rounded-lg border border-red-500/35 bg-black/30 px-3 py-2 text-white placeholder-red-200/60 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/30"
           />
           <button
             type="button"
             onClick={handleAccountDelete}
-            disabled={deleteLoading || deleteConfirm !== "LÖSCHEN"}
-            className="rounded-lg border border-red-500/50 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10 disabled:opacity-50"
+            disabled={deleteLoading || deleteConfirm !== "LOESCHEN"}
+            className="rounded-lg border border-red-400/60 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {deleteLoading ? "…" : "Account endgültig löschen"}
+            {deleteLoading ? "Wird geloescht ..." : "Account unwiderruflich loeschen"}
           </button>
         </div>
-        {deleteError && <p className="mt-2 text-sm text-red-400">{deleteError}</p>}
+        {deleteError && (
+          <p className="mt-3 rounded-lg border border-red-500/35 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            Loeschen nicht moeglich. {deleteError}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -25,19 +25,29 @@ export function SettingsSessionsSection() {
 
   return (
     <div>
-      <p className="text-sm text-gray-400">
-        Du bist auf diesem Gerät angemeldet.
+      <h3 className="text-base font-semibold text-white">Sitzungen absichern</h3>
+      <p className="mt-1 text-sm text-gray-400">
+        Was ist passiert? Du steuerst aktive Geraetezugriffe. Was bedeutet das? Alle fremden Sitzungen werden
+        sofort beendet. Nächster Schritt: Andere Geraete gezielt abmelden.
       </p>
       <button
         type="button"
         onClick={signOutOthers}
         disabled={loading}
-        className="mt-4 rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+        className="mt-4 rounded-lg border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-100 transition-colors hover:bg-sky-500/20 disabled:opacity-50"
       >
-        {loading ? "…" : "Alle anderen Geräte abmelden"}
+        {loading ? "Wird durchgefuehrt ..." : "Alle anderen Geraete abmelden"}
       </button>
-      {success && <p className="mt-2 text-sm text-green-400">{success}</p>}
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {success && (
+        <p className="mt-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+          {success}
+        </p>
+      )}
+      {error && (
+        <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

@@ -322,75 +322,131 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
   const liftRestrictionDisabled = saving || !currentPassword.trim();
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h3 className="font-semibold text-white">Cuckymode</h3>
-      <p className="text-sm text-gray-400">
-        Cuckymode gibt es nur für Paare. Hotwife aktiviert den Modus und legt dabei das Cuckymode-Paarpasswort fest.
-        Damit kann Cucky beim Schreiben/Kommunizieren nur per Passwort (freigeschaltet) wieder aktiv werden – und
-        je nach deinen zusätzlichen Optionen auch beim Ansehen von Bildern eingeschränkt sein. Punkt in der Navbar:
-        Grün = aus, Rot = aktiv.
-      </p>
-
-      {/* Status: aktiv / nicht aktiv */}
-      <div
-        className={`rounded-lg border px-4 py-3 text-sm ${
-          profile.restriction_enabled
-            ? "border-amber-500/50 bg-amber-500/10 text-amber-200"
-            : "border-gray-600 bg-gray-800/40 text-gray-300"
-        }`}
-        role="status"
-      >
-        {profile.restriction_enabled ? (
-          <>Aktuell: Cuckymode ist <strong>aktiv</strong>.</>
-        ) : (
-          <>Aktuell: Cuckymode ist <strong>nicht aktiv</strong>.</>
-        )}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+        <h3 className="text-base font-semibold text-white">Gefuehrte Cuckymode-Steuerung</h3>
+        <p className="mt-1 text-sm text-gray-300">
+          Du steuerst sensible Zugriffe in klar getrennten Schritten. Jede Aktion ist eindeutig markiert und direkt
+          nachvollziehbar.
+        </p>
       </div>
 
-      {/* ========== Fall 1: Noch nicht aktiv – erstes Einrichten oder Reaktivieren ========== */}
+      <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5" aria-labelledby="restriction-status-title">
+        <div className="mb-3 inline-flex rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-200">
+          Schritt 1 - Status
+        </div>
+        <h4 id="restriction-status-title" className="text-sm font-semibold text-white">Aktueller Zustand</h4>
+        <div
+          className={`mt-3 rounded-lg border px-4 py-3 text-sm ${
+            profile.restriction_enabled
+              ? "border-amber-400/50 bg-amber-500/10 text-amber-100"
+              : "border-emerald-400/35 bg-emerald-500/10 text-emerald-100"
+          }`}
+          role="status"
+        >
+          {profile.restriction_enabled ? (
+            <>Cuckymode ist aktiv. Zugriff und Kommunikation folgen den gesetzten Regeln.</>
+          ) : (
+            <>Cuckymode ist inaktiv. Es gelten keine zusaetzlichen Zugriffsbeschraenkungen.</>
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5" aria-labelledby="restriction-config-title">
+        <div className="mb-3 inline-flex rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-200">
+          Schritt 2 - Konfiguration
+        </div>
+        <h4 id="restriction-config-title" className="text-sm font-semibold text-white">Regeln festlegen</h4>
+        <p className="mt-1 text-sm text-gray-400">
+          Waehle nur die Regeln, die du jetzt wirklich brauchst. Weitere Optionen bleiben jederzeit anpassbar.
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <input
+            id="restriction-enabled"
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-500 bg-background text-accent focus:ring-2 focus:ring-sky-400/50"
+          />
+          <label htmlFor="restriction-enabled" className="text-sm text-gray-200">
+            Cuckymode aktivieren (Paarpasswort fuer Schreiben und Kommunikation)
+          </label>
+        </div>
+        {enabled && (
+          <div className="mt-3 space-y-2 rounded-lg border border-white/10 bg-white/5 p-3">
+            <p className="text-xs font-medium uppercase tracking-[0.08em] text-gray-400">Zusaetzliche Beschraenkungen</p>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input type="checkbox" checked={noSingleFemaleProfiles} onChange={(e) => setNoSingleFemaleProfiles(e.target.checked)} className="h-4 w-4 rounded border-gray-500 bg-background text-accent focus:ring-2 focus:ring-sky-400/50" />
+              Keine Single-Frauen-Profile anzeigen
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input type="checkbox" checked={noMessages} onChange={(e) => setNoMessages(e.target.checked)} className="h-4 w-4 rounded border-gray-500 bg-background text-accent focus:ring-2 focus:ring-sky-400/50" />
+              Nachrichten lesen und schreiben blockieren
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input type="checkbox" checked={noCoupleProfiles} onChange={(e) => setNoCoupleProfiles(e.target.checked)} className="h-4 w-4 rounded border-gray-500 bg-background text-accent focus:ring-2 focus:ring-sky-400/50" />
+              Keine Paar-Profile anzeigen
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input type="checkbox" checked={noImages} onChange={(e) => setNoImages(e.target.checked)} className="h-4 w-4 rounded border-gray-500 bg-background text-accent focus:ring-2 focus:ring-sky-400/50" />
+              Bildansicht deaktivieren
+            </label>
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5" aria-labelledby="restriction-protection-title">
+        <div className="mb-3 inline-flex rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-200">
+          Schritt 3 - Absicherung
+        </div>
+        <h4 id="restriction-protection-title" className="text-sm font-semibold text-white">Passwort und Recovery</h4>
+        <p className="mt-1 text-sm text-gray-400">
+          Passwortabfragen schuetzen vor unbeabsichtigten Aenderungen und sind bei kritischen Aktionen verpflichtend.
+        </p>
+
       {isFirstTime && (
         <>
-          <p className="text-xs text-gray-500">
+          <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-gray-300">
             {profile.has_restriction_password
-              ? "Das Cuckymode-Paarpasswort ist bereits festgelegt und bleibt gültig. Zur Bestätigung aktuelles Passwort eintragen, Häkchen setzen und Speichern."
-              : "Schritt 1: Cuckymode-Paarpasswort festlegen. Schritt 2: Häkchen setzen und Speichern. Das Passwort bleibt bis du es unter „Passwort ändern“ änderst."}
+              ? "Ein Paarpasswort ist bereits gesetzt. Zur erneuten Aktivierung bitte das aktuelle Passwort bestaetigen."
+              : "Lege zuerst ein Paarpasswort fest, aktiviere danach Cuckymode und speichere die Konfiguration."}
           </p>
           {!profile.has_restriction_password ? (
-            <div>
-              <label className="mb-1 block text-xs font-medium text-gray-300">Passwort festlegen</label>
+            <div className="mt-3">
+              <label className="mb-1 block text-xs font-medium text-gray-300">Neues Paarpasswort festlegen</label>
               <p className="mb-2 text-xs text-gray-500">
-                Hotwife setzt das Cuckymode-Paarpasswort. Cucky braucht es zum Schreiben/Kommunizieren, wenn Cuckymode aktiv ist. Wird einmal gesetzt und bleibt bis „Passwort ändern“.
+                Dieses Passwort ist fuer die Freigabe in Kommunikation und Zugriff zustaendig, solange Cuckymode aktiv ist.
               </p>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Passwort wählen"
-                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white focus:border-sky-400/60 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
                 autoComplete="new-password"
               />
             </div>
           ) : (
             <>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-gray-300">Aktuelles Passwort zur Bestätigung</label>
+              <div className="mt-3">
+                <label className="mb-1 block text-xs font-medium text-gray-300">Aktuelles Passwort zur Bestaetigung</label>
                 <p className="mb-2 text-xs text-gray-500">
-                  Nur nötig, um Cuckymode fürs Paar wieder zu aktivieren. Kein neues Passwort – das bestehende Cuckymode-Paarpasswort bleibt gültig.
+                  Kein neues Passwort erforderlich. Das bestehende Paarpasswort bleibt unveraendert.
                 </p>
                 <input
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                  className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white focus:border-sky-400/60 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
                   autoComplete="current-password"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
-                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
                 >
                   Passwort ändern
                 </button>
@@ -398,35 +454,35 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={forgotPasswordLoading}
-                  className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                  className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-white/10 disabled:opacity-50"
                 >
                   {forgotPasswordLoading ? "…" : "Passwort vergessen"}
                 </button>
               </div>
-              {forgotPasswordSuccess && <p className="mt-2 text-sm text-green-400">{forgotPasswordSuccess}</p>}
+              {forgotPasswordSuccess && <p className="mt-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{forgotPasswordSuccess}</p>}
             </>
           )}
         </>
       )}
 
-      {/* ========== Fall 2: Bereits aktiv – Einstellungen ändern ========== */}
       {isChanging && (
         <>
-          <p className="text-xs text-gray-500">
-            Zum Ausschalten: Aktuelles Cuckymode-Paarpasswort eintragen und „Cuckymode aufheben“ klicken. Das Passwort bleibt gespeichert, Cuckymode kann später ohne neues Passwort wieder aktiviert werden. Änderung des Passworts nur über „Passwort ändern“.
+          <p className="mt-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-gray-300">
+            Fuer Aenderungen oder Deaktivierung ist das aktuelle Paarpasswort erforderlich. Das Passwort selbst kann
+            nur ueber "Passwort aendern" ersetzt werden.
           </p>
-          <div className="rounded-lg border border-gray-600 bg-gray-800/40 p-4 space-y-4">
-            <h4 className="text-sm font-medium text-white">Einstellungen ändern</h4>
+          <div className="mt-3 space-y-4 rounded-lg border border-white/10 bg-white/5 p-4">
+            <h4 className="text-sm font-medium text-white">Aktive Konfiguration absichern</h4>
             <div>
               <label className="mb-1 block text-xs text-gray-500">
-                Aktuelles Passwort (zum Bestätigen – nur du kennst es)
+                Aktuelles Passwort zur Bestaetigung
               </label>
               <input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-gray-600 bg-background px-3 py-2 text-sm text-white focus:border-sky-400/60 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
                 autoComplete="current-password"
               />
             </div>
@@ -435,7 +491,7 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
                 <button
                   type="button"
                   onClick={() => { setChangePasswordModalOpen(true); setModalError(null); setModalCurrentPwd(""); setModalNewPwd(""); }}
-                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+                  className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
                 >
                   Passwort ändern
                 </button>
@@ -443,85 +499,61 @@ export function SettingsRestrictionSection({ showResetSuccess = false }: { showR
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={forgotPasswordLoading}
-                  className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                  className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-gray-200 transition-colors hover:bg-white/10 disabled:opacity-50"
                 >
                   {forgotPasswordLoading ? "…" : "Passwort vergessen"}
                 </button>
               </div>
             )}
             {(forgotPasswordSuccess || forgotPasswordLoading) && (
-              <p className="text-sm text-green-400">{forgotPasswordSuccess ?? "…"}</p>
+              <p className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{forgotPasswordSuccess ?? "..."}</p>
             )}
-            <div className="pt-2 border-t border-gray-600">
-              <button
-                type="button"
-                onClick={handleLiftRestriction}
-                disabled={liftRestrictionDisabled}
-                className="rounded-lg border border-amber-500/60 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-200 hover:bg-amber-500/20 disabled:opacity-50"
-              >
-                {saving ? "Wird aufgehoben …" : "Cuckymode aufheben"}
-              </button>
-              <p className="mt-1 text-xs text-gray-500">Aktuelles Cuckymode-Paarpasswort eintragen und auf den Button klicken – Cuckymode ist dann aus. Das Passwort bleibt gespeichert.</p>
-            </div>
           </div>
         </>
       )}
+      </section>
 
-      {/* Checkbox Cuckymode aktivieren */}
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <input
-            id="restriction-enabled"
-            type="checkbox"
-            checked={enabled}
-            onChange={(e) => setEnabled(e.target.checked)}
-            className="rounded border-gray-600 bg-background text-accent"
-          />
-          <label htmlFor="restriction-enabled" className="text-sm text-gray-300">
-            Cuckymode aktivieren (Paarpasswort für Schreiben/Kommunizieren)
-          </label>
+      <section className="rounded-xl border border-red-500/35 bg-red-500/[0.08] p-4 md:p-5" aria-labelledby="restriction-danger-title">
+        <div className="mb-3 inline-flex rounded-full border border-red-500/35 bg-red-500/15 px-3 py-1 text-xs font-medium text-red-200">
+          Schritt 4 - Kritische Aktion
         </div>
-        {enabled && (
-          <div className="ml-6 mt-3 space-y-2 rounded-lg border border-gray-600 bg-gray-800/30 p-3">
-            <p className="text-xs font-medium text-gray-400">Zusätzliche Einschränkungen (was der Cucky nicht darf)</p>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input type="checkbox" checked={noSingleFemaleProfiles} onChange={(e) => setNoSingleFemaleProfiles(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
-              Keine Single-Frauen-Profile ansehen
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input type="checkbox" checked={noMessages} onChange={(e) => setNoMessages(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
-              Keine Nachrichten lesen oder schreiben
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input type="checkbox" checked={noCoupleProfiles} onChange={(e) => setNoCoupleProfiles(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
-              Keine Paar-Profile ansehen
-            </label>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input type="checkbox" checked={noImages} onChange={(e) => setNoImages(e.target.checked)} className="rounded border-gray-600 bg-background text-accent" />
-              Keine Bilder ansehen
-            </label>
-          </div>
-        )}
+        <h4 id="restriction-danger-title" className="text-sm font-semibold text-white">Cuckymode aufheben</h4>
+        <p className="mt-1 text-sm text-red-100/90">
+          Diese Aktion deaktiviert Cuckymode sofort. Zur Sicherheit ist das aktuelle Paarpasswort zwingend erforderlich.
+        </p>
+        <div className="mt-3">
+          <button
+            type="button"
+            onClick={handleLiftRestriction}
+            disabled={liftRestrictionDisabled}
+            className="rounded-lg border border-red-400/60 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/15 disabled:opacity-50"
+          >
+            {saving ? "Wird aufgehoben ..." : "Cuckymode jetzt aufheben"}
+          </button>
+        </div>
+      </section>
+
+      <div className="space-y-1">
         {needPasswordToEnable && (
-          <p className="text-xs text-amber-400">Bitte Cuckymode-Paarpasswort festlegen, um Cuckymode zu aktivieren.</p>
+          <p className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">Bitte zuerst ein Paarpasswort festlegen, um Cuckymode zu aktivieren.</p>
         )}
         {needCurrentPasswordToReEnable && (
-          <p className="text-xs text-amber-400">Bitte aktuelles Cuckymode-Paarpasswort zur Bestätigung eintragen, um Cuckymode zu aktivieren.</p>
+          <p className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">Zur Aktivierung ist das aktuelle Paarpasswort zur Bestaetigung erforderlich.</p>
         )}
         {needCurrentPasswordToChange && (
-          <p className="text-xs text-amber-400">Bitte aktuelles Cuckymode-Paarpasswort eintragen, um etwas zu ändern.</p>
+          <p className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">Bitte aktuelles Paarpasswort eingeben, bevor du Aenderungen speicherst.</p>
         )}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      {success && <p className="text-sm text-green-400">{success}</p>}
+      {error && <p className="rounded-lg border border-red-500/35 bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
+      {success && <p className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{success}</p>}
 
       <button
         type="submit"
         disabled={submitDisabled}
-        className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+        className="rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
       >
-        {saving ? "Wird gespeichert …" : "Speichern"}
+        {saving ? "Wird gespeichert ..." : "Konfiguration speichern"}
       </button>
 
       {/* Modal: Passwort ändern */}
