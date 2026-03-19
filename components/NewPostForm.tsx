@@ -105,9 +105,9 @@ export function NewPostForm() {
   const initials = (nick ?? "?").slice(0, 1).toUpperCase();
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-gray-700 bg-card p-4 shadow-sm">
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-white/10 bg-[#1b1b1b] p-4 shadow-[0_20px_35px_-30px_rgba(0,0,0,0.95)]">
       <div className="flex gap-3">
-        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-gray-700 bg-background">
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full border border-white/15 bg-background">
           {avatarUrl ? (
             <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
           ) : (
@@ -123,10 +123,10 @@ export function NewPostForm() {
             placeholder={canWrite ? "Was möchtest du teilen?" : "Passwort eingeben (Cuckymode)"}
             maxLength={POST_CONTENT_MAX}
             rows={2}
-            className="w-full resize-none rounded-xl border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            className="w-full resize-none rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/35"
           />
           <div className="mt-2 flex flex-wrap items-center gap-3">
-            <label className="flex cursor-pointer items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-white">
+            <label className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-sm text-gray-300 transition-colors hover:bg-white/[0.06] hover:text-white">
               <ImagePlus className="h-4 w-4" />
               <span>Bild hinzufügen</span>
               <input
@@ -142,7 +142,7 @@ export function NewPostForm() {
             <button
               type="submit"
             disabled={loading}
-            className="ml-auto rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
+            className="ml-auto rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
           >
             {loading ? "…" : canWrite ? "Posten" : "Freischalten"}
             </button>

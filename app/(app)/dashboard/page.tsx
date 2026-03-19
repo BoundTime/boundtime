@@ -233,17 +233,40 @@ export default async function DashboardPage() {
     : [];
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-14">
+      <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#242424] via-[#1a1a1a] to-[#121212] p-6 shadow-[0_30px_65px_-40px_rgba(0,0,0,0.95)] md:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-100/90">MyBound Signature Feed</p>
+            <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
+              Willkommen {profile?.nick ?? "zurueck"} - dein kuratierter Premium-Stream
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm text-gray-300 md:text-base">
+              Fokus auf relevante Verbindungen, klare Signale und ruhige Interaktionen. Alles Wichtige ist sofort greifbar.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href="#post-form" className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-100 transition-colors hover:bg-white/10">
+              Direkt posten
+            </Link>
+            <Link href="/dashboard/entdecken" className="rounded-lg border border-amber-300/40 bg-amber-300/10 px-3 py-1.5 text-sm text-amber-100 transition-colors hover:bg-amber-300/20">
+              Neue Kontakte
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* 1. Chastity-Status oben (nur für Sub oder Dom ohne Keuschlinge – Dom mit Keuschlingen sehen den Block „Ihre Keuschlinge“) */}
       {!(isDomOrSwitcher && asDomWithSub.length > 0) && (
-        <div className="overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+        <div className="mt-7 overflow-hidden rounded-2xl border border-white/10 shadow-sm">
+          <div className="flex items-center justify-center bg-gradient-to-b from-[#222] to-[#171717] px-6 py-4">
             <Link href="/dashboard/keuschhaltung" className="flex items-center justify-center gap-2 text-xl font-semibold text-white transition-colors hover:text-accent">
               <LockKeyhole className="h-5 w-5 text-gray-400" />
               Keuschhaltung
             </Link>
           </div>
-          <div className="rounded-b-xl border-t border-gray-700 bg-card p-6">
+          <div className="rounded-b-2xl border-t border-white/10 bg-card p-6">
             <ChastityStatusBlock
               role={role}
               asSubArrangement={
@@ -265,13 +288,13 @@ export default async function DashboardPage() {
 
       {/* 1b. Dom-Dashboard: Ihre Keuschlinge + Offene Punkte (nur für Dom/Switcher mit aktiven Vereinbarungen) */}
       {isDomOrSwitcher && asDomWithSub.length > 0 && (
-        <div className="mt-8 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-6 py-4">
+        <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 shadow-sm">
+          <div className="flex items-center justify-center bg-gradient-to-b from-[#222] to-[#171717] px-6 py-4">
             <Link href="/dashboard/keuschhaltung" className="block text-center text-xl font-semibold text-white transition-colors hover:text-accent">
               Ihre Keuschlinge
             </Link>
           </div>
-          <div className="space-y-6 border-t border-gray-700 bg-card p-6">
+          <div className="space-y-6 border-t border-white/10 bg-card p-6">
             <ul className="flex flex-wrap justify-center gap-4">
             {asDomWithSub.map((arr) => {
               const pendingTasks = pendingTasksByArrangement.get(arr.id) ?? 0;
@@ -279,7 +302,7 @@ export default async function DashboardPage() {
                 <li key={arr.id}>
                   <Link
                     href={`/dashboard/keuschhaltung/${arr.id}`}
-                    className="flex items-center gap-4 rounded-lg border border-gray-700 bg-background p-4 transition-colors hover:border-gray-600"
+                    className="flex items-center gap-4 rounded-xl border border-white/10 bg-black/20 p-4 transition-colors hover:border-white/20"
                   >
                     <AvatarWithVerified verified={arr.subVerified} size="md" className="h-12 w-12 shrink-0">
                     <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700">
@@ -348,29 +371,29 @@ export default async function DashboardPage() {
       <div className="mt-8 grid gap-4 sm:grid-cols-1 lg:grid-cols-3 lg:gap-6">
         <Link
           href="/dashboard/aktivitaet/besucher"
-          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+          className="block overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-sm transition-colors hover:border-white/20"
         >
-          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+          <div className="flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent px-4 py-3">
             <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Eye className="h-4 w-4 text-gray-400" />
               Wer hat dein Profil besucht
             </h3>
           </div>
-          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
+          <div className="min-h-[140px] rounded-b-2xl border-t border-white/10 bg-card p-4 sm:p-6">
             <ProfileViewsBlock hideTitle embeddedInLink />
           </div>
         </Link>
         <Link
           href="/dashboard/aktivitaet/profil-likes"
-          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+          className="block overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-sm transition-colors hover:border-white/20"
         >
-          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+          <div className="flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent px-4 py-3">
             <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
               Wer hat dein Profil geliked
             </h3>
           </div>
-          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
+          <div className="min-h-[140px] rounded-b-2xl border-t border-white/10 bg-card p-4 sm:p-6">
             <ProfileLikesBlock
               likes={profileLikesRes.data ?? []}
               profiles={activityProfilesWithAvatars}
@@ -381,15 +404,15 @@ export default async function DashboardPage() {
         </Link>
         <Link
           href="/dashboard/aktivitaet/post-likes"
-          className="block overflow-hidden rounded-xl border border-gray-700 shadow-sm transition-colors hover:border-gray-600"
+          className="block overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-sm transition-colors hover:border-white/20"
         >
-          <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-3">
+          <div className="flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent px-4 py-3">
             <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
               Wer hat deine Posts geliked
             </h3>
           </div>
-          <div className="min-h-[140px] rounded-b-xl border-t border-gray-700 bg-card p-4 sm:p-6">
+          <div className="min-h-[140px] rounded-b-2xl border-t border-white/10 bg-card p-4 sm:p-6">
             <PostLikesBlock
               likes={postLikersRes.data ?? []}
               profiles={activityProfilesWithAvatars}
@@ -402,14 +425,14 @@ export default async function DashboardPage() {
       </div>
 
       {/* 2. Feed zentral: Header-Karte + Inhalts-Karte */}
-      <div className="mt-12 overflow-hidden rounded-xl border border-gray-700 shadow-sm">
-        <div className="flex items-center justify-center bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
+      <div className="mt-12 overflow-hidden rounded-2xl border border-white/10 shadow-[0_26px_50px_-35px_rgba(0,0,0,0.95)]">
+        <div className="flex items-center justify-center bg-gradient-to-b from-[#222] to-[#171717] px-4 py-4 sm:px-6">
           <h2 className="flex items-center justify-center gap-2 text-xl font-semibold text-white">
             <Rss className="h-5 w-5 text-gray-400" />
             Feed
           </h2>
         </div>
-        <div className="rounded-b-xl border-t border-gray-700 bg-card p-4 shadow-sm sm:p-6">
+        <div className="rounded-b-2xl border-t border-white/10 bg-card p-4 shadow-sm sm:p-6">
           <Suspense fallback={null}>
             <ScrollToPostForm />
           </Suspense>
@@ -417,13 +440,13 @@ export default async function DashboardPage() {
             <NewPostForm />
           </div>
           {posts.length > 0 ? (
-            <ul className="mt-6 space-y-4 sm:space-y-6">
+            <ul className="mt-6 space-y-5 sm:space-y-7">
               {posts.map((post) => (
                 <li
                   key={post.id}
-                  className="overflow-hidden rounded-xl border border-gray-700 bg-background/50 shadow-sm"
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-[0_18px_35px_-30px_rgba(0,0,0,0.95)]"
                 >
-                  <div className="flex items-center gap-4 p-4 sm:p-6">
+                  <div className="flex items-center gap-4 border-b border-white/10 p-4 sm:p-5">
                     <Link href={`/dashboard/entdecken/${post.author_id}`} className="shrink-0">
                       <AvatarWithVerified verified={post.author_verified} size="md" className="h-12 w-12">
                       <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-700 bg-background">
@@ -452,10 +475,10 @@ export default async function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="border-t border-gray-700 px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-2">
-                    <p className="whitespace-pre-wrap text-gray-300">{post.content}</p>
+                  <div className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
+                    <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-gray-200">{post.content}</p>
                     {post.image_url && (
-                      <div className="relative mt-4 aspect-video w-full max-h-[28rem] overflow-hidden rounded-lg">
+                      <div className="relative mt-4 aspect-video w-full max-h-[28rem] overflow-hidden rounded-xl border border-white/10 bg-black/20">
                         <Image
                           src={supabase.storage.from("post-images").getPublicUrl(post.image_url).data.publicUrl}
                           alt=""
@@ -465,7 +488,7 @@ export default async function DashboardPage() {
                         />
                       </div>
                     )}
-                    <div className="mt-3 flex items-center gap-4">
+                    <div className="mt-4 flex items-center gap-4">
                       <PostLikeButton
                         postId={post.id}
                         initialLiked={postLikeByPostId[post.id]?.likedByMe ?? false}
@@ -483,9 +506,9 @@ export default async function DashboardPage() {
               ))}
             </ul>
           ) : (
-            <div className="mt-6 rounded-xl border border-gray-700 bg-background/50 p-8 text-center">
-              <p className="text-gray-400">Folge Leuten, um deren Posts hier zu sehen.</p>
-              <Link href="/dashboard/entdecken" className="mt-4 inline-block text-accent hover:underline">
+            <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-8 text-center">
+              <p className="text-gray-300">Folge relevanten Profilen, damit hier ein kuratierter Stream erscheint.</p>
+              <Link href="/dashboard/entdecken" className="mt-4 inline-block rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-100 transition-colors hover:bg-white/10">
                 Entdecken →
               </Link>
             </div>
