@@ -234,7 +234,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
       >
         {user ? (
           <>
-            <div className="hidden lg:flex lg:shrink-0 lg:items-center lg:justify-start">
+            <div className="hidden lg:mr-2 lg:flex lg:shrink-0 lg:items-center lg:justify-start">
               <RefreshNavLink
                 href="/dashboard"
                 className="group flex shrink-0 items-center gap-2 rounded-lg px-2 py-1 text-white transition-colors duration-150 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
@@ -256,7 +256,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <span className="text-base font-semibold tracking-tight">BoundTime</span>
               </RefreshNavLink>
             </div>
-            <div className="hidden min-w-0 lg:flex lg:flex-1 lg:items-center lg:justify-center lg:gap-1">
+            <div className="hidden min-w-0 lg:flex lg:flex-1 lg:items-center lg:justify-center lg:gap-1 lg:pl-1">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex shrink-0 items-center gap-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-300/70 ${nav.isDashboard ? activeLink : inactiveLink}`}
