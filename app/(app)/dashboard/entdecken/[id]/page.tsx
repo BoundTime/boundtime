@@ -18,7 +18,7 @@ import { OnlineIndicator } from "@/components/OnlineIndicator";
 import { formatMemberSince } from "@/lib/member-since";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { BullRatingsSection } from "@/components/bull/BullRatingsSection";
-import { User, BadgeCheck, Sparkles } from "lucide-react";
+import { User, BadgeCheck, Sparkles, ChevronLeft } from "lucide-react";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -286,13 +286,21 @@ export default async function ProfilDetailPage({
       )}
       <Link
         href="/dashboard/entdecken"
-        className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
+        className="group mb-8 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2 text-sm text-gray-300 transition-[border-color,background-color,color] duration-200 hover:border-white/18 hover:bg-white/[0.06] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
       >
-        ← Zurück zu Entdecken
+        <ChevronLeft className="h-4 w-4 text-amber-200/65 transition-colors group-hover:text-amber-100" strokeWidth={1.75} aria-hidden />
+        Zurück zu Entdecken
       </Link>
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#232323] via-[#1a1a1a] to-[#141414] shadow-[0_28px_60px_-40px_rgba(0,0,0,0.9)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
+      <div className="relative overflow-hidden rounded-[1.35rem] border border-amber-200/[0.1] bg-gradient-to-b from-[#1c1a18] via-[#141414] to-[#0e0e10] shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.05)] ring-1 ring-white/[0.05]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_0%,rgba(180,140,60,0.12),transparent_52%),radial-gradient(ellipse_90%_70%_at_100%_100%,rgba(0,0,0,0.82),transparent_48%)]" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.03] mix-blend-overlay"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")`,
+          }}
+          aria-hidden
+        />
         <div className="relative flex flex-col gap-6 p-6 md:p-8">
           <div className="flex flex-col items-center gap-5 text-center md:flex-row md:items-end md:justify-between md:text-left">
             <div className="flex flex-col items-center gap-4 md:flex-row md:items-end">

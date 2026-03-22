@@ -1,19 +1,27 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { RoleIcon } from "@/components/RoleIcon";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
-import { OnlineIndicator } from "@/components/OnlineIndicator";
-import { AvatarWithVerified } from "@/components/AvatarWithVerified";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { geocodeDe, haversineKm } from "@/lib/geocode";
+import { DiscoverProfileCard } from "@/components/entdecken/DiscoverProfileCard";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
 const SUB_GESUCHT = "Keuschhalten anbieten (Keyholder)";
 
-type SearchParams = { role?: string; gender?: string; account_type?: string; plz_prefix?: string; preference?: string; experience?: string; keuschhaltung?: string; radius_km?: string; radius_center?: string };
+type SearchParams = {
+  role?: string;
+  gender?: string;
+  account_type?: string;
+  plz_prefix?: string;
+  preference?: string;
+  experience?: string;
+  keuschhaltung?: string;
+  radius_km?: string;
+  radius_center?: string;
+};
 
 export default async function EntdeckenPage({
   searchParams,
@@ -29,14 +37,23 @@ export default async function EntdeckenPage({
   const params = await searchParams;
   const roleFilter = params.role && ["Dom", "Sub", "Switcher", "Bull"].includes(params.role) ? params.role : null;
   const genderFilter = params.gender && ["Mann", "Frau", "Divers"].includes(params.gender) ? params.gender : null;
-  const accountTypeFilter = params.account_type === "couple" ? "couple" : params.account_type === "single" ? "single" : null;
+  const accountTypeFilter =
+    params.account_type === "couple" ? "couple" : params.account_type === "single" ? "single" : null;
   const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 5) || null;
   const radiusKmParam = params.radius_km?.replace(/\D/g, "");
   const radiusKm = radiusKmParam ? Math.min(500, Math.max(1, parseInt(radiusKmParam, 10))) : null;
   const radiusCenter = params.radius_center?.trim() || null;
   const preferenceFilter = params.preference?.trim() || null;
-  const experienceFilter = params.experience && ["beginner", "experienced", "advanced"].includes(params.experience) ? params.experience : null;
-  const keuschhaltungFilter = params.keuschhaltung === "keyholder_gesucht" ? "keyholder_gesucht" : params.keuschhaltung === "sub_gesucht" ? "sub_gesucht" : null;
+  const experienceFilter =
+    params.experience && ["beginner", "experienced", "advanced"].includes(params.experience)
+      ? params.experience
+      : null;
+  const keuschhaltungFilter =
+    params.keuschhaltung === "keyholder_gesucht"
+      ? "keyholder_gesucht"
+      : params.keuschhaltung === "sub_gesucht"
+        ? "sub_gesucht"
+        : null;
 
   const myProfile = await supabase
     .from("profiles")
@@ -53,11 +70,9 @@ export default async function EntdeckenPage({
     ...(blockedMe ?? []).map((r: { blocker_id: string }) => r.blocker_id),
   ]);
 
-  const selectWithCoords = "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at, account_type, latitude, longitude";
-  let query = supabase
-    .from("profiles")
-    .select(selectWithCoords)
-    .neq("id", user.id);
+  const selectWithCoords =
+    "id, nick, role, gender, city, postal_code, avatar_url, avatar_photo_id, looking_for, preferences, verified, experience_level, last_seen_at, account_type, latitude, longitude";
+  let query = supabase.from("profiles").select(selectWithCoords).neq("id", user.id);
 
   if (excludeIds.size) query = query.not("id", "in", `(${Array.from(excludeIds).join(",")})`);
   if (roleFilter) query = query.eq("role", roleFilter);
@@ -70,9 +85,9 @@ export default async function EntdeckenPage({
   if (keuschhaltungFilter === "keyholder_gesucht") query = query.contains("looking_for", [KEYHOLDER_GESUCHT]);
   if (keuschhaltungFilter === "sub_gesucht") query = query.contains("looking_for", [SUB_GESUCHT]);
 
-  let { data: profilesRaw } = await query.order("nick");
+  let { data: profilesRaw, error: profilesError } = await query.order("nick");
 
-  if (radiusKm != null && profilesRaw && profilesRaw.length > 0) {
+  if (!profilesError && radiusKm != null && profilesRaw && profilesRaw.length > 0) {
     const centerQuery = (radiusCenter || plzPrefix || "").trim();
     const isPlz = /^\d{1,5}$/.test(centerQuery);
     const coords = await geocodeDe(isPlz ? centerQuery : null, isPlz ? null : centerQuery || null);
@@ -85,14 +100,13 @@ export default async function EntdeckenPage({
   }
 
   const isRestrictedViewer =
-    myProfile.data?.account_type === "couple" &&
-    myProfile.data?.restriction_enabled === true;
-  const noSingleFemale = isRestrictedViewer && (myProfile.data?.restriction_no_single_female_profiles === true);
-  const noCouple = isRestrictedViewer && (myProfile.data?.restriction_no_couple_profiles === true);
-  const noImages = isRestrictedViewer && (myProfile.data?.restriction_no_images === true);
+    myProfile.data?.account_type === "couple" && myProfile.data?.restriction_enabled === true;
+  const noSingleFemale = isRestrictedViewer && myProfile.data?.restriction_no_single_female_profiles === true;
+  const noCouple = isRestrictedViewer && myProfile.data?.restriction_no_couple_profiles === true;
+  const noImages = isRestrictedViewer && myProfile.data?.restriction_no_images === true;
 
-  let filteredRaw = profilesRaw ?? [];
-  if (noSingleFemale || noCouple) {
+  let filteredRaw = profilesError ? [] : (profilesRaw ?? []);
+  if (!profilesError && (noSingleFemale || noCouple)) {
     filteredRaw = filteredRaw.filter((p: { account_type?: string; gender?: string }) => {
       if (noSingleFemale && p.account_type === "single" && p.gender === "Frau") return false;
       if (noCouple && p.account_type === "couple") return false;
@@ -100,101 +114,130 @@ export default async function EntdeckenPage({
     });
   }
 
-  const profiles = await Promise.all(
-    filteredRaw.map(async (p) => {
-      const avatarUrl = noImages
-        ? null
-        : await resolveProfileAvatarUrl(
-            { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
-            supabase
-          );
-      return { ...p, avatarUrl };
-    })
-  );
+  const profiles = profilesError
+    ? []
+    : await Promise.all(
+        filteredRaw.map(async (p) => {
+          const avatarUrl = noImages
+            ? null
+            : await resolveProfileAvatarUrl(
+                { avatar_url: p.avatar_url, avatar_photo_id: p.avatar_photo_id },
+                supabase
+              );
+          return { ...p, avatarUrl };
+        })
+      );
 
   const myPlzPrefix = myProfile.data?.postal_code?.slice(0, 2) ?? null;
 
   return (
-    <Container className="py-16">
-      <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card px-4 py-4 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-white">Entdecken</h1>
-          <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white">
-            ← MyBound
-          </Link>
-        </div>
-      </div>
-
-      <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-4 shadow-sm sm:p-6">
-      <EntdeckenFilterSection
-        roleFilter={roleFilter}
-        genderFilter={genderFilter}
-        accountTypeFilter={accountTypeFilter}
-        experienceFilter={experienceFilter}
-        preferenceFilter={preferenceFilter}
-        plzPrefix={plzPrefix}
-        myPlzPrefix={myPlzPrefix}
-        keuschhaltungFilter={keuschhaltungFilter}
-        radiusKm={radiusKm}
-        radiusCenter={radiusCenter}
+    <Container className="relative py-10 md:py-12">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[min(420px,55vh)] opacity-[0.04] mix-blend-overlay md:h-[min(480px,50vh)]"
+        aria-hidden
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.65'/%3E%3C/svg%3E")`,
+        }}
       />
 
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {profiles?.length ? (
-            profiles.map((profile) => {
-              const avatarUrl = (profile as { avatarUrl?: string | null }).avatarUrl ?? null;
-              const initials = (profile.nick ?? "?")
-                .split(/[\s_]+/)
-                .map((w: string) => w[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2);
-              const isVerifiedDom = profile.verified && (profile.role === "Dom" || profile.role === "Switcher");
-              const location = [profile.postal_code, profile.city].filter(Boolean).join(" ");
-              return (
-                <Link
-                  key={profile.id}
-                  href={`/dashboard/entdecken/${profile.id}`}
-                  className={`flex flex-col overflow-hidden rounded-lg border bg-background/50 transition-all duration-200 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background ${
-                    isVerifiedDom ? "border-accent/60 hover:border-accent/80" : "border-gray-700 hover:border-gray-600"
-                  }`}
-                >
-                  <div className="relative aspect-square w-full overflow-hidden bg-gray-900">
-                    <AvatarWithVerified verified={profile.verified} size="lg" position="top-right" className="absolute inset-0">
-                    {avatarUrl ? (
-                      <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <span className="flex h-full w-full items-center justify-center text-lg font-semibold text-accent">
-                        {initials}
-                      </span>
-                    )}
-                    </AvatarWithVerified>
-                    <span className="absolute bottom-1 right-1">
-                      <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-0.5 p-2.5 sm:p-3">
-                    <p className="flex items-center gap-1.5 text-sm font-medium text-white">
-                      <span className="truncate">{profile.nick ?? "?"}</span>
-                      {profile.verified && <VerifiedBadge size={12} showLabel />}
-                    </p>
-                    <p className="flex items-center gap-1.5 text-xs text-gray-400">
-                      <RoleIcon role={profile.role} size={10} />
-                      <span>{profile.role ?? "—"} · {(profile as { account_type?: string }).account_type === "couple" ? "Paar" : (profile.gender ?? "—")}</span>
-                    </p>
-                    {location && (
-                      <p className="truncate text-xs text-gray-500">{location}</p>
-                    )}
-                  </div>
-                </Link>
-              );
-            })
-          ) : (
-            <p className="col-span-full rounded-xl border border-gray-700 bg-background/50 p-6 text-center text-sm text-gray-400">
-              Keine Profile gefunden. Passe die Filter an oder schau später wieder vorbei.
+      <header className="relative mb-10">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/55 md:text-[11px]">
+          BoundTime · Entdecken
+        </p>
+        <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">Entdecken</h1>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-gray-400 md:text-[15px]">
+              Profile durchsuchen – unabhängig vom Feed. Filter nach Rolle, Nähe und Vorlieben, dann öffne ein Profil für
+              Details.
             </p>
-          )}
+          </div>
+          <Link
+            href="/dashboard"
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-white/12 bg-white/[0.04] px-4 py-2.5 text-sm text-gray-200 transition-[border-color,background-color,color] duration-200 hover:border-white/22 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] sm:self-auto"
+          >
+            <ChevronLeft className="h-4 w-4 text-amber-200/70" strokeWidth={1.75} aria-hidden />
+            MyBound
+          </Link>
         </div>
+        <div
+          className="mt-6 h-px w-full max-w-md bg-gradient-to-r from-amber-400/35 via-amber-200/15 to-transparent"
+          aria-hidden
+        />
+      </header>
+
+      <div className="relative">
+        <EntdeckenFilterSection
+          roleFilter={roleFilter}
+          genderFilter={genderFilter}
+          accountTypeFilter={accountTypeFilter}
+          experienceFilter={experienceFilter}
+          preferenceFilter={preferenceFilter}
+          plzPrefix={plzPrefix}
+          myPlzPrefix={myPlzPrefix}
+          keuschhaltungFilter={keuschhaltungFilter}
+          radiusKm={radiusKm}
+          radiusCenter={radiusCenter}
+        />
+
+        {profilesError ? (
+          <div className="rounded-[1.15rem] border border-red-500/25 bg-red-950/20 p-8 text-center backdrop-blur-sm">
+            <p className="text-sm font-medium text-red-200/90">Profile konnten nicht geladen werden.</p>
+            <p className="mt-2 text-xs text-gray-400">Bitte versuche es in einem Moment erneut.</p>
+            <Link
+              href="/dashboard/entdecken"
+              className="mt-5 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-amber-400/35 bg-amber-950/30 px-5 text-sm font-medium text-amber-100 transition-colors hover:border-amber-300/50 hover:bg-amber-950/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45"
+            >
+              Erneut laden
+            </Link>
+          </div>
+        ) : (
+          <section aria-label="Profile" className="mt-2">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-5 lg:grid-cols-5 lg:gap-6">
+              {profiles.length ? (
+                profiles.map((profile) => (
+                  <DiscoverProfileCard
+                    key={profile.id}
+                    profile={{
+                      id: profile.id,
+                      nick: profile.nick,
+                      role: profile.role,
+                      gender: profile.gender,
+                      account_type: profile.account_type,
+                      postal_code: profile.postal_code,
+                      city: profile.city,
+                      verified: profile.verified,
+                      last_seen_at: profile.last_seen_at,
+                      avatarUrl: profile.avatarUrl ?? null,
+                    }}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full">
+                  <div className="relative overflow-hidden rounded-[1.15rem] border border-white/[0.08] bg-black/35 p-8 text-center shadow-[0_24px_50px_-40px_rgba(0,0,0,0.85)] backdrop-blur-md sm:p-10">
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")`,
+                      }}
+                      aria-hidden
+                    />
+                    <p className="relative text-sm font-medium text-gray-200">Keine Profile mit diesen Kriterien</p>
+                    <p className="relative mt-2 text-sm text-gray-500">
+                      Filter lockern, Umkreis vergrößern oder später erneut schauen.
+                    </p>
+                    <Link
+                      href="/dashboard/entdecken"
+                      className="relative mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl border border-amber-400/35 bg-amber-950/25 px-5 text-sm font-medium text-amber-100 transition-[border-color,background-color] hover:border-amber-300/50 hover:bg-amber-950/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45"
+                    >
+                      Alle Filter zurücksetzen
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </Container>
   );
