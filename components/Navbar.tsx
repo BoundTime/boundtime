@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Search, MessageSquare, User as UserIcon, LockKeyhole, Settings, MessageSquarePlus } from "lucide-react";
+import { Menu, X, Home, Search, MessageSquare, User as UserIcon, Settings, MessageSquarePlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ChastityNavBadge } from "@/components/chastity/ChastityNavBadge";
 import { LockDurationBadge } from "@/components/LockDurationBadge";
@@ -15,6 +15,7 @@ import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { useUnreadMessageCount } from "@/lib/useUnreadMessageCount";
 import { AvatarWithVerified } from "@/components/AvatarWithVerified";
+import { NavbarDesktopMainNav } from "@/components/NavbarDesktopMainNav";
 import type { User } from "@supabase/supabase-js";
 
 type InitialNavData = {
@@ -80,6 +81,41 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   const mItem = "flex items-center gap-2 rounded-xl border px-4 py-3 text-base font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#161616]";
   const mActive = "border-amber-500/35 bg-gradient-to-b from-amber-950/45 to-amber-950/25 text-amber-50";
   const mInactive = "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/15 hover:bg-white/[0.07] hover:text-white";
+
+  const mainNavItems = useMemo(
+    () => {
+      const list: { id: string; href: string; label: string; isActive: boolean }[] = [
+        { id: "my", href: "/dashboard", label: "MyBound", isActive: nav.isDashboard },
+        { id: "ent", href: "/dashboard/entdecken", label: "Entdecken", isActive: nav.isEntdecken },
+        { id: "msg", href: "/dashboard/nachrichten", label: "Nachrichten", isActive: nav.isNachrichten },
+        { id: "keus", href: "/dashboard/keuschhaltung", label: "Keuschhaltung", isActive: nav.isKeuschhaltung },
+      ];
+      if (verified && (role === "Dom" || role === "Switcher")) {
+        list.push({
+          id: "forum",
+          href: "/dashboard/dom-bereich",
+          label: "Forum",
+          isActive: nav.isDomBereich,
+        });
+      }
+      list.push(
+        { id: "profil", href: "/dashboard/profil", label: "Profil", isActive: nav.isProfil },
+        { id: "ein", href: "/dashboard/einstellungen", label: "Einstellungen", isActive: nav.isEinstellungen }
+      );
+      return list;
+    },
+    [
+      nav.isDashboard,
+      nav.isDomBereich,
+      nav.isEinstellungen,
+      nav.isEntdecken,
+      nav.isKeuschhaltung,
+      nav.isNachrichten,
+      nav.isProfil,
+      role,
+      verified,
+    ]
+  );
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -236,7 +272,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   return (
     <header className="sticky top-0 z-[60] isolate antialiased">
       <nav
-        className={`mx-auto mt-2 flex w-full max-w-6xl items-center gap-3 overflow-hidden rounded-2xl border px-3 transition-all duration-200 sm:px-4 ${
+        className={`mx-auto mt-2 flex w-full max-w-6xl gap-3 overflow-hidden rounded-2xl border px-3 transition-all duration-200 sm:px-4 ${
+          user ? "items-center lg:flex-col lg:items-stretch" : "items-center"
+        } ${
           scrolled
             ? "border-white/10 bg-[#111111]/95 py-2 shadow-[0_16px_30px_-22px_rgba(0,0,0,0.95)] backdrop-blur"
             : "border-white/8 bg-[#141414]/92 py-3 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.95)] backdrop-blur"
@@ -244,180 +282,137 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
       >
         {user ? (
           <>
-            <div className="hidden lg:mr-2 lg:flex lg:shrink-0 lg:items-center lg:justify-start">
-              <RefreshNavLink
-                href="/dashboard"
-                className="group flex shrink-0 items-center gap-2 rounded-lg px-2 py-1 text-white transition-colors duration-150 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
-              >
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-white/5 text-xs font-bold text-amber-100">
-                  BT
-                </span>
-                <span className="text-base font-semibold tracking-[0.01em]">BoundTime</span>
-              </RefreshNavLink>
+            {/* Desktop: zwei Zeilen – oben Utilities, unten Hauptnavigation (ohne horizontales Scrollen) */}
+            <div className="hidden w-full min-w-0 flex-col gap-0 lg:flex">
+              <div className="flex w-full min-w-0 items-center justify-between gap-3 border-b border-white/10 pb-2.5">
+                <RefreshNavLink
+                  href="/dashboard"
+                  className={`group flex shrink-0 items-center gap-2 rounded-lg px-2 py-1 text-white transition-colors duration-150 hover:text-amber-200 ${navFocus}`}
+                >
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-white/5 text-xs font-bold text-amber-100">
+                    BT
+                  </span>
+                  <span className="text-base font-semibold tracking-[0.01em]">BoundTime</span>
+                </RefreshNavLink>
+                <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-2 gap-y-2 sm:flex-nowrap">
+                  <RefreshNavLink
+                    href="/dashboard/nachrichten"
+                    className={`relative inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] px-3 text-sm font-medium text-gray-200 transition-colors hover:border-white/18 hover:bg-white/[0.08] ${navFocus}`}
+                  >
+                    <MessageSquare className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
+                    <span className="hidden sm:inline">Nachrichten</span>
+                    {unreadMessages > 0 && (
+                      <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-semibold text-white">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    )}
+                  </RefreshNavLink>
+                  <div className="flex h-9 shrink-0 items-center">
+                    <NotificationBell />
+                  </div>
+                  <div
+                    className="flex shrink-0 items-center gap-1 rounded-lg border border-white/12 bg-black/30 px-1.5 py-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                    title="Keuschhaltung & Lock-Status"
+                  >
+                    <ChastityNavBadge
+                      className={`relative flex h-8 items-center gap-2 rounded-md px-2.5 text-sm font-medium ${nav.isKeuschhaltung ? navItemActive : navItemInactive} ${navFocus}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (pathname === "/dashboard/keuschhaltung") {
+                          router.refresh();
+                        } else {
+                          router.push("/dashboard/keuschhaltung");
+                          setTimeout(() => router.refresh(), 50);
+                        }
+                      }}
+                    />
+                    <span className="flex shrink-0 items-center [&_a]:my-0 [&_a]:flex [&_a]:h-8 [&_a]:items-center [&_a]:rounded-md [&_a]:border-amber-600/25 [&_a]:px-2 [&_a]:py-0 [&_a]:text-[11px] [&_a]:leading-none">
+                      <LockDurationBadge />
+                    </span>
+                  </div>
+                  {accountType === "couple" &&
+                    (effectiveRestriction !== null ? (
+                      <span
+                        className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5"
+                        title={
+                          dotGreen
+                            ? effectiveRestriction
+                              ? "Freigeschaltet – Schreiben erlaubt"
+                              : "Cuckymode aus"
+                            : "Cuckymode aktiv – Passwort nötig zum Schreiben"
+                        }
+                      >
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }}
+                          aria-hidden
+                        />
+                        <span className="hidden text-[10px] font-medium text-gray-500 xl:inline">
+                          {dotGreen ? (effectiveRestriction ? "Frei" : "Aus") : "Cucky"}
+                        </span>
+                      </span>
+                    ) : (
+                      restrictionDotSlot
+                    ))}
+                  {nick && (
+                    <RefreshNavLink
+                      href="/dashboard/profil"
+                      className={`group flex min-w-0 max-w-[220px] items-center gap-2.5 rounded-xl border px-3 py-2 shadow-[0_10px_28px_-18px_rgba(0,0,0,0.85)] transition-colors ${navFocus} ${
+                        nav.isProfil
+                          ? "border-amber-500/35 bg-gradient-to-b from-amber-950/35 to-white/[0.04] text-white"
+                          : "border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-gray-200 hover:border-amber-500/25 hover:from-amber-950/20"
+                      }`}
+                      title={nick}
+                    >
+                      <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0 ring-1 ring-white/10">
+                        <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600/80 bg-background">
+                          {avatarUrl ? (
+                            <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" />
+                          ) : (
+                            <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-amber-200/90">
+                              {nick.slice(0, 1).toUpperCase() || "?"}
+                            </span>
+                          )}
+                        </div>
+                      </AvatarWithVerified>
+                      <span className="flex min-w-0 flex-1 flex-col items-start text-left">
+                        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-gray-500 group-hover:text-gray-400">
+                          Profil
+                        </span>
+                        <span className="flex min-w-0 max-w-full items-center gap-1 text-sm font-semibold leading-tight">
+                          <span className="min-w-0 truncate" title={nick}>
+                            {nick}
+                          </span>
+                          <RoleIcon role={role} size={14} className="shrink-0 opacity-90" />
+                        </span>
+                      </span>
+                    </RefreshNavLink>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className={`inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/40 bg-red-500/[0.12] px-3 text-sm font-medium text-red-200/95 transition-colors hover:bg-red-500/25 ${navFocus}`}
+                  >
+                    Abmelden
+                  </button>
+                </div>
+              </div>
+              <NavbarDesktopMainNav items={mainNavItems} navFocus={navFocus} />
             </div>
-            <div className="flex shrink-0 lg:hidden">
+
+            {/* Mobile: eine Zeile – Logo, Nachrichten, Menü (kein Scroll in der Leiste) */}
+            <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
               <RefreshNavLink
                 href="/dashboard"
-                className="flex items-center gap-2 rounded-lg px-1 py-1 text-white transition-colors duration-150 hover:text-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
+                className={`flex shrink-0 items-center gap-2 rounded-lg px-1 py-1 text-white transition-colors duration-150 hover:text-amber-200 ${navFocus}`}
               >
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-white/5 text-xs font-bold text-amber-100">
                   BT
                 </span>
                 <span className="text-base font-semibold tracking-tight">BoundTime</span>
               </RefreshNavLink>
+              <div className="min-w-0 flex-1" aria-hidden />
             </div>
-            {/* Zone B: Primär-Navigation – horizontaler Scroll nur hier, nie Überlagerung nach Zone C */}
-            <div className="hidden min-h-[2.75rem] min-w-0 lg:flex lg:flex-1 lg:items-center lg:overflow-x-auto lg:overflow-y-hidden lg:pl-1 lg:pr-1 [scrollbar-width:thin]">
-              <div className="mx-auto flex w-max min-w-0 shrink-0 items-center gap-1.5">
-                <RefreshNavLink
-                  href="/dashboard"
-                  className={`${navItemBase} ${nav.isDashboard ? navItemActive : navItemInactive}`}
-                >
-                  <Home className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                  MyBound
-                </RefreshNavLink>
-                <RefreshNavLink
-                  href="/dashboard/entdecken"
-                  className={`${navItemBase} ${nav.isEntdecken ? navItemActive : navItemInactive}`}
-                >
-                  <Search className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                  Entdecken
-                </RefreshNavLink>
-                <RefreshNavLink
-                  href="/dashboard/nachrichten"
-                  className={`${navItemBase} ${nav.isNachrichten ? navItemActive : navItemInactive}`}
-                >
-                  <span className="relative shrink-0">
-                    <MessageSquare className="h-4 w-4 opacity-90" strokeWidth={1.5} aria-hidden />
-                    {unreadMessages > 0 && (
-                      <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-semibold text-white">
-                        {unreadMessages > 99 ? "99+" : unreadMessages}
-                      </span>
-                    )}
-                  </span>
-                  Nachrichten
-                </RefreshNavLink>
-                {/* Keuschhaltung + Lock-Dauer gebündelt – kein Überlagern der übrigen Links */}
-                <div
-                  className="flex shrink-0 items-center gap-1 rounded-lg border border-white/12 bg-black/30 px-1 py-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-                  title="Keuschhaltung & Lock-Status"
-                >
-                  <ChastityNavBadge
-                    className={`relative flex h-8 items-center gap-2 rounded-md px-2.5 text-sm font-medium ${nav.isKeuschhaltung ? navItemActive : navItemInactive} ${navFocus}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (pathname === "/dashboard/keuschhaltung") {
-                        router.refresh();
-                      } else {
-                        router.push("/dashboard/keuschhaltung");
-                        setTimeout(() => router.refresh(), 50);
-                      }
-                    }}
-                  />
-                  <span className="flex shrink-0 items-center [&_a]:my-0 [&_a]:flex [&_a]:h-8 [&_a]:items-center [&_a]:rounded-md [&_a]:border-amber-600/25 [&_a]:px-2 [&_a]:py-0 [&_a]:text-[11px] [&_a]:leading-none">
-                    <LockDurationBadge />
-                  </span>
-                </div>
-                {verified && (role === "Dom" || role === "Switcher") && (
-                  <RefreshNavLink
-                    href="/dashboard/dom-bereich"
-                    className={`${navItemBase} ${nav.isDomBereich ? navItemActive : navItemInactive}`}
-                    title="Dom(me)-Forum – Themen erstellen und diskutieren"
-                  >
-                    <MessageSquarePlus className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                    Forum
-                  </RefreshNavLink>
-                )}
-                <RefreshNavLink
-                  href="/dashboard/profil"
-                  className={`${navItemBase} ${nav.isProfil ? navItemActive : navItemInactive}`}
-                >
-                  <UserIcon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                  Profil
-                </RefreshNavLink>
-                <RefreshNavLink
-                  href="/dashboard/einstellungen"
-                  className={`${navItemBase} ${nav.isEinstellungen ? navItemActive : navItemInactive}`}
-                >
-                  <Settings className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                  Einstellungen
-                </RefreshNavLink>
-              </div>
-            </div>
-            {/* Zone C: Glocke, Cuckymode, Profil-Modul, Abmelden – fester Block, flex-shrink-0 */}
-            <div className="hidden min-w-0 shrink-0 lg:flex lg:max-w-[min(100%,380px)] lg:items-center lg:justify-end lg:gap-2 lg:border-l lg:border-white/10 lg:pl-3">
-              <div className="flex min-w-0 items-center justify-end gap-2">
-                <div className="flex h-9 shrink-0 items-center">
-                  <NotificationBell />
-                </div>
-                {accountType === "couple" &&
-                  (effectiveRestriction !== null ? (
-                    <span
-                      className="flex max-w-[5.5rem] shrink-0 flex-col items-center gap-0.5 text-center"
-                      title={
-                        dotGreen
-                          ? effectiveRestriction
-                            ? "Freigeschaltet – Schreiben erlaubt"
-                            : "Cuckymode aus"
-                          : "Cuckymode aktiv – Passwort nötig zum Schreiben"
-                      }
-                    >
-                      <span
-                        className="h-2.5 w-2.5 shrink-0 rounded-full"
-                        style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }}
-                        aria-hidden
-                      />
-                      <span className="hidden text-[9px] font-medium leading-tight text-gray-500 xl:block">
-                        {dotGreen ? (effectiveRestriction ? "Frei" : "Aus") : "Cucky"}
-                      </span>
-                    </span>
-                  ) : (
-                    restrictionDotSlot
-                  ))}
-                {nick && (
-                  <RefreshNavLink
-                    href="/dashboard/profil"
-                    className={`group flex min-w-0 max-w-[220px] items-center gap-2.5 rounded-xl border px-3 py-2 shadow-[0_10px_28px_-18px_rgba(0,0,0,0.85)] transition-colors ${navFocus} ${
-                      nav.isProfil
-                        ? "border-amber-500/35 bg-gradient-to-b from-amber-950/35 to-white/[0.04] text-white"
-                        : "border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-gray-200 hover:border-amber-500/25 hover:from-amber-950/20"
-                    }`}
-                    title={nick}
-                  >
-                    <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0 ring-1 ring-white/10">
-                      <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600/80 bg-background">
-                        {avatarUrl ? (
-                          <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" />
-                        ) : (
-                          <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-amber-200/90">
-                            {nick.slice(0, 1).toUpperCase() || "?"}
-                          </span>
-                        )}
-                      </div>
-                    </AvatarWithVerified>
-                    <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-                      <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-gray-500 group-hover:text-gray-400">
-                        Profil
-                      </span>
-                      <span className="flex min-w-0 max-w-full items-center gap-1 text-sm font-semibold leading-tight">
-                        <span className="min-w-0 truncate" title={nick}>
-                          {nick}
-                        </span>
-                        <RoleIcon role={role} size={14} className="shrink-0 opacity-90" />
-                      </span>
-                    </span>
-                  </RefreshNavLink>
-                )}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={`inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/40 bg-red-500/[0.12] px-3 text-sm font-medium text-red-200/95 transition-colors hover:bg-red-500/25 ${navFocus}`}
-                >
-                  Abmelden
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 min-w-0 lg:hidden" aria-hidden />
             </>
           ) : (
             <>
@@ -516,6 +511,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-4">
               {user ? (
                 <>
+                  <p className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Hauptnavigation</p>
                   <RefreshNavLink href="/dashboard" onClick={closeMenu} className={`${mItem} ${nav.isDashboard ? mActive : mInactive}`}>
                     <Home className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     MyBound
@@ -533,7 +529,6 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       </span>
                     )}
                   </RefreshNavLink>
-                  <NotificationBell variant="mobile" onNavigate={closeMenu} />
                   <div className="rounded-xl border border-white/12 bg-black/25 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500">Keuschhaltung &amp; Lock</p>
                     <ChastityNavBadge
@@ -567,6 +562,8 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                     <Settings className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     Einstellungen
                   </RefreshNavLink>
+                  <p className="mt-3 px-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-500">Konto &amp; Status</p>
+                  <NotificationBell variant="mobile" onNavigate={closeMenu} />
                   {accountType === "couple" && (restrictionDotMobileSlot || effectiveRestriction !== null) && (
                     <p className="mt-2 flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-400">
                       {effectiveRestriction !== null ? (
