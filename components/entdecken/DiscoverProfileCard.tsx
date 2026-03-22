@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { RoleIcon } from "@/components/RoleIcon";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
@@ -48,7 +47,8 @@ export function DiscoverProfileCard({ profile }: Props) {
       <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-b from-zinc-900 to-black">
         <AvatarWithVerified verified={!!profile.verified} size="lg" position="top-right" className="absolute inset-0">
           {avatarUrl ? (
-            <Image src={avatarUrl} alt="" fill className="object-cover" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px" />
+            // eslint-disable-next-line @next/next/no-img-element -- dynamische Supabase-URLs; next/image scheitert je nach Host/remotePatterns
+            <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
           ) : (
             <span className="flex h-full w-full items-center justify-center text-lg font-semibold text-amber-200/80">
               {initials}
