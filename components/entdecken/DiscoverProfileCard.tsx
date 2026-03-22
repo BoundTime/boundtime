@@ -46,7 +46,7 @@ export function DiscoverProfileCard({ profile }: Props) {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")`,
       }} />
       <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-b from-zinc-900 to-black">
-        <AvatarWithVerified verified={profile.verified} size="lg" position="top-right" className="absolute inset-0">
+        <AvatarWithVerified verified={!!profile.verified} size="lg" position="top-right" className="absolute inset-0">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="" fill className="object-cover" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 180px" />
           ) : (
@@ -56,7 +56,7 @@ export function DiscoverProfileCard({ profile }: Props) {
           )}
         </AvatarWithVerified>
         <span className="absolute bottom-2 right-2 rounded-full border border-white/10 bg-black/50 p-0.5 backdrop-blur-sm">
-          <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="dot" />
+          <OnlineIndicator lastSeenAt={profile.last_seen_at ?? null} variant="dot" />
         </span>
       </div>
       <div className="relative flex flex-col gap-1 border-t border-white/[0.06] bg-black/25 px-3 py-3 sm:px-3.5 sm:py-3.5">

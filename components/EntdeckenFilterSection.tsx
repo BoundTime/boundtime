@@ -348,7 +348,7 @@ export function EntdeckenFilterSection({
           </span>
           {activeChips.map((chip) => (
             <Link
-              key={`${[...chip.omit].sort().join("-")}-${chip.label}`}
+              key={`${Array.from(chip.omit).sort().join("-")}-${chip.label}`}
               href={buildSearchHref(propsBag, chip.omit)}
               className="group inline-flex max-w-full items-center gap-1.5 rounded-full border border-amber-400/25 bg-amber-950/25 py-1 pl-3 pr-2 text-xs text-amber-100/90 transition-[border-color,background-color] hover:border-amber-300/45 hover:bg-amber-950/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45"
             >
