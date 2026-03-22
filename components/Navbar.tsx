@@ -256,7 +256,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <span className="text-base font-semibold tracking-tight">BoundTime</span>
               </RefreshNavLink>
             </div>
-            <div className="hidden min-w-0 lg:flex lg:flex-1 lg:items-center lg:justify-center lg:gap-1 lg:pl-1">
+            {/* Mittlere Nav: bei wenig Platz horizontal scrollen, damit nichts unter die rechte Spalte (Lock-Badge) läuft */}
+            <div className="hidden min-w-0 lg:flex lg:min-h-0 lg:flex-1 lg:items-center lg:overflow-x-auto lg:overflow-y-visible lg:pl-1 lg:pr-2 [scrollbar-width:thin]">
+              <div className="mx-auto flex w-max min-w-0 shrink-0 items-center gap-1">
                 <RefreshNavLink
                   href="/dashboard"
                   className={`flex shrink-0 items-center gap-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-300/70 ${nav.isDashboard ? activeLink : inactiveLink}`}
@@ -285,7 +287,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   </span>
                   Nachrichten
                 </RefreshNavLink>
-                <div className="mx-1">
+                <div className="mx-1 shrink-0">
                   <NotificationBell />
                 </div>
                 <ChastityNavBadge
@@ -324,9 +326,10 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <Settings className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden />
                   Einstellungen
                 </RefreshNavLink>
+              </div>
             </div>
-            <div className="hidden min-w-0 lg:flex lg:shrink-0 lg:min-w-[260px] lg:basis-[260px] lg:items-center lg:justify-end">
-              <div className="flex min-w-0 flex-shrink-0 items-center gap-2 border-l border-white/10 pl-3">
+            <div className="relative z-10 hidden min-w-0 lg:flex lg:shrink-0 lg:min-w-[260px] lg:basis-[260px] lg:items-center lg:justify-end lg:border-l lg:border-white/10 lg:pl-3">
+              <div className="flex min-w-0 flex-shrink-0 items-center gap-2">
                 {accountType === "couple" && (
                   effectiveRestriction !== null ? (
                     <span className="flex items-center gap-1.5 shrink-0" title={dotGreen ? (effectiveRestriction ? "Freigeschaltet – Schreiben erlaubt" : "Cuckymode aus") : "Cuckymode aktiv – Passwort nötig zum Schreiben"}>
