@@ -12,8 +12,9 @@ export type MainNavItem = {
   isActive: boolean;
 };
 
-const GAP_PX = 16;
-const MIN_VISIBLE = 3;
+/** Entspricht ungefähr `gap-6` (24px) zwischen den Textlinks */
+const GAP_PX = 24;
+const MIN_VISIBLE = 2;
 
 type Props = {
   items: MainNavItem[];
@@ -146,29 +147,30 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
   const showMehr = overflow.length > 0;
 
   return (
-    <div ref={containerRef} className="relative flex w-full min-w-0 items-center gap-4 pt-2.5">
-      {/* Messleiste (unsichtbar) */}
+    <div className="flex w-full min-w-0 items-center pt-2.5">
+      {/* Symmetrisch: freie Fläche links/rechts, Links mittig; „Mehr“ rechts */}
+      <div className="min-h-9 min-w-0 flex-1" aria-hidden />
       <div
-        ref={measureRef}
-        aria-hidden
-        className="pointer-events-none absolute left-0 top-0 flex -translate-y-full gap-4 whitespace-nowrap opacity-0"
+        ref={containerRef}
+        className="relative flex min-w-0 max-w-[min(100%,42rem)] flex-nowrap items-center justify-center gap-6 overflow-hidden sm:gap-8"
       >
-        {items.map((item) => (
-          <span key={item.id} data-nav-measure className="inline-block">
-            <span
-              className={`px-2 py-2 text-sm ${item.isActive ? "font-semibold" : "font-medium"}`}
-            >
-              {item.label}
+        <div
+          ref={measureRef}
+          aria-hidden
+          className="pointer-events-none absolute bottom-full left-0 right-0 flex justify-center gap-6 whitespace-nowrap opacity-0 sm:gap-8"
+        >
+          {items.map((item) => (
+            <span key={item.id} data-nav-measure className="inline-block">
+              <span className={`px-2 py-2 text-sm ${item.isActive ? "font-semibold" : "font-medium"}`}>
+                {item.label}
+              </span>
             </span>
+          ))}
+          <span data-mehr-measure className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium">
+            Mehr
+            <ChevronDown className="h-4 w-4" strokeWidth={1.5} aria-hidden />
           </span>
-        ))}
-        <span data-mehr-measure className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium">
-          Mehr
-          <ChevronDown className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-        </span>
-      </div>
-
-      <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-4 overflow-hidden">
+        </div>
         {visible.map((item) => (
           <RefreshNavLink
             key={item.id}
@@ -181,8 +183,8 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
           </RefreshNavLink>
         ))}
       </div>
-
-      {showMehr && (
+      <div className="flex min-h-9 min-w-0 flex-1 items-center justify-end">
+        {showMehr && (
         <div className="relative shrink-0">
           <button
             ref={mehrBtnRef}
@@ -222,6 +224,7 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
             )}
         </div>
       )}
+      </div>
     </div>
   );
 }

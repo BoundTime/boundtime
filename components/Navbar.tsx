@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Search, MessageSquare, User as UserIcon, Settings, MessageSquarePlus } from "lucide-react";
+import { Menu, X, Home, Search, MessageSquare, Settings, MessageSquarePlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ChastityNavBadge } from "@/components/chastity/ChastityNavBadge";
 import { LockDurationBadge } from "@/components/LockDurationBadge";
@@ -82,40 +82,23 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   const mActive = "border-amber-500/35 bg-gradient-to-b from-amber-950/45 to-amber-950/25 text-amber-50";
   const mInactive = "border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/15 hover:bg-white/[0.07] hover:text-white";
 
-  const mainNavItems = useMemo(
-    () => {
-      const list: { id: string; href: string; label: string; isActive: boolean }[] = [
-        { id: "my", href: "/dashboard", label: "MyBound", isActive: nav.isDashboard },
-        { id: "ent", href: "/dashboard/entdecken", label: "Entdecken", isActive: nav.isEntdecken },
-        { id: "msg", href: "/dashboard/nachrichten", label: "Nachrichten", isActive: nav.isNachrichten },
-        { id: "keus", href: "/dashboard/keuschhaltung", label: "Keuschhaltung", isActive: nav.isKeuschhaltung },
-      ];
-      if (verified && (role === "Dom" || role === "Switcher")) {
-        list.push({
-          id: "forum",
-          href: "/dashboard/dom-bereich",
-          label: "Forum",
-          isActive: nav.isDomBereich,
-        });
-      }
-      list.push(
-        { id: "profil", href: "/dashboard/profil", label: "Profil", isActive: nav.isProfil },
-        { id: "ein", href: "/dashboard/einstellungen", label: "Einstellungen", isActive: nav.isEinstellungen }
-      );
-      return list;
-    },
-    [
-      nav.isDashboard,
-      nav.isDomBereich,
-      nav.isEinstellungen,
-      nav.isEntdecken,
-      nav.isKeuschhaltung,
-      nav.isNachrichten,
-      nav.isProfil,
-      role,
-      verified,
-    ]
-  );
+  /** Untere Zeile: nur übergreifende Bereiche – Nachrichten/Keusch nur oben, Profil nur über die Kachel (→ /dashboard/profil). */
+  const mainNavItems = useMemo(() => {
+    const list: { id: string; href: string; label: string; isActive: boolean }[] = [
+      { id: "my", href: "/dashboard", label: "MyBound", isActive: nav.isDashboard },
+      { id: "ent", href: "/dashboard/entdecken", label: "Entdecken", isActive: nav.isEntdecken },
+    ];
+    if (verified && (role === "Dom" || role === "Switcher")) {
+      list.push({
+        id: "forum",
+        href: "/dashboard/dom-bereich",
+        label: "Forum",
+        isActive: nav.isDomBereich,
+      });
+    }
+    list.push({ id: "ein", href: "/dashboard/einstellungen", label: "Einstellungen", isActive: nav.isEinstellungen });
+    return list;
+  }, [nav.isDashboard, nav.isDomBereich, nav.isEinstellungen, nav.isEntdecken, role, verified]);
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -520,15 +503,6 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                     <Search className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     Entdecken
                   </RefreshNavLink>
-                  <RefreshNavLink href="/dashboard/nachrichten" onClick={closeMenu} className={`relative ${mItem} ${nav.isNachrichten ? mActive : mInactive}`}>
-                    <MessageSquare className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                    Nachrichten
-                    {unreadMessages > 0 && (
-                      <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white">
-                        {unreadMessages > 99 ? "99+" : unreadMessages}
-                      </span>
-                    )}
-                  </RefreshNavLink>
                   <div className="rounded-xl border border-white/12 bg-black/25 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500">Keuschhaltung &amp; Lock</p>
                     <ChastityNavBadge
@@ -554,10 +528,6 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       Dom(me)-Forum
                     </RefreshNavLink>
                   )}
-                  <RefreshNavLink href="/dashboard/profil" onClick={closeMenu} className={`${mItem} ${nav.isProfil ? mActive : mInactive}`}>
-                    <UserIcon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                    Profil
-                  </RefreshNavLink>
                   <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className={`${mItem} ${nav.isEinstellungen ? mActive : mInactive}`}>
                     <Settings className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     Einstellungen
