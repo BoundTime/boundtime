@@ -36,9 +36,14 @@ export default async function DomBereichPage() {
           <p className="mt-2 text-sm text-gray-500">
             Bitte verifiziere dein Konto und stelle sicher, dass deine Rolle Dom oder Switcher ist.
           </p>
-          <Link href="/dashboard" className="mt-6 inline-block text-accent hover:underline">
-            ← Zurück zu MyBound
-          </Link>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <Link href="/dashboard/forum" className="inline-block text-accent hover:underline">
+              Zum Forum-Hub
+            </Link>
+            <Link href="/dashboard" className="inline-block text-gray-400 hover:text-white hover:underline">
+              ← MyBound
+            </Link>
+          </div>
         </div>
       </Container>
     );

@@ -67,6 +67,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     isDomBereich: pathname?.startsWith("/dashboard/dom-bereich") ?? false,
     isProfil: pathname?.startsWith("/dashboard/profil") ?? false,
     isEinstellungen: pathname?.startsWith("/dashboard/einstellungen") ?? false,
+    isForum:
+      (pathname?.startsWith("/dashboard/forum") ?? false) ||
+      (pathname?.startsWith("/dashboard/dom-bereich") ?? false),
   };
 
   /** Dark Luxury – einheitlich Desktop-Zeile */
@@ -92,18 +95,11 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     const list: { id: string; href: string; label: string; isActive: boolean }[] = [
       { id: "my", href: "/dashboard", label: "MyBound", isActive: nav.isDashboard },
       { id: "ent", href: "/dashboard/entdecken", label: "Entdecken", isActive: nav.isEntdecken },
+      { id: "forum", href: "/dashboard/forum", label: "Forum", isActive: nav.isForum },
     ];
-    if (verified && (role === "Dom" || role === "Switcher")) {
-      list.push({
-        id: "forum",
-        href: "/dashboard/dom-bereich",
-        label: "Forum",
-        isActive: nav.isDomBereich,
-      });
-    }
     list.push({ id: "ein", href: "/dashboard/einstellungen", label: "Einstellungen", isActive: nav.isEinstellungen });
     return list;
-  }, [nav.isDashboard, nav.isDomBereich, nav.isEinstellungen, nav.isEntdecken, role, verified]);
+  }, [nav.isDashboard, nav.isEinstellungen, nav.isEntdecken, nav.isForum]);
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -565,12 +561,10 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       <LockDurationBadge onClick={closeMenu} />
                     </div>
                   </div>
-                  {verified && (role === "Dom" || role === "Switcher") && (
-                    <RefreshNavLink href="/dashboard/dom-bereich" onClick={closeMenu} className={`${mItem} ${nav.isDomBereich ? mActive : mInactive}`}>
-                      <MessageSquarePlus className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
-                      Dom(me)-Forum
-                    </RefreshNavLink>
-                  )}
+                  <RefreshNavLink href="/dashboard/forum" onClick={closeMenu} className={`${mItem} ${nav.isForum ? mActive : mInactive}`}>
+                    <MessageSquarePlus className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
+                    Forum
+                  </RefreshNavLink>
                   <RefreshNavLink href="/dashboard/einstellungen" onClick={closeMenu} className={`${mItem} ${nav.isEinstellungen ? mActive : mInactive}`}>
                     <Settings className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     Einstellungen

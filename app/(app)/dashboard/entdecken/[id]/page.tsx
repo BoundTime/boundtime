@@ -15,6 +15,7 @@ import { AvatarWithVerified } from "@/components/AvatarWithVerified";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { RecordProfileView } from "@/components/RecordProfileView";
 import { OnlineIndicator } from "@/components/OnlineIndicator";
+import { formatMemberSince } from "@/lib/member-since";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { BullRatingsSection } from "@/components/bull/BullRatingsSection";
 import { User, BadgeCheck, Sparkles } from "lucide-react";
@@ -78,7 +79,7 @@ export default async function ProfilDetailPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "id, nick, role, gender, city, postal_code, current_postal_code, current_city, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation, profile_private"
+      "id, nick, role, gender, city, postal_code, current_postal_code, current_city, avatar_url, avatar_photo_id, height_cm, weight_kg, body_type, date_of_birth, age_range, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, verified, experience_level, last_seen_at, created_at, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_female_avatar_photo_id, couple_male_avatar_photo_id, orientation, profile_private"
     )
     .eq("id", id)
     .single();
@@ -186,6 +187,9 @@ export default async function ProfilDetailPage({
 
   const roleLabels: Record<string, string> = { Dom: "Dom", Sub: "Sub", Switcher: "Switcher", Bull: "Bull" };
   const roleLabel = profile.role ? roleLabels[profile.role] ?? profile.role : null;
+  const memberSinceLabel = formatMemberSince(
+    (profile as { created_at?: string | null }).created_at ?? null
+  );
 
   const { data: albums } = await supabase
     .from("photo_albums")
@@ -317,6 +321,9 @@ export default async function ProfilDetailPage({
               {profile.verified && <VerifiedBadge size={20} showLabel />}
               <OnlineIndicator lastSeenAt={profile.last_seen_at} variant="text" />
             </h1>
+            {memberSinceLabel ? (
+              <p className="mt-1 text-xs text-gray-500">{memberSinceLabel}</p>
+            ) : null}
             <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-gray-100">
               <BadgeCheck className={`h-3.5 w-3.5 ${profile.verified ? "text-emerald-300" : "text-gray-400"}`} strokeWidth={1.8} />
               <span>{profile.verified ? "Verifiziert" : "Nicht verifiziert"}</span>

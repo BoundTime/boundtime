@@ -18,6 +18,7 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ChastityLockDuration } from "@/components/chastity/ChastityLockDuration";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { getProfileProgress } from "@/lib/profile-utils";
+import { MyBoundSignatureHero } from "@/components/dashboard/MyBoundSignatureHero";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -234,29 +235,7 @@ export default async function DashboardPage() {
 
   return (
     <Container className="py-10 md:py-14">
-      <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#242424] via-[#1a1a1a] to-[#121212] p-6 shadow-[0_30px_65px_-40px_rgba(0,0,0,0.95)] md:p-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-amber-200/35 to-transparent" />
-        <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-100/90">MyBound Signature Feed</p>
-            <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
-              Willkommen {profile?.nick ?? "zurueck"} - dein kuratierter Premium-Stream
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-gray-300 md:text-base">
-              Fokus auf relevante Verbindungen, klare Signale und ruhige Interaktionen. Alles Wichtige ist sofort greifbar.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href="#post-form" className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-gray-100 transition-colors hover:bg-white/10">
-              Direkt posten
-            </Link>
-            <Link href="/dashboard/entdecken" className="rounded-lg border border-amber-300/40 bg-amber-300/10 px-3 py-1.5 text-sm text-amber-100 transition-colors hover:bg-amber-300/20">
-              Neue Kontakte
-            </Link>
-          </div>
-        </div>
-      </section>
+      <MyBoundSignatureHero nick={profile?.nick ?? null} />
 
       <div className="mt-4 flex items-center justify-center">
         <div className="h-px w-full max-w-3xl bg-gradient-to-r from-transparent via-white/15 to-transparent" />
