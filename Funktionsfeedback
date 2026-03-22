@@ -1,0 +1,39 @@
+=== BEMERKUNG FÜR DEN ASSIST-AGENTEN ===
+Diese Datei enthält strukturiertes Funktions-Feedback.
+Analysiere die Inhalte und erstelle daraus einen umsetzbaren Arbeitsauftrag.
+Nach Verarbeitung lösche nur den Inhaltsbereich.
+Diese Bemerkungen dürfen nicht verändert werden.
+
+=== FEEDBACK ===
+1. ORIGINAL FEEDBACK
+
+wow... da hast du ja jetzt echt einiges gemacht...👍 gehe das jetzt schritt für schritt durch
+vorweg finde ich das vom prinzipiellen aufbau und der optischen darstellung sehr gelungen. ich probiere jetzt, das ganze zu strukturieren, zu entzerren und "verwirrendes" zu entfernen
+Dieser klein gedruckte Text unter dem Headerbild kann raus, weil er an dieser Stelle quasi doppelt ist (Community für Cuckoldpaare, Bulls & mehr)
+Die vier Kacheln "Seriös", "Auf Augenhöhe", "Verifizierung" und "strenge Prüfung" brauchen wir an dieser Stelle nicht. (darüber hinaus sind sie von der usability verwirrend; vom optisch-grafischen aufbau geht man davon aus, dass man drauf klicken kann und dann weitergeleitet wird, einfach rausnehmen)
+"Vorab lesen: boundtime- features" ist kein Webseitendeutsch; das mit der Verlinkung auf die Unterseite ist gut gemacht, aber der Text sollte dann lauten: "Was sind Boundtime- Features?", Verlinkung bleibt/ Du musst dann in der Menuführungen oben auch ändern, aus "boundtime- features" wird "Boundtime- Features"
+Die Kachel "Bound- Time" mit den vier Unterkachlen unter dem Registrierungsprozess kannst du an dieser Stelle auch rausnehmen
+
+2. ZUSAMMENFASSUNG
+
+Inhaltliche und strukturelle Bereinigung der Startseite bzw. des betreffenden Views: redundante Textzeile unter dem Hero entfernen; nicht-interaktive oder nicht gewünschte Kachel-Sektionen entfernen; Text und Navigationsbezeichnung für die Features-Unterseite vereinheitlichen; Link-Ziel zur Unterseite unverändert.
+
+3. ENTSCHEIDUNG
+
+Umsetzen: Entfernen der duplikativen Hero-Unterzeile; Entfernen der vier Kacheln und des Blocks „Bound- Time“ mit Unterkacheln (inkl. etwaiger toter Links/Handler); Link zur Features-Unterseite behält dieselbe Route/URL, Ankertext wird „Was sind Boundtime- Features?“; Hauptnavigation: Eintrag von „boundtime- features“ auf „Boundtime- Features“ umbenennen.
+
+Nicht spezifiziert vom Nutzer: SEO/Meta-Titel, Breadcrumbs, weitere automatische Verweise – nur nach Abstimmung oder wenn sie denselben String nutzen.
+
+4. KONKRETE PUNKTE
+
+- Hero: Element mit dem doppelten Community-Text (klein unter dem Headerbild) aus dem Markup/Content-Quelle entfernen; keine Regression für Überschriften-Hierarchie oder Barrierefreiheit (z. B. fehlender Kontext – prüfen, ob der Rest der Seite den Kontext trägt).
+- Vier-Kachel-Sektion: komponenten- oder seitenbezogen entfernen; keine Navigation-Events auf nicht verlinkte Flächen hinterlassen.
+- CTA/Link zur Features-Unterseite: `href`/Route unverändert; sichtbarer Text exakt auf Nutzerwunsch setzen: „Was sind Boundtime- Features?“
+- Globale oder header-spezifische Navigation: Label „boundtime- features“ → „Boundtime- Features“; gleiche Ziel-URL wie bisher; prüfen auf Duplikate (Desktop-Nav, Mobile-Drawer, ggf. Duplikat-Menüs).
+- Sektion unter dem Registrierungsprozess: „Bound- Time“ mit vier Unterkacheln entfernen; abhängige Daten/Imports bereinigen, falls die Sektion eigene Komponente ist.
+
+5. OFFENE FRAGEN
+
+- Soll die Umbenennung nur die primäre Top-Navigation betreffen oder projektweit alle Menü-/Footer-Instanzen desselben Ziels?
+- Finale Schreibweise für Strings in Code/Konfiguration: „Boundtime- Features“ oder „BoundTime- Features“?
+=== ENDE FEEDBACK ===

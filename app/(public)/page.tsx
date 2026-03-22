@@ -6,9 +6,6 @@ import {
   UsersRound,
   Info,
   Users,
-  MessageCircle,
-  FileCheck,
-  Lock,
 } from "lucide-react";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
@@ -20,19 +17,11 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (user) redirect("/dashboard");
 
-  const trustChips = ["Seriös", "auf Augenhöhe", "Verifizierung", "strenge Prüfung"];
-  const featureMapNodes = [
-    { label: "strenge Prüfung", icon: FileCheck },
-    { label: "Verifizierung", icon: ShieldCheck },
-    { label: "Keuschhaltungs-Vereinbarungen", icon: Lock },
-    { label: "Nachrichten", icon: MessageCircle },
-  ];
-
   const steps = [
     {
       num: "01",
       heading: "Was ist BoundTime?",
-      body: "Deutschsprachige Community für Cuckolding, Keuschhaltung und Vernetzung – diskret, mit Verifizierung und Regeln. Mehr: boundtime-features.",
+      body: "Deutschsprachige Community für Cuckolding, Keuschhaltung und Vernetzung – diskret, mit Verifizierung und Regeln.",
     },
     {
       num: "02",
@@ -111,27 +100,12 @@ export default async function HomePage() {
                 height={288}
               />
             </Link>
-            <p className="mt-4 text-sm text-gray-400">
-              Community für Cuckoldpaare, Bulls & mehr
-            </p>
             <h1 className="mt-6 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
               BoundTime – Community für Cuckoldpaare, Bulls, Femdoms & Slaves
             </h1>
             <p className="mt-4 text-base sm:text-lg text-gray-300">
               Deutschsprachige Cuckold-Community für Austausch, Dating, Vernetzung – diskret und auf Augenhöhe.
             </p>
-
-            {/* Trust-Chips */}
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {trustChips.map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded-full border border-gray-600 bg-card/80 px-3 py-1.5 text-xs font-medium text-gray-300 sm:text-sm"
-                >
-                  {chip}
-                </span>
-              ))}
-            </div>
 
             {/* CTAs */}
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -150,30 +124,9 @@ export default async function HomePage() {
             </div>
             <p className="mt-4 text-sm text-gray-400">
               <Link href="/boundtime-features" className="text-accent hover:underline">
-                Vorab lesen: boundtime-features
+                Was sind Boundtime- Features?
               </Link>
             </p>
-
-            {/* Hero Feature-Map (Desktop: Kachel, Mobile: Liste) */}
-            <div className="mt-10 sm:mt-14">
-              <div className="mx-auto max-w-md rounded-2xl border border-gray-700 bg-card p-6 shadow-lg transition-all duration-200 hover:border-accent/50 hover:shadow-accent/5 sm:max-w-lg">
-                <p className="text-center text-lg font-semibold text-white sm:text-xl">
-                  BoundTime
-                </p>
-                {/* Desktop: 4 Nodes um Zentrum; Mobile: vertikale Liste */}
-                <div className="mt-4 flex flex-col gap-3 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-4">
-                  {featureMapNodes.map(({ label, icon: Icon }) => (
-                    <div
-                      key={label}
-                      className="flex items-center gap-2 rounded-xl border border-gray-700 bg-background/50 px-3 py-2.5 text-sm text-gray-300 transition-all duration-200 hover:border-accent/40 hover:text-white"
-                    >
-                      <Icon className="h-4 w-4 shrink-0 text-accent" strokeWidth={1.5} aria-hidden />
-                      <span>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </Container>
       </section>
@@ -257,7 +210,7 @@ export default async function HomePage() {
             </div>
             <p className="mt-4 text-sm text-gray-500">
               <Link href="/boundtime-features" className="text-accent hover:underline">
-                Vorab lesen: boundtime-features
+                Was sind Boundtime- Features?
               </Link>
             </p>
           </div>

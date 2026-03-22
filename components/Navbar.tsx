@@ -410,7 +410,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 href="/boundtime-features"
                 className="text-sm text-gray-300 transition-colors duration-150 hover:text-white"
               >
-                boundtime-features
+                Boundtime- Features
               </Link>
               <Link
                 href="/login"
@@ -574,7 +574,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 <>
                   <Link href="/community-regeln" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Community</Link>
                   <Link href="/datenschutz" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Sicherheit</Link>
-                  <Link href="/boundtime-features" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">boundtime-features</Link>
+                  <Link href="/boundtime-features" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Boundtime- Features</Link>
                   <Link href="/login" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Login</Link>
                 </>
               )}
