@@ -50,6 +50,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   const [unlockedForDot, setUnlockedForDot] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [deckReady, setDeckReady] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const unreadMessages = useUnreadMessageCount(user?.id ?? initialNavData?.userId);
 
@@ -76,6 +77,10 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     "border border-amber-500/35 bg-gradient-to-b from-amber-950/50 to-amber-950/30 text-amber-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]";
   const navItemInactive =
     "border border-transparent text-gray-300 hover:border-white/10 hover:bg-white/[0.06] hover:text-white";
+
+  /** Utility-Ghost: eine Familie (Nachrichten / Glocke / Keusch) */
+  const utilGhost =
+    "border-white/[0.14] bg-white/[0.02] text-gray-200 transition-[transform,border-color,background-color,color] duration-150 ease-out hover:-translate-y-px hover:border-amber-500/25 hover:bg-white/[0.06] motion-reduce:hover:translate-y-0";
 
   /** Mobile Sheet – gleiche Familie, vertikal */
   const mItem = "flex items-center gap-2 rounded-xl border px-4 py-3 text-base font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#161616]";
@@ -115,6 +120,17 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /** Command Deck: dezentes Reveal nur Desktop, kein Motion bei reduced-motion */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDeckReady(true);
+      return;
+    }
+    const id = requestAnimationFrame(() => setDeckReady(true));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {
@@ -255,37 +271,46 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   return (
     <header className="sticky top-0 z-[60] isolate antialiased">
       <nav
-        className={`mx-auto mt-2 flex w-full max-w-6xl gap-3 overflow-hidden rounded-2xl border px-3 transition-all duration-200 sm:px-4 ${
+        className={`mx-auto mt-2 flex w-full max-w-6xl gap-3 overflow-hidden rounded-[1.35rem] border border-white/[0.09] px-3 shadow-[0_28px_56px_-32px_rgba(0,0,0,0.88),0_0_0_1px_rgba(255,255,255,0.028)_inset,0_1px_0_rgba(255,255,255,0.055)_inset] ring-1 ring-white/[0.045] transition-[padding,box-shadow,backdrop-filter,background-color,border-color] duration-300 ease-out sm:px-4 ${
           user ? "items-center lg:flex-col lg:items-stretch" : "items-center"
         } ${
           scrolled
-            ? "border-white/10 bg-[#111111]/95 py-2 shadow-[0_16px_30px_-22px_rgba(0,0,0,0.95)] backdrop-blur"
-            : "border-white/8 bg-[#141414]/92 py-3 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.95)] backdrop-blur"
+            ? "border-white/[0.11] bg-[#0c0c0c]/93 py-2 shadow-[0_22px_44px_-26px_rgba(0,0,0,0.92),0_0_0_1px_rgba(255,255,255,0.04)_inset] backdrop-blur-xl"
+            : "border-white/[0.08] bg-[#121212]/86 py-3 backdrop-blur-md"
         }`}
       >
         {user ? (
           <>
-            {/* Desktop: zwei Zeilen – oben Utilities, unten Hauptnavigation (ohne horizontales Scrollen) */}
-            <div className="hidden w-full min-w-0 flex-col gap-0 lg:flex">
-              <div className="flex w-full min-w-0 items-center justify-between gap-3 border-b border-white/10 pb-2.5">
+            {/* Desktop: Command Deck – oben Instrumente (matter), unten Hauptnavigation */}
+            <div
+              className={`hidden w-full min-w-0 flex-col gap-0 lg:flex lg:transition-all lg:duration-[380ms] lg:ease-out motion-reduce:lg:transition-none ${
+                deckReady ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-2 lg:opacity-0"
+              } motion-reduce:lg:translate-y-0 motion-reduce:lg:opacity-100`}
+            >
+              <div className="flex w-full min-w-0 items-center justify-between gap-3 rounded-t-[1.15rem] bg-[#070707]/95 px-1 pb-2.5 pt-1.5 sm:px-2">
                 <RefreshNavLink
                   href="/dashboard"
-                  className={`group flex shrink-0 items-center gap-2 rounded-lg px-2 py-1 text-white transition-colors duration-150 hover:text-amber-200 ${navFocus}`}
+                  className={`group flex shrink-0 items-center gap-2.5 rounded-xl px-1 py-1 text-white transition-colors duration-150 hover:text-amber-100/95 ${navFocus}`}
                 >
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-white/5 text-xs font-bold text-amber-100">
+                  <span
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-600/30 bg-gradient-to-br from-amber-950/90 via-[#1c1612] to-black text-[11px] font-bold tracking-tight text-amber-100/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),inset_0_-1px_0_rgba(0,0,0,0.45)]"
+                    aria-hidden
+                  >
                     BT
                   </span>
-                  <span className="text-base font-semibold tracking-[0.01em]">BoundTime</span>
+                  <span className="text-[15px] font-semibold tracking-[-0.03em]">BoundTime</span>
                 </RefreshNavLink>
                 <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-2 gap-y-2 sm:flex-nowrap">
                   <RefreshNavLink
                     href="/dashboard/nachrichten"
-                    className={`relative inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] px-3 text-sm font-medium text-gray-200 transition-colors hover:border-white/18 hover:bg-white/[0.08] ${navFocus}`}
+                    className={`relative inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium ${utilGhost} ${navFocus}`}
                   >
-                    <MessageSquare className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
+                    <MessageSquare className="h-[17px] w-[17px] shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
                     <span className="hidden sm:inline">Nachrichten</span>
                     {unreadMessages > 0 && (
-                      <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-semibold text-white">
+                      <span
+                        className="bt-nav-badge-enter absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-0.5 text-[9px] font-semibold text-white shadow-sm"
+                      >
                         {unreadMessages > 99 ? "99+" : unreadMessages}
                       </span>
                     )}
@@ -294,11 +319,11 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                     <NotificationBell />
                   </div>
                   <div
-                    className="flex shrink-0 items-center gap-1 rounded-lg border border-white/12 bg-black/30 px-1.5 py-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                    className="flex h-9 shrink-0 items-center gap-1 rounded-lg border border-white/[0.14] bg-black/45 px-1.5 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                     title="Keuschhaltung & Lock-Status"
                   >
                     <ChastityNavBadge
-                      className={`relative flex h-8 items-center gap-2 rounded-md px-2.5 text-sm font-medium ${nav.isKeuschhaltung ? navItemActive : navItemInactive} ${navFocus}`}
+                      className={`relative flex h-8 items-center gap-2 rounded-md px-2.5 text-sm font-medium ${nav.isKeuschhaltung ? navItemActive : `${navItemInactive} !border-transparent`} ${navFocus}`}
                       onClick={(e) => {
                         e.preventDefault();
                         if (pathname === "/dashboard/keuschhaltung") {
@@ -316,7 +341,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   {accountType === "couple" &&
                     (effectiveRestriction !== null ? (
                       <span
-                        className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5"
+                        className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.02] px-2.5"
                         title={
                           dotGreen
                             ? effectiveRestriction
@@ -327,7 +352,12 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       >
                         <span
                           className="h-2.5 w-2.5 shrink-0 rounded-full"
-                          style={{ backgroundColor: dotGreen ? "#22c55e" : "#ef4444" }}
+                          style={{
+                            backgroundColor: dotGreen ? "#22c55e" : "#ef4444",
+                            boxShadow: dotGreen
+                              ? "0 0 12px 2px rgba(34, 197, 94, 0.42)"
+                              : "0 0 12px 2px rgba(239, 68, 68, 0.38)",
+                          }}
                           aria-hidden
                         />
                         <span className="hidden text-[10px] font-medium text-gray-500 xl:inline">
@@ -340,17 +370,17 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   {nick && (
                     <RefreshNavLink
                       href="/dashboard/profil"
-                      className={`group flex min-w-0 max-w-[220px] items-center gap-2.5 rounded-xl border px-3 py-2 shadow-[0_10px_28px_-18px_rgba(0,0,0,0.85)] transition-colors ${navFocus} ${
+                      className={`group relative flex min-w-0 max-w-[248px] items-center gap-3 overflow-hidden rounded-2xl border border-white/[0.1] border-l-2 border-l-amber-500/45 bg-[#101010]/95 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,box-shadow] duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(120%_80%_at_0%_0%,rgba(251,191,36,0.12),transparent_55%)] before:opacity-90 after:pointer-events-none after:absolute after:inset-0 after:bg-[url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.45'/%3E%3C/svg%3E")] after:opacity-[0.04] ${navFocus} ${
                         nav.isProfil
-                          ? "border-amber-500/35 bg-gradient-to-b from-amber-950/35 to-white/[0.04] text-white"
-                          : "border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-gray-200 hover:border-amber-500/25 hover:from-amber-950/20"
+                          ? "border-l-amber-400/70 ring-1 ring-amber-500/20"
+                          : "hover:border-l-amber-500/55 hover:bg-[#131313]"
                       }`}
                       title={nick}
                     >
-                      <AvatarWithVerified verified={verified} size="sm" className="h-9 w-9 shrink-0 ring-1 ring-white/10">
-                        <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600/80 bg-background">
+                      <AvatarWithVerified verified={verified} size="sm" className="relative z-[1] h-10 w-10 shrink-0 ring-2 ring-amber-600/25 ring-offset-2 ring-offset-[#101010]">
+                        <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600/70 bg-background">
                           {avatarUrl ? (
-                            <Image src={avatarUrl} alt="" fill className="object-cover" sizes="36px" />
+                            <Image src={avatarUrl} alt="" fill className="object-cover" sizes="40px" />
                           ) : (
                             <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-amber-200/90">
                               {nick.slice(0, 1).toUpperCase() || "?"}
@@ -358,11 +388,11 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                           )}
                         </div>
                       </AvatarWithVerified>
-                      <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-                        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-gray-500 group-hover:text-gray-400">
+                      <span className="relative z-[1] flex min-w-0 flex-1 flex-col items-start text-left">
+                        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-amber-200/45">
                           Profil
                         </span>
-                        <span className="flex min-w-0 max-w-full items-center gap-1 text-sm font-semibold leading-tight">
+                        <span className="flex min-w-0 max-w-full items-center gap-1 text-sm font-semibold leading-tight text-white/95">
                           <span className="min-w-0 truncate" title={nick}>
                             {nick}
                           </span>
@@ -374,25 +404,38 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className={`inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/40 bg-red-500/[0.12] px-3 text-sm font-medium text-red-200/95 transition-colors hover:bg-red-500/25 ${navFocus}`}
+                    className={`inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/55 bg-transparent px-3 text-sm font-medium text-red-300/95 transition-[transform,border-color,background-color,color] duration-150 ease-out hover:-translate-y-px hover:border-red-400/60 hover:bg-red-500/[0.09] motion-reduce:hover:translate-y-0 ${navFocus}`}
                   >
                     Abmelden
                   </button>
                 </div>
               </div>
-              <NavbarDesktopMainNav items={mainNavItems} navFocus={navFocus} />
+              <div
+                className="pointer-events-none h-px w-full shrink-0 bg-gradient-to-r from-transparent via-amber-400/35 to-transparent"
+                aria-hidden
+              />
+              <div
+                className={`relative rounded-b-[1.15rem] bg-[#0f0f0f]/88 px-1 pb-1 sm:px-2 lg:transition-all lg:duration-[380ms] lg:ease-out lg:delay-75 motion-reduce:lg:transition-none motion-reduce:lg:delay-0 ${
+                  deckReady ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-2 lg:opacity-0"
+                } motion-reduce:lg:translate-y-0 motion-reduce:lg:opacity-100`}
+              >
+                <NavbarDesktopMainNav items={mainNavItems} navFocus={navFocus} />
+              </div>
             </div>
 
             {/* Mobile: eine Zeile – Logo, Nachrichten, Menü (kein Scroll in der Leiste) */}
             <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
               <RefreshNavLink
                 href="/dashboard"
-                className={`flex shrink-0 items-center gap-2 rounded-lg px-1 py-1 text-white transition-colors duration-150 hover:text-amber-200 ${navFocus}`}
+                className={`flex shrink-0 items-center gap-2 rounded-xl px-1 py-1 text-white transition-colors duration-150 hover:text-amber-100/95 ${navFocus}`}
               >
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-white/20 bg-white/5 text-xs font-bold text-amber-100">
+                <span
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-600/30 bg-gradient-to-br from-amber-950/90 via-[#1c1612] to-black text-[11px] font-bold tracking-tight text-amber-100/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),inset_0_-1px_0_rgba(0,0,0,0.45)]"
+                  aria-hidden
+                >
                   BT
                 </span>
-                <span className="text-base font-semibold tracking-tight">BoundTime</span>
+                <span className="text-base font-semibold tracking-[-0.03em]">BoundTime</span>
               </RefreshNavLink>
               <div className="min-w-0 flex-1" aria-hidden />
             </div>
@@ -444,7 +487,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             >
               <MessageSquare className="h-5 w-5" strokeWidth={1.5} aria-hidden />
               {unreadMessages > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-medium text-white">
+                <span className="bt-nav-badge-enter absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-0.5 text-[9px] font-semibold text-white shadow-sm">
                   {unreadMessages > 9 ? "9+" : unreadMessages}
                 </span>
               )}

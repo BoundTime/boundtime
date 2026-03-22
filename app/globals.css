@@ -40,3 +40,25 @@ body::after {
     text-wrap: balance;
   }
 }
+
+/* Navbar: einmaliges sanftes Erscheinen der Unread-Badges (prefers-reduced-motion: keine Animation) */
+@keyframes bt-nav-badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.bt-nav-badge-enter {
+  animation: bt-nav-badge-in 0.32s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bt-nav-badge-enter {
+    animation: none;
+  }
+}

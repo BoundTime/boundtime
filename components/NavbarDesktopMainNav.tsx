@@ -33,9 +33,9 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
   const mehrBtnRef = useRef<HTMLButtonElement>(null);
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
 
-  const textInactive = "text-gray-400 hover:text-white";
+  const textInactive = "text-gray-400 transition-colors duration-150 hover:text-white";
   const textActive =
-    "font-semibold text-white after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:rounded-full after:bg-amber-400/90";
+    "font-bold text-white after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[2px] after:rounded-full after:bg-amber-400/95 after:shadow-[0_0_14px_rgba(251,191,36,0.38)] after:content-['']";
 
   const itemKey = items.map((i) => `${i.id}:${i.href}`).join("|");
 
@@ -191,7 +191,7 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
             type="button"
             onClick={() => setMehrOpen((o) => !o)}
             aria-expanded={mehrOpen}
-            className={`inline-flex items-center gap-1 rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:border-amber-500/30 hover:bg-white/[0.07] hover:text-white ${navFocus}`}
+            className={`inline-flex items-center gap-1 rounded-lg border border-white/[0.14] bg-white/[0.03] px-3 py-2 text-sm font-medium text-gray-300 transition-[transform,border-color,background-color,color] duration-150 ease-out hover:-translate-y-px hover:border-amber-500/35 hover:bg-white/[0.07] hover:text-white motion-reduce:hover:translate-y-0 ${navFocus}`}
           >
             Mehr
             <ChevronDown className={`h-4 w-4 transition-transform ${mehrOpen ? "rotate-180" : ""}`} strokeWidth={1.5} aria-hidden />

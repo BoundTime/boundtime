@@ -174,7 +174,7 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
     return (
       <button
         type="button"
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-transparent p-2 text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111]"
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.14] bg-white/[0.02] p-0 text-gray-200 transition-[transform,border-color,background-color] duration-150 ease-out hover:-translate-y-px hover:border-amber-500/25 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111] motion-reduce:hover:translate-y-0"
         aria-label="Benachrichtigungen"
       >
         <Bell className="h-[1.15rem] w-[1.15rem]" strokeWidth={1.5} />
@@ -212,12 +212,12 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
             return next;
           });
         }}
-        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-transparent p-0 text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111]"
+        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.14] bg-white/[0.02] p-0 text-gray-200 transition-[transform,border-color,background-color] duration-150 ease-out hover:-translate-y-px hover:border-amber-500/25 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111] motion-reduce:hover:translate-y-0"
         aria-label={unreadCount > 0 ? `${unreadCount} ungelesene Benachrichtigungen` : "Benachrichtigungen"}
       >
         <Bell className="h-5 w-5" strokeWidth={1.5} />
         {unreadCount > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
+          <span className="bt-nav-badge-enter absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white shadow-sm">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
