@@ -174,10 +174,10 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
     return (
       <button
         type="button"
-        className="relative flex h-9 w-9 items-center justify-center rounded-lg p-2 text-gray-300"
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-transparent p-2 text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111]"
         aria-label="Benachrichtigungen"
       >
-        <Bell className="h-5 w-5" strokeWidth={1.5} />
+        <Bell className="h-[1.15rem] w-[1.15rem]" strokeWidth={1.5} />
       </button>
     );
   }
@@ -187,7 +187,7 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
       <Link
         href="/dashboard/benachrichtigungen"
         onClick={onNavigate}
-        className="relative flex items-center gap-2 rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white"
+        className="relative flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base font-medium text-gray-300 transition-colors duration-150 hover:border-white/15 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]"
       >
         <Bell className="h-4 w-4 shrink-0" strokeWidth={1.5} />
         Benachrichtigungen
@@ -212,7 +212,7 @@ export function NotificationBell({ variant = "desktop", onNavigate }: Notificati
             return next;
           });
         }}
-        className="relative flex items-center justify-center rounded-lg p-2 text-gray-300 transition-colors hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-transparent p-0 text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111111]"
         aria-label={unreadCount > 0 ? `${unreadCount} ungelesene Benachrichtigungen` : "Benachrichtigungen"}
       >
         <Bell className="h-5 w-5" strokeWidth={1.5} />
