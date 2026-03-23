@@ -1,0 +1,276 @@
+# Neue Features – Ideensammlung (BoundTime)
+
+
+
+Diese Datei ist **kein** Arbeitsauftrag für den Code-Agenten, sondern eine **lebende Zusammenfassung** von Produktideen. Inhalt wird hier weiterentwickelt und ergänzt.
+
+
+
+---
+
+
+
+## Festgelegt (letzte Abstimmung)
+
+
+
+### Anmeldung zu Veranstaltungen (alle Nutzer:innen)
+
+
+
+- **Nicht-Premium**-Nutzer:innen können sich **normal anmelden**; ihnen steht **kein Rabatt** zu.
+
+- **Nicht-verifizierte** Nutzer:innen **dürfen sich ebenfalls anmelden**.
+
+- **Rabatt** (sobald das Modell live ist): **ausschließlich** für Nutzer:innen, die **gleichzeitig Premium** (zahlendes Abo) **und verifiziert** sind (**Premium + Verifizierung**, beides erforderlich). Anmeldung mit Rabatt-Vorteil weiterhin **über BoundTime**, damit die Plattform die Berechtigung prüfen und zuordnen kann. *(Formulierungen in UI/AGB: noch nicht final – siehe §2.)*
+
+
+
+### Rabatt-Code (Einlösung / Sicherheit)
+
+
+
+- Der Code gilt **nur am Tag der Veranstaltung** (Kalendertag des Events, Zeitzone/Definition bei Umsetzung festlegen).
+
+- Der Code ist **einmalig gültig** (nach erfolgreicher Einlösung am Einlass **verbraucht**).
+
+- Bei **Weitergabe** fällt es dem Veranstalter am Einlass auf: derselbe Code kann nicht zweimal genutzt werden.
+
+- Der **Veranstalter** sieht in seiner Übersicht: **BoundTime-Nick** und den **zugehörigen Code** – **sonst keine** weiteren Teilnehmerdaten über BoundTime hinaus (sofern nicht später bewusst erweitert).
+
+
+
+### Private Einträge durch normale Nutzer:innen
+
+
+
+- Ein **normaler User** darf eine **Privatparty** bzw. **Veranstaltung** veröffentlichen – **Voraussetzung: Verifizierung**.
+
+- **Kein Eintrittspreis** im Listing; stattdessen optional eine **angepasste Kostensumme** (z. B. anteilige **Unterkunft** oder **Verpflegung**), wenn solche Kosten anfallen können.
+
+- Beim Erstellen muss **unmissverständlich** kommuniziert werden:
+
+  - dass vorgesehene Kosten **fair und transparent** aufgeteilt werden sollen (Erwartung an die Community, keine Rechtsberatung – Formulierung mit Legal abstimmen);
+
+  - dass **BoundTime ausdrücklich aus jeglicher Haftung** herausgenommen ist, **sobald es um finanzielle Vorteile / Gewinn** o. Ä. gehen könnte (Wortlaut mit Legal/AGB finalisieren).
+
+
+
+### Rabattstufen & Veranstalter-Gebühren (Hybrid-Modell)
+
+
+
+- Das **Prinzip** bleibt: höherer Mitgliederrabatt ↔ günstigeres oder kostenloses Posten für Veranstalter.
+
+- **Noch keine exakten Stufen oder Beträge** – bewusst offen, bis klar ist, was am Markt üblich ist und was andere Plattformen (z. B. **Joyclub.de**) für vergleichbare Inserate verlangen.
+
+
+
+---
+
+
+
+## 1. Veranstalter & Events (Überblick)
+
+
+
+**Ziel:** Veranstalter auf die Plattform holen, ohne dass Nutzer:innen bei BoundTime für reine Event-Listings zahlen müssen. Stattdessen: **Mehrwert über Reichweite + Abo-Anreize** und ein klares Modell für **Rabatte**, die der Veranstalter gewährt.
+
+
+
+**Kernidee:**
+
+- Veranstalter können Veranstaltungen **bei uns posten** (Details und Umfang noch festzulegen).
+
+- Nutzer:innen können sich für eine Veranstaltung **über BoundTime anmelden**.
+
+- **Rabatt** gibt es nur über den dafür vorgesehenen Weg (typisch: Anmeldung **über unsere Seite** + **Premium und Verifizierung** – siehe §2).
+
+
+
+---
+
+
+
+## 2. Sicherheit & Berechtigung (Rabatt vs. normale Anmeldung)
+
+
+
+**Normale Anmeldung (ohne Rabatt):**
+
+- **Alle** eingeloggten Nutzer:innen können sich anmelden – **unabhängig von Premium und Verifizierung** (sofern technisch/alterstechnisch nichts anderes vorgeschrieben wird).
+
+
+
+**Rabatt-Inanspruchnahme (festgelegt):**
+
+- Rabatt / rabattberechtigender Ablauf (z. B. **Code per Nachricht**) nur bei **Premium + Verifizierung** (beides muss erfüllt sein).
+
+- Nutzer:innen mit nur einem der beiden Kriterien (nur Premium ohne Verifizierung, oder nur Verifizierung ohne Premium): **kein Rabatt**; sie können sich weiterhin **ohne Rabatt** anmelden, sofern die normale Anmeldung greift.
+
+
+
+Der **Rabatt wird vom Veranstalter gewährt** (Nachlass bei der Abrechnung vor Ort); BoundTime **vermittelt** Zuordnung und Nachweis (Code), verkauft den Rabatt nicht als eigene Leistung.
+
+
+
+**Noch offen (bewusst):**
+
+- **Texte und UX:** wie genau wir das in der Oberfläche erklären (z. B. Hinweise bei Anmeldung, leere Rabatt-Option, Call-to-Action Verifizierung/Abo) – Wortlaut und Ton noch unsicher, mit Produkt/Legal abstimmen.
+
+- Klar trennen: „Anmeldung für alle eingeloggten Nutzer:innen“ vs. „Rabatt nur mit Premium **und** Verifizierung“.
+
+
+
+---
+
+
+
+## 3. Rabattstufen & Veranstalter-Kosten (Hybrid) – Prinzip, Zahlen offen
+
+
+
+**Gefällt uns:** gestaffeltes Modell (nur **konzeptionell**, keine fixen Prozente/Zahlungen bis zur Marktrecherche):
+
+
+
+| Rabatt für BoundTime-Mitglieder (Richtung) | Plattform-Gebühr fürs Posten (Richtung)     |
+
+|--------------------------------------------|---------------------------------------------|
+
+| eher niedrig                               | Veranstalter zahlt **einen Teil** fürs Posten |
+
+| … Stufen …                                 | … entsprechend weniger …                    |
+
+| eher hoch (z. B. Richtung 20 %)            | **Kein** Posting-Entgelt (kostenlos posten) |
+
+
+
+**Intention:** Je großzügiger der Veranstalter für **Premium- und verifizierte** BoundTime-Mitglieder (Rabattberechtigte) ist, desto **günstiger oder kostenlos** ist das Inserieren auf BoundTime.
+
+
+
+**Bewusst offen:**
+
+- Exakte Prozentstufen und Gebühren (Benchmark: u. a. **Joyclub.de** und vergleichbare Angebote).
+
+- Was „ein Teil bezahlen“ konkret bedeutet (Pauschalbetrag, pro Event, Paket).
+
+- Rechtliches/Steuerliches zu Rabatten und Darstellung gegenüber Endnutzer:innen.
+
+
+
+---
+
+
+
+## 4. Private Partys vs. gewerbliche / organisierte Veranstaltungen
+
+
+
+**Unterscheidung:**
+
+- **Gewerbliche / organisierte Veranstaltungen** (Veranstalter-Modell, Rabattstufen, ggf. Posting-Gebühr nach §3).
+
+- **Private Einträge** durch **normale Nutzer:innen** (siehe **Festgelegt** oben): **Verifizierung Pflicht**, kein Eintrittspreis, optionale **Kostenbeitrags-Summe** mit Hinweis auf **faire Aufteilung** und **Haftungsausschluss BoundTime** bei **finanziellem Gewinn** / gewerblichem Charakter (Legal prüfen).
+
+
+
+**Frühere Idee (optional, nicht final):**
+
+- Limit **1× pro Monat** kostenfrei für private Posts – **wieder aufnehmen oder verwerfen**, sobald das Monetarisierungs-/Spam-Modell klar ist.
+
+
+
+**Weitere offene Punkte:**
+
+- Scharfe Definition „privat“ vs. „gewerblich/öffentlich“ (Jugendschutz, Location, Einlass).
+
+- Pflichtfelder, Moderation, Meldewege.
+
+
+
+---
+
+
+
+## 5. Einlösung / Nachweis des Rabatts (ohne eigene App zuerst)
+
+
+
+**Problem:** Lange Codes merken; ohne App soll es trotzdem funktionieren.
+
+
+
+**Erste pragmatische Lösung:**
+
+1. Nutzer:in meldet sich **über BoundTime** an (für rabattfähige Events im Rabatt-Pfad).
+
+2. Nach erfolgreicher Anmeldung (wenn **Premium + Verifizierung** erfüllt): **Direktnachricht** in BoundTime mit **kurzem Code** (z. B. **6 Ziffern**).
+
+3. **Veranstalter** prüft am Einlass; siehe **Festgelegt**: Gültigkeit **nur Event-Tag**, **einmalige** Nutzung, bei Weitergabe sofort auffällig; Anzeige **Nick + zugehöriger Code**.
+
+
+
+**Vorteile:**
+
+- Code in der App abrufbar; kein externes Merken.
+
+- Missbrauch durch Mehrfachnutzung erschwert.
+
+
+
+**Offene Punkte:**
+
+- Exakte Uhrzeit „Event-Tag“ (ganzer Tag vs. Fenster um Startzeit).
+
+- Widerruf bei Abmeldung / No-Show.
+
+- Später: QR in der Nachricht, Scanner für Veranstalter, Exportlisten.
+
+
+
+---
+
+
+
+## 6. Produkt-Bausteine (für spätere Umsetzung – nur grob)
+
+
+
+- **Event-Übersicht** + **Event-Detail** + **Anmeldung** (mit klarer UX: mit/ohne Rabatt).
+
+- **Veranstalter-Bereich** (Events anlegen, Stufe wählen, Teilnehmer: **Nick + Code**).
+
+- **Privat-Party-Flow** für verifizierte User (Kostenlogik, Pflicht-Hinweise, keine Ticketpreise).
+
+- **Messaging** für Code-Versand.
+
+- **Regeln & Moderation** (Ablehnung, Meldung, Missbrauch).
+
+
+
+---
+
+
+
+## 7. Nächste Schritte (Diskussion)
+
+
+
+- Marktvergleich: **Posting-Kosten** und Rabatt-Kultur (z. B. Joyclub) dokumentieren → daraus **erste Stufentabelle** ableiten.
+
+- Mit **Legal**: Formulierungen zu **Kostenbeiträgen** bei Privat-Events und **Haftungsausschluss** bei Gewinn/Commercial.
+
+- Rabatt-Pfad: **Premium + Verifizierung** (fest) – dazu passende **UI-Texte** und ggf. AGB-Abschnitte ausarbeiten.
+
+- MVP skizzieren: Veranstalter-Event + Anmeldung + Code-Nachricht + Veranstalter-Liste (Nick/Code); Privat-Party-Minimalversion.
+
+
+
+---
+
+
+
+*Letzte inhaltliche Ergänzung: Rabatt nur bei **Premium + Verifizierung** (beides); Anmeldung ohne Rabatt weiterhin für Nicht-Premium und/oder Nicht-Verifizierte möglich; UI-/AGB-Texte für Rabatt noch offen; Rabatt-Code eventtag-gültig und einmalig; Veranstalter sieht Nick+Code; private Posts nur verifiziert; Rabattstufen-Zahlen bewusst noch offen.*
+

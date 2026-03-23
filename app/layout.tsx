@@ -8,6 +8,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RestrictionDot, RestrictionDotMobile } from "@/components/RestrictionDot";
 import { CookieBanner } from "@/components/CookieBanner";
+import { Analytics } from "@vercel/analytics/next";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
@@ -104,6 +105,7 @@ export default async function RootLayout({
             <Footer />
           </div>
           <CookieBanner />
+          <Analytics />
         </NextIntlClientProvider>
       </body>
     </html>
