@@ -109,10 +109,17 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeMenu]);
 
+  // Zwei Schwellen (Hysterese): verhindert Flattern, wenn die Navbar-Höhe scrollY am Grenzwert verschiebt.
   useEffect(() => {
-    const threshold = 32;
+    const collapseY = 56;
+    const expandY = 28;
     function onScroll() {
-      setScrolled(window.scrollY > threshold);
+      const y = window.scrollY;
+      setScrolled((prev) => {
+        if (y > collapseY) return true;
+        if (y < expandY) return false;
+        return prev;
+      });
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
