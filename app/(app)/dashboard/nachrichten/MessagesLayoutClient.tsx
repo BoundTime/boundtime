@@ -53,16 +53,17 @@ export function MessagesLayoutClient({
         <h1 className="text-xl font-bold text-white md:text-2xl">Conversation Suite</h1>
       </div>
 
-      <div className="flex max-h-[calc(100vh-11rem)] min-h-[360px] flex-col gap-0 overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.95)] md:flex-row md:gap-0">
+      {/* dvh berücksichtigt mobile Browser-UI; min-h-0 auf Flex-Kindern ermöglicht Scroll in der Inbox */}
+      <div className="flex min-h-[360px] max-h-[calc(100vh-11rem)] supports-[height:100dvh]:max-h-[calc(100dvh-11rem)] flex-col gap-0 overflow-hidden rounded-2xl border border-white/10 bg-card/95 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.95)] md:flex-row md:gap-0">
         <aside
           className={`${
             isChatView ? "hidden md:flex" : "flex"
-          } w-full min-w-0 flex-col border-b border-white/10 bg-black/20 md:w-[340px] md:shrink-0 md:border-b-0 md:border-r`}
+          } w-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden border-b border-white/10 bg-black/20 md:w-[340px] md:flex-none md:shrink-0 md:border-b-0 md:border-r`}
         >
-          <div className="border-b border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent px-4 py-4 sm:px-5">
+          <div className="shrink-0 border-b border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent px-4 py-4 sm:px-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-amber-100/90">Inbox</h2>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-3 md:max-h-[70vh]">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain p-3 pb-5 [-webkit-overflow-scrolling:touch]">
             <ul className="space-y-2.5">
               {list.map((item) => {
                 const avatarUrl = item.otherAvatarUrl;
@@ -128,7 +129,7 @@ export function MessagesLayoutClient({
         <main
           className={`${
             isChatView ? "flex" : "hidden md:flex"
-          } min-h-[300px] min-w-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-[#171717] to-[#121212]`}
+          } min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-gradient-to-b from-[#171717] to-[#121212] md:min-h-[360px]`}
         >
           {children}
         </main>
