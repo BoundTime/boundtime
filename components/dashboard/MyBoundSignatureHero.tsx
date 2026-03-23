@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { PenLine, UserPlus } from "lucide-react";
 
@@ -42,8 +43,27 @@ export function MyBoundSignatureHero() {
       ref={sectionRef}
       className="relative overflow-hidden rounded-[1.35rem] border border-amber-200/[0.12] bg-black/45 p-6 shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(212,175,55,0.06)] ring-1 ring-white/[0.05] backdrop-blur-xl md:p-8 lg:p-9"
     >
+      {/* Post-Login Marken-Visual: Paar + Symbol – nur für eingeloggte Nutzer, dezent hinter UI */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <Image
+          src="/dashboard-brand-hero.png"
+          alt=""
+          fill
+          priority
+          className="object-cover object-[38%_center] sm:object-[center_center]"
+          sizes="(max-width: 768px) 100vw, min(1152px, 100vw)"
+        />
+      </div>
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_0%,rgba(180,140,60,0.14),transparent_52%),radial-gradient(ellipse_90%_70%_at_100%_100%,rgba(0,0,0,0.85),transparent_50%),linear-gradient(165deg,rgba(25,22,20,0.97)_0%,rgba(8,8,10,0.98)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/88 via-black/55 to-black/35 sm:from-black/82 sm:via-black/45 sm:to-black/30"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/85"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_0%,rgba(180,140,60,0.14),transparent_52%),radial-gradient(ellipse_90%_70%_at_100%_100%,rgba(0,0,0,0.85),transparent_50%),linear-gradient(165deg,rgba(25,22,20,0.55)_0%,rgba(8,8,10,0.72)_100%)]"
         aria-hidden
       />
       <div
