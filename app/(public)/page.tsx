@@ -1,75 +1,38 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  ShieldCheck,
-  HeartHandshake,
-  UsersRound,
-  Info,
-  Users,
-} from "lucide-react";
+import { Shield, FileCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { CommunityRegelnTile } from "@/components/landing/CommunityRegelnTile";
 import { ExpiredLinkBanner } from "@/components/landing/ExpiredLinkBanner";
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (user) redirect("/dashboard");
 
-  const steps = [
+  const pillars = [
     {
-      num: "01",
-      heading: "Was ist BoundTime?",
-      body: "Deutschsprachige Community für Cuckolding, Keuschhaltung und Vernetzung – diskret, mit Verifizierung und Regeln.",
+      n: "01",
+      title: "Orientierung",
+      body: "Du erfährst, wie BoundTime aufgebaut ist – bevor du dich entscheidest.",
     },
     {
-      num: "02",
-      heading: "Für wen?",
-      body: "Cuckoldpaare, Bulls, Femdom-Solodamen, devote Solomänner – alle, die dazugehören, finden hier Vernetzung und Austausch.",
+      n: "02",
+      title: "Profil & Rollen",
+      body: "Du legst ein Profil an, das zu dir passt – klar strukturiert und respektvoll.",
     },
     {
-      num: "03",
-      heading: "Features im Alltag",
-      body: "Verifizierung, Keuschhaltungs-Vereinbarungen und BoundDollars unterstützen euren Alltag.",
+      n: "03",
+      title: "Funktionen",
+      body: "Werkzeuge für Absprachen und Vernetzung – immer im Rahmen der Community-Regeln.",
     },
     {
-      num: "04",
-      heading: "Vertrauen & Sicherheit",
-      body: "Strenge Prüfung und klare Regeln schaffen Vertrauen und Sicherheit für alle.",
-    },
-  ];
-
-  const featureCards = [
-    {
-      title: "Was ist BoundTime?",
-      icon: Info,
-      body: "Community für Cuckolding, Keuschhaltung und Vernetzung – diskret, mit Verifizierung und Fokus auf Consent.",
-      href: "/boundtime-features",
-    },
-    {
-      title: "Für wen?",
-      icon: Users,
-      body: "Cuckoldpaare, Bulls, Lover, Femdom-Solodamen, devote Solomänner – Vernetzung und Austausch auf Augenhöhe.",
-      href: "/boundtime-features",
-    },
-    {
-      title: "Sicherheit & Diskretion",
-      icon: ShieldCheck,
-      body: "Daten und Privatsphäre an erster Stelle – technische und organisatorische Maßnahmen für Vertraulichkeit.",
-      href: "/datenschutz",
-    },
-    {
-      title: "Consent & Respekt",
-      icon: HeartHandshake,
-      body: "Einverständnis und Respekt als Grundlage – achtsamer Umgang und klare Kommunikation.",
-      href: "/community-regeln",
-    },
-    {
-      title: "Community-Fokus",
-      icon: UsersRound,
-      body: "Ort für Austausch und seriöse Kontakte – Vertrauen, Information und respektvoller Umgang.",
-      href: "/boundtime-features",
+      n: "04",
+      title: "Vertrauen",
+      body: "Verifizierung und klare Regeln unterstützen einen verlässlichen Umgang.",
     },
   ];
 
@@ -77,140 +40,134 @@ export default async function HomePage() {
     <>
       <ExpiredLinkBanner />
 
-      {/* A) Hero */}
-      <section className="relative overflow-hidden py-10 sm:py-20">
-        <div
-          className="pointer-events-none absolute inset-0 -top-20"
-          style={{
-            background:
-              "radial-gradient(ellipse 85% 55% at 50% -15%, rgba(122,31,43,0.22), transparent 60%)",
-          }}
-        />
+      <section className="relative overflow-hidden py-12 sm:py-20 md:py-24">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div
+            className="absolute inset-0 opacity-[0.4]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),
+                linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)
+              `,
+              backgroundSize: "48px 48px",
+            }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_50%_-20%,rgba(180,140,60,0.12),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_100%_60%,rgba(127,31,43,0.08),transparent_50%)]" />
+        </div>
+
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center">
             <Link
               href="/"
-              className="inline-block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background focus:rounded-xl rounded-xl"
+              className="relative mx-auto block h-44 w-44 max-h-64 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:h-56 sm:w-56 md:h-64 md:w-64"
             >
-              <img
+              <Image
                 src="/logo.jpg"
-                alt="BoundTime – Logo"
-                className="mx-auto h-auto w-48 sm:w-64 lg:w-72 max-h-72 object-contain drop-shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
-                width={288}
-                height={288}
+                alt="BoundTime"
+                fill
+                className="object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
+                sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
+                priority
               />
             </Link>
-            <h1 className="mt-6 text-2xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              BoundTime – Community für Cuckoldpaare, Bulls, Femdoms & Slaves
+
+            <h1 className="mt-8 text-balance text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-[2.35rem] md:leading-tight">
+              BoundTime – deine deutschsprachige Community mit klaren Regeln
             </h1>
-            <p className="mt-4 text-base sm:text-lg text-gray-300">
-              Deutschsprachige Cuckold-Community für Austausch, Dating, Vernetzung – diskret und auf Augenhöhe.
+            <p className="mx-auto mt-4 max-w-xl text-pretty text-base text-gray-400 sm:text-lg">
+              Vernetzung, Austausch und Profile – diskret organisiert, mit Verifizierung und respektvollem Rahmen.
             </p>
 
-            {/* CTAs */}
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
                 href="/register"
-                className="w-full rounded-xl bg-accent px-6 py-3.5 text-center font-medium text-white transition-all duration-200 ease-out hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] sm:w-auto"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-8 py-3.5 text-center text-sm font-semibold text-amber-50 shadow-[0_16px_40px_-24px_rgba(180,140,60,0.35)] transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] motion-reduce:transform-none sm:min-w-[200px]"
               >
-                kostenlos registrieren
+                Kostenlos registrieren
               </Link>
               <Link
                 href="/login"
-                className="w-full rounded-xl border border-gray-600 bg-card px-6 py-3.5 text-center font-medium text-white transition-all duration-200 ease-out hover:scale-[1.01] hover:border-gray-500 hover:bg-card/80 active:scale-[0.99] sm:w-auto"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-8 py-3.5 text-center text-sm font-medium text-gray-100 transition-colors duration-200 hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:min-w-[160px]"
               >
                 Anmelden
               </Link>
             </div>
-            <p className="mt-4 text-sm text-gray-400">
-              <Link href="/boundtime-features" className="text-accent hover:underline">
-                Was sind Boundtime- Features?
+
+            <p className="mt-6">
+              <Link
+                href="/boundtime-features"
+                className="text-sm font-medium text-amber-200/85 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
+              >
+                Was ist BoundTime?
               </Link>
             </p>
-          </div>
-        </Container>
-      </section>
 
-      {/* B) In 4 Schritten verstanden */}
-      <section className="border-t border-gray-800 py-10 sm:py-16">
-        <Container>
-          <h2 className="text-center text-xl font-bold text-white sm:text-2xl">
-            In 4 Schritten verstanden
-          </h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6">
-            {steps.map(({ num, heading, body }) => (
-              <article
-                key={num}
-                className="flex flex-col rounded-2xl border border-gray-700 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-md sm:p-6"
-              >
-                <span className="text-xs font-mono text-accent sm:text-sm">{num}</span>
-                <h3 className="mt-2 text-base font-semibold leading-tight text-white sm:text-lg">
-                  {heading}
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-400">
-                  {body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* C) Feature-Card Grid */}
-      <section id="community" className="border-t border-gray-800 py-10 sm:py-16">
-        <Container>
-          <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {featureCards.map(({ title, icon: Icon, body, href }) => (
-              <article
-                key={title}
-                className="flex min-h-[200px] flex-col rounded-2xl border border-gray-700 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-600 hover:shadow-md sm:p-6"
-              >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 sm:h-12 sm:w-12">
-                  <Icon
-                    className="h-5 w-5 text-accent sm:h-6 sm:w-6"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                </div>
-                <h2 className="mt-3 sm:mt-4 text-base font-semibold leading-tight text-white sm:text-lg">
-                  {title}
-                </h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-400 line-clamp-3">
-                  {body}
-                </p>
-                <p className="mt-3">
-                  <Link
-                    href={href}
-                    className="inline-flex items-center gap-1 text-sm font-medium text-accent hover:text-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background rounded"
-                  >
-                    Mehr erfahren
-                  </Link>
-                </p>
-              </article>
-            ))}
-            <CommunityRegelnTile />
-          </div>
-        </Container>
-      </section>
-
-      {/* D) Abschlussbanner */}
-      <section className="border-t border-gray-800 py-12 sm:py-16">
-        <Container>
-          <div className="mx-auto max-w-2xl rounded-2xl border border-gray-700 bg-card p-8 text-center shadow-lg sm:p-10">
-            <p className="text-base text-gray-300 sm:text-lg">
-              Diskret, auf Augenhöhe – mit Verifizierung und klaren Regeln. Starte jetzt.
-            </p>
-            <div className="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-2 sm:gap-3">
               <Link
-                href="/register"
-                className="w-full rounded-xl bg-accent px-6 py-3.5 text-center font-medium text-white transition-all duration-200 hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] sm:w-auto"
+                href="/community-regeln"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
               >
-                kostenlos registrieren
+                <FileCheck className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                Community-Regeln
+              </Link>
+              <Link
+                href="/boundtime-features"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                Funktionen &amp; Ablauf
+              </Link>
+              <Link
+                href="/datenschutz"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
+              >
+                <Shield className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                Datenschutz
               </Link>
             </div>
-            <p className="mt-4 text-sm text-gray-500">
-              <Link href="/boundtime-features" className="text-accent hover:underline">
-                Was sind Boundtime- Features?
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-t border-white/[0.06] bg-black/20 py-12 sm:py-16 md:py-20">
+        <Container>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/50">Ablauf</p>
+            <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">Vier Schritte zum Überblick</h2>
+            <p className="mt-2 text-sm text-gray-500">Kurz erklärt – ohne lange Textwände.</p>
+          </div>
+          <ol className="mx-auto mt-10 max-w-3xl space-y-0 border-l border-amber-400/25 pl-6 sm:pl-8">
+            {pillars.map(({ n, title, body }) => (
+              <li key={n} className="relative pb-10 last:pb-0">
+                <span className="absolute -left-6 top-0 flex h-7 w-7 -translate-x-[calc(50%+0.5px)] items-center justify-center rounded-full border border-amber-400/35 bg-zinc-950 text-[10px] font-semibold text-amber-200/90 sm:-left-8 sm:h-8 sm:w-8 sm:text-xs">
+                  {n}
+                </span>
+                <h3 className="text-base font-semibold text-white sm:text-lg">{title}</h3>
+                <p className="mt-2 max-w-prose text-sm leading-relaxed text-gray-400 sm:text-[15px]">{body}</p>
+              </li>
+            ))}
+          </ol>
+        </Container>
+      </section>
+
+      <section className="border-t border-white/[0.06] py-12 sm:py-16 md:py-20">
+        <Container>
+          <div className="mx-auto max-w-2xl rounded-[1.25rem] border border-amber-200/[0.1] bg-gradient-to-b from-black/50 to-black/70 p-8 text-center shadow-[0_32px_80px_-48px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.04] backdrop-blur-md sm:p-10 md:p-12">
+            <p className="text-base leading-relaxed text-gray-300 sm:text-lg">
+              Wenn dir Struktur, Respekt und klare Spielregeln wichtig sind, bist du hier richtig.
+            </p>
+            <div className="mt-8">
+              <Link
+                href="/register"
+                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-8 py-3.5 text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/55 hover:bg-amber-950/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] sm:w-auto"
+              >
+                Jetzt registrieren
+              </Link>
+            </div>
+            <p className="mt-5 text-sm text-gray-500">
+              <Link href="/boundtime-features" className="text-amber-200/80 hover:text-amber-100 hover:underline">
+                Mehr zu BoundTime lesen
               </Link>
             </p>
           </div>

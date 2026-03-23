@@ -47,7 +47,7 @@ function InfoCallout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-5">
+    <div className="rounded-xl border border-white/[0.1] bg-gray-800/40 p-5">
       <div className="flex items-center gap-2">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 text-accent">
           <ShieldCheck className="h-4 w-4" />
@@ -77,9 +77,9 @@ function StepCard({
       type="button"
       onClick={onClick}
       className={[
-        "group text-left rounded-xl border bg-card p-5 transition-all",
+        "group text-left rounded-xl border bg-black/40 backdrop-blur-sm p-5 transition-all",
         "hover:border-gray-600 hover:shadow-sm hover:-translate-y-0.5",
-        active ? "border-accent/60 shadow-[0_0_0_1px_rgba(127,31,43,0.25)]" : "border-gray-700",
+        active ? "border-accent/60 shadow-[0_0_0_1px_rgba(127,31,43,0.25)]" : "border-white/[0.1]",
       ].join(" ")}
     >
       <div className="flex items-center justify-between gap-4">
@@ -87,7 +87,7 @@ function StepCard({
           <span
             className={[
               "inline-flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold",
-              active ? "border-accent/50 bg-accent/15 text-accent" : "border-gray-700 bg-gray-900/40 text-gray-300",
+              active ? "border-accent/50 bg-accent/15 text-accent" : "border-white/[0.1] bg-gray-900/40 text-gray-300",
             ].join(" ")}
           >
             {num}
@@ -110,7 +110,7 @@ function HeroMapCard({ onNavigate }: { onNavigate: (id: string) => void }) {
   ];
 
   return (
-    <div className="relative h-[320px] w-full rounded-2xl border border-gray-700 bg-card p-6 overflow-hidden">
+    <div className="relative h-[320px] w-full rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-6 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(127,31,43,0.25),transparent_55%)]" />
       <div className="absolute inset-0">
         <svg viewBox="0 0 300 300" className="h-full w-full">
@@ -145,7 +145,7 @@ function HeroMapCard({ onNavigate }: { onNavigate: (id: string) => void }) {
           className="absolute"
           style={{ left: n.x, top: n.y }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-gray-900/30 px-3 py-1 text-xs font-medium text-gray-200 hover:border-accent/60 hover:text-white transition-colors">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-gray-900/30 px-3 py-1 text-xs font-medium text-gray-200 hover:border-accent/60 hover:text-white transition-colors">
             {n.label}
           </span>
         </button>
@@ -176,20 +176,22 @@ export default function BoundTimeFeaturesPage() {
           <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-7">
               <div className="max-w-2xl">
-                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                  BoundTime Features
+                <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-amber-200/55">
+                  BoundTime
+                </p>
+                <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.35rem] lg:leading-tight">
+                  Was ist BoundTime?
                 </h1>
-                <p className="mt-4 text-base text-gray-300 leading-relaxed">
-                  Neu hier? In wenigen Minuten verstehst du, was <span className="text-accent font-medium">Cuckymode</span>,{" "}
-                  <span className="text-accent font-medium">Keuschhaltungs-Vereinbarungen</span> und die{" "}
-                  <span className="text-accent font-medium">strenge Prüfung</span> für Solomänner bedeuten.
+                <p className="mt-4 max-w-xl text-base leading-relaxed text-gray-400">
+                  Neu hier? Hier erfährst du in kurzen Abschnitten, wie Cuckymode, Keuschhaltungs-Vereinbarungen und die
+                  Verifizierung für Solomänner aufgebaut sind – sachlich und ohne Werbeversprechen.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                  {["18+ (nur Erwachsene)", "Respekt & Consent", "Diskret & vertrauenswürdig", "Datenschutz im Fokus"].map((chip) => (
+                  {["Nur für Erwachsene (18+)", "Respekt & klare Regeln", "Diskret", "Datenschutz"].map((chip) => (
                     <span
                       key={chip}
-                      className="inline-flex items-center rounded-full border border-gray-700 bg-card px-3 py-1 text-xs font-medium text-gray-200"
+                      className="inline-flex items-center rounded-full border border-white/[0.1] bg-black/35 px-3 py-1.5 text-xs font-medium text-gray-200 backdrop-blur-sm"
                     >
                       {chip}
                     </span>
@@ -199,15 +201,15 @@ export default function BoundTimeFeaturesPage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/register"
-                    className="inline-flex items-center justify-center rounded-lg bg-accent px-6 py-3.5 text-center font-medium text-white transition-all hover:bg-accent-hover"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-6 py-3.5 text-center text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/55 hover:bg-amber-950/50"
                   >
                     Kostenlos registrieren
                   </Link>
                   <Link
                     href="/"
-                    className="inline-flex items-center justify-center rounded-lg border border-gray-700 bg-card px-6 py-3.5 text-center font-medium text-gray-200 transition-colors hover:border-gray-600"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-6 py-3.5 text-center text-sm font-medium text-gray-100 transition-colors hover:border-white/25 hover:bg-white/[0.08]"
                   >
-                    Zurück zu Startseite
+                    Zurück zur Startseite
                   </Link>
                 </div>
               </div>
@@ -221,7 +223,7 @@ export default function BoundTimeFeaturesPage() {
 
               {/* Mobile map list */}
               <div className="lg:hidden">
-                <div className="rounded-2xl border border-gray-700 bg-card p-5">
+                <div className="rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-5">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold text-white">Feature Map</div>
                     <Sparkles className="h-4 w-4 text-accent" aria-hidden />
@@ -234,7 +236,7 @@ export default function BoundTimeFeaturesPage() {
                         onClick={() => scrollToId(it.id)}
                         className={[
                           "flex items-center justify-between rounded-xl border px-4 py-3 transition-colors",
-                          "border-gray-700 bg-gray-900/30 hover:border-accent/50",
+                          "border-white/[0.1] bg-gray-900/30 hover:border-accent/50",
                           activeId === it.id ? "border-accent/60" : "",
                         ].join(" ")}
                       >
@@ -256,7 +258,7 @@ export default function BoundTimeFeaturesPage() {
           <div className="flex items-end justify-between gap-4">
             <h2 className="text-2xl font-bold text-white">In 4 Schritten verstanden</h2>
             <div className="hidden md:flex items-center gap-3 text-xs text-gray-400">
-              <span className="inline-flex items-center gap-2 rounded-full border border-gray-700 bg-card px-3 py-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-black/40 backdrop-blur-sm px-3 py-2">
                 <Lock className="h-4 w-4 text-accent" />
                 Respekt & klare Regeln
               </span>
@@ -304,7 +306,7 @@ export default function BoundTimeFeaturesPage() {
                   onClick={() => scrollToId(it.id)}
                   className={[
                     "shrink-0 rounded-full border px-4 py-2 text-sm transition-colors",
-                    "border-gray-700 bg-card text-gray-200 hover:border-accent/60",
+                    "border-white/[0.1] bg-black/40 backdrop-blur-sm text-gray-200 hover:border-accent/60",
                     activeId === it.id ? "border-accent/70 text-white" : "",
                   ].join(" ")}
                 >
@@ -321,7 +323,7 @@ export default function BoundTimeFeaturesPage() {
         <Container>
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
             <aside className="hidden lg:block lg:col-span-3">
-              <div className="sticky top-24 rounded-2xl border border-gray-700 bg-card p-4">
+              <div className="sticky top-24 rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-4">
                 <h3 className="text-sm font-semibold text-white">Inhaltsverzeichnis</h3>
                 <div className="mt-3 space-y-2">
                   {tocItems.map((it) => {
@@ -333,7 +335,7 @@ export default function BoundTimeFeaturesPage() {
                         onClick={() => scrollToId(it.id)}
                         className={[
                           "w-full rounded-xl border px-4 py-3 text-left transition-colors",
-                          isActive ? "border-accent/60 bg-accent/10" : "border-gray-700 bg-gray-900/30",
+                          isActive ? "border-accent/60 bg-accent/10" : "border-white/[0.1] bg-gray-900/30",
                         ].join(" ")}
                       >
                         <div className="flex items-center justify-between gap-3">
@@ -358,11 +360,11 @@ export default function BoundTimeFeaturesPage() {
                 </p>
 
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
-                  <div className="rounded-2xl border border-gray-700 bg-card p-5">
+                  <div className="rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-5">
                     <h3 className="text-sm font-semibold text-white">Was passiert hier?</h3>
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       {["Profile entdecken", "Absprachen strukturieren", "Nachrichten & Kontakt"].map((v) => (
-                        <div key={v} className="rounded-xl border border-gray-700 bg-gray-900/30 p-3 text-sm text-gray-300">
+                        <div key={v} className="rounded-xl border border-white/[0.1] bg-gray-900/30 p-3 text-sm text-gray-300">
                           {v}
                         </div>
                       ))}
@@ -468,7 +470,7 @@ export default function BoundTimeFeaturesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="rounded-2xl border border-gray-700 bg-card p-5">
+                    <div className="rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-5">
                       <h3 className="text-lg font-semibold text-white">BoundDollars (BD)</h3>
                       <p className="mt-2 text-sm text-gray-300 leading-relaxed">
                         BD sind eine <strong>Fantasywährung</strong> innerhalb der Plattform – kein echtes Geld.
@@ -517,7 +519,7 @@ export default function BoundTimeFeaturesPage() {
                     <InfoCallout title="Warum wir das transparent halten">
                       Wir wollen Vertrauen aufbauen und Missbrauch reduzieren – bevor jemand in die Community startet.
                     </InfoCallout>
-                    <div className="rounded-2xl border border-gray-700 bg-card p-5">
+                    <div className="rounded-2xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-5">
                       <p className="text-sm text-gray-300 leading-relaxed">
                         Wenn du vorab mehr wissen willst:
                       </p>
@@ -533,7 +535,7 @@ export default function BoundTimeFeaturesPage() {
               </div>
 
               {/* Closing */}
-              <div className="mt-10 rounded-3xl border border-gray-700 bg-card p-6 sm:p-8">
+              <div className="mt-10 rounded-3xl border border-white/[0.1] bg-black/40 backdrop-blur-sm p-6 sm:p-8">
                 <h2 className="text-2xl font-bold text-white">Bereit, BoundTime kennenzulernen?</h2>
                 <p className="mt-2 text-gray-300 leading-relaxed">
                   Diese Seite hilft dir beim Einstieg. Danach kannst du dich registrieren und dein Profil in Ruhe ausrichten.

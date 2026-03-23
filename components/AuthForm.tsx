@@ -262,13 +262,13 @@ function validate(): boolean {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-md space-y-5 rounded-xl border border-gray-700 bg-card p-8 shadow-sm"
+      className="w-full space-y-5 rounded-[1.25rem] border border-amber-200/10 bg-black/50 p-7 shadow-[0_28px_70px_-40px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.04] backdrop-blur-xl sm:p-8"
     >
-      <h2 className="text-2xl font-semibold text-white">
-        {isRegister
-          ? `Registrieren${registerStep <= 3 ? ` – Schritt ${registerStep} von 3` : ""}`
-          : "Anmelden"}
-      </h2>
+      {isRegister ? (
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/60">
+          Schritt {registerStep} von 3
+        </p>
+      ) : null}
 
       {submitSuccess && (
         <p className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-400 border border-green-500/20">
@@ -298,7 +298,7 @@ function validate(): boolean {
               id="accountType"
               value={accountType}
               onChange={(e) => setAccountType(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
             >
               <option value="">— Bitte wählen —</option>
               {ACCOUNT_TYPE_OPTIONS.map((o) => (
@@ -324,7 +324,7 @@ function validate(): boolean {
               }
               setRegisterStep(2);
             }}
-            className="w-full rounded-lg bg-accent px-4 py-3 font-medium text-white hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+            className="w-full rounded-xl border border-amber-400/40 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-colors hover:border-amber-300/50 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
           >
             Weiter
           </button>
@@ -347,7 +347,7 @@ function validate(): boolean {
                   id="coupleType"
                   value={coupleType}
                   onChange={(e) => setCoupleType(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 >
                   <option value="">— Bitte wählen —</option>
                   {COUPLE_TYPE_OPTIONS.map((o) => (
@@ -374,7 +374,7 @@ function validate(): boolean {
                   id="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 >
                   <option value="">— Bitte wählen —</option>
                   {GENDER_OPTIONS.map((g) => (
@@ -395,7 +395,7 @@ function validate(): boolean {
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 >
                   <option value="">— Bitte wählen —</option>
                   {ROLE_OPTIONS.map((r) => (
@@ -414,7 +414,7 @@ function validate(): boolean {
             <button
               type="button"
               onClick={() => setRegisterStep(1)}
-              className="flex-1 rounded-lg border border-gray-600 bg-background px-4 py-3 font-medium text-gray-300 hover:border-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+              className="flex-1 rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 font-medium text-gray-200 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
             >
               Zurück
             </button>
@@ -433,7 +433,7 @@ function validate(): boolean {
                 if (Object.keys(next).length > 0) return;
                 setRegisterStep(3);
               }}
-              className="flex-1 rounded-lg bg-accent px-4 py-3 font-medium text-white hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+              className="flex-1 rounded-xl border border-amber-400/40 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-colors hover:border-amber-300/50 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
             >
               Weiter
             </button>
@@ -455,7 +455,7 @@ function validate(): boolean {
                   type="text"
                   value={nick}
                   onChange={(e) => setNick(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                   placeholder="z. B. Max_Muster"
                   autoComplete="username"
                   minLength={NICK_MIN}
@@ -497,7 +497,7 @@ function validate(): boolean {
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 />
                 {errors.dateOfBirth && (
                   <p className="mt-1 text-sm text-red-400">{errors.dateOfBirth}</p>
@@ -516,7 +516,7 @@ function validate(): boolean {
                   type="date"
                   value={partnerDateOfBirth}
                   onChange={(e) => setPartnerDateOfBirth(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 />
                 {errors.partnerDateOfBirth && (
                   <p className="mt-1 text-sm text-red-400">{errors.partnerDateOfBirth}</p>
@@ -534,7 +534,7 @@ function validate(): boolean {
                   type="text"
                   value={nick}
                   onChange={(e) => setNick(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                   placeholder="z. B. Max_Muster"
                   autoComplete="username"
                   minLength={NICK_MIN}
@@ -556,7 +556,7 @@ function validate(): boolean {
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
                 />
                 {errors.dateOfBirth && (
                   <p className="mt-1 text-sm text-red-400">{errors.dateOfBirth}</p>
@@ -579,7 +579,7 @@ function validate(): boolean {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
           placeholder="name@beispiel.de"
           autoComplete="email"
         />
@@ -597,7 +597,7 @@ function validate(): boolean {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
           placeholder="••••••••"
           autoComplete={isRegister ? "new-password" : "current-password"}
         />
@@ -617,7 +617,7 @@ function validate(): boolean {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white placeholder-gray-500 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
               placeholder="••••••••"
               autoComplete="new-password"
             />
@@ -674,14 +674,14 @@ function validate(): boolean {
           <button
             type="button"
             onClick={() => setRegisterStep(2)}
-            className="flex-1 rounded-lg border border-gray-600 bg-background px-4 py-3 font-medium text-gray-300 hover:border-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+            className="flex-1 rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 font-medium text-gray-200 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
           >
             Zurück
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 rounded-lg bg-accent px-4 py-3 font-medium text-white hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-1 rounded-xl border border-amber-400/45 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:scale-100"
           >
             {loading ? "Bitte warten …" : "Registrieren"}
           </button>
@@ -690,7 +690,7 @@ function validate(): boolean {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-accent px-4 py-3 font-medium text-white transition-all duration-200 ease-out hover:scale-[1.02] hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="w-full rounded-xl border border-amber-400/45 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:scale-100"
         >
           {loading ? "Bitte warten …" : "Anmelden"}
         </button>

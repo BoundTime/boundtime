@@ -1,28 +1,33 @@
 import { Container } from "@/components/Container";
+import { PublicPageHeader } from "@/components/public/PublicPageHeader";
+import { PublicArticle } from "@/components/public/PublicArticle";
 
 export default function DatenschutzPage() {
   return (
-    <Container className="py-16">
-      <article className="prose prose-invert max-w-none">
-        <h1 className="text-3xl font-bold text-white">Datenschutzerklärung</h1>
-        <p className="mt-4 text-gray-400">
+    <Container className="py-12 md:py-16">
+      <PublicPageHeader
+        title="Datenschutzerklärung"
+        subtitle="Überblick zur Verarbeitung personenbezogener Daten auf BoundTime."
+      />
+      <PublicArticle>
+        <p>
           Der Schutz Ihrer personenbezogenen Daten ist uns wichtig. Die nachstehenden Hinweise geben
           einen Überblick darüber, wie Ihre Daten verarbeitet werden. Für Rückfragen wenden Sie sich
           bitte an die im Impressum genannte Kontaktadresse.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Verantwortliche Stelle</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Verantwortliche Stelle</h2>
+        <p>
           Verantwortlich für die Datenverarbeitung ist der Betreiber dieser Plattform. Kontaktdaten
           und weitere Angaben finden Sie im{" "}
-          <a href="/impressum" className="text-accent hover:underline">
+          <a href="/impressum">
             Impressum
           </a>
           .
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Server-Logdateien</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Server-Logdateien</h2>
+        <p>
           Beim Aufruf unserer Website werden durch den Hosting-Dienst (Supabase bzw. den eingesetzten
           Hosting-Provider) automatisch Zugriffsdaten (z.&nbsp;B. IP-Adresse, Datum und Uhrzeit des
           Zugriffs, aufgerufene Seite, Browsertyp) in Logdateien gespeichert. Diese Daten werden zur
@@ -32,12 +37,12 @@ export default function DatenschutzPage() {
           Aufbewahrungspflichten bestehen.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Konkret verarbeitete Daten</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Konkret verarbeitete Daten</h2>
+        <p>
           Im Rahmen der Nutzung werden unter anderem folgende Daten verarbeitet (Platzhalter – an
           tatsächliche Funktionen anpassen):
         </p>
-        <ul className="mt-2 list-disc pl-6 text-gray-400 space-y-1">
+        <ul className="mt-2 space-y-2">
           <li>
             <strong className="text-gray-300">Registrierung:</strong> E-Mail, Nick (Anzeigename),
             Geschlecht, Rolle (Dom/Sub/Switcher), Geburtsdatum (zur Altersprüfung).
@@ -67,11 +72,11 @@ export default function DatenschutzPage() {
           </li>
         </ul>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Cookies und vergleichbare Technologien</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Cookies und vergleichbare Technologien</h2>
+        <p>
           Wir setzen Cookies und vergleichbare Speichertechnologien (z.&nbsp;B. Local Storage) ein:
         </p>
-        <ul className="mt-2 list-disc pl-6 text-gray-400 space-y-2">
+        <ul className="mt-2 space-y-2">
           <li>
             <strong className="text-gray-300">Session-Cookies / technisch notwendige Cookies:</strong>{" "}
             Für die Anmeldung und Sitzungsverwaltung werden Cookies verwendet. Diese sind für den
@@ -86,16 +91,16 @@ export default function DatenschutzPage() {
             Browsereinstellungen löschen; dann erscheint das Banner erneut.
           </li>
         </ul>
-        <p className="mt-2 text-gray-400">
+        <p className="mt-2">
           Weitere Einzelheiten zu den von uns genutzten Diensten (Supabase, Google Fonts) finden Sie
           unter „Drittanbieter“.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Rechtsgrundlagen</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Rechtsgrundlagen</h2>
+        <p>
           Die Verarbeitung erfolgt auf folgenden Rechtsgrundlagen:
         </p>
-        <ul className="mt-2 list-disc pl-6 text-gray-400 space-y-1">
+        <ul className="mt-2 space-y-2">
           <li>
             <strong className="text-gray-300">Vertragserfüllung (Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;b DSGVO):</strong>{" "}
             Konto, Bereitstellung der Dienste, Profildaten
@@ -114,8 +119,8 @@ export default function DatenschutzPage() {
           </li>
         </ul>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Drittanbieter</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Drittanbieter</h2>
+        <p>
           <strong className="text-gray-300">Supabase:</strong> Hosting, Datenbank und
           Authentifizierung werden über Supabase bereitgestellt. Dabei können Daten in der EU und
           ggf. in den USA verarbeitet werden. Es gelten die Datenschutzinformationen von Supabase
@@ -124,14 +129,13 @@ export default function DatenschutzPage() {
             href="https://supabase.com/privacy"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline"
           >
             supabase.com/privacy
           </a>
           . Bei produktivem Einsatz die gewählte Region (EU/US) und ggf. Standardvertragsklauseln
           angeben.
         </p>
-        <p className="mt-4 text-gray-400">
+        <p className="mt-4">
           <strong className="text-gray-300">Google Fonts (Plus Jakarta Sans):</strong> Zur
           Darstellung von Schriften werden Schriftarten von Google-Servern abgerufen. Dabei können
           Verbindungsdaten an Google (USA) übermittelt werden. Weitere Informationen finden Sie in
@@ -140,20 +144,19 @@ export default function DatenschutzPage() {
             href="https://policies.google.com/privacy"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline"
           >
             policies.google.com/privacy
           </a>
           .
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Speicherdauer</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Speicherdauer</h2>
+        <p>
           Personenbezogene Daten werden grundsätzlich nur so lange gespeichert, wie sie für die
           Bereitstellung der Dienste erforderlich sind oder Sie eingewilligt haben. Konkrete
           Orientierung:
         </p>
-        <ul className="mt-2 list-disc pl-6 text-gray-400 space-y-1">
+        <ul className="mt-2 space-y-2">
           <li>Profildaten, Nachrichten: Bis zur Kontolöschung</li>
           <li>
             Verifizierungsfotos: Nach Abschluss der Prüfung und ggf. Löschung des Kontos; ggf.
@@ -161,12 +164,12 @@ export default function DatenschutzPage() {
           </li>
           <li>Server-Logs: Üblicherweise wenige Tage bis maximal einige Wochen</li>
         </ul>
-        <p className="mt-2 text-gray-400">
+        <p className="mt-2">
           Gesetzliche Aufbewahrungsfristen (z.&nbsp;B. steuerrechtlich) bleiben vorbehalten.
         </p>
 
-        <h2 className="mt-8 text-xl font-semibold text-white">Ihre Rechte</h2>
-        <p className="mt-2 text-gray-400">
+        <h2>Ihre Rechte</h2>
+        <p>
           Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der
           Verarbeitung Ihrer Daten sowie auf Datenübertragbarkeit. Sofern die Verarbeitung auf
           Einwilligung beruht, können Sie diese jederzeit widerrufen; die Rechtmäßigkeit der bis
@@ -178,7 +181,6 @@ export default function DatenschutzPage() {
             href="https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent hover:underline"
           >
             BfDI – Landesdatenschutzbehörden
           </a>
@@ -189,7 +191,7 @@ export default function DatenschutzPage() {
           Stand: {new Date().getFullYear()}. Bei Änderungen der Verarbeitung werden wir diese
           Erklärung aktualisieren.
         </p>
-      </article>
+      </PublicArticle>
     </Container>
   );
 }
