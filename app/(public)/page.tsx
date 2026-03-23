@@ -58,19 +58,27 @@ export default async function HomePage() {
 
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center">
-            <Link
-              href="/"
-              className="relative mx-auto block h-44 w-44 max-h-64 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:h-56 sm:w-56 md:h-64 md:w-64"
-            >
-              <Image
-                src="/logo.jpg"
-                alt="BoundTime"
-                fill
-                className="object-contain drop-shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
-                sizes="(max-width: 640px) 176px, (max-width: 768px) 224px, 256px"
-                priority
-              />
-            </Link>
+            <div className="relative mx-auto w-full max-w-[min(100%,28rem)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90 blur-3xl sm:blur-[64px]"
+                aria-hidden
+              >
+                <div className="h-[min(52vw,22rem)] w-[min(90vw,28rem)] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(180,140,60,0.35)_0%,rgba(127,31,43,0.12)_45%,transparent_70%)] sm:h-80 sm:w-[32rem]" />
+              </div>
+              <Link
+                href="/"
+                className="relative mx-auto block aspect-[4/5] w-full min-h-[220px] max-h-[min(72vh,640px)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:min-h-[280px] md:min-h-[340px] md:max-h-[min(68vh,680px)]"
+              >
+                <Image
+                  src="/landing-brand-hero.png"
+                  alt="BoundTime"
+                  fill
+                  className="object-contain object-center drop-shadow-[0_12px_48px_rgba(0,0,0,0.55)] [filter:drop-shadow(0_0_40px_rgba(180,140,60,0.12))]"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 48rem"
+                  priority
+                />
+              </Link>
+            </div>
 
             <h1 className="mt-8 text-balance text-2xl font-bold tracking-tight text-white sm:text-4xl md:text-[2.35rem] md:leading-tight">
               BoundTime – deine deutschsprachige Community mit klaren Regeln
