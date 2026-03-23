@@ -110,8 +110,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   }, [closeMenu]);
 
   useEffect(() => {
+    const threshold = 32;
     function onScroll() {
-      setScrolled(window.scrollY > 16);
+      setScrolled(window.scrollY > threshold);
     }
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -267,11 +268,11 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
   return (
     <header className="sticky top-0 z-[60] isolate antialiased">
       <nav
-        className={`mx-auto mt-2 flex w-full max-w-6xl gap-3 overflow-hidden rounded-[1.35rem] border border-white/[0.09] px-3 shadow-[0_28px_56px_-32px_rgba(0,0,0,0.88),0_0_0_1px_rgba(255,255,255,0.028)_inset,0_1px_0_rgba(255,255,255,0.055)_inset] ring-1 ring-white/[0.045] transition-[padding,box-shadow,backdrop-filter,background-color,border-color] duration-300 ease-out sm:px-4 ${
+        className={`mx-auto mt-2 flex w-full max-w-6xl gap-3 overflow-hidden rounded-[1.35rem] border border-white/[0.09] px-3 shadow-[0_28px_56px_-32px_rgba(0,0,0,0.88),0_0_0_1px_rgba(255,255,255,0.028)_inset,0_1px_0_rgba(255,255,255,0.055)_inset] ring-1 ring-white/[0.045] transition-[padding,box-shadow,backdrop-filter,background-color,border-color] duration-200 ease-out motion-reduce:duration-0 sm:px-4 ${
           user ? "items-center lg:flex-col lg:items-stretch" : "items-center"
         } ${
           scrolled
-            ? "border-white/[0.11] bg-[#0c0c0c]/93 py-2 shadow-[0_22px_44px_-26px_rgba(0,0,0,0.92),0_0_0_1px_rgba(255,255,255,0.04)_inset] backdrop-blur-xl"
+            ? "border-white/[0.11] bg-[#0c0c0c]/93 py-2 shadow-[0_22px_44px_-26px_rgba(0,0,0,0.92),0_0_0_1px_rgba(255,255,255,0.04)_inset] backdrop-blur-xl lg:py-1.5"
             : "border-white/[0.08] bg-[#121212]/86 py-3 backdrop-blur-md"
         }`}
       >
@@ -283,25 +284,47 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 deckReady ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-2 lg:opacity-0"
               } motion-reduce:lg:translate-y-0 motion-reduce:lg:opacity-100`}
             >
-              <div className="flex w-full min-w-0 items-center justify-between gap-3 rounded-t-[1.15rem] bg-[#070707]/95 px-1 pb-2.5 pt-1.5 sm:px-2">
+              <div
+                className={`flex w-full min-w-0 items-center justify-between gap-3 rounded-t-[1.15rem] bg-[#070707]/95 px-1 sm:px-2 transition-[padding,gap] duration-200 ease-out motion-reduce:transition-none ${
+                  scrolled ? "gap-2 pb-1.5 pt-1" : "gap-3 pb-2.5 pt-1.5"
+                }`}
+              >
                 <RefreshNavLink
                   href="/dashboard"
-                  className={`group flex shrink-0 items-center gap-2.5 rounded-xl px-1 py-1 text-white transition-colors duration-150 hover:text-amber-100/95 ${navFocus}`}
+                  className={`group flex shrink-0 items-center rounded-xl px-1 py-1 text-white transition-all duration-200 ease-out hover:text-amber-100/95 motion-reduce:transition-none ${navFocus} ${
+                    scrolled ? "gap-2" : "gap-2.5"
+                  }`}
                 >
                   <span
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-amber-600/30 bg-gradient-to-br from-amber-950/90 via-[#1c1612] to-black text-[11px] font-bold tracking-tight text-amber-100/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),inset_0_-1px_0_rgba(0,0,0,0.45)]"
+                    className={`inline-flex items-center justify-center rounded-lg border border-amber-600/30 bg-gradient-to-br from-amber-950/90 via-[#1c1612] to-black font-bold tracking-tight text-amber-100/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),inset_0_-1px_0_rgba(0,0,0,0.45)] transition-[width,height,font-size] duration-200 ease-out motion-reduce:transition-none ${
+                      scrolled ? "h-7 w-7 text-[10px]" : "h-8 w-8 text-[11px]"
+                    }`}
                     aria-hidden
                   >
                     BT
                   </span>
-                  <span className="text-[15px] font-semibold tracking-[-0.03em]">BoundTime</span>
+                  <span
+                    className={`font-semibold tracking-[-0.03em] transition-[font-size] duration-200 ease-out motion-reduce:transition-none ${
+                      scrolled ? "text-sm" : "text-[15px]"
+                    }`}
+                  >
+                    BoundTime
+                  </span>
                 </RefreshNavLink>
                 <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-2 gap-y-2 sm:flex-nowrap">
                   <RefreshNavLink
                     href="/dashboard/nachrichten"
-                    className={`relative inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium ${utilGhost} ${navFocus}`}
+                    className={`relative inline-flex shrink-0 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-[height,padding] duration-200 ease-out motion-reduce:transition-none ${utilGhost} ${navFocus} ${
+                      scrolled ? "h-8" : "h-9"
+                    }`}
                   >
-                    <MessageSquare className="h-[17px] w-[17px] shrink-0 opacity-90" strokeWidth={1.5} aria-hidden />
+                    <MessageSquare
+                      className={`shrink-0 opacity-90 transition-[width,height] duration-200 ease-out motion-reduce:transition-none ${
+                        scrolled ? "h-4 w-4" : "h-[17px] w-[17px]"
+                      }`}
+                      strokeWidth={1.5}
+                      aria-hidden
+                    />
                     <span className="hidden sm:inline">Nachrichten</span>
                     {unreadMessages > 0 && (
                       <span
@@ -311,15 +334,19 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       </span>
                     )}
                   </RefreshNavLink>
-                  <div className="flex h-9 shrink-0 items-center">
-                    <NotificationBell />
+                  <div className={`flex shrink-0 items-center transition-[height] duration-200 ease-out motion-reduce:transition-none ${scrolled ? "h-8" : "h-9"}`}>
+                    <NotificationBell compact={scrolled} />
                   </div>
                   <div
-                    className="flex h-9 shrink-0 items-center gap-1 rounded-lg border border-white/[0.14] bg-black/45 px-1.5 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                    className={`flex shrink-0 items-center gap-1 rounded-lg border border-white/[0.14] bg-black/45 px-1.5 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[height] duration-200 ease-out motion-reduce:transition-none ${
+                      scrolled ? "h-8" : "h-9"
+                    }`}
                     title="Keuschhaltung & Lock-Status"
                   >
                     <ChastityNavBadge
-                      className={`relative flex h-8 items-center gap-2 rounded-md px-2.5 text-sm font-medium ${nav.isKeuschhaltung ? navItemActive : `${navItemInactive} !border-transparent`} ${navFocus}`}
+                      className={`relative flex items-center gap-2 rounded-md px-2.5 text-sm font-medium transition-[height,padding] duration-200 ease-out motion-reduce:transition-none ${
+                        scrolled ? "h-7 px-2 text-[13px]" : "h-8"
+                      } ${nav.isKeuschhaltung ? navItemActive : `${navItemInactive} !border-transparent`} ${navFocus}`}
                       onClick={(e) => {
                         e.preventDefault();
                         if (pathname === "/dashboard/keuschhaltung") {
@@ -330,14 +357,18 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                         }
                       }}
                     />
-                    <span className="flex shrink-0 items-center [&_a]:my-0 [&_a]:flex [&_a]:h-8 [&_a]:items-center [&_a]:rounded-md [&_a]:border-amber-600/25 [&_a]:px-2 [&_a]:py-0 [&_a]:text-[11px] [&_a]:leading-none">
+                    <span
+                      className={`flex shrink-0 items-center [&_a]:my-0 [&_a]:flex [&_a]:items-center [&_a]:rounded-md [&_a]:border-amber-600/25 [&_a]:px-2 [&_a]:py-0 [&_a]:text-[11px] [&_a]:leading-none ${scrolled ? "[&_a]:h-7" : "[&_a]:h-8"}`}
+                    >
                       <LockDurationBadge />
                     </span>
                   </div>
                   {accountType === "couple" &&
                     (effectiveRestriction !== null ? (
                       <span
-                        className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.02] px-2.5"
+                        className={`flex shrink-0 items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.02] px-2.5 transition-[height] duration-200 ease-out motion-reduce:transition-none ${
+                          scrolled ? "h-8" : "h-9"
+                        }`}
                         title={
                           dotGreen
                             ? effectiveRestriction
@@ -366,33 +397,60 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   {nick && (
                     <RefreshNavLink
                       href="/dashboard/profil"
-                      className={`group relative flex min-w-0 max-w-[248px] items-center gap-3 overflow-hidden rounded-2xl border border-white/[0.1] border-l-2 border-l-amber-500/45 bg-[#101010]/95 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,box-shadow] duration-200 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(120%_80%_at_0%_0%,rgba(251,191,36,0.12),transparent_55%)] before:opacity-90 after:pointer-events-none after:absolute after:inset-0 after:bg-[url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.45'/%3E%3C/svg%3E")] after:opacity-[0.04] ${navFocus} ${
+                      className={`group relative flex min-w-0 max-w-[248px] items-center overflow-hidden rounded-2xl border border-white/[0.1] border-l-2 border-l-amber-500/45 bg-[#101010]/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] transition-[border-color,background-color,box-shadow,gap,padding] duration-200 ease-out before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(120%_80%_at_0%_0%,rgba(251,191,36,0.12),transparent_55%)] before:opacity-90 after:pointer-events-none after:absolute after:inset-0 after:bg-[url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.45'/%3E%3C/svg%3E")] after:opacity-[0.04] motion-reduce:transition-none ${navFocus} ${
+                        scrolled ? "gap-2 px-3 py-2" : "gap-3 px-4 py-3"
+                      } ${
                         nav.isProfil
                           ? "border-l-amber-400/70 ring-1 ring-amber-500/20"
                           : "hover:border-l-amber-500/55 hover:bg-[#131313]"
                       }`}
                       title={nick}
                     >
-                      <AvatarWithVerified verified={verified} size="sm" className="relative z-[1] h-10 w-10 shrink-0 ring-2 ring-amber-600/25 ring-offset-2 ring-offset-[#101010]">
+                      <AvatarWithVerified
+                        verified={verified}
+                        size="sm"
+                        className={`relative z-[1] shrink-0 ring-2 ring-amber-600/25 ring-offset-2 ring-offset-[#101010] transition-[width,height] duration-200 ease-out motion-reduce:transition-none ${
+                          scrolled ? "h-9 w-9" : "h-10 w-10"
+                        }`}
+                      >
                         <div className="relative h-full w-full overflow-hidden rounded-full border border-gray-600/70 bg-background">
                           {avatarUrl ? (
-                            <Image src={avatarUrl} alt="" fill className="object-cover" sizes="40px" />
+                            <Image
+                              src={avatarUrl}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes={scrolled ? "36px" : "40px"}
+                            />
                           ) : (
-                            <span className="flex h-full w-full items-center justify-center text-sm font-semibold text-amber-200/90">
+                            <span
+                              className={`flex h-full w-full items-center justify-center font-semibold text-amber-200/90 ${
+                                scrolled ? "text-xs" : "text-sm"
+                              }`}
+                            >
                               {nick.slice(0, 1).toUpperCase() || "?"}
                             </span>
                           )}
                         </div>
                       </AvatarWithVerified>
                       <span className="relative z-[1] flex min-w-0 flex-1 flex-col items-start text-left">
-                        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-amber-200/45">
+                        <span
+                          className={`font-semibold uppercase tracking-[0.22em] text-amber-200/45 transition-[font-size] duration-200 ease-out motion-reduce:transition-none ${
+                            scrolled ? "text-[8px]" : "text-[9px]"
+                          }`}
+                        >
                           Profil
                         </span>
-                        <span className="flex min-w-0 max-w-full items-center gap-1 text-sm font-semibold leading-tight text-white/95">
-                          <span className="min-w-0 truncate" title={nick}>
+                        <span className="flex min-w-0 max-w-full items-center gap-1 font-semibold leading-tight text-white/95">
+                          <span
+                            className={`min-w-0 truncate transition-[font-size] duration-200 ease-out motion-reduce:transition-none ${
+                              scrolled ? "text-[13px]" : "text-sm"
+                            }`}
+                            title={nick}
+                          >
                             {nick}
                           </span>
-                          <RoleIcon role={role} size={14} className="shrink-0 opacity-90" />
+                          <RoleIcon role={role} size={scrolled ? 12 : 14} className="shrink-0 opacity-90" />
                         </span>
                       </span>
                     </RefreshNavLink>
@@ -400,7 +458,9 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className={`inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/55 bg-transparent px-3 text-sm font-medium text-red-300/95 transition-[transform,border-color,background-color,color] duration-150 ease-out hover:-translate-y-px hover:border-red-400/60 hover:bg-red-500/[0.09] motion-reduce:hover:translate-y-0 ${navFocus}`}
+                    className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-lg border border-red-500/55 bg-transparent px-3 text-sm font-medium text-red-300/95 transition-[height,transform,border-color,background-color,color] duration-200 ease-out hover:-translate-y-px hover:border-red-400/60 hover:bg-red-500/[0.09] motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${navFocus} ${
+                      scrolled ? "h-8" : "h-9"
+                    }`}
                   >
                     Abmelden
                   </button>
@@ -411,11 +471,17 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 aria-hidden
               />
               <div
-                className={`relative rounded-b-[1.15rem] bg-[#0f0f0f]/88 px-1 pb-1 sm:px-2 lg:transition-all lg:duration-[380ms] lg:ease-out lg:delay-75 motion-reduce:lg:transition-none motion-reduce:lg:delay-0 ${
-                  deckReady ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-2 lg:opacity-0"
-                } motion-reduce:lg:translate-y-0 motion-reduce:lg:opacity-100`}
+                className={`transition-[padding-bottom] duration-200 ease-out motion-reduce:transition-none ${
+                  scrolled ? "pb-0.5" : "pb-1"
+                }`}
               >
-                <NavbarDesktopMainNav items={mainNavItems} navFocus={navFocus} />
+                <div
+                  className={`relative rounded-b-[1.15rem] bg-[#0f0f0f]/88 px-1 sm:px-2 lg:transition-[transform,opacity] lg:duration-[380ms] lg:ease-out lg:delay-75 motion-reduce:lg:transition-none motion-reduce:lg:delay-0 ${
+                    deckReady ? "lg:translate-y-0 lg:opacity-100" : "lg:translate-y-2 lg:opacity-0"
+                  } motion-reduce:lg:translate-y-0 motion-reduce:lg:opacity-100`}
+                >
+                  <NavbarDesktopMainNav items={mainNavItems} navFocus={navFocus} compact={scrolled} />
+                </div>
               </div>
             </div>
 

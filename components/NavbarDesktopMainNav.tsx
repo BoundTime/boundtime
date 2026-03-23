@@ -12,20 +12,22 @@ export type MainNavItem = {
   isActive: boolean;
 };
 
-/** Entspricht ungefähr `gap-6` (24px) zwischen den Textlinks */
-const GAP_PX = 24;
+const GAP_PX_DEFAULT = 24;
+const GAP_PX_COMPACT = 18;
 const MIN_VISIBLE = 2;
 
 type Props = {
   items: MainNavItem[];
   navFocus: string;
+  /** Kompaktere untere Nav-Zeile (z. B. bei gescrollter Desktop-Navbar) */
+  compact?: boolean;
 };
 
 /**
  * Untere Navbar-Zeile: Text-Links, aktiver Zustand per Unterstrich (Amber).
  * Kein horizontales Scrollen – bei Platzmangel „Mehr ▾“-Dropdown.
  */
-export function NavbarDesktopMainNav({ items, navFocus }: Props) {
+export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props) {
   const [visibleCount, setVisibleCount] = useState(items.length);
   const [mehrOpen, setMehrOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,11 +35,12 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
   const mehrBtnRef = useRef<HTMLButtonElement>(null);
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
 
-  const textInactive = "text-gray-400 transition-colors duration-150 hover:text-white";
+  const textInactive = "font-medium text-gray-400 transition-colors duration-150 hover:text-white";
   const textActive =
     "font-bold text-white after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[2px] after:rounded-full after:bg-amber-400/95 after:shadow-[0_0_14px_rgba(251,191,36,0.38)] after:content-['']";
 
   const itemKey = items.map((i) => `${i.id}:${i.href}`).join("|");
+  const gapPx = compact ? GAP_PX_COMPACT : GAP_PX_DEFAULT;
 
   useLayoutEffect(() => {
     if (items.length === 0) return;
@@ -51,10 +54,10 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
       if (itemSpans.length === 0) return;
 
       const widths = itemSpans.map((el) => el.offsetWidth);
-      const mehrW = (mehrProbe?.offsetWidth ?? 0) + GAP_PX;
+      const mehrW = (mehrProbe?.offsetWidth ?? 0) + gapPx;
       const fullW = container.clientWidth;
 
-      const totalAll = widths.reduce((acc, w, i) => acc + w + (i > 0 ? GAP_PX : 0), 0);
+      const totalAll = widths.reduce((acc, w, i) => acc + w + (i > 0 ? gapPx : 0), 0);
       if (totalAll <= fullW) {
         setVisibleCount(items.length);
         return;
@@ -65,7 +68,7 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
       let count = 0;
       for (let i = 0; i < widths.length; i++) {
         const w = widths[i];
-        const g = count > 0 ? GAP_PX : 0;
+        const g = count > 0 ? gapPx : 0;
         if (sum + g + w <= avail) {
           sum += g + w;
           count++;
@@ -90,7 +93,7 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
     ro.observe(container);
     requestAnimationFrame(run);
     return () => ro.disconnect();
-  }, [items.length, itemKey]);
+  }, [items.length, itemKey, gapPx, compact]);
 
   useEffect(() => {
     setVisibleCount((c) => Math.min(c, items.length));
@@ -146,36 +149,47 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
   const overflow = items.slice(visibleCount);
   const showMehr = overflow.length > 0;
 
+  const linkText = compact ? "text-[13px]" : "text-sm";
+  const linkPad = compact ? "px-2 py-1.5" : "px-2 py-2";
+  const rowGap = compact ? "gap-4 sm:gap-6" : "gap-6 sm:gap-8";
+  const rowPt = compact ? "pt-1.5" : "pt-2.5";
+  const sideMinH = compact ? "min-h-8" : "min-h-9";
+
   return (
-    <div className="flex w-full min-w-0 items-center pt-2.5">
+    <div className={`flex w-full min-w-0 items-center transition-[padding-top] duration-200 ease-out motion-reduce:transition-none ${rowPt}`}>
       {/* Symmetrisch: freie Fläche links/rechts, Links mittig; „Mehr“ rechts */}
-      <div className="min-h-9 min-w-0 flex-1" aria-hidden />
+      <div className={`${sideMinH} min-w-0 flex-1`} aria-hidden />
       <div
         ref={containerRef}
-        className="relative flex min-w-0 max-w-[min(100%,42rem)] flex-nowrap items-center justify-center gap-6 overflow-hidden sm:gap-8"
+        className={`relative flex min-w-0 max-w-[min(100%,42rem)] flex-nowrap items-center justify-center overflow-hidden transition-[gap] duration-200 ease-out motion-reduce:transition-none ${rowGap}`}
       >
         <div
           ref={measureRef}
           aria-hidden
-          className="pointer-events-none absolute bottom-full left-0 right-0 flex justify-center gap-6 whitespace-nowrap opacity-0 sm:gap-8"
+          className={`pointer-events-none absolute bottom-full left-0 right-0 flex justify-center whitespace-nowrap opacity-0 ${rowGap}`}
         >
           {items.map((item) => (
             <span key={item.id} data-nav-measure className="inline-block">
-              <span className={`px-2 py-2 text-sm ${item.isActive ? "font-semibold" : "font-medium"}`}>
+              <span
+                className={`${linkPad} ${linkText} ${item.isActive ? "font-semibold" : "font-medium"}`}
+              >
                 {item.label}
               </span>
             </span>
           ))}
-          <span data-mehr-measure className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium">
+          <span
+            data-mehr-measure
+            className={`inline-flex items-center gap-1 px-3 ${compact ? "py-1.5" : "py-2"} ${linkText} font-medium`}
+          >
             Mehr
-            <ChevronDown className="h-4 w-4" strokeWidth={1.5} aria-hidden />
+            <ChevronDown className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={1.5} aria-hidden />
           </span>
         </div>
         {visible.map((item) => (
           <RefreshNavLink
             key={item.id}
             href={item.href}
-            className={`relative shrink-0 px-2 py-2 text-sm font-medium transition-colors ${navFocus} ${
+            className={`relative shrink-0 transition-[padding,font-size] duration-200 ease-out motion-reduce:transition-none ${linkPad} ${linkText} ${navFocus} ${
               item.isActive ? textActive : textInactive
             }`}
           >
@@ -183,7 +197,7 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
           </RefreshNavLink>
         ))}
       </div>
-      <div className="flex min-h-9 min-w-0 flex-1 items-center justify-end">
+      <div className={`flex ${sideMinH} min-w-0 flex-1 items-center justify-end`}>
         {showMehr && (
         <div className="relative shrink-0">
           <button
@@ -191,10 +205,16 @@ export function NavbarDesktopMainNav({ items, navFocus }: Props) {
             type="button"
             onClick={() => setMehrOpen((o) => !o)}
             aria-expanded={mehrOpen}
-            className={`inline-flex items-center gap-1 rounded-lg border border-white/[0.14] bg-white/[0.03] px-3 py-2 text-sm font-medium text-gray-300 transition-[transform,border-color,background-color,color] duration-150 ease-out hover:-translate-y-px hover:border-amber-500/35 hover:bg-white/[0.07] hover:text-white motion-reduce:hover:translate-y-0 ${navFocus}`}
+            className={`inline-flex items-center gap-1 rounded-lg border border-white/[0.14] bg-white/[0.03] px-3 font-medium text-gray-300 transition-[transform,padding,font-size,border-color,background-color,color] duration-200 ease-out hover:-translate-y-px hover:border-amber-500/35 hover:bg-white/[0.07] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0 ${navFocus} ${
+              compact ? "py-1.5 text-[13px]" : "py-2 text-sm"
+            }`}
           >
             Mehr
-            <ChevronDown className={`h-4 w-4 transition-transform ${mehrOpen ? "rotate-180" : ""}`} strokeWidth={1.5} aria-hidden />
+            <ChevronDown
+              className={`transition-transform ${compact ? "h-3.5 w-3.5" : "h-4 w-4"} ${mehrOpen ? "rotate-180" : ""}`}
+              strokeWidth={1.5}
+              aria-hidden
+            />
           </button>
 
           {mehrOpen &&
