@@ -39,8 +39,8 @@ export function CookieBanner() {
         aria-label="Cookie-Hinweis"
         className="fixed bottom-0 left-0 right-0 z-[100] border-t border-amber-200/10 bg-black/92 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_48px_-24px_rgba(0,0,0,0.75)] backdrop-blur-md md:px-6 md:pt-4"
       >
-        <div className="mx-auto flex max-h-[38vh] max-w-6xl flex-col gap-3 overflow-y-auto px-4 sm:max-h-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:overflow-visible md:px-0">
-          <p className="text-sm leading-relaxed text-gray-300">
+        <div className="mx-auto flex max-h-[min(40vh,16rem)] max-w-6xl flex-col-reverse gap-3 overflow-y-auto px-4 sm:max-h-none sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:overflow-visible md:px-0">
+          <p className="text-xs leading-relaxed text-gray-300 sm:text-sm">
             Wir nutzen technisch notwendige Cookies für Anmeldung und Sitzung (über Supabase),{" "}
             <strong className="font-medium text-gray-200">Vercel Web Analytics</strong> zur
             nutzungsbezogenen Auswertung (ohne werbliches Profiling; siehe Datenschutz) sowie ggf.{" "}

@@ -17,8 +17,10 @@ export default function AGBPage() {
         <h2>§ 1 Geltungsbereich</h2>
         <p className="mt-2">
           Diese AGB gelten für die Nutzung der von uns bereitgestellten Dienste und Anwendungen.
-          Gegenstand ist die kostenlose Nutzung der Community-Plattform BoundTime. Abweichende
-          Bedingungen des Nutzers werden nicht anerkannt, sofern nicht ausdrücklich zugestimmt wird.
+          Gegenstand ist die kostenlose Nutzung der Community-Plattform BoundTime. Thematischer Rahmen
+          und Zielgruppen ergeben sich aus dem <a href="/impressum">Impressum</a> und den{" "}
+          <a href="/community-regeln">Community-Regeln</a>. Abweichende Bedingungen des Nutzers
+          werden nicht anerkannt, sofern nicht ausdrücklich zugestimmt wird.
         </p>
 
         <h2>§ 2 Vertragsschluss / Registrierung</h2>

@@ -507,7 +507,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="fixed inset-0 z-[100] lg:hidden"
+            className="fixed inset-0 z-[110] lg:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Menü"

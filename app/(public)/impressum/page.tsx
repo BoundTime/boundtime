@@ -11,11 +11,14 @@ export default function ImpressumPage() {
       />
       <PublicArticle>
         <p>
-          BoundTime ist eine deutschsprachige Community-Plattform für erwachsene Nutzerinnen und
-          Nutzer, die Austausch, Begegnung und diskrete Kontakte im BDSM-Kontext suchen. Die
-          Plattform versteht sich als sichere und respektvolle Umgebung. Der Zugang ist
-          ausschließlich Volljährigen vorbehalten. Die Nutzung erfolgt auf Grundlage der AGB und
-          Community-Regeln.
+          BoundTime ist eine deutschsprachige Community-Plattform für volljährige Nutzerinnen und
+          Nutzer mit Schwerpunkt Cuckolding und Wifesharing, Mensharing sowie strukturierter
+          Keuschhaltung – eingebettet in einen weiteren BDSM- und Beziehungskontext. Adressiert werden
+          unter anderem Paare, Einzelprofile und Bulls; die Plattform versteht sich als
+          vertrauensvolle, respektvolle Umgebung mit klaren{" "}
+          <a href="/community-regeln">Community-Regeln</a>. Der Zugang ist ausschließlich
+          Volljährigen vorbehalten. Die Nutzung erfolgt auf Grundlage der{" "}
+          <a href="/agb">AGB</a> und der Community-Regeln.
         </p>
         <p className="mt-4">
           Nach § 5 des Digitale-Dienste-Gesetzes (DDG) sowie den Bestimmungen des Rundfunkstaatsvertrags
