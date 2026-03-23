@@ -6,26 +6,4 @@ Diese Bemerkungen dürfen niemals verändert werden.
 
 === PROMPT ===
 
-0. REGEL FÜR DEN CHAT-ASSISTENTEN (VERBINDLICH)
-Der Assistent, der Nutzerfeedback und Strategie liefert, darf **ausschließlich** den Bereich zwischen `=== PROMPT ===` und `=== ENDE PROMPT ===` in **dieser Datei `UserPrompt`** bearbeiten oder befüllen. **Keine** anderen Projektdateien (kein Code, kein README, kein `Assistprompt`, kein `Designerprompt`, keine Markdown-Dateien außerhalb dieses PROMPT-Blocks) durch diesen Assistenten ändern. Alle Regeln, die der Nutzer **ganz oben im Chat** als Prompt vorgibt, gelten vollständig und dauerhaft für die Session; bei Widerspruch zwischen Auftrag und Regel gilt die **Regel**, und der Assistent weist höflich auf den Konflikt hin (ohne die verbotene Aktion auszuführen).
-Wenn der Nutzer ausdrücklich eine Änderung an einer anderen Datei verlangt, die gegen diese Selbstbeschränkung verstößt, darf der Assistent nur den **Textvorschlag** hier in den PROMPT schreiben, damit der **Code-Agent** oder der Nutzer ihn umsetzt.
-
-1. ABLAUF FÜR CODE- UND DESIGN-AGENTEN
-**Grundlage für Umsetzung im Repository** ist der PROMPT-Inhalt in **`UserPrompt`** (diese Datei). Der Code-Agent setzt die unten genannten technischen Punkte im Projekt um. Der Design-Agent nutzt dieselbe Grundlage für UI/Copy, wo zutreffend. Nach Bearbeitung wird nur der PROMPT-Inhalt hier geleert (festen Kopf nicht ändern). `Assistprompt` wird von diesem Analyse-Assistenten **nicht** beschrieben; falls euer Workflow dort Arbeitsaufträge braucht, **kopiert** der Nutzer oder der Code-Agent die relevanten Stellen aus `UserPrompt` dorthin.
-
-2. README UND DOKUMENTATION
-Die `README.md` sollte den Stand mit **Supabase**, **`.env.local`**, Migrationen unter `supabase/migrations/` und Projektstruktur widerspiegeln. **Gegenprüfen:** Stimmen alle genannten Umgebungsvariablen mit **`.env.example`** überein? Fehlen in `.env.example` noch Variablen aus dem Code (z. B. `NEXT_PUBLIC_SITE_URL`, `SITE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`)? Wenn ja, `.env.example` und ggf. README-Tabelle ergänzen.
-
-3. PRODUKTVISION UND ÖFFENTLICHE COPY
-Abgleich zwischen **`.cursor/PRODUKTVISION-BOUNDTIME.md`** (Joyclub/Instagram, BDSM Dom/Sub) und der **Startseite** (`app/(public)/page.tsx`: Cuckold/Bull/Keuschhaltung usw.). Teamentscheid: **eine einheitliche Kernstory**; dann Vision-Dokument, Landing-Copy oder beides anpassen, ohne widersprüchliche Positionierung.
-
-4. STARTSEITE / UX (siehe `Funktionsfeedback`)
-Prüfen, ob früheres Nutzerfeedback noch offen ist: redundante Texte unter dem Hero, nicht-interaktive Kacheln die wie Links wirken, unnötige Sektionen, einheitliche Bezeichnung „BoundTime“ / Navigations-Labels für die Features-Seite. Umsetzung mit aktuellem Design abstimmen.
-
-5. ERWARTUNGSMANAGEMENT IM PRODUKT
-Wo **technische Limits** greifen (z. B. Nachrichtenlimits je Rolle/Verifizierung): kurze **verständliche Hinweise** in der UI (Transparenz, kein leeres Marketing). Zuerst betroffene Flows im Code identifizieren.
-
-6. ONBOARDING NACH LOGIN (optional)
-Nach erstem Login oder unvollständigem Profil eine **klare nächste Aktion** hervorheben (Profil vervollständigen → Entdecken oder Feed), ohne Feature-Überfrachtung.
-
 === ENDE PROMPT ===

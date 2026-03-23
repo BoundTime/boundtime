@@ -7,11 +7,7 @@ import { PenLine, UserPlus } from "lucide-react";
 const STAGGER_MS = 55;
 const DURATION_MS = 420;
 
-type Props = {
-  nick: string | null;
-};
-
-export function MyBoundSignatureHero({ nick }: Props) {
+export function MyBoundSignatureHero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -44,19 +40,16 @@ export function MyBoundSignatureHero({ nick }: Props) {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden rounded-[1.35rem] border border-amber-200/[0.12] bg-black/45 p-6 shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(212,175,55,0.06)] ring-1 ring-white/[0.05] backdrop-blur-xl md:p-9 lg:p-10"
+      className="relative overflow-hidden rounded-[1.35rem] border border-amber-200/[0.12] bg-black/45 p-6 shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(212,175,55,0.06)] ring-1 ring-white/[0.05] backdrop-blur-xl md:p-8 lg:p-9"
     >
-      {/* Mesh: warm oben links → tief unten rechts */}
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_0%,rgba(180,140,60,0.14),transparent_52%),radial-gradient(ellipse_90%_70%_at_100%_100%,rgba(0,0,0,0.85),transparent_50%),linear-gradient(165deg,rgba(25,22,20,0.97)_0%,rgba(8,8,10,0.98)_100%)]"
         aria-hidden
       />
-      {/* Schwache Lichtfalle diagonal */}
       <div
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.04)_0%,transparent_42%,transparent_100%)]"
         aria-hidden
       />
-      {/* Film grain */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay"
         style={{
@@ -64,7 +57,6 @@ export function MyBoundSignatureHero({ nick }: Props) {
         }}
         aria-hidden
       />
-      {/* Wasserzeichen Monogramm */}
       <span
         className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[clamp(5rem,18vw,11rem)] font-bold leading-none text-amber-100/[0.07]"
         aria-hidden
@@ -72,40 +64,24 @@ export function MyBoundSignatureHero({ nick }: Props) {
         BT
       </span>
 
-      <div className="relative z-[1] flex flex-col gap-8 md:flex-row md:items-stretch md:gap-0">
-        {/* Textblock */}
-        <div className="min-w-0 flex-1 md:pr-8 lg:pr-10">
-          <p
-            className={`text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/55 md:text-[11px] ${motionClass} ${hiddenState}`}
+      <div className="relative z-[1] flex flex-col gap-6 md:flex-row md:items-stretch md:gap-0 lg:gap-2">
+        <div className="flex min-w-0 flex-1 flex-col justify-center md:pr-6 lg:pr-10">
+          <h1
+            className={`text-lg font-semibold tracking-tight text-amber-100/90 sm:text-xl md:text-[1.35rem] ${motionClass} ${hiddenState}`}
             style={delay(0)}
           >
-            MYBOUND SIGNATURE FEED
-          </p>
-          <h1
-            className={`mt-4 text-2xl font-bold leading-[1.15] tracking-tight text-white sm:text-3xl lg:line-clamp-2 lg:max-w-[22ch] lg:text-[1.85rem] xl:text-4xl ${motionClass} ${hiddenState}`}
-            style={delay(1)}
-          >
-            Willkommen {nick ?? "zurück"} – dein kuratierter Premium-Stream
+            Dein Feed
           </h1>
-          <p
-            className={`mt-5 max-w-xl text-[15px] leading-relaxed text-gray-400 md:text-base ${motionClass} ${hiddenState}`}
-            style={delay(2)}
-          >
-            Fokus auf relevante Verbindungen, klare Signale und ruhige Interaktionen. Alles Wichtige ist sofort
-            greifbar.
-          </p>
         </div>
 
-        {/* Vertikale Haarlinie md+ */}
         <div
           className="hidden w-px shrink-0 self-stretch bg-gradient-to-b from-transparent via-amber-400/35 to-transparent md:block"
           aria-hidden
         />
 
-        {/* CTAs */}
         <div
-          className={`flex w-full flex-col gap-3 sm:flex-row sm:items-center md:w-auto md:min-w-[220px] md:flex-col md:justify-center md:pl-8 lg:pl-10 ${motionClass} ${hiddenState}`}
-          style={delay(3)}
+          className={`flex w-full flex-col gap-3 sm:flex-row sm:items-center md:w-auto md:min-w-[220px] md:flex-col md:justify-center md:pl-6 lg:pl-10 ${motionClass} ${hiddenState}`}
+          style={delay(1)}
         >
           <Link
             href="#post-form"

@@ -235,7 +235,7 @@ export default async function DashboardPage() {
 
   return (
     <Container className="py-10 md:py-14">
-      <MyBoundSignatureHero nick={profile?.nick ?? null} />
+      <MyBoundSignatureHero />
 
       <div className="mt-4 flex items-center justify-center">
         <div className="h-px w-full max-w-3xl bg-gradient-to-r from-transparent via-white/15 to-transparent" />

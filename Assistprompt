@@ -5,5 +5,33 @@ Nach Umsetzung lösche nur den PROMPT-Inhalt.
 Diese Bemerkungen dürfen nicht verändert werden.
 
 === PROMPT ===
+Layout-Anpassung Nachrichtenbereich (Mobile + generell):
 
+Ziel:
+Der Bereich mit den Usern/Konversationen soll **nicht** intern scrollbar sein.  
+Stattdessen soll die Kachel/der Container in der Höhe mitwachsen, sodass die **gesamte Seite** scrollt.
+
+Betroffener Bereich:
+- `app/(app)/dashboard/nachrichten/MessagesLayoutClient.tsx`
+- Insbesondere der linke Bereich/`aside` mit der Konversationsliste und der aktuelle `overflow-y-auto`-Container.
+
+Umsetzung:
+1) Entferne die interne Scroll-Logik der Konversationsliste:
+   - Kein `overflow-y-auto` im Listenbereich.
+   - Keine künstliche Höhenbegrenzung (`max-h`, feste viewport-basierte Höhen), die nur diesen Teil scrollbar macht.
+2) Passe den umgebenden Nachrichten-Wrapper so an, dass der Inhalt natürlich in der Höhe wachsen kann.
+3) Die Seite selbst (Browser-Page) soll den vertikalen Scroll übernehmen.
+4) Bestehende Funktionalität beibehalten:
+   - Mobile: weiterhin entweder Inbox oder Chat sichtbar (gemäß bestehender `isChatView`-Logik).
+   - Desktop: zweispaltiges Layout bleibt erhalten, aber ohne isolierten Scrollbereich nur für die Userliste.
+
+Wichtig:
+- Keine Regressionen bei Klickbarkeit der Konversationseinträge.
+- Keine abgeschnittenen unteren Einträge.
+- Keine neuen Lint-Fehler.
+
+Abnahme:
+- Bei vielen Konversationen ist die Userliste vollständig sichtbar, wenn man die Seite normal nach unten scrollt.
+- Es gibt keinen separaten Scroll nur innerhalb der User-Kachel.
+- Chat-Ansicht funktioniert weiterhin wie bisher.
 === ENDE PROMPT ===

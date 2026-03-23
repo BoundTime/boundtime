@@ -456,13 +456,13 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 href="/datenschutz"
                 className={`inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-sm font-medium text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] hover:text-white ${navFocus}`}
               >
-                Sicherheit
+                Datenschutz
               </Link>
               <Link
                 href="/boundtime-features"
                 className={`inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-sm font-medium text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] hover:text-white ${navFocus}`}
               >
-                Boundtime- Features
+                Was ist BoundTime
               </Link>
               <Link
                 href="/login"
@@ -625,8 +625,8 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
               ) : (
                 <>
                   <Link href="/community-regeln" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Community</Link>
-                  <Link href="/datenschutz" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Sicherheit</Link>
-                  <Link href="/boundtime-features" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Boundtime- Features</Link>
+                  <Link href="/datenschutz" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Datenschutz</Link>
+                  <Link href="/boundtime-features" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Was ist BoundTime</Link>
                   <Link href="/login" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Login</Link>
                 </>
               )}
