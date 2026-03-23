@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Shield, FileCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/Container";
+import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
 import { createClient } from "@/lib/supabase/server";
 import { ExpiredLinkBanner } from "@/components/landing/ExpiredLinkBanner";
 
@@ -87,6 +88,58 @@ export default async function HomePage() {
               Vernetzung, Austausch und Profile – diskret organisiert, mit Verifizierung und respektvollem Rahmen.
             </p>
 
+            <div className="mx-auto mt-8 w-full max-w-xl rounded-2xl border border-amber-200/10 bg-black/40 px-5 py-5 text-left shadow-[0_24px_60px_-40px_rgba(0,0,0,0.85)] ring-1 ring-white/[0.04] backdrop-blur-sm sm:px-6 sm:text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/50">Einordnung</p>
+              <p className="mt-2 text-sm leading-relaxed text-gray-300 sm:text-[15px]">
+                Für erwachsene Nutzerinnen und Nutzer, die einen <strong className="font-semibold text-gray-200">geschützten Rahmen</strong> für
+                Vernetzung und Austausch suchen – mit klaren Rollen und moderierten Regeln.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-gray-400 sm:text-[15px]">
+                BoundTime ist eine deutschsprachige Community mit Schwerpunkt{" "}
+                <strong className="font-medium text-gray-300">Cuckolding und Wifesharing</strong>,{" "}
+                <strong className="font-medium text-gray-300">Mensharing</strong> und strukturierter{" "}
+                <strong className="font-medium text-gray-300">Keuschhaltung</strong> – für Paare, Einzelprofile,
+                Bulls und weitere Rollen. Im Mittelpunkt stehen{" "}
+                <strong className="font-medium text-gray-300">Vertrauen</strong>,{" "}
+                <strong className="font-medium text-gray-300">Verifizierung</strong> und die{" "}
+                <Link href="/community-regeln" className="text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline">
+                  Community-Regeln
+                </Link>
+                ; es geht nicht um anonyme Schnellkontakte.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-gray-500 sm:text-[15px]">
+                <Link
+                  href="/boundtime-features#strenge-pruefung"
+                  className="text-amber-200/80 underline-offset-2 hover:text-amber-100 hover:underline"
+                >
+                  Prüfprozess für Solomänner
+                </Link>
+                ,{" "}
+                <Link href="/boundtime-features#cuckymode" className="text-amber-200/80 underline-offset-2 hover:text-amber-100 hover:underline">
+                  Cuckymode für Paare
+                </Link>{" "}
+                und weitere Abläufe erklären wir sachlich unter{" "}
+                <Link href="/boundtime-features" className="text-amber-200/85 underline-offset-2 hover:text-amber-100 hover:underline">
+                  Funktionen &amp; Ablauf
+                </Link>
+                .
+              </p>
+              <div
+                className="my-4 h-px bg-gradient-to-r from-transparent via-amber-400/25 to-transparent"
+                aria-hidden
+              />
+              <div className="flex flex-wrap justify-start gap-2 sm:justify-center">
+                {["Paare & Cuckold-Profile", "Solos & Bulls", "Keuschhaltung & Rollen"].map((label) => (
+                  <span
+                    key={label}
+                    className="inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-gray-400"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
                 href="/register"
@@ -102,12 +155,21 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <p className="mt-6">
+            <p className="mt-4">
+              <Link
+                href="/boundtime-features#einordnung"
+                className="text-sm font-medium text-amber-200/75 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
+              >
+                Welche Rollen und Themen?
+              </Link>
+            </p>
+
+            <p className="mt-3">
               <Link
                 href="/boundtime-features"
                 className="text-sm font-medium text-amber-200/85 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
               >
-                Was ist BoundTime?
+                Was ist BoundTime? – Überblick &amp; Ablauf
               </Link>
             </p>
 
@@ -140,10 +202,25 @@ export default async function HomePage() {
 
       <section className="border-t border-white/[0.06] bg-black/20 py-12 sm:py-16 md:py-20">
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200/50">Ablauf</p>
-            <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">Vier Schritte zum Überblick</h2>
-            <p className="mt-2 text-sm text-gray-500">Kurz erklärt – ohne lange Textwände.</p>
+          <PublicSectionHeading
+            eyebrow="Ablauf"
+            title="Vier Schritte zum Überblick"
+            description="Kurz erklärt – ohne lange Textwände. Details und Begriffe findest du unter Funktionen & Ablauf."
+            className="mb-2"
+          />
+          <div className="mx-auto mt-6 flex max-w-2xl flex-wrap justify-center gap-x-5 gap-y-2 text-sm">
+            <Link
+              href="/boundtime-features"
+              className="font-medium text-amber-200/80 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
+            >
+              → Funktionen &amp; Ablauf
+            </Link>
+            <Link
+              href="/community-regeln"
+              className="font-medium text-amber-200/80 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
+            >
+              → Community-Regeln
+            </Link>
           </div>
           <ol className="mx-auto mt-10 max-w-3xl space-y-0 border-l border-amber-400/25 pl-6 sm:pl-8">
             {pillars.map(({ n, title, body }) => (

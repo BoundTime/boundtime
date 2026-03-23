@@ -20,10 +20,24 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const siteTitle = "BoundTime – Cuckolding, Wifesharing & Keuschhaltung";
+const siteDescription =
+  "Deutschsprachige Community mit klaren Regeln und Verifizierung: Schwerpunkt Cuckolding, Wifesharing, Mensharing und strukturierte Keuschhaltung – für Paare, Solos und Bulls. Kein anonymer Schnellkontaktmarkt.";
+
 export const metadata: Metadata = {
-  title: "BoundTime – Netzwerk für diskrete und respektvolle BDSM-Kontakte",
-  description:
-    "Deutschsprachige BDSM-Community mit Keuschhaltung: Austausch, Begegnung und Vertrauen. Keuschhaltung mit Aufgaben und Belohnungen gemeinsam vereinbaren und umsetzen.",
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    type: "website",
+    locale: "de_DE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",

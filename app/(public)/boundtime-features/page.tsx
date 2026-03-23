@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Container } from "@/components/Container";
+import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
 import { CollapsibleSection } from "@/components/settings/CollapsibleSection";
 import type { LucideProps } from "lucide-react";
-import { ChevronRight, ShieldCheck, Users, Sparkles, Lock } from "lucide-react";
+import { ChevronRight, ShieldCheck, Sparkles, Lock } from "lucide-react";
 
 type TocItem = { id: string; label: string; step: string };
 
@@ -78,7 +79,7 @@ function StepCard({
       onClick={onClick}
       className={[
         "group text-left rounded-xl border bg-black/40 backdrop-blur-sm p-5 transition-all",
-        "hover:border-gray-600 hover:shadow-sm hover:-translate-y-0.5",
+        "hover:border-gray-600 hover:shadow-sm hover:-translate-y-0.5 motion-reduce:hover:translate-y-0",
         active ? "border-accent/60 shadow-[0_0_0_1px_rgba(127,31,43,0.25)]" : "border-white/[0.1]",
       ].join(" ")}
     >
@@ -201,17 +202,25 @@ export default function BoundTimeFeaturesPage() {
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/register"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-6 py-3.5 text-center text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/55 hover:bg-amber-950/50"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-6 py-3.5 text-center text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/55 hover:bg-amber-950/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     Kostenlos registrieren
                   </Link>
                   <Link
                     href="/"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-6 py-3.5 text-center text-sm font-medium text-gray-100 transition-colors hover:border-white/25 hover:bg-white/[0.08]"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-6 py-3.5 text-center text-sm font-medium text-gray-100 transition-colors hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     Zurück zur Startseite
                   </Link>
                 </div>
+                <p className="mt-4 text-sm">
+                  <Link
+                    href="/community-regeln"
+                    className="font-medium text-amber-200/75 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
+                  >
+                    Community-Regeln lesen
+                  </Link>
+                </p>
               </div>
             </div>
 
@@ -253,19 +262,25 @@ export default function BoundTimeFeaturesPage() {
       </section>
 
       {/* Step-by-step */}
-      <section className="py-4 sm:py-10">
+      <section className="border-t border-white/[0.06] py-8 sm:py-12">
         <Container>
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-2xl font-bold text-white">In 4 Schritten verstanden</h2>
-            <div className="hidden md:flex items-center gap-3 text-xs text-gray-400">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <PublicSectionHeading
+              align="left"
+              eyebrow="Ablauf"
+              title="In vier Schritten verstanden"
+              description="Wähle einen Abschnitt – gleiche Struktur wie auf der Startseite, mehr Tiefe hier."
+              className="max-w-xl md:mb-0"
+            />
+            <div className="hidden shrink-0 md:flex items-center gap-3 text-xs text-gray-400">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-black/40 backdrop-blur-sm px-3 py-2">
-                <Lock className="h-4 w-4 text-accent" />
-                Respekt & klare Regeln
+                <Lock className="h-4 w-4 text-accent" aria-hidden />
+                Respekt &amp; klare Regeln
               </span>
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StepCard
               num="01"
               title="Orientieren"

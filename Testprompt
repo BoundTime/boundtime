@@ -1,0 +1,67 @@
+=== BEMERKUNG FÜR DEN ASSIST-AGENTEN ODER CODE-AGENTEN ===
+Diese Datei enthält Testergebnisse, erkannte Bugs, Unklarheiten und Optimierungshinweise.
+Nutze den Inhalt als Grundlage für weitere Analyse, Entscheidungen und Umsetzungen.
+Wer inhaltliche Punkte aus dem Bereich "PROMPT" in eine eigene Promptdatei übernommen hat (z. B. Designerprompt, Assistprompt), entfernt nach erfolgter Übernahme ausschließlich genau diese übernommenen Passagen aus "Testprompt" – nicht den gesamten PROMPT-Bereich pauschal, nicht fremde Aufgaben anderer Agenten und niemals diesen Bemerkungsblock.
+Ist der PROMPT-Bereich nach dem schrittweisen Entfernen durch alle beteiligten Agenten leer oder verbleibt nur noch Rest ohne Zuordnung, kann der zuständige Agent den verbleibenden Inhalt im Bereich "PROMPT" vollständig löschen (entspricht der Endbereinigung).
+Diese Bemerkungen dürfen niemals verändert werden.
+
+=== PROMPT ===
+VERARBEITUNG (ZWISCHENSTAND)
+**Design-Agent:** Alle **design-, UI-, öffentlichen UX- und visuellen Folgetest-Themen** aus diesem Protokoll hat der Design-Agent **zur Bearbeitung übernommen**; der Auftrag steht in **„Designerprompt“ (Bereich PROMPT)**. Dazu zählen u. a.: **Landing-Hierarchie / „für wen–was“-Einordnung (visuell)**, **roter Faden Public-Pages**, **Mobile-/Layout-/Animation-/Cookie-QA-Checkliste**, **prominente Platzierung** des optionalen Orientierungs-Links.
+**Assist-/Code-Agent:** Bearbeitet **den nachfolgenden Rest** (Inhalt, Logik, Rechtliches, SEO, Meta, Platzhalter) – **ohne** die Designpunkte doppelt zu lösen, sofern nicht ausdrücklich technisch nötig.
+
+---
+
+1. TESTKONTEXT
+Öffentlicher Erkundungstest ohne Registrierung: Startseite https://boundtime.de sowie alle von dort direkt erreichbaren Informationsseiten (Was ist BoundTime / Funktionen, Community-Regeln, Datenschutz). Perspektive: jemand kennt BoundTime nicht und will vor der Registrierung verstehen, was die Plattform ist. Hinweis zur Methode: Inhalte per Abruf der öffentlichen HTML-Inhalte; kein realer Browser – **Layout/Mobile/Animationen/Cookie/Ladezeiten: siehe Designerprompt (Design-QA).**
+
+2. GETESTETE SCHRITTE
+- Startseite gelesen: Überschrift, Kurztext, CTAs (Registrieren, Anmelden), Footer-Links.
+- „Was ist BoundTime?“ / „Funktionen & Ablauf“ (boundtime-features) vollständig durchgearbeitet: Einordnung, Cuckymode, Keuschhaltungs-Vereinbarungen, BoundDollars, Prüfprozess Solomänner.
+- „Community-Regeln“ gelesen: Ziel der Community, Zielgruppen, Regeln, Teilnahme.
+- „Datenschutz“ gelesen: Verantwortliche Stelle, Datenkategorien, Cookies, Drittanbieter, Rechte.
+
+3. GEFUNDENE BUGS
+- (Inhaltlicher Mangel / redaktionell, aber nutzerwirksam wie ein Defekt) Auf der Datenschutzseite steht bei den verarbeiteten Daten ausdrücklich: „Platzhalter – an tatsächliche Funktionen anpassen“. Das wirkt wie unfertige Rechtstexte und ist für eine vertrauliche Community hochriskant wahrgenommen.
+- (SEO/Titel vs. Seiteninhalt) Der Seitentitel bzw. die Einordnung in den abgerufenen Metadaten lautet sinngemäß „Netzwerk für diskrete und respektvolle BDSM-Kontakte“, während die sichtbare Startseiten-Story stärker „Community mit klaren Regeln / Verifizierung“ betont. Das kann Erwartungen falsch setzen, bevor man die Feature-Seite liest.
+
+4. LOGIKPROBLEME
+- Erwartungsbild Startseite vs. Tiefe: Wer nur die Startseite liest, erfährt wenig Konkretes zur inhaltlichen Ausrichtung (Cuckolding, Paar-Features, Keuschhaltung). Die konkrete Ausrichtung erscheint erst auf boundtime-features und in den Community-Regeln. Logisch für „Orientierung zuerst“, aber die Startseite nennt die Nische nicht – ein rationaler Nutzer muss aktiv weiterklicken, sonst bleibt das Produkt unscharf.
+- Community-Regeln sprechen explizit von Cuckolding, Bulls, Hotwife usw.; die Startseite bleibt begrifflich allgemeiner. Das ist nicht zwingend falsch, erzeugt aber einen Sprung zwischen „generische BDSM-Community“ (Titel) und „spezifische Cuckold-Community“ (Regeln).
+
+5. INHALT / STRATEGIE (ASSIST – COPY & ERWARTUNGSMANAGEMENT)
+- **Assist:** Finalen **Kurztext** für Startseite formulieren bzw. freigeben: eine **sachliche** Einordnung „Worum es geht“ / „Für wen“ in **neutral-respektvoller** Sprache (Nische klar genug, ohne die Landing „hart“ zu machen). **Visuelle Umsetzung** der Platzierung: Designerprompt.
+- Vertrauen: **Datenschutz-Platzhalter** entfernen/finalisieren (siehe Bugs) – **Assist/Recht**.
+- Transparenz: Feature-Seite erklärt Prüfung Solomänner gut – **Assist** kann ggf. **einen Satz** auf der Startseite vorschlagen, der darauf verweist (Link-Ziel bleibt; **UI-Gewichtung** Design).
+- Sprache: „Cuckymode“ auf Feature-Seite erklärt – gut; **Assist** prüft, ob ein **neutraler** Verweis auf der Startseite sinnvoll ist (ein Wort/Link, kein Wall of Text).
+
+6. PERSPEKTIVE SINGLE MANN
+- Positiv: Auf boundtime-features wird die Prüfung für Solomänner transparent begründet („Vertrauen“, „Missbrauch reduzieren“) – kann Sicherheit für andere Nutzergruppen signalisieren und ernsthafte Solomänner ansprechen.
+- Risiko: Ohne Lesen der Feature-Seite wirkt die Startseite unspezifisch; in Kombination mit dem BDSM-Titel könnten falsche Erwartungen (generischer Kontaktmarkt) entstehen. Nach Lectüre der Regeln wird klar, dass „schneller Sex“ nicht der Fokus ist – das ist gut kommuniziert, aber erst nach Klick.
+- Abbruchstelle: Unklare Produktidentität auf der Landing (**Copy/SEO: Assist**; **visuelle Klarheit: Designerprompt**); Datenschutz-Platzhalter kann Vertrauen killen, bevor man registriert (**Assist**).
+
+7. PERSPEKTIVE SINGLE FRAU
+- Positiv: Community-Regeln nennen Femdom-Solodamen explizit; respektvoller Rahmen und klare Erwartung an Solomänner (kein reines „schnelles Sex“-Narrativ) können sicherer wirken.
+- Lücke: Auf der Startseite keine sichtbare Ansprache von Frauen oder Femdom-Kontext – **Assist** liefert ggf. **eine Zeile** Copy; **Design** setzt **Zielgruppen-Signale** sichtbar um (Designerprompt).
+- Abbruchstelle: Wenn man nur die Startseite sieht, ist unklar, ob die Plattform für Solo-Frauen gedacht ist (**Copy + SEO: Assist**).
+
+8. PERSPEKTIVE PAAR
+- Positiv: Cuckymode wird auf der Feature-Seite verständlich als Paar-Option erklärt.
+- Lücke: Startseite erwähnt Paar-Dynamik nicht explizit – **Assist** (Kurztext); **Design** kann **Paar** in Chip-Zeile o. ä. aufnehmen (Designerprompt).
+- Abbruchstelle: Zu wenig Nischen-Klarheit ohne zweiten Klick (**strategisch Assist**); Datenschutz-Platzhalter (**Assist**).
+
+9. KRITIKALITÄT
+- hoch: Öffentliche Datenschutzerklärung mit sichtbarem Platzhalter (Vertrauen, Compliance-Wahrnehmung).
+- mittel: Widerspruch oder Spannung zwischen SEO-Titel (BDSM-Kontakte) und eher generischer Landing-Story sowie verspäteter Nischen-Klarheit (erst Feature-Seite/Regeln).
+
+10. EMPFEHLUNG (ASSIST / TECHNIK)
+- Datenschutz: Platzhalter entfernen, finalisieren, konsistent zur echten Datenverarbeitung; keinerlei Entwurfstexte live lassen.
+- Startseite: **Inhalt** für kurzen Absatz „Worum es geht“ **formulieren** (neutral-respektvolle Nischen-Einordnung); **Design** setzt Struktur um (Designerprompt).
+- SEO/Titel: Abgleich mit gewünschter Positionierung; wenn die Plattform klar als Cuckold-/Paar-orientierte Community mit speziellen Features gedacht ist, sollte der Titel nicht eine andere Schublade öffnen als der Rest.
+- Optional: Satz/Link „Welche Rollen und Themen?“ → boundtime-features; **Ziel-URL und Copy: Assist**; **UI-Platzierung: Designerprompt**.
+
+11. OFFENE FRAGEN
+- Soll die öffentliche Positionierung bewusst breit („BDSM-Kontakte“) bleiben oder eng an Cuckolding/Wifesharing/Keuschhaltung (laut internem Projektkontext)?
+- Impressum/Nutzungsbedingungen: wurden im gleichen Erkundungsgang nicht mitgeprüft – Freigabe für vollständige Prüfung aller Footer-Rechtstexte?
+- Cookie-Banner und Mobile-Ansicht: **Folgetest** – technische/UX-Details **Designerprompt**; ggf. Assist bei Consent-Texten/Recht.
+=== ENDE PROMPT ===

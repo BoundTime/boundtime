@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
+import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
 
 export default function CommunityRegelnPage() {
   return (
@@ -9,6 +11,31 @@ export default function CommunityRegelnPage() {
         title="Community-Regeln"
         subtitle="Orientierung für respektvolles Miteinander auf BoundTime."
       />
+
+      <div className="mb-10 rounded-2xl border border-amber-200/10 bg-black/35 p-6 ring-1 ring-white/[0.04] backdrop-blur-sm md:p-8">
+        <PublicSectionHeading
+          align="left"
+          eyebrow="Mehr erfahren"
+          title="Technik, Ablauf &amp; Begriffe"
+          description="Wenn du vor dem Lesen der Regeln einen sachlichen Überblick willst – gleiche Navigation wie auf der Startseite."
+          className="max-w-2xl"
+        />
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link
+            href="/boundtime-features"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-amber-400/40 bg-amber-950/30 px-5 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/50 hover:bg-amber-950/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Funktionen &amp; Ablauf
+          </Link>
+          <Link
+            href="/"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-5 py-2.5 text-sm font-medium text-gray-100 transition-colors hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Zurück zur Startseite
+          </Link>
+        </div>
+      </div>
+
       <PublicArticle>
         <p>
           Ziel der Community ist die Vernetzung von Menschen, die in der Welt des Cuckolding leben oder sich dieser
