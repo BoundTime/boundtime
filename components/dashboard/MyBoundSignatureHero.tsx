@@ -90,7 +90,9 @@ export function MyBoundSignatureHero() {
       </span>
 
       <div className="relative z-[1] flex flex-col gap-6 md:flex-row md:items-stretch md:gap-0 lg:gap-3">
-        <div className="flex min-w-0 flex-1 flex-col justify-center md:pr-4 lg:pr-8">
+        {/* Mobile: keine sichtbare Überschrift übers Hero-Foto – Zugriff über Bottom-Nav; SR behält h1 */}
+        <h1 className="sr-only md:hidden">Dein Feed</h1>
+        <div className="hidden min-w-0 flex-1 flex-col justify-center md:flex md:pr-4 lg:pr-8">
           <div
             className={`w-fit max-w-full rounded-xl border border-white/[0.1] bg-black/55 px-4 py-3 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.85)] backdrop-blur-md sm:px-5 sm:py-3.5 md:bg-black/50 ${motionClass} ${hiddenState}`}
             style={delay(0)}

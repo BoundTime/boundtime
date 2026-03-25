@@ -492,7 +492,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
               </div>
             </div>
 
-            {/* Mobile: eine Zeile – Logo, Nachrichten, Menü (kein Scroll in der Leiste) */}
+            {/* Mobile: eine Zeile – Logo, Menü (Nachrichten nur Bottom-Nav) */}
             <div className="flex w-full min-w-0 items-center gap-2 lg:hidden">
               <RefreshNavLink
                 href="/dashboard"
@@ -548,20 +548,6 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             </>
           )}
 
-          {user && (
-            <RefreshNavLink
-              href="/dashboard/nachrichten"
-              className={`relative mr-1 flex h-9 w-9 items-center justify-center rounded-lg border border-white/12 bg-white/[0.04] text-gray-200 transition-colors hover:border-white/18 hover:bg-white/[0.08] lg:hidden ${navFocus}`}
-              aria-label="Nachrichten"
-            >
-              <MessageSquare className="h-5 w-5" strokeWidth={1.5} aria-hidden />
-              {unreadMessages > 0 && (
-                <span className="bt-nav-badge-enter absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-0.5 text-[9px] font-semibold text-white shadow-sm">
-                  {unreadMessages > 9 ? "9+" : unreadMessages}
-                </span>
-              )}
-            </RefreshNavLink>
-          )}
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
