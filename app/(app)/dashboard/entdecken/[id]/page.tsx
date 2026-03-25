@@ -278,6 +278,12 @@ export default async function ProfilDetailPage({
   }
 
   const baseUrl = `/dashboard/entdecken/${profile.id}`;
+  const canOpenFollowLists = !showLimitedProfile;
+
+  const followStatTileClass =
+    "block rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center transition-colors";
+  const followStatTileInteractive =
+    " hover:border-white/20 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]";
 
   return (
     <Container className="py-10 md:py-14">
@@ -393,19 +399,37 @@ export default async function ProfilDetailPage({
               </div>
             )}
           </div>
-          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-3">
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
-              <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
-              <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Verbindung</p>
-              <p className="mt-1 text-sm font-medium text-white">{isConnected ? "Verbunden" : "Noch nicht verbunden"}</p>
-            </div>
+          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-2">
+            {canOpenFollowLists ? (
+              <Link
+                href={`${baseUrl}/follower`}
+                className={`${followStatTileClass}${followStatTileInteractive}`}
+                aria-label="Follower anzeigen"
+              >
+                <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
+                <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
+              </Link>
+            ) : (
+              <div className={followStatTileClass} title="Nach Verbindung mit diesem Profil sichtbar">
+                <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
+                <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
+              </div>
+            )}
+            {canOpenFollowLists ? (
+              <Link
+                href={`${baseUrl}/folgt`}
+                className={`${followStatTileClass}${followStatTileInteractive}`}
+                aria-label="Accounts anzeigen, denen dieses Profil folgt"
+              >
+                <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
+                <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
+              </Link>
+            ) : (
+              <div className={followStatTileClass} title="Nach Verbindung mit diesem Profil sichtbar">
+                <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
+                <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
+              </div>
+            )}
           </div>
 
           {profile.id !== user.id && (

@@ -80,7 +80,7 @@ export default async function ProfilPage({
     resolveProfileAvatarUrl({ avatar_photo_id: profileWithCoupleAvatars.couple_male_avatar_photo_id ?? null }, supabase),
   ]);
 
-  const [{ count: followerCount }, { count: followingCount }, { data: myFollowing }, { data: myFollowers }] = await Promise.all([
+  const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
     supabase
       .from("follows")
       .select("*", { count: "exact", head: true })
@@ -89,17 +89,7 @@ export default async function ProfilPage({
       .from("follows")
       .select("*", { count: "exact", head: true })
       .eq("follower_id", profile.id),
-    supabase.from("follows").select("following_id").eq("follower_id", profile.id),
-    supabase.from("follows").select("follower_id").eq("following_id", profile.id),
   ]);
-  const followingIds = new Set((myFollowing ?? []).map((r: { following_id: string }) => r.following_id));
-  const followerIds = new Set((myFollowers ?? []).map((r: { follower_id: string }) => r.follower_id));
-  const connectedIds = Array.from(followingIds).filter((id) => followerIds.has(id));
-  const { data: connectedProfiles } =
-    connectedIds.length > 0
-      ? await supabase.from("profiles").select("id, nick").in("id", connectedIds)
-      : { data: [] };
-  const connectedNicks = (connectedProfiles ?? []) as { id: string; nick: string | null }[];
 
   const initials = (profile.nick ?? "?")
     .split(/[\s_]+/)
@@ -283,33 +273,27 @@ export default async function ProfilPage({
             </div>
           </div>
           <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-3">
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+            <Link
+              href="/dashboard/profil/follower"
+              className="block rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center transition-colors hover:border-white/20 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]"
+              aria-label="Follower anzeigen"
+            >
               <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
               <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+            </Link>
+            <Link
+              href="/dashboard/profil/folgt"
+              className="block rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center transition-colors hover:border-white/20 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]"
+              aria-label="Accounts anzeigen, denen du folgst"
+            >
               <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
               <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
-            </div>
+            </Link>
             <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
               <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Vertrauen</p>
               <p className="mt-1 text-sm font-medium text-white">{myProfile?.verified ? "Verifiziertes Profil" : "Verifizierung ausstehend"}</p>
             </div>
           </div>
-
-          {connectedNicks.length > 0 && (
-            <p className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center text-sm text-gray-300">
-              Verbunden mit:{" "}
-              {connectedNicks.map((p, i) => (
-                <span key={p.id}>
-                  {i > 0 && ", "}
-                  <Link href={`/dashboard/entdecken/${p.id}`} className="font-medium text-accent hover:text-accent-hover">
-                    {p.nick ?? "—"}
-                  </Link>
-                </span>
-              ))}
-            </p>
-          )}
           {!myProfile?.verified && (
             <div className="border-t border-white/10 pt-5">
               <Link

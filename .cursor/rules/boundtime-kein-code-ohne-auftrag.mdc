@@ -1,0 +1,37 @@
+---
+description: BoundTime – kein Anwendungscode ohne expliziten Implementierungsauftrag
+alwaysApply: true
+---
+
+# BoundTime: Code nur auf expliziten Wunsch
+
+Der Nutzer möchte, dass der Agent **standardmäßig keinen Anwendungscode** ändert.
+
+## Verboten (ohne Ausnahme-Trigger unten)
+
+- Keine Änderungen an **Quellcode** und Konfiguration des Produkts, u. a.:
+  - `app/`, `components/`, `lib/`, `hooks/`, `public/` (außer wenn Nutzer ausdrücklich verlangt)
+  - `*.tsx`, `*.ts`, `*.js`, `*.jsx`, `*.css` (Projektcode)
+  - `package.json`, Build-/Lint-Konfiguration, Supabase-Migrationen
+- Keine neuen Features per Patch „nebenbei“ umsetzen, nur weil es im Chat thematisiert wird.
+
+## Erlaubt ohne Extra-Formulierung
+
+- **Nur Text:** Antworten, Erklärungen, Spezifikationen, Checklisten.
+- **Design-/Test-Arbeitsdateien** im vereinbarten Format:
+  - `Designerprompt` – nur Inhalt im Block `=== PROMPT ===` … `=== ENDE PROMPT ===` (fester Header unverändert lassen, falls vorhanden).
+  - `Designfeedback`, `Testprompt`, `Assistprompt` – analog nur die dafür vorgesehenen Bereiche.
+- `.cursor/rules/` nur anlegen/ändern, wenn der Nutzer **explizit** Regeln oder Agent-Anweisungen wünscht.
+
+## Ausnahme: Implementierung erlaubt
+
+Erst wenn der Nutzer **eindeutig** Code-Umsetzung will, z. B. Formulierungen wie:
+
+- „**Implementiere** …“, „**Setze das im Code um**“, „**Ändere die Datei** …“, „**Patch** / **Commit** …“
+- Oder ein klarer Marker wie **`[CODE]`** / „**Code ändern erlaubt**“
+
+Dann dürfen die üblichen Code-Änderungen erfolgen.
+
+## Bei UI-/Feature-Wünschen ohne `[CODE]`
+
+Statt zu patchen: **PROMPT-Text** für `Designerprompt` formulieren oder Schritt-für-Schritt-Beschreibung zum manuellen Umsetzen – und kurz sagen, dass Code-Umsetzung beim nächsten Mal mit `[CODE]` oder „implementieren“ möglich ist.
