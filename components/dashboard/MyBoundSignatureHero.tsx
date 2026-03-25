@@ -3,15 +3,19 @@ import Image from "next/image";
 export function MyBoundSignatureHero() {
   return (
     <section
-      className="relative min-h-[min(64vw,320px)] overflow-hidden rounded-[1.35rem] border border-amber-200/[0.12] p-8 shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(212,175,55,0.06)] ring-1 ring-white/[0.05] sm:min-h-[min(58vw,380px)] sm:p-9 md:min-h-[420px] md:p-10 lg:min-h-[480px] lg:p-12"
+      className="relative min-h-[min(52vw,260px)] overflow-hidden rounded-[1.35rem] border border-amber-200/[0.12] p-6 shadow-[0_32px_70px_-42px_rgba(0,0,0,0.92),inset_0_1px_0_rgba(255,255,255,0.06),inset_0_0_0_1px_rgba(212,175,55,0.06)] ring-1 ring-white/[0.05] sm:min-h-[min(46vw,300px)] sm:p-7 md:min-h-[min(42vw,340px)] md:p-8 lg:min-h-[360px] lg:p-9"
     >
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 bg-neutral-950" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-4 bg-neutral-950 sm:inset-5 md:inset-6 lg:inset-7"
+        aria-hidden
+      >
         <Image
           src="/dashboard-brand-hero.png"
           alt=""
           fill
           priority
-          className="object-cover object-[62%_78%] [filter:brightness(1.07)_contrast(1.04)] max-sm:object-[52%_76%] sm:object-[60%_78%] md:object-[58%_80%] lg:object-[56%_82%] xl:object-[54%_84%]"
+          className="object-contain object-center [filter:brightness(1.07)_contrast(1.04)]"
           sizes="(max-width: 768px) 100vw, min(1152px, 100vw)"
         />
       </div>
