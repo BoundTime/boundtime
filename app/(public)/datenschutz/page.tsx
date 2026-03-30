@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
+import { SITE_NAME } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: "Datenschutz",
+  description: `Datenschutzerklärung und Verarbeitung personenbezogener Daten bei ${SITE_NAME}.`,
+  alternates: { canonical: "/datenschutz" },
+  openGraph: { title: `Datenschutz · ${SITE_NAME}` },
+};
 
 export default function DatenschutzPage() {
   return (

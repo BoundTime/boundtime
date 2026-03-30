@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, ScrollText, Shield, UsersRound } from "lucide-react";
+import { FileText, ScrollText, Shield, Sparkles, UsersRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Footer({ className }: { className?: string }) {
@@ -39,10 +39,17 @@ export function Footer({ className }: { className?: string }) {
               AGB
             </Link>
             <Link
+              href="/boundtime-features"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+            >
+              <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
+              Funktionen &amp; Ablauf
+            </Link>
+            <Link
               href="/community-regeln"
               className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
-              <UsersRound className="h-4 w-4 shrink-0" />
+              <UsersRound className="h-4 w-4 shrink-0" aria-hidden />
               Community-Regeln
             </Link>
           </nav>

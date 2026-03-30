@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
+import { SITE_NAME } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: "Impressum",
+  description: `Impressum und Anbieterkennzeichnung von ${SITE_NAME}.`,
+  alternates: { canonical: "/impressum" },
+  openGraph: { title: `Impressum · ${SITE_NAME}` },
+};
 
 export default function ImpressumPage() {
   return (

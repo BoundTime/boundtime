@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/BottomNav";
@@ -6,6 +7,11 @@ import { RestrictionProvider } from "@/lib/restriction-context";
 import { RestrictionBanner } from "@/components/RestrictionBanner";
 
 export const dynamic = "force-dynamic";
+
+/** App-Bereich nicht indexieren (Login-pflichtig, personenbezogene Inhalte). */
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+};
 
 export default async function AppLayout({
   children,

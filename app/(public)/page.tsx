@@ -1,11 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Shield, FileCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/Container";
 import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
 import { createClient } from "@/lib/supabase/server";
 import { ExpiredLinkBanner } from "@/components/landing/ExpiredLinkBanner";
+import { getSiteUrl, SITE_DESCRIPTION_DEFAULT, SITE_NAME, SITE_TITLE_DEFAULT } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: { absolute: SITE_TITLE_DEFAULT },
+  description: SITE_DESCRIPTION_DEFAULT,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SITE_TITLE_DEFAULT,
+    description: SITE_DESCRIPTION_DEFAULT,
+    url: getSiteUrl(),
+    images: [{ url: "/landing-brand-hero.png", alt: SITE_NAME }],
+  },
+};
 
 export default async function HomePage() {
   const supabase = await createClient();

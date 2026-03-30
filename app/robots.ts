@@ -1,13 +1,17 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://boundtime.de";
+import { getSiteUrl } from "@/lib/seo/site-config";
 
 export default function robots(): MetadataRoute.Robots {
+  const base = getSiteUrl();
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: `${BASE_URL}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/dashboard/", "/api/"],
+      },
+    ],
+    sitemap: `${base}/sitemap.xml`,
+    host: base,
   };
 }

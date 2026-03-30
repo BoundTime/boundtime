@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
 import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
+import { SITE_NAME } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: "Community-Regeln",
+  description: `Community-Regeln und respektvoller Umgang auf ${SITE_NAME}.`,
+  alternates: { canonical: "/community-regeln" },
+  openGraph: { title: `Community-Regeln · ${SITE_NAME}` },
+};
 
 export default function CommunityRegelnPage() {
   return (

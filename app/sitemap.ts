@@ -1,18 +1,27 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://boundtime.de";
+import { getSiteUrl } from "@/lib/seo/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const base = getSiteUrl();
+  const now = new Date();
   return [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE_URL}/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/register`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/datenschutz`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE_URL}/impressum`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE_URL}/agb`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE_URL}/community-regeln`, lastModified: new Date(), changeFrequency: "yearly", priority: 0.3 },
+    { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    {
+      url: `${base}/boundtime-features`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.95,
+    },
+    {
+      url: `${base}/community-regeln`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    { url: `${base}/login`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/datenschutz`, lastModified: now, changeFrequency: "yearly", priority: 0.35 },
+    { url: `${base}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.35 },
+    { url: `${base}/agb`, lastModified: now, changeFrequency: "yearly", priority: 0.35 },
   ];
 }

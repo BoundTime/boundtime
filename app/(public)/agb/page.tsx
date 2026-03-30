@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
+import { SITE_NAME } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: "AGB",
+  description: `Allgemeine Geschäftsbedingungen für die Nutzung von ${SITE_NAME}.`,
+  alternates: { canonical: "/agb" },
+  openGraph: { title: `AGB · ${SITE_NAME}` },
+};
 
 export default function AGBPage() {
   return (

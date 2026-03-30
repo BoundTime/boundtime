@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Mail, ArrowLeft } from "lucide-react";
 import { ResendVerificationButton } from "@/components/auth/ResendVerificationButton";
+import { SITE_NAME } from "@/lib/seo/site-config";
+
+export const metadata: Metadata = {
+  title: "E-Mail bestätigen",
+  description: `Bestätige deine E-Mail-Adresse, um dein ${SITE_NAME}-Konto zu aktivieren.`,
+  alternates: { canonical: "/register/check-email" },
+  robots: { index: false, follow: true },
+};
+
 export default async function RegisterCheckEmailPage({
   searchParams,
 }: {

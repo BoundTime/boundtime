@@ -11,6 +11,8 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { Analytics } from "@vercel/analytics/next";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+import { JsonLdRoot } from "@/components/seo/JsonLdRoot";
+import { getSiteUrl, SITE_DESCRIPTION_DEFAULT, SITE_NAME, SITE_TITLE_DEFAULT } from "@/lib/seo/site-config";
 
 export const dynamic = "force-dynamic";
 
@@ -20,23 +22,39 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const siteTitle = "BoundTime – Cuckolding, Wifesharing & Keuschhaltung";
-const siteDescription =
-  "Deutschsprachige Community mit klaren Regeln und Verifizierung: Schwerpunkt Cuckolding, Wifesharing, Mensharing und strukturierte Keuschhaltung – für Paare, Solos und Bulls. Kein anonymer Schnellkontaktmarkt.";
+const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: siteTitle,
-  description: siteDescription,
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: SITE_TITLE_DEFAULT,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION_DEFAULT,
+  applicationName: SITE_NAME,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   openGraph: {
-    title: siteTitle,
-    description: siteDescription,
+    title: SITE_TITLE_DEFAULT,
+    description: SITE_DESCRIPTION_DEFAULT,
+    url: baseUrl,
+    siteName: SITE_NAME,
     type: "website",
     locale: "de_DE",
+    images: [
+      {
+        url: "/landing-brand-hero.png",
+        alt: SITE_NAME,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteTitle,
-    description: siteDescription,
+    title: SITE_TITLE_DEFAULT,
+    description: SITE_DESCRIPTION_DEFAULT,
   },
   icons: {
     icon: "/favicon.png",
@@ -108,6 +126,7 @@ export default async function RootLayout({
       <body
         className={`${plusJakarta.variable} antialiased min-h-screen flex flex-col overflow-x-hidden bg-background text-gray-200 font-sans text-base leading-relaxed`}
       >
+        <JsonLdRoot />
         <NextIntlClientProvider messages={messages}>
           <Navbar
             initialNavData={initialNavData}
