@@ -12,14 +12,19 @@ export type MainNavItem = {
   isActive: boolean;
 };
 
-const GAP_PX_DEFAULT = 24;
-const GAP_PX_COMPACT = 18;
+/** Nur für Overflow-Messung – unverändert bei Scroll/Kompakt, damit sich die sichtbare Button-Anzahl nicht verschiebt. */
+const GAP_PX = 24;
 const MIN_VISIBLE = 2;
+
+/** Mess-Styles = immer „volle“ Zeile (gleiche wie nicht-kompakte Darstellung). */
+const MEASURE_LINK_PAD = "px-2 py-2";
+const MEASURE_LINK_TEXT = "text-sm";
+const MEASURE_ROW_GAP = "gap-6 sm:gap-8";
 
 type Props = {
   items: MainNavItem[];
   navFocus: string;
-  /** Kompaktere untere Nav-Zeile (z. B. bei gescrollter Desktop-Navbar) */
+  /** Kompaktere untere Nav-Zeile (nur Typo/Padding), ohne Breiten-/Overflow-Neuberechnung */
   compact?: boolean;
 };
 
@@ -40,7 +45,6 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
     "font-bold text-white after:pointer-events-none after:absolute after:bottom-0 after:left-2 after:right-2 after:h-[2px] after:rounded-full after:bg-amber-400/95 after:shadow-[0_0_14px_rgba(251,191,36,0.38)] after:content-['']";
 
   const itemKey = items.map((i) => `${i.id}:${i.href}`).join("|");
-  const gapPx = compact ? GAP_PX_COMPACT : GAP_PX_DEFAULT;
 
   useLayoutEffect(() => {
     if (items.length === 0) return;
@@ -54,10 +58,10 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
       if (itemSpans.length === 0) return;
 
       const widths = itemSpans.map((el) => el.offsetWidth);
-      const mehrW = (mehrProbe?.offsetWidth ?? 0) + gapPx;
+      const mehrW = (mehrProbe?.offsetWidth ?? 0) + GAP_PX;
       const fullW = container.clientWidth;
 
-      const totalAll = widths.reduce((acc, w, i) => acc + w + (i > 0 ? gapPx : 0), 0);
+      const totalAll = widths.reduce((acc, w, i) => acc + w + (i > 0 ? GAP_PX : 0), 0);
       if (totalAll <= fullW) {
         setVisibleCount(items.length);
         return;
@@ -68,7 +72,7 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
       let count = 0;
       for (let i = 0; i < widths.length; i++) {
         const w = widths[i];
-        const g = count > 0 ? gapPx : 0;
+        const g = count > 0 ? GAP_PX : 0;
         if (sum + g + w <= avail) {
           sum += g + w;
           count++;
@@ -93,7 +97,7 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
     ro.observe(container);
     requestAnimationFrame(run);
     return () => ro.disconnect();
-  }, [items.length, itemKey, gapPx, compact]);
+  }, [items.length, itemKey]);
 
   useEffect(() => {
     setVisibleCount((c) => Math.min(c, items.length));
@@ -151,27 +155,27 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
 
   const linkText = compact ? "text-[13px]" : "text-sm";
   const linkPad = compact ? "px-2 py-1.5" : "px-2 py-2";
-  const rowGap = compact ? "gap-4 sm:gap-6" : "gap-6 sm:gap-8";
+  /** Immer wie Mess-Layer – verhindert Verschiebungen bei Kompakt-Toggle */
+  const rowGap = MEASURE_ROW_GAP;
   const rowPt = compact ? "pt-1.5" : "pt-2.5";
   const sideMinH = compact ? "min-h-8" : "min-h-9";
 
   return (
     <div className={`flex w-full min-w-0 items-center transition-[padding-top] duration-200 ease-out motion-reduce:transition-none ${rowPt}`}>
-      {/* Symmetrisch: freie Fläche links/rechts, Links mittig; „Mehr“ rechts */}
       <div className={`${sideMinH} min-w-0 flex-1`} aria-hidden />
       <div
         ref={containerRef}
-        className={`relative flex min-w-0 max-w-[min(100%,42rem)] flex-nowrap items-center justify-center overflow-hidden transition-[gap] duration-200 ease-out motion-reduce:transition-none ${rowGap}`}
+        className={`relative flex min-w-0 max-w-[min(100%,42rem)] flex-nowrap items-center justify-center overflow-hidden ${rowGap}`}
       >
         <div
           ref={measureRef}
           aria-hidden
-          className={`pointer-events-none absolute bottom-full left-0 right-0 flex justify-center whitespace-nowrap opacity-0 ${rowGap}`}
+          className={`pointer-events-none absolute bottom-full left-0 right-0 flex justify-center whitespace-nowrap opacity-0 ${MEASURE_ROW_GAP}`}
         >
           {items.map((item) => (
             <span key={item.id} data-nav-measure className="inline-block">
               <span
-                className={`${linkPad} ${linkText} ${item.isActive ? "font-semibold" : "font-medium"}`}
+                className={`${MEASURE_LINK_PAD} ${MEASURE_LINK_TEXT} ${item.isActive ? "font-semibold" : "font-medium"}`}
               >
                 {item.label}
               </span>
@@ -179,10 +183,10 @@ export function NavbarDesktopMainNav({ items, navFocus, compact = false }: Props
           ))}
           <span
             data-mehr-measure
-            className={`inline-flex items-center gap-1 px-3 ${compact ? "py-1.5" : "py-2"} ${linkText} font-medium`}
+            className={`inline-flex items-center gap-1 px-3 py-2 ${MEASURE_LINK_TEXT} font-medium`}
           >
             Mehr
-            <ChevronDown className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} strokeWidth={1.5} aria-hidden />
+            <ChevronDown className="h-4 w-4" strokeWidth={1.5} aria-hidden />
           </span>
         </div>
         {visible.map((item) => (
