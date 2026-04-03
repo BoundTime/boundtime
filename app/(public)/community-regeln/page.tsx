@@ -34,7 +34,7 @@ export default function CommunityRegelnPage() {
             href="/boundtime-features"
             className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-amber-400/40 bg-amber-950/30 px-5 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/50 hover:bg-amber-950/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            Funktionen &amp; Ablauf
+            Boundtime- Features
           </Link>
           <Link
             href="/"

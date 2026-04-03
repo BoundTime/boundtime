@@ -13,8 +13,7 @@ export function Footer({ className }: { className?: string }) {
       <div className="mx-auto max-w-6xl px-4 py-9 pb-[max(2.25rem,env(safe-area-inset-bottom))] sm:px-6">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-start">
           <p className="max-w-md text-center text-sm leading-relaxed text-gray-500 sm:text-left">
-            © {new Date().getFullYear()} BoundTime – deutschsprachige Community mit klaren Regeln und
-            Verifizierung; Schwerpunkte u. a. Cuckolding, Wifesharing, Mensharing, Keuschhaltung.
+            © {new Date().getFullYear()} BoundTime – Cuckold Community
           </p>
           <nav className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-8">
             <Link
@@ -43,7 +42,7 @@ export function Footer({ className }: { className?: string }) {
               className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
             >
               <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-              Funktionen &amp; Ablauf
+              Boundtime- Features
             </Link>
             <Link
               href="/community-regeln"

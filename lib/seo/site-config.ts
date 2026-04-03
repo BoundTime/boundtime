@@ -12,8 +12,7 @@ export function getSiteUrl(): string {
 
 export const SITE_NAME = "BoundTime";
 
-/** Startseite & Fallback für globale Meta */
-export const SITE_TITLE_DEFAULT =
-  "BoundTime – Cuckolding, Wifesharing & Keuschhaltung";
+/** Startseite & Fallback für globale Meta (Claims angeglichen an öffentliche Landing) */
+export const SITE_TITLE_DEFAULT = "BoundTime – Cuckold Community";
 export const SITE_DESCRIPTION_DEFAULT =
-  "Deutschsprachige Community mit klaren Regeln und Verifizierung: Schwerpunkt Cuckolding, Wifesharing, Mensharing und strukturierte Keuschhaltung – für Paare, Solos und Bulls. Kein anonymer Schnellkontaktmarkt.";
+  "Vernetzung, Austausch und Dating – diskret, verifiziert, respektvoll. Cuckold-Community von Cuckoldpaaren für die Szene.";

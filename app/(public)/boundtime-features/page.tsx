@@ -183,10 +183,27 @@ export default function BoundTimeFeaturesPage() {
                 <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.35rem] lg:leading-tight">
                   Was ist BoundTime?
                 </h1>
-                <p className="mt-4 max-w-xl text-base leading-relaxed text-gray-400">
-                  Neu hier? Hier erfährst du in kurzen Abschnitten, wie Cuckymode, Keuschhaltungs-Vereinbarungen und die
-                  Verifizierung für Solomänner aufgebaut sind – sachlich und ohne Werbeversprechen.
-                </p>
+                <div className="mt-4 max-w-xl space-y-4 text-base leading-relaxed text-gray-300">
+                  <p>
+                    BoundTime ist eine Cuckold Community von Cuckoldpaaren für die Cuckoldszene. BoundTime verfolgt das
+                    Ziel, den Austausch innerhalb der Szene zu fördern und Kontakte zwischen den User-/Innen zu
+                    ermöglichen.
+                  </p>
+                  <h2 className="text-sm font-semibold text-white sm:text-base">BoundTime richtet sich an:</h2>
+                  <ul className="list-disc space-y-2 pl-5 text-gray-300">
+                    <li>Cuckold (-Interessierte)- Paare</li>
+                    <li>Paare in einer Femdom- Beziehung</li>
+                    <li>Paare, die in einer Keuschhaltungsbeziehung leben</li>
+                    <li>Solomänner auf der Suche nach einer Beziehung zu Cuckoldpaaren</li>
+                    <li>Devote Solomänner auf der Suche nach dominanten Singlefrauen</li>
+                    <li>Dominante Solodamen auf der Suche nach devoten Singlemännern</li>
+                  </ul>
+                  <p>
+                    Als Plattformbetreiber stellt BoundTime im Rahmen der Aufnahmekriterien sicher, dass Fakeprofile
+                    keinen Zutritt erhalten und User-/Innen, deren Nutzungsverhalten gegen die Communityziele verstößt,
+                    von einer weiteren Teilnahme ausgeschlossen werden.
+                  </p>
+                </div>
 
                 <div className="mt-6 flex flex-wrap gap-2">
                   {["Nur für Erwachsene (18+)", "Respekt & klare Regeln", "Diskret", "Datenschutz"].map((chip) => (

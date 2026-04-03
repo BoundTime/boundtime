@@ -7,6 +7,43 @@ Diese Bemerkungen dürfen nicht verändert werden.
 === FEEDBACK ===
 1. ORIGINAL FEEDBACK
 
+--- Runde 2 (Landing vor Login, vom Nutzer eingehend) ---
+
+wir zurren es jetzt glatt... startseite unter dem header —> statt: "BoundTime – deine deutschsprachige Community mit klaren Regeln" einfach nur " BoundTime – Cuckold Community"
+
+Statt "Vernetzung, Austausch und Profile – diskret organisiert, mit Verifizierung und respektvollem Rahmen." —> "Vernetzung, Austausch und Dating – diskret, verifiziert, respektvoll"
+
+die kacheln "community regeln", funktionen & ablauf" und "datenschutz" kannst du so lassen, den gesamten ablaufbaum nimm an dieser stelle raus... dazu dienen die unterseiten; man merkt an dieser stelle, dass du weißt, was du mit der seite möchtest, aber dich schwer damit tust, das in worte zu fassen. dadurch wird es verwirrend, zumal der ki-text hier sehr stark durchkommt... du setzt bei denjenigen, die das erste mal auf die seite kommen, zu viel voraus und versuhst das in text zu "pressen", mach's einfach... wir navigieren die leute über die verbleibenden buttons zu dem, was sie wissen möchten bzw. an dieser stelle wissen müssen
+
+deswegen kann dann auch dieser kachel an der stelle wieder raus "Wenn dir Struktur, Respekt und klare Spielregeln wichtig sind, bist du hier richtig.
+Jetzt registrieren
+Mehr zu BoundTime lesen"
+
+Aus "© 2026 BoundTime – deutschsprachige Community mit klaren Regeln und Verifizierung; Schwerpunkte u. a. Cuckolding, Wifesharing, Mensharing, Keuschhaltung." wird einfach nur "© 2026 BoundTime – Cuckold Community"
+
+Die Unterseite "Was ist Boundtime" ist vom Grundgedanken her echt gut, aber auch hier hast du wieder extrem viel im Kopf, mit dem Ergebnis, dass das mörderverwirrend ist und meine verstorbene oma dir aus dem verästelungsmuster vermutlich einen tollen pullover gestrickt hätte...😂... zudem: neulinge, die struktur überfrachtet und ist auch von den schritten her nicht in allen steps logisch... ich bastel jetzt erstmal den aufbau, die kacheln können wir dann immer noch umbenennen und auf der grundalge dann die skizze optimieren
+
+Was ist BoundTime?
+
+Neu hier? Hier erfährst du in kurzen Abschnitten, wie Cuckymode, Keuschhaltungs-Vereinbarungen und die Verifizierung für Solomänner aufgebaut sind – sachlich und ohne Werbeversprechen. 
+
+BoundTime an dieser Stelle zu erklären macht Sinn, aber der Text unter der Frage „Was ist Boundtime?“ ist ja keine Antwort auf die Frage
+Stattdessen müsste der Text- rein logisch- lauten:
+
+„BoundTime ist eine Cuckold Community von Cuckoldpaaren für die Cuckoldszene. BoundTime verfolgt das Ziel, den Austausch innerhalb der Szene zu fördern und Kontakte zwischen den User-/Innen zu ermöglichen. 
+
+BoundTime richtet sich an:
+-Cuckold (-Interessierte)- Paare
+- Paare in einer Femdom- Beziehung
+- Paare, die in einer Keuschhaltungsbeziehung leben
+- Solomänner auf der Suche nach einer Beziehung zu Cuckoldpaaren
+- Devote Solomänner auf der Suche nach dominanten Singlefrauen
+- Dominante Solodamen auf der Suche nach devoten Singlemännern
+
+Als Platfformbetreiber stellt BoundTime im Rahmen der Aufnahmekriterien sicher, dass Fakeprofile keinen Zutritt erhalten und User-/Innen, deren Nutzungsverhalten gegen die Communityziele verstößt, von einer weiteren Teilnahme ausgeschlossen werden.
+
+--- Runde 1 (Landing, weiterhin gültig soweit nicht widersprochen) ---
+
 wow... da hast du ja jetzt echt einiges gemacht...👍 gehe das jetzt schritt für schritt durch
 vorweg finde ich das vom prinzipiellen aufbau und der optischen darstellung sehr gelungen. ich probiere jetzt, das ganze zu strukturieren, zu entzerren und "verwirrendes" zu entfernen
 Dieser klein gedruckte Text unter dem Headerbild kann raus, weil er an dieser Stelle quasi doppelt ist (Community für Cuckoldpaare, Bulls & mehr)
@@ -16,24 +53,31 @@ Die Kachel "Bound- Time" mit den vier Unterkachlen unter dem Registrierungsproze
 
 2. ZUSAMMENFASSUNG
 
-Inhaltliche und strukturelle Bereinigung der Startseite bzw. des betreffenden Views: redundante Textzeile unter dem Hero entfernen; nicht-interaktive oder nicht gewünschte Kachel-Sektionen entfernen; Text und Navigationsbezeichnung für die Features-Unterseite vereinheitlichen; Link-Ziel zur Unterseite unverändert.
+Landing vor Login: Hero-Texte austauschen; drei bestehende Themen-Kacheln beibehalten; kompletten Ablaufbaum auf der Startseite entfernen; separaten CTA-/Überzeugungs-Kachel entfernen; Copyright-Zeile kürzen. Unterseite „Was ist BoundTime“: Einstiegstext unter der Frage durch gelieferten Antwort-Text ersetzen; strukturelle Überarbeitung/Kachel-Logik zunächst durch Produktseite/Nutzer, danach Feinschliff möglich. Fortführung Runde 1: redundante Hero-Zeile, vier Vertrauens-Kacheln, Features-Linkwort und Nav-Label, Block „Bound- Time“ mit Unterkacheln entfernen bzw. anpassen.
 
 3. ENTSCHEIDUNG
 
-Umsetzen: Entfernen der duplikativen Hero-Unterzeile; Entfernen der vier Kacheln und des Blocks „Bound- Time“ mit Unterkacheln (inkl. etwaiger toter Links/Handler); Link zur Features-Unterseite behält dieselbe Route/URL, Ankertext wird „Was sind Boundtime- Features?“; Hauptnavigation: Eintrag von „boundtime- features“ auf „Boundtime- Features“ umbenennen.
+Umsetzen: Hero-H1/Headline-Inhalt → „BoundTime – Cuckold Community“; Subline → „Vernetzung, Austausch und Dating – diskret, verifiziert, respektvoll“; Ablaufbaum-Sektion auf der Startseite entfernen; Kachel mit Text zu Struktur/Respekt/Spielregeln inkl. der beiden Handlungslinks entfernen; Footer-String auf „© 2026 BoundTime – Cuckold Community“; auf der Unterseite „Was ist BoundTime“ den bisherigen Einleitungstext (inkl. „Neu hier? … Cuckymode …“) ersetzen durch den wörtlich gelieferten neuen Block (mit Zielgruppenliste und Absatz zum Plattformbetreiber). Weiter aus Runde 1: doppelte kleine Hero-Zeile entfernen; Vier-Kachel-Block Seriös/Auf Augenhöhe/… entfernen; Ankertext Features + Nav-Label gemäß Runde 1; Sektion „Bound- Time“ mit vier Unterkacheln entfernen.
 
-Nicht spezifiziert vom Nutzer: SEO/Meta-Titel, Breadcrumbs, weitere automatische Verweise – nur nach Abstimmung oder wenn sie denselben String nutzen.
+Zurückgestellt / nachgelagert: vollständiger Neuaufbau der Unterseite inkl. Kacheln und Schrittlogik – laut Nutzer erst manuelle Grobstruktur, dann Umbenennung/Optimierung.
+
+Nicht ohne Klärung: ob die stark gekürzte Copyright-Zeile rechtlich ausreicht oder ergänzt werden muss; ob „Platfformbetreiber“ Tippfehler oder Absicht.
 
 4. KONKRETE PUNKTE
 
-- Hero: Element mit dem doppelten Community-Text (klein unter dem Headerbild) aus dem Markup/Content-Quelle entfernen; keine Regression für Überschriften-Hierarchie oder Barrierefreiheit (z. B. fehlender Kontext – prüfen, ob der Rest der Seite den Kontext trägt).
-- Vier-Kachel-Sektion: komponenten- oder seitenbezogen entfernen; keine Navigation-Events auf nicht verlinkte Flächen hinterlassen.
-- CTA/Link zur Features-Unterseite: `href`/Route unverändert; sichtbarer Text exakt auf Nutzerwunsch setzen: „Was sind Boundtime- Features?“
-- Globale oder header-spezifische Navigation: Label „boundtime- features“ → „Boundtime- Features“; gleiche Ziel-URL wie bisher; prüfen auf Duplikate (Desktop-Nav, Mobile-Drawer, ggf. Duplikat-Menüs).
-- Sektion unter dem Registrierungsprozess: „Bound- Time“ mit vier Unterkacheln entfernen; abhängige Daten/Imports bereinigen, falls die Sektion eigene Komponente ist.
+- Startseite: Strings für Haupt- und Unterüberschrift unter dem Header gemäß Runde 2 setzen (trim bei führendem Leerzeichen im Entwurf).
+- Startseite: Komponente/Sektion „Ablaufbaum“ oder gleichwertiger gesamter Block an dieser Position entfernen; Links der drei verbleibenden Kacheln unverändert funktionsfähig lassen.
+- Startseite: CTA-Bereich mit den drei genannten Textteilen („Wenn dir Struktur…“, „Jetzt registrieren“, „Mehr zu BoundTime lesen“) entfernen; sicherstellen, dass Registrierung woanders klar erreichbar bleibt, falls nötig (nicht Teil des Feedbacks, nur plausibility check).
+- Footer: sichtbare Zeile auf exakt „© 2026 BoundTime – Cuckold Community“; prüfen, ob andere Footer-Spalten (Impressum, Datenschutz) unberührt bleiben.
+- Unterseite „Was ist BoundTime“ / Route unverändert: ersten inhaltlichen Block direkt unter der Frage ersetzen; neuen Text als strukturierte Absätze/Liste abbilden (Bullets wie im Feedback); alten Cross-Reference-Stil zu Cuckymode/Solo-Verifizierung in diesem Einstieg nicht wiederherstellen.
+- Nav/Content Runde 1: Features-Link-Label „Was sind Boundtime- Features?“ bei gleichem Ziel; Menüeintrag „boundtime- features“ → „Boundtime- Features“; projektweit gleiche Ziele konsolidieren (Desktop/Mobile).
+- Runde 1 Rest: Duplikat-Zeile unter Hero-Bild entfernen; „Seriös“-Vierer-Kacheln entfernen; „Bound- Time“-Vierer-Unterkacheln entfernen; Aufräumen importierter Komponenten.
 
 5. OFFENE FRAGEN
 
-- Soll die Umbenennung nur die primäre Top-Navigation betreffen oder projektweit alle Menü-/Footer-Instanzen desselben Ziels?
-- Finale Schreibweise für Strings in Code/Konfiguration: „Boundtime- Features“ oder „BoundTime- Features“?
+- Recht: Genügt die eine Footer-Zeile, wenn Impressum/Datenschutz separat verlinkt bleiben?
+- Orthografie: „Platfformbetreiber“ korrigieren?
+- Markenkonvention: „Boundtime“ vs. „BoundTime“ für Menü und „Was sind … Features?“
+- Umfang Nav-Umbenennung: nur Header oder alle identischen Strings?
+- Unterseite: Nach Lieferung des neuen Textes – sollen vorübergehend auch überfrachtete Schritt-Kacheln entfernt/deaktiviert werden, oder erst wenn der Nutzer den Aufbau festgelegt hat?
 === ENDE FEEDBACK ===
