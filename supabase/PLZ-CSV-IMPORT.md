@@ -25,7 +25,12 @@ Viele offizielle CSVs haben **mehr Spalten** als unsere Tabelle (z. B. **PLZ, 
    ```
    (`.env.local` wird automatisch geladen.)
 
-Das Skript liest `data/plz_orte.csv`, erkennt die Spalten per Kopfzeile, bereinigt die Zeilen (nur 5-stellige PLZ) und fügt sie in `plz_orte` ein. **Einmal ausführen** – bei erneutem Lauf entstehen ggf. doppelte Einträge.
+Das Skript liest `data/plz_orte.csv` (oder einen per Argument angegebenen Pfad), erkennt die Spalten per Kopfzeile und fügt sie in `plz_orte` ein – inkl. **`country`** (`DE` / `AT` / `CH`). Ohne Spalte **Land** / **Country** wird `DE` angenommen; Deutschland **5** Ziffern, AT/CH **4** Ziffern. **Einmal ausführen** – bei erneutem Lauf entstehen ggf. doppelte Einträge.
+
+```bash
+node scripts/seed-plz-orte.mjs data/plz_orte.csv
+node scripts/seed-plz-orte.mjs data/plz_orte_oesterreich.csv
+```
 
 **Falls Fehler „new row violates row-level security policy“:** In Supabase im **SQL Editor** die Migration **`supabase/migrations/005_plz_orte_allow_insert.sql`** ausführen (Inhalt einfügen → Run). Damit darf das Skript Zeilen in `plz_orte` einfügen. Anschließend das Skript erneut starten.
 

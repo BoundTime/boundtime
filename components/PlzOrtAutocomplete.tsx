@@ -5,13 +5,18 @@ import { createClient } from "@/lib/supabase/client";
 
 const SUGGESTION_LIMIT = 20;
 
+export type PlzOrtCountry = "DE" | "AT" | "CH";
+
 export interface PlzOrtEntry {
   plz: string;
   ort: string;
   bundesland?: string | null;
+  country?: PlzOrtCountry;
 }
 
 interface PlzOrtAutocompleteProps {
+  /** Nur Orte dieses Landes aus plz_orte */
+  country?: PlzOrtCountry;
   postalCode: string;
   city: string;
   onSelect: (plz: string, ort: string) => void;
@@ -21,6 +26,7 @@ interface PlzOrtAutocompleteProps {
 }
 
 export function PlzOrtAutocomplete({
+  country = "DE",
   postalCode,
   city,
   onSelect,
@@ -50,23 +56,25 @@ export function PlzOrtAutocomplete({
     const supabase = createClient();
     const { data } = await supabase
       .from("plz_orte")
-      .select("plz, ort, bundesland")
+      .select("plz, ort, bundesland, country")
+      .eq("country", country)
       .ilike("plz", `${prefix}%`)
       .limit(SUGGESTION_LIMIT)
       .order("plz");
     return (data ?? []) as PlzOrtEntry[];
-  }, []);
+  }, [country]);
 
   const fetchByOrt = useCallback(async (query: string) => {
     const supabase = createClient();
     const { data } = await supabase
       .from("plz_orte")
-      .select("plz, ort, bundesland")
+      .select("plz, ort, bundesland, country")
+      .eq("country", country)
       .ilike("ort", `%${query}%`)
       .limit(SUGGESTION_LIMIT)
       .order("ort");
     return (data ?? []) as PlzOrtEntry[];
-  }, []);
+  }, [country]);
 
   useEffect(() => {
     const trimmed = inputValue.trim();
@@ -92,7 +100,7 @@ export function PlzOrtAutocomplete({
 
     const t = setTimeout(run, 200);
     return () => clearTimeout(t);
-  }, [inputValue, fetchByPlz, fetchByOrt]);
+  }, [inputValue, fetchByPlz, fetchByOrt, country]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -181,7 +189,7 @@ export function PlzOrtAutocomplete({
           ) : (
             suggestions.map((entry, i) => (
               <li
-                key={`${entry.plz}-${entry.ort}-${i}`}
+                key={`${country}-${entry.plz}-${entry.ort}-${i}`}
                 role="option"
                 aria-selected={i === highlightIndex}
                 className={`cursor-pointer px-4 py-2 text-sm ${

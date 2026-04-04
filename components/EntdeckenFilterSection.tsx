@@ -5,6 +5,8 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { PREFERENCES_OPTIONS } from "@/types";
 
+type LocCountry = "DE" | "AT" | "CH";
+
 type Props = {
   roleFilter: string | null;
   genderFilter: string | null;
@@ -12,7 +14,10 @@ type Props = {
   experienceFilter: string | null;
   preferenceFilter: string | null;
   plzPrefix: string | null;
+  /** Land für PLZ-Präfixfilter (vermeidet Kollisionen DE/AT/CH) */
+  locCountryFilter: LocCountry;
   myPlzPrefix: string | null;
+  myAddressCountry: LocCountry;
   keuschhaltungFilter: "keyholder_gesucht" | "sub_gesucht" | null;
   radiusKm: number | null;
   radiusCenter: string | null;
@@ -32,6 +37,7 @@ function buildSearchHref(props: Props, omitKeys: Set<string>): string {
   if (props.experienceFilter && !omitKeys.has("experience")) p.set("experience", props.experienceFilter);
   if (props.preferenceFilter && !omitKeys.has("preference")) p.set("preference", props.preferenceFilter);
   if (props.plzPrefix && !omitKeys.has("plz_prefix")) p.set("plz_prefix", props.plzPrefix);
+  if (props.locCountryFilter && !omitKeys.has("loc_country")) p.set("loc_country", props.locCountryFilter);
   if (props.keuschhaltungFilter && !omitKeys.has("keuschhaltung")) p.set("keuschhaltung", props.keuschhaltungFilter);
   if (props.radiusKm != null && !omitKeys.has("radius_km")) p.set("radius_km", String(props.radiusKm));
   if (props.radiusCenter && !omitKeys.has("radius_center")) p.set("radius_center", props.radiusCenter);
@@ -57,21 +63,25 @@ export function EntdeckenFilterSection({
   experienceFilter,
   preferenceFilter,
   plzPrefix,
+  locCountryFilter,
   myPlzPrefix,
+  myAddressCountry,
   keuschhaltungFilter,
   radiusKm,
   radiusCenter,
 }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const propsBag = useMemo(
-    () => ({
+    (): Props => ({
       roleFilter,
       genderFilter,
       accountTypeFilter,
       experienceFilter,
       preferenceFilter,
       plzPrefix,
+      locCountryFilter,
       myPlzPrefix,
+      myAddressCountry,
       keuschhaltungFilter,
       radiusKm,
       radiusCenter,
@@ -83,7 +93,9 @@ export function EntdeckenFilterSection({
       experienceFilter,
       preferenceFilter,
       plzPrefix,
+      locCountryFilter,
       myPlzPrefix,
+      myAddressCountry,
       keuschhaltungFilter,
       radiusKm,
       radiusCenter,
@@ -109,7 +121,15 @@ export function EntdeckenFilterSection({
         preferenceFilter.length > 32 ? `${preferenceFilter.slice(0, 30)}…` : preferenceFilter;
       chips.push({ label: `Vorliebe: ${short}`, omit: new Set(["preference"]) });
     }
-    if (plzPrefix) chips.push({ label: `PLZ: ${plzPrefix}`, omit: new Set(["plz_prefix"]) });
+    if (plzPrefix) {
+      const land =
+        locCountryFilter === "DE"
+          ? "Deutschland"
+          : locCountryFilter === "AT"
+            ? "Österreich"
+            : "Schweiz";
+      chips.push({ label: `PLZ: ${plzPrefix} · ${land}`, omit: new Set(["plz_prefix", "loc_country"]) });
+    }
     if (keuschhaltungFilter)
       chips.push({
         label: `Keuschhaltung: ${keuschLabels[keuschhaltungFilter] ?? keuschhaltungFilter}`,
@@ -135,6 +155,7 @@ export function EntdeckenFilterSection({
     experienceFilter,
     preferenceFilter,
     plzPrefix,
+    locCountryFilter,
     keuschhaltungFilter,
     radiusKm,
     radiusCenter,
@@ -252,6 +273,21 @@ export function EntdeckenFilterSection({
           </select>
         </div>
         <div>
+          <label htmlFor={`loc_country-${idSuffix}`} className={labelClass}>
+            Land (PLZ-Filter)
+          </label>
+          <select
+            id={`loc_country-${idSuffix}`}
+            name="loc_country"
+            defaultValue={locCountryFilter}
+            className={fieldClass}
+          >
+            <option value="DE">Deutschland</option>
+            <option value="AT">Österreich</option>
+            <option value="CH">Schweiz</option>
+          </select>
+        </div>
+        <div>
           <label htmlFor={`plz_prefix-${idSuffix}`} className={labelClass}>
             PLZ
           </label>
@@ -312,7 +348,7 @@ export function EntdeckenFilterSection({
         </Link>
         {myPlzPrefix && (
           <Link
-            href={`/dashboard/entdecken?plz_prefix=${myPlzPrefix}`}
+            href={`/dashboard/entdecken?plz_prefix=${encodeURIComponent(myPlzPrefix)}&loc_country=${encodeURIComponent(myAddressCountry)}`}
             className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/10 px-5 py-2.5 text-sm text-gray-400 transition-colors duration-200 hover:border-white/18 hover:text-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c0c0c]"
             onClick={() => setMobileOpen(false)}
           >

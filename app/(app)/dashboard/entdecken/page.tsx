@@ -5,7 +5,7 @@ import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { EntdeckenFilterSection } from "@/components/EntdeckenFilterSection";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
-import { geocodeDe, haversineKm } from "@/lib/geocode";
+import { geocodeAddress, haversineKm, type AddressCountryCode } from "@/lib/geocode";
 import { DiscoverProfileCard } from "@/components/entdecken/DiscoverProfileCard";
 
 const KEYHOLDER_GESUCHT = "Keusch gehalten werden (Keyholderin/Keyholder suchen)";
@@ -16,6 +16,7 @@ type SearchParams = {
   gender?: string;
   account_type?: string;
   plz_prefix?: string;
+  loc_country?: string;
   preference?: string;
   experience?: string;
   keuschhaltung?: string;
@@ -40,6 +41,10 @@ export default async function EntdeckenPage({
   const accountTypeFilter =
     params.account_type === "couple" ? "couple" : params.account_type === "single" ? "single" : null;
   const plzPrefix = params.plz_prefix?.replace(/\D/g, "").slice(0, 5) || null;
+  const locCountryParam =
+    params.loc_country === "AT" || params.loc_country === "CH" || params.loc_country === "DE"
+      ? params.loc_country
+      : null;
   const radiusKmParam = params.radius_km?.replace(/\D/g, "");
   const radiusKm = radiusKmParam ? Math.min(500, Math.max(1, parseInt(radiusKmParam, 10))) : null;
   const radiusCenter = params.radius_center?.trim() || null;
@@ -57,9 +62,17 @@ export default async function EntdeckenPage({
 
   const myProfile = await supabase
     .from("profiles")
-    .select("postal_code, account_type, restriction_enabled, restriction_no_single_female_profiles, restriction_no_couple_profiles, restriction_no_images")
+    .select(
+      "postal_code, address_country, account_type, restriction_enabled, restriction_no_single_female_profiles, restriction_no_couple_profiles, restriction_no_images"
+    )
     .eq("id", user.id)
     .single();
+
+  const defaultLocCountry: AddressCountryCode =
+    myProfile.data?.address_country === "AT" || myProfile.data?.address_country === "CH"
+      ? myProfile.data.address_country
+      : "DE";
+  const locCountryFilter: AddressCountryCode = locCountryParam ?? defaultLocCountry;
 
   const [{ data: iBlocked }, { data: blockedMe }] = await Promise.all([
     supabase.from("blocked_users").select("blocked_id").eq("blocker_id", user.id),
@@ -78,7 +91,9 @@ export default async function EntdeckenPage({
   if (roleFilter) query = query.eq("role", roleFilter);
   if (genderFilter) query = query.eq("gender", genderFilter);
   if (accountTypeFilter) query = query.eq("account_type", accountTypeFilter);
-  if (plzPrefix && !radiusKm) query = query.like("postal_code", `${plzPrefix}%`);
+  if (plzPrefix && !radiusKm) {
+    query = query.like("postal_code", `${plzPrefix}%`).eq("address_country", locCountryFilter);
+  }
   if (radiusKm) query = query.not("latitude", "is", null).not("longitude", "is", null);
   if (preferenceFilter) query = query.contains("preferences", [preferenceFilter]);
   if (experienceFilter) query = query.eq("experience_level", experienceFilter);
@@ -90,7 +105,11 @@ export default async function EntdeckenPage({
   if (!profilesError && radiusKm != null && profilesRaw && profilesRaw.length > 0) {
     const centerQuery = (radiusCenter || plzPrefix || "").trim();
     const isPlz = /^\d{1,5}$/.test(centerQuery);
-    const coords = await geocodeDe(isPlz ? centerQuery : null, isPlz ? null : centerQuery || null);
+    const coords = await geocodeAddress(
+      isPlz ? centerQuery : null,
+      isPlz ? null : centerQuery || null,
+      locCountryFilter
+    );
     if (coords) {
       profilesRaw = profilesRaw.filter((p: { latitude?: number | null; longitude?: number | null }) => {
         if (p.latitude == null || p.longitude == null) return false;
@@ -174,7 +193,9 @@ export default async function EntdeckenPage({
           experienceFilter={experienceFilter}
           preferenceFilter={preferenceFilter}
           plzPrefix={plzPrefix}
+          locCountryFilter={locCountryFilter}
           myPlzPrefix={myPlzPrefix}
+          myAddressCountry={defaultLocCountry}
           keuschhaltungFilter={keuschhaltungFilter}
           radiusKm={radiusKm}
           radiusCenter={radiusCenter}

@@ -51,33 +51,32 @@ Die vier Kacheln "Seriös", "Auf Augenhöhe", "Verifizierung" und "strenge Prüf
 "Vorab lesen: boundtime- features" ist kein Webseitendeutsch; das mit der Verlinkung auf die Unterseite ist gut gemacht, aber der Text sollte dann lauten: "Was sind Boundtime- Features?", Verlinkung bleibt/ Du musst dann in der Menuführungen oben auch ändern, aus "boundtime- features" wird "Boundtime- Features"
 Die Kachel "Bound- Time" mit den vier Unterkachlen unter dem Registrierungsprozess kannst du an dieser Stelle auch rausnehmen
 
+--- Runde 3 (IA: Landing, Community, Nav, BoundTime- Features – Stand Umsetzung) ---
+
+Kontext: Startseite mit „Kostenlos registrieren“ / „Anmelden“ und Link „was sind boundtime features“; gewünscht davor Link „Über BoundTime“ → Unterseite Community (/community-regeln). Community-Seite: Überschrift von „BoundTime Community-Regeln/ Orientierung…“ zu „BoundTime: Über die Community & Regeln“; Kachel „Technik“ entfernen; bestehender Regeltext; darunter CTA „Jetzt kostenlos registrieren“. Navigation Reihenfolge: Community → BoundTime- Features → Unterseite „Über uns“ (Inhalt = erster großer Absatz von der bisherigen Features-Seite / Was ist BoundTime) → Datenschutz. BoundTime- Features: Einstieg „Ablauf / In vier Schritten…“ ersetzen durch „Was sind BoundTime- Features?“; Fließtext durch gelieferten BTF-Text (Cuckymode, Keuschhaltung/BoundDollars, Dreiecksvereinbarungen), inkl. redaktioneller Korrekturen (Cuckymode, Status, Plattformbetreiber, einheitlich BoundTime- Features).
+
 2. ZUSAMMENFASSUNG
 
-Landing vor Login: Hero-Texte austauschen; drei bestehende Themen-Kacheln beibehalten; kompletten Ablaufbaum auf der Startseite entfernen; separaten CTA-/Überzeugungs-Kachel entfernen; Copyright-Zeile kürzen. Unterseite „Was ist BoundTime“: Einstiegstext unter der Frage durch gelieferten Antwort-Text ersetzen; strukturelle Überarbeitung/Kachel-Logik zunächst durch Produktseite/Nutzer, danach Feinschliff möglich. Fortführung Runde 1: redundante Hero-Zeile, vier Vertrauens-Kacheln, Features-Linkwort und Nav-Label, Block „Bound- Time“ mit Unterkacheln entfernen bzw. anpassen.
+Runden 1–2 (Landing-Entzerrung, Copy, Footer-Kürze, „Was ist BoundTime“-Antworttext): weitgehend im Produkt umgesetzt. Runde 3: Informationsarchitektur öffentlicher Bereich – Landing-Verlinkung „Über BoundTime“ vor Features; Community-Seite ohne Technik-Kasten, neuer Kopf, Registrierungs-CTA; neue Route /ueber-uns mit dem zuvor auf /boundtime-features stehenden Einordnungstext; Nav/Footer/Sitemap und Schreibweise „BoundTime- Features“; Features-Seite als sachlicher BTF-Langtext ohne Step-/TOC-Aufbau.
 
 3. ENTSCHEIDUNG
 
-Umsetzen: Hero-H1/Headline-Inhalt → „BoundTime – Cuckold Community“; Subline → „Vernetzung, Austausch und Dating – diskret, verifiziert, respektvoll“; Ablaufbaum-Sektion auf der Startseite entfernen; Kachel mit Text zu Struktur/Respekt/Spielregeln inkl. der beiden Handlungslinks entfernen; Footer-String auf „© 2026 BoundTime – Cuckold Community“; auf der Unterseite „Was ist BoundTime“ den bisherigen Einleitungstext (inkl. „Neu hier? … Cuckymode …“) ersetzen durch den wörtlich gelieferten neuen Block (mit Zielgruppenliste und Absatz zum Plattformbetreiber). Weiter aus Runde 1: doppelte kleine Hero-Zeile entfernen; Vier-Kachel-Block Seriös/Auf Augenhöhe/… entfernen; Ankertext Features + Nav-Label gemäß Runde 1; Sektion „Bound- Time“ mit vier Unterkacheln entfernen.
+Umgesetzt (Code): Slug `/ueber-uns` mit flacher Navigation (Community → BoundTime- Features → Über uns → Datenschutz); Landing-Zeile mit zwei Links; Community gemäß Runde 3; `boundtime-features/page.tsx` neu mit BTF-Inhalt; Layout-Meta/Breadcrumb „BoundTime- Features“; redaktionell: Cuckymode konsistent, „Status“ statt Tippfehler, „Plattformbetreiber“.
 
-Zurückgestellt / nachgelagert: vollständiger Neuaufbau der Unterseite inkl. Kacheln und Schrittlogik – laut Nutzer erst manuelle Grobstruktur, dann Umbenennung/Optimierung.
+Runde 1/2-Punkte, die noch separat verifiziert werden können: ob alle älteren Landing-Elemente (Ablaufbaum-Kacheln etc.) in der aktuellen `page.tsx` bereits entfernt sind (konnte außerhalb dieses Commits schon erledigt sein).
 
-Nicht ohne Klärung: ob die stark gekürzte Copyright-Zeile rechtlich ausreicht oder ergänzt werden muss; ob „Platfformbetreiber“ Tippfehler oder Absicht.
+4. KONKRETE PUNKTE (Referenz Implementierung)
 
-4. KONKRETE PUNKTE
-
-- Startseite: Strings für Haupt- und Unterüberschrift unter dem Header gemäß Runde 2 setzen (trim bei führendem Leerzeichen im Entwurf).
-- Startseite: Komponente/Sektion „Ablaufbaum“ oder gleichwertiger gesamter Block an dieser Position entfernen; Links der drei verbleibenden Kacheln unverändert funktionsfähig lassen.
-- Startseite: CTA-Bereich mit den drei genannten Textteilen („Wenn dir Struktur…“, „Jetzt registrieren“, „Mehr zu BoundTime lesen“) entfernen; sicherstellen, dass Registrierung woanders klar erreichbar bleibt, falls nötig (nicht Teil des Feedbacks, nur plausibility check).
-- Footer: sichtbare Zeile auf exakt „© 2026 BoundTime – Cuckold Community“; prüfen, ob andere Footer-Spalten (Impressum, Datenschutz) unberührt bleiben.
-- Unterseite „Was ist BoundTime“ / Route unverändert: ersten inhaltlichen Block direkt unter der Frage ersetzen; neuen Text als strukturierte Absätze/Liste abbilden (Bullets wie im Feedback); alten Cross-Reference-Stil zu Cuckymode/Solo-Verifizierung in diesem Einstieg nicht wiederherstellen.
-- Nav/Content Runde 1: Features-Link-Label „Was sind Boundtime- Features?“ bei gleichem Ziel; Menüeintrag „boundtime- features“ → „Boundtime- Features“; projektweit gleiche Ziele konsolidieren (Desktop/Mobile).
-- Runde 1 Rest: Duplikat-Zeile unter Hero-Bild entfernen; „Seriös“-Vierer-Kacheln entfernen; „Bound- Time“-Vierer-Unterkacheln entfernen; Aufräumen importierter Komponenten.
+- [`app/(public)/page.tsx`](app/(public)/page.tsx): Links „Über BoundTime“ → `/community-regeln`, „Was sind BoundTime- Features?“ → `/boundtime-features`.
+- [`app/(public)/community-regeln/page.tsx`](app/(public)/community-regeln/page.tsx): Titel „BoundTime: Über die Community & Regeln“; Technik-Kachel entfernt; CTA „Jetzt kostenlos registrieren“ nach Artikel; Metadata angepasst.
+- [`app/(public)/ueber-uns/page.tsx`](app/(public)/ueber-uns/page.tsx): neu; Inhalt „Was ist BoundTime?“ + Zielgruppen + Plattformbetreiber-Absatz + Chips + CTAs.
+- [`app/(public)/boundtime-features/page.tsx`](app/(public)/boundtime-features/page.tsx): statische Fassung „Was sind BoundTime- Features?“ + BTF-Text; Verweise auf `/ueber-uns` und `/community-regeln`.
+- [`app/(public)/boundtime-features/layout.tsx`](app/(public)/boundtime-features/layout.tsx): Titel/Beschreibung/OG/Breadcrumb auf BTF-Fokus.
+- [`components/Navbar.tsx`](components/Navbar.tsx), [`components/Footer.tsx`](components/Footer.tsx): Reihenfolge und Labels; Footer-Link „Über uns“ mit BookOpen-Icon.
+- [`app/sitemap.ts`](app/sitemap.ts): `/ueber-uns` ergänzt.
 
 5. OFFENE FRAGEN
 
-- Recht: Genügt die eine Footer-Zeile, wenn Impressum/Datenschutz separat verlinkt bleiben?
-- Orthografie: „Platfformbetreiber“ korrigieren?
-- Markenkonvention: „Boundtime“ vs. „BoundTime“ für Menü und „Was sind … Features?“
-- Umfang Nav-Umbenennung: nur Header oder alle identischen Strings?
-- Unterseite: Nach Lieferung des neuen Textes – sollen vorübergehend auch überfrachtete Schritt-Kacheln entfernt/deaktiviert werden, oder erst wenn der Nutzer den Aufbau festgelegt hat?
+- Ob zusätzliche interne Verweise (z. B. Dashboard-Hilfe) noch auf die alte „Was ist BoundTime“-URL zeigen – bei Bedarf auf `/ueber-uns` prüfen.
+- Weitere inhaltliche Feinjustierung BTF-Text durch Redaktion (Ton, Länge, Rechtliches zu Fantasywährung).
 === ENDE FEEDBACK ===

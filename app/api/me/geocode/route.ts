@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { geocodeDe } from "@/lib/geocode";
+import { geocodeAddress, type AddressCountryCode } from "@/lib/geocode";
 import { NextResponse } from "next/server";
 
 /**
@@ -17,7 +17,7 @@ export async function GET() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("postal_code, city")
+    .select("postal_code, city, address_country")
     .eq("id", user.id)
     .single();
 
@@ -25,7 +25,11 @@ export async function GET() {
     return NextResponse.json({ ok: true, message: "Kein Ort/PLZ gesetzt" });
   }
 
-  const coords = await geocodeDe(profile.postal_code ?? null, profile.city ?? null);
+  const ac = profile.address_country as AddressCountryCode | null | undefined;
+  const country: AddressCountryCode =
+    ac === "AT" || ac === "CH" || ac === "DE" ? ac : "DE";
+
+  const coords = await geocodeAddress(profile.postal_code ?? null, profile.city ?? null, country);
   if (!coords) {
     return NextResponse.json({ ok: false, message: "Geocoding fehlgeschlagen" });
   }

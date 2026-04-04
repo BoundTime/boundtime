@@ -1,27 +1,47 @@
 /**
- * Geocoding: PLZ/Ort → Koordinaten (Nominatim, Deutschland).
+ * Geocoding: PLZ/Ort → Koordinaten (Nominatim).
  * Für Suchradius und Speicherung in profiles.latitude/longitude.
  */
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 const USER_AGENT = "BoundTime/1.0 (Profil-Suche; mail@example.com)";
 
+export type AddressCountryCode = "DE" | "AT" | "CH";
+
 export type GeocodeResult = { lat: number; lon: number };
 
-export async function geocodeDe(
-  postalCode?: string | null,
-  city?: string | null
+const COUNTRY_SUFFIX: Record<AddressCountryCode, string> = {
+  DE: ", Deutschland",
+  AT: ", Österreich",
+  CH: ", Schweiz",
+};
+
+const COUNTRY_CODES_PARAM: Record<AddressCountryCode, string> = {
+  DE: "de",
+  AT: "at",
+  CH: "ch",
+};
+
+/**
+ * Geocodiert eine Adresse nach Land (DE / AT / CH).
+ */
+export async function geocodeAddress(
+  postalCode: string | null | undefined,
+  city: string | null | undefined,
+  country: AddressCountryCode = "DE"
 ): Promise<GeocodeResult | null> {
-  const plz = postalCode?.replace(/\D/g, "").slice(0, 5) || "";
+  const digits = postalCode?.replace(/\D/g, "") ?? "";
+  const maxLen = country === "DE" ? 5 : 4;
+  const plz = digits.slice(0, maxLen);
   const ort = city?.trim() || "";
   if (!plz && !ort) return null;
 
-  const q = [plz, ort].filter(Boolean).join(" ");
+  const q = [plz, ort].filter(Boolean).join(" ") + COUNTRY_SUFFIX[country];
   const params = new URLSearchParams({
-    q: q + ", Deutschland",
+    q,
     format: "json",
     limit: "1",
-    countrycodes: "de",
+    countrycodes: COUNTRY_CODES_PARAM[country],
   });
   const url = `${NOMINATIM_URL}?${params.toString()}`;
 
@@ -36,6 +56,14 @@ export async function geocodeDe(
   const lon = Number(data[0].lon);
   if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
   return { lat, lon };
+}
+
+/** Nur Deutschland (Kompatibilität) */
+export async function geocodeDe(
+  postalCode?: string | null,
+  city?: string | null
+): Promise<GeocodeResult | null> {
+  return geocodeAddress(postalCode, city, "DE");
 }
 
 /** Haversine: Entfernung in km zwischen zwei Koordinaten */

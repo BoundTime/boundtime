@@ -5,5 +5,29 @@ Nach Verarbeitung lösche nur den Inhaltsbereich.
 Diese Bemerkungen dürfen nicht verändert werden.
 
 === FEEDBACK ===
+1. ORIGINAL FEEDBACK
 
+--- Öffentliche IA / Microcopy (Runde 3, umgesetzt) ---
+
+Hierarchie: Zuerst übergeordnete Community-Infos („Über BoundTime“ vor „Was sind BoundTime- Features?“ auf der Landing). Community-Kopf: „BoundTime: Über die Community & Regeln“ statt zweizeiliger Community-Regeln/Orientierungsmix; Technik-Kachel vor dem Regeltext entfernen; Abschluss mit klarer Registrierungs-CTA. Navigation: Community → BoundTime- Features → Über uns → Datenschutz. Features-Seite: ein klarer Titelsatz „Was sind BoundTime- Features?“ statt Ablauf-/Schritte-Einstieg; Inhalt als erklärender Langtext (BTF) statt verschachtelter Step-UI. Neue Seite „Über uns“: bisheriger „Was ist BoundTime“-Kern als eigenständige, ruhige Info-Seite. Schreibweise in der Oberfläche: „BoundTime- Features“ (großes T) für Konsistenz mit Marke.
+
+2. ZUSAMMENFASSUNG
+
+Fokus auf klare Lesepfade für Erstbesucher: weniger parallele „Produkt-Inseln“ auf einer Seite, dafür getrennte URLs mit erkennbarer Rolle (Community-Regeln vs. Produktfeatures vs. Einordnung). Landing-Verlinkungen spiegeln die gewünschte Reihenfolge wider. Community wirkt nach Entfernen des Technik-Kastens textzentrierter; Features-Seite wirkt dokumentarischer.
+
+3. ENTSCHEIDUNG
+
+Umgesetzt: visuelle/IA-Wünsche wie oben; Labels „BoundTime- Features“ / „Was sind BoundTime- Features?“; Footer behält kurze Copyright-Zeile, Nav-Cluster Community → Features → Über uns → Rechtliches.
+
+4. KONKRETE PUNKTE
+
+- Landing: Zwei untereinander/nebeneinander gesetzte Textlinks (mobil/desktop) in der Reihenfolge Über BoundTime, dann Features-Frage.
+- Community: Ein zusammenhängender Seitenkopf ohne zusätzliche „Technik“-Karte vor dem Fließtext; CTA prominent unter dem Artikel.
+- Über uns: Gleiche Tonality wie bisheriger Einordnungstext (sachlich, bulletartige Zielgruppe).
+- Features: Typografie über `PublicArticle`-Prose; keine interaktive Step-Karte im Einstieg; optionale Querlinks am Ende zu Über uns und Community.
+
+5. OFFENE FRAGEN
+
+- Ob die Features-Seite später wieder mit Ankern/Inhaltsverzeichnis aufgeteilt werden soll, sobald der Text gewachsener ist.
+- Illustrationen oder Grafiken für BTF (optional, nicht angefragt).
 === ENDE FEEDBACK ===

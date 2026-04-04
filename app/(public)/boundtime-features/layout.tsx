@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import { getSiteUrl, SITE_NAME } from "@/lib/seo/site-config";
 
 const desc =
-  "Was ist BoundTime: Cuckold-Community, Ziele und Zielgruppen; dazu Überblick zu Ablauf, Cuckymode und Verifizierung – sachlich für neue Nutzer:innen.";
+  "BoundTime- Features: Cuckymode für Paare, Keuschhaltungs-Vereinbarungen und BoundDollars (Fantasywährung) – optional und sachlich erklärt.";
 
 export const metadata: Metadata = {
-  title: "Was ist BoundTime?",
+  title: "BoundTime- Features",
   description: desc,
   alternates: { canonical: "/boundtime-features" },
   openGraph: {
-    title: `Was ist BoundTime? · ${SITE_NAME}`,
+    title: `BoundTime- Features · ${SITE_NAME}`,
     description: desc,
     url: `${getSiteUrl()}/boundtime-features`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `Was ist BoundTime? · ${SITE_NAME}`,
+    title: `BoundTime- Features · ${SITE_NAME}`,
     description: desc,
   },
 };
@@ -31,7 +31,7 @@ export default function BoundTimeFeaturesLayout({ children }: { children: React.
       {
         "@type": "ListItem",
         position: 2,
-        name: "Boundtime- Features",
+        name: "BoundTime- Features",
         item: `${base}/boundtime-features`,
       },
     ],

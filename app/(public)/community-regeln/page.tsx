@@ -3,47 +3,19 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { PublicPageHeader } from "@/components/public/PublicPageHeader";
 import { PublicArticle } from "@/components/public/PublicArticle";
-import { PublicSectionHeading } from "@/components/public/PublicSectionHeading";
 import { SITE_NAME } from "@/lib/seo/site-config";
 
 export const metadata: Metadata = {
-  title: "Community-Regeln",
-  description: `Community-Regeln und respektvoller Umgang auf ${SITE_NAME}.`,
+  title: "Community & Regeln",
+  description: `Community, Zielgruppen und Regeln auf ${SITE_NAME} – respektvolles Miteinander.`,
   alternates: { canonical: "/community-regeln" },
-  openGraph: { title: `Community-Regeln · ${SITE_NAME}` },
+  openGraph: { title: `Community & Regeln · ${SITE_NAME}` },
 };
 
 export default function CommunityRegelnPage() {
   return (
     <Container className="py-12 md:py-16">
-      <PublicPageHeader
-        title="Community-Regeln"
-        subtitle="Orientierung für respektvolles Miteinander auf BoundTime."
-      />
-
-      <div className="mb-10 rounded-2xl border border-amber-200/10 bg-black/35 p-6 ring-1 ring-white/[0.04] backdrop-blur-sm md:p-8">
-        <PublicSectionHeading
-          align="left"
-          eyebrow="Mehr erfahren"
-          title="Technik, Ablauf &amp; Begriffe"
-          description="Wenn du vor dem Lesen der Regeln einen sachlichen Überblick willst – gleiche Navigation wie auf der Startseite."
-          className="max-w-2xl"
-        />
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Link
-            href="/boundtime-features"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-amber-400/40 bg-amber-950/30 px-5 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:border-amber-300/50 hover:bg-amber-950/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            Boundtime- Features
-          </Link>
-          <Link
-            href="/"
-            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-5 py-2.5 text-sm font-medium text-gray-100 transition-colors hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            Zurück zur Startseite
-          </Link>
-        </div>
-      </div>
+      <PublicPageHeader title="BoundTime: Über die Community & Regeln" />
 
       <PublicArticle>
         <p>
@@ -79,10 +51,17 @@ export default function CommunityRegelnPage() {
           Community Teilnahmebegründungen einzufordern.
         </p>
 
-        <p>
-          Die Nichteinhaltung der Communityregeln kann zum sofortigen Ausschluss aus der Gemeinschaft führen.
-        </p>
+        <p>Die Nichteinhaltung der Communityregeln kann zum sofortigen Ausschluss aus der Gemeinschaft führen.</p>
       </PublicArticle>
+
+      <div className="mx-auto mt-10 flex max-w-3xl justify-center">
+        <Link
+          href="/register"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-8 py-3.5 text-center text-sm font-semibold text-amber-50 shadow-[0_16px_40px_-24px_rgba(180,140,60,0.35)] transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] motion-reduce:transform-none sm:min-w-[240px]"
+        >
+          Jetzt kostenlos registrieren
+        </Link>
+      </div>
     </Container>
   );
 }

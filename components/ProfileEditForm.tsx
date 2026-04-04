@@ -12,9 +12,22 @@ import {
   PREFERENCES_OPTIONS,
   MAX_TEXT_LENGTH,
 } from "@/types";
-import { PlzOrtAutocomplete } from "@/components/PlzOrtAutocomplete";
+import { PlzOrtAutocomplete, type PlzOrtCountry } from "@/components/PlzOrtAutocomplete";
 import Link from "next/link";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
+
+function parseAddressCountry(v: unknown): PlzOrtCountry {
+  return v === "AT" || v === "CH" || v === "DE" ? v : "DE";
+}
+
+/** PLZ in DB: DE 5-stellig, AT/CH 4-stellig */
+function normalizePostalDigits(raw: string, country: PlzOrtCountry): string | null {
+  const d = raw.replace(/\D/g, "");
+  if (!d) return null;
+  if (country === "DE") return d.padStart(5, "0").slice(0, 5);
+  return d.slice(0, 4);
+}
+
 export function ProfileEditForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -30,6 +43,8 @@ export function ProfileEditForm() {
   const [city, setCity] = useState("");
   const [currentPostalCode, setCurrentPostalCode] = useState("");
   const [currentCity, setCurrentCity] = useState("");
+  const [addressCountry, setAddressCountry] = useState<PlzOrtCountry>("DE");
+  const [currentAddressCountry, setCurrentAddressCountry] = useState<PlzOrtCountry>("DE");
   const [lookingForGenders, setLookingForGenders] = useState<string[]>([]);
   const [lookingFor, setLookingFor] = useState<string[]>([]);
   const [preferences, setPreferences] = useState<string[]>([]);
@@ -72,7 +87,7 @@ export function ProfileEditForm() {
       supabase
         .from("profiles")
         .select(
-          "nick, height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
+          "nick, height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, address_country, current_address_country, looking_for_gender, looking_for_genders, looking_for, preferences, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, partner_preferences, partner_experience_level, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
         )
         .eq("id", user.id)
         .single()
@@ -81,7 +96,7 @@ export function ProfileEditForm() {
             const { data: fallbackData } = await supabase
               .from("profiles")
               .select(
-                "nick, height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
+                "nick, height_cm, weight_kg, body_type, date_of_birth, gender, postal_code, city, current_postal_code, current_city, address_country, current_address_country, looking_for_gender, looking_for_genders, looking_for, expectations_text, about_me, avatar_url, avatar_photo_id, experience_level, role, account_type, couple_type, couple_first_is, partner_date_of_birth, partner_height_cm, partner_weight_kg, partner_body_type, partner_about_me, couple_first_tendency, couple_partner_tendency, orientation, profile_private"
               )
               .eq("id", user.id)
               .single();
@@ -95,6 +110,10 @@ export function ProfileEditForm() {
               setCity(fallbackData.city ?? "");
               setCurrentPostalCode((fallbackData as { current_postal_code?: string }).current_postal_code ?? "");
               setCurrentCity((fallbackData as { current_city?: string }).current_city ?? "");
+              setAddressCountry(parseAddressCountry((fallbackData as { address_country?: string }).address_country));
+              setCurrentAddressCountry(
+                parseAddressCountry((fallbackData as { current_address_country?: string | null }).current_address_country)
+              );
               setNick((fallbackData as { nick?: string }).nick ?? "");
               setLookingForGenders(
                 Array.isArray((fallbackData as { looking_for_genders?: string[] }).looking_for_genders)
@@ -156,6 +175,10 @@ export function ProfileEditForm() {
             setCity(data.city ?? "");
             setCurrentPostalCode((data as { current_postal_code?: string }).current_postal_code ?? "");
             setCurrentCity((data as { current_city?: string }).current_city ?? "");
+            setAddressCountry(parseAddressCountry((data as { address_country?: string }).address_country));
+            setCurrentAddressCountry(
+              parseAddressCountry((data as { current_address_country?: string | null }).current_address_country)
+            );
             setNick((data as { nick?: string }).nick ?? "");
             setLookingForGenders(
               Array.isArray((data as { looking_for_genders?: string[] }).looking_for_genders)
@@ -252,10 +275,16 @@ export function ProfileEditForm() {
         height_cm: mainHeight,
         weight_kg: mainWeight,
         body_type: mainBody,
-        postal_code: postalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
+        postal_code: normalizePostalDigits(postalCode, addressCountry),
         city: city.trim().slice(0, 200) || null,
-        current_postal_code: currentPostalCode.trim().replace(/\D/g, "").slice(0, 5) || null,
+        address_country: addressCountry,
+        current_postal_code:
+          currentPostalCode.trim() || currentCity.trim()
+            ? normalizePostalDigits(currentPostalCode, currentAddressCountry)
+            : null,
         current_city: currentCity.trim().slice(0, 200) || null,
+        current_address_country:
+          currentPostalCode.trim() || currentCity.trim() ? currentAddressCountry : null,
         looking_for_genders: lookingForGenders.length > 0 ? lookingForGenders : null,
         looking_for: lookingFor.length > 0 ? lookingFor : null,
         expectations_text: expectationsText.trim().slice(0, MAX_TEXT_LENGTH) || null,
@@ -316,7 +345,11 @@ export function ProfileEditForm() {
       }
       setSuccessMessage("Ihre Angaben wurden gespeichert.");
       router.refresh();
-      if (updates.postal_code != null || updates.city != null) {
+      if (
+        updates.postal_code != null ||
+        updates.city != null ||
+        updates.address_country != null
+      ) {
         try {
           await fetch("/api/me/geocode");
         } catch {
@@ -791,24 +824,68 @@ export function ProfileEditForm() {
         <section>
           <h3 className="text-sm font-semibold text-white">Ort</h3>
           <p className="mt-1 text-xs text-gray-500">
-            PLZ oder Ort eingeben – nur gültige Einträge aus unserer Datenbasis sind wählbar. Andere können Stadt und PLZ sehen (für Suche „in der Nähe“).
+            Land wählen, dann PLZ oder Ort – nur gültige Einträge aus unserer Datenbasis sind wählbar. Andere können
+            Stadt und PLZ sehen (für Suche „in der Nähe“).
           </p>
           <div className="mt-2">
+            <label htmlFor="address_country" className="mb-1 block text-sm text-gray-300">
+              Land (Wohnort)
+            </label>
+            <select
+              id="address_country"
+              value={addressCountry}
+              onChange={(e) => {
+                const c = e.target.value as PlzOrtCountry;
+                setAddressCountry(c);
+                setPostalCode("");
+                setCity("");
+              }}
+              className="mb-3 w-full max-w-xs rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+            >
+              <option value="DE">Deutschland</option>
+              <option value="AT">Österreich</option>
+              <option value="CH">Schweiz</option>
+            </select>
             <label htmlFor="plz_ort" className="mb-1 block text-sm text-gray-300">
               Postleitzahl oder Ort
             </label>
             <PlzOrtAutocomplete
               id="plz_ort"
+              country={addressCountry}
               postalCode={postalCode}
               city={city}
               onSelect={(plz, ort) => {
                 setPostalCode(plz);
                 setCity(ort);
               }}
-              placeholder="z. B. 10115 oder Berlin"
+              placeholder={
+                addressCountry === "DE"
+                  ? "z. B. 10115 oder Berlin"
+                  : addressCountry === "AT"
+                    ? "z. B. 1010 oder Wien"
+                    : "z. B. 8001 oder Zürich"
+              }
             />
           </div>
           <div className="mt-4">
+            <label htmlFor="current_address_country" className="mb-1 block text-sm text-gray-300">
+              Land (Zweitort, optional)
+            </label>
+            <select
+              id="current_address_country"
+              value={currentAddressCountry}
+              onChange={(e) => {
+                const c = e.target.value as PlzOrtCountry;
+                setCurrentAddressCountry(c);
+                setCurrentPostalCode("");
+                setCurrentCity("");
+              }}
+              className="mb-2 w-full max-w-xs rounded-lg border border-gray-600 bg-background px-4 py-2 text-white"
+            >
+              <option value="DE">Deutschland</option>
+              <option value="AT">Österreich</option>
+              <option value="CH">Schweiz</option>
+            </select>
             <label htmlFor="plz_ort_current" className="mb-1 block text-sm text-gray-300">
               Aktueller Aufenthaltsort (Zweitort, optional)
             </label>
@@ -817,13 +894,20 @@ export function ProfileEditForm() {
             </p>
             <PlzOrtAutocomplete
               id="plz_ort_current"
+              country={currentAddressCountry}
               postalCode={currentPostalCode}
               city={currentCity}
               onSelect={(plz, ort) => {
                 setCurrentPostalCode(plz);
                 setCurrentCity(ort);
               }}
-              placeholder="z. B. 80331 oder München"
+              placeholder={
+                currentAddressCountry === "DE"
+                  ? "z. B. 80331 oder München"
+                  : currentAddressCountry === "AT"
+                    ? "z. B. 6020 oder Innsbruck"
+                    : "z. B. 3000 oder Bern"
+              }
             />
           </div>
         </section>
