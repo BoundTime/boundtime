@@ -58,7 +58,9 @@ export function SettingsAccountSection({
       const res = await fetch("/api/account/delete", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setDeleteError(data.error ?? "Fehler beim Loeschen.");
+        const msg = data.error ?? "Fehler beim Loeschen.";
+        const hint = typeof data.hint === "string" ? data.hint : null;
+        setDeleteError(hint ? `${msg} ${hint}` : msg);
         return;
       }
       const supabase = createClient();

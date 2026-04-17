@@ -13,8 +13,20 @@ export async function POST() {
 
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceRoleKey) {
+    if (process.env.NODE_ENV === "development") {
+      console.error(
+        "[account/delete] SUPABASE_SERVICE_ROLE_KEY fehlt. Siehe .env.example – Key aus Supabase Dashboard → Settings → API."
+      );
+    }
     return NextResponse.json(
-      { error: "Account-Löschung ist nicht konfiguriert." },
+      {
+        error: "Account-Löschung ist nicht konfiguriert.",
+        ...(process.env.NODE_ENV === "development"
+          ? {
+              hint: "Trage SUPABASE_SERVICE_ROLE_KEY in .env.local ein (Supabase → Settings → API → service_role). Deployment: dieselbe Variable setzen.",
+            }
+          : {}),
+      },
       { status: 500 }
     );
   }
