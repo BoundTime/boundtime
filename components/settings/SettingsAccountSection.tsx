@@ -13,7 +13,7 @@ export function SettingsAccountSection({
   const [pwSuccess, setPwSuccess] = useState<string | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
   const [pwLoading, setPwLoading] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -48,14 +48,22 @@ export function SettingsAccountSection({
   }
 
   async function handleAccountDelete() {
-    if (deleteConfirm !== "LOESCHEN") {
-      setDeleteError('Bitte "LOESCHEN" exakt eintippen, um fortzufahren.');
+    if (!deletePassword || deletePassword.length < 6) {
+      setDeleteError("Bitte gib dein aktuelles Passwort ein.");
       return;
     }
+    const confirmed = window.confirm(
+      "Bist du wirklich sicher? Dein Account und alle zugehörigen Daten werden unwiderruflich gelöscht. BoundTime wird dich vermissen."
+    );
+    if (!confirmed) return;
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      const res = await fetch("/api/account/delete", { method: "POST" });
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: deletePassword }),
+      });
       const data = await res.json();
       if (!res.ok) {
         const msg = data.error ?? "Fehler beim Loeschen.";
@@ -129,20 +137,20 @@ export function SettingsAccountSection({
         <h3 className="text-base font-semibold text-red-200">Account endgueltig loeschen</h3>
         <p className="mt-1 text-sm text-red-100/90">
           Diese Aktion entfernt dein Profil dauerhaft. Inhalte und Historie koennen nicht wiederhergestellt werden.
-          Tippe <span className="font-semibold">LOESCHEN</span> zur Bestaetigung ein.
+          Gib dein aktuelles Passwort ein und bestaetige den Hinweisdialog.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <input
-            type="text"
-            placeholder="LOESCHEN eintippen"
-            value={deleteConfirm}
-            onChange={(e) => setDeleteConfirm(e.target.value.toUpperCase())}
+            type="password"
+            placeholder="Aktuelles Passwort"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
             className="w-full max-w-xs rounded-lg border border-red-500/35 bg-black/30 px-3 py-2 text-white placeholder-red-200/60 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/30"
           />
           <button
             type="button"
             onClick={handleAccountDelete}
-            disabled={deleteLoading || deleteConfirm !== "LOESCHEN"}
+            disabled={deleteLoading || !deletePassword}
             className="rounded-lg border border-red-400/60 px-4 py-2 text-sm font-medium text-red-200 transition-colors hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {deleteLoading ? "Wird geloescht ..." : "Account unwiderruflich loeschen"}
