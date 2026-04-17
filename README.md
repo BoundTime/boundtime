@@ -86,6 +86,7 @@ Hinweis: In **`next.config.mjs`** ist `eslint.ignoreDuringBuilds: true` gesetzt;
 - **Zahlungen:** Es sind keine Zahlungs- oder Abo-Integrationen im Sinne von Checkout/Payment-Anbietern eingebunden (kein Stripe & Co. im üblichen Sinne). „BoundDollars“ o. Ä. sind **in-app** konzipiert, nicht als Fiat-Zahlung.
 - **E-Mail:** Registrierungs- und Auth-Mails können über **Supabase Auth → SMTP** konfiguriert werden; zusätzliche Mails nutzen `lib/send-email.ts` (Resend oder SMTP).
 - **Deployment:** Typisch ist **Vercel** (oder vergleichbar) für die Next.js-App plus gehostetes **Supabase**. Setze dabei alle **Production-**Umgebungsvariablen und `NEXT_PUBLIC_APP_URL` auf die echte Domain.
+- **Account löschen (Einstellungen):** Funktioniert nur, wenn **`SUPABASE_SERVICE_ROLE_KEY`** auf dem **Server** gesetzt ist (wie in `.env.example` / Tabelle oben). Ohne diese Variable antwortet `/api/account/delete` mit „nicht konfiguriert“. Den **service_role**-Key nur serverseitig verwenden, niemals ins Frontend oder ins Git.
 - **Git:** Siehe **`GIT-SETUP.md`** für eine generische GitHub-Einrichtung.
 
 ---

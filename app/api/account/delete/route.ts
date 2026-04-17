@@ -48,6 +48,13 @@ export async function POST(request: Request) {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  /** Ohne Service Role kann auth.admin.deleteUser nicht aufgerufen werden – nur serverseitig setzen, nie im Client. */
+  const hintServiceRole =
+    "Setze SUPABASE_SERVICE_ROLE_KEY in den Server-Umgebungsvariablen (Supabase → Project Settings → API → service_role, geheim halten). Lokal: .env.local. Produktion: z. B. Vercel → Settings → Environment Variables.";
+  const hintUrlKeys =
+    "NEXT_PUBLIC_SUPABASE_URL und NEXT_PUBLIC_SUPABASE_ANON_KEY müssen für den Server erreichbar gesetzt sein.";
+
   if (!serviceRoleKey) {
     if (process.env.NODE_ENV === "development") {
       console.error(
@@ -55,20 +62,16 @@ export async function POST(request: Request) {
       );
     }
     return NextResponse.json(
-      {
-        error: "Account-Löschung ist nicht konfiguriert.",
-        ...(process.env.NODE_ENV === "development"
-          ? {
-              hint: "Trage SUPABASE_SERVICE_ROLE_KEY in .env.local ein (Supabase → Settings → API → service_role). Deployment: dieselbe Variable setzen.",
-            }
-          : {}),
-      },
+      { error: "Account-Löschung ist nicht konfiguriert.", hint: hintServiceRole },
       { status: 500 }
     );
   }
   if (!anonKey || !supabaseUrl) {
     return NextResponse.json(
-      { error: "Account-Löschung ist nicht vollständig konfiguriert (Supabase URL/Anon Key fehlt)." },
+      {
+        error: "Account-Löschung ist nicht vollständig konfiguriert (Supabase URL/Anon Key fehlt).",
+        hint: hintUrlKeys,
+      },
       { status: 500 }
     );
   }
