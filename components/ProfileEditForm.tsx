@@ -256,20 +256,8 @@ export function ProfileEditForm() {
       let partnerPrefs = partnerPreferences;
       let mainExp = experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null;
       let partnerExp = partnerExperienceLevel && ["beginner", "experienced", "advanced"].includes(partnerExperienceLevel) ? partnerExperienceLevel : null;
-      if (isCouple && isCoupleWomanMan && !womanFirst) {
-        mainHeight = partnerHeightCm ? parseInt(partnerHeightCm, 10) : null;
-        mainWeight = partnerWeightKg ? parseInt(partnerWeightKg, 10) : null;
-        mainBody = partnerBodyType || null;
-        mainAbout = partnerAboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
-        partnerHeight = heightCm ? parseInt(heightCm, 10) : null;
-        partnerWeight = weightKg ? parseInt(weightKg, 10) : null;
-        partnerBody = bodyType || null;
-        partnerAbout = aboutMe.trim().slice(0, MAX_TEXT_LENGTH) || null;
-        mainPrefs = partnerPreferences;
-        partnerPrefs = preferences;
-        mainExp = partnerExp;
-        partnerExp = experienceLevel && ["beginner", "experienced", "advanced"].includes(experienceLevel) ? experienceLevel : null;
-      }
+      // Kein zusätzlicher Swap bei !womanFirst: Die Inputs sind bereits so angebunden, dass
+      // heightCm/preferences/… immer zur ersten DB-Person (height_cm, …) und partner* zur zweiten gehören.
 
       const updates: Record<string, unknown> = {
         height_cm: mainHeight,
@@ -304,13 +292,8 @@ export function ProfileEditForm() {
         else updates.partner_preferences = null;
         const firstTendency = ["devot", "dominant", "switcher"].includes(coupleFirstTendency) ? coupleFirstTendency : null;
         const partnerTendency = ["devot", "dominant", "switcher"].includes(couplePartnerTendency) ? couplePartnerTendency : null;
-        if (isCoupleWomanMan && !womanFirst) {
-          updates.couple_first_tendency = partnerTendency;
-          updates.couple_partner_tendency = firstTendency;
-        } else {
-          updates.couple_first_tendency = firstTendency;
-          updates.couple_partner_tendency = partnerTendency;
-        }
+        updates.couple_first_tendency = firstTendency;
+        updates.couple_partner_tendency = partnerTendency;
       }
 
       const { error: updateError } = await supabase
