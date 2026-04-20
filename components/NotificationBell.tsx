@@ -129,23 +129,32 @@ export function NotificationBell({
         { event: "INSERT", schema: "public", table: "notifications" },
         () => load()
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "notifications" },
+        () => load()
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
 
-  async function markAllRead() {
+  /** Nur eine Benachrichtigung als gelesen markieren (Klick auf einen Eintrag in der Glocke). */
+  async function markNotificationRead(notificationId: string) {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
-    await supabase
+    const { error } = await supabase
       .from("notifications")
       .update({ read_at: new Date().toISOString() })
-      .eq("user_id", user.id)
-      .is("read_at", null);
-    setUnreadCount(0);
-    setList([]);
+      .eq("id", notificationId)
+      .eq("user_id", user.id);
+    if (error) return;
+    setList((prev) => prev.filter((row) => row.id !== notificationId));
+    setUnreadCount((c) => Math.max(0, c - 1));
   }
 
   useEffect(() => {
@@ -250,7 +259,7 @@ export function NotificationBell({
               <span className="font-semibold text-white">Benachrichtigungen</span>
               <Link
                 href="/dashboard/benachrichtigungen"
-                onClick={() => { setOpen(false); markAllRead(); }}
+                onClick={() => setOpen(false)}
                 className="text-xs text-accent hover:underline"
               >
                 Alle anzeigen
@@ -265,7 +274,10 @@ export function NotificationBell({
                     <li key={n.id}>
                       <Link
                         href={getNotificationHref(n)}
-                        onClick={() => { setOpen(false); markAllRead(); }}
+                        onClick={() => {
+                          setOpen(false);
+                          void markNotificationRead(n.id);
+                        }}
                         className="block px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
                       >
                         {(() => {
