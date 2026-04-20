@@ -70,6 +70,8 @@ export function NotificationBell({
   const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  /** Panel wird per Portal nach document.body gerendert – ohne eigenes Ref würde „Klick außerhalb“ jeden Klick im Panel schließen und Navigation verhindern. */
+  const panelRef = useRef<HTMLDivElement>(null);
   const [panelPos, setPanelPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   function updatePanelPosition() {
@@ -148,7 +150,10 @@ export function NotificationBell({
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (ref.current?.contains(t)) return;
+      if (panelRef.current?.contains(t)) return;
+      setOpen(false);
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -237,6 +242,7 @@ export function NotificationBell({
         typeof document !== "undefined" &&
         createPortal(
           <div
+            ref={panelRef}
             className="fixed z-[180] w-80 max-h-[70vh] overflow-hidden rounded-xl border border-gray-700 bg-card shadow-xl"
             style={{ top: panelPos.top, left: panelPos.left }}
           >

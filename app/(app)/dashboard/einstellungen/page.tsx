@@ -44,21 +44,45 @@ export default async function EinstellungenPage({
           <div className="max-w-2xl">
             <h1 className="text-2xl font-bold text-white md:text-3xl">Einstellungen</h1>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs sm:w-auto sm:grid-cols-3">
-            <a href="#privatsphaere-schutz" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Privatsphäre</a>
+          <div className="flex w-full flex-wrap justify-end gap-2 text-xs md:max-w-xl">
+            <a
+              href="#privatsphaere-schutz"
+              className="min-w-[8.5rem] flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10 sm:flex-none sm:min-w-0"
+            >
+              Privatsphäre
+            </a>
             {profile?.account_type === "couple" && (
-              <a href="#cuckymode-steuerung" className="rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-center text-amber-100 transition-colors hover:bg-amber-300/20">Cuckymode</a>
+              <a
+                href="#cuckymode-steuerung"
+                className="min-w-[8.5rem] flex-1 rounded-lg border border-amber-300/30 bg-amber-300/10 px-3 py-2 text-center text-amber-100 transition-colors hover:bg-amber-300/20 sm:flex-none sm:min-w-0"
+              >
+                Cuckymode
+              </a>
             )}
             {(isDomOrSwitcher || isAdmin) && (
-              <a href="#rollenwerkzeuge" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Werkzeuge</a>
+              <a
+                href="#rollenwerkzeuge"
+                className="min-w-[8.5rem] flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10 sm:flex-none sm:min-w-0"
+              >
+                Werkzeuge
+              </a>
             )}
-            <a href="#zugang-konto" className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10">Zugang</a>
+            <a
+              href="#zugang-konto"
+              className="min-w-[8.5rem] flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-center text-gray-200 transition-colors hover:bg-white/10 sm:flex-none sm:min-w-0"
+            >
+              Zugang
+            </a>
           </div>
         </div>
       </header>
 
       <div className="mt-8 space-y-5 md:space-y-6">
-        <section id="privatsphaere-schutz" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
+        {/* scroll-mt-*: Ziel nicht unter der sticky Navbar (Root-Layout zoom beachtet) */}
+        <section
+          id="privatsphaere-schutz"
+          className="scroll-mt-28 rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6 lg:scroll-mt-40"
+        >
           <div className="mb-4 border-b border-white/10 pb-4">
             <div className="mb-2 inline-flex items-center rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-300">
               Privatsphäre &amp; Schutz
@@ -72,7 +96,10 @@ export default async function EinstellungenPage({
         </section>
 
         {profile?.account_type === "couple" && (
-          <section id="cuckymode-steuerung" className="rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] p-5 md:p-6">
+          <section
+            id="cuckymode-steuerung"
+            className="scroll-mt-28 rounded-2xl border border-amber-500/30 bg-amber-500/[0.06] p-5 md:p-6 lg:scroll-mt-40"
+          >
             <div className="mb-4 border-b border-amber-500/20 pb-4">
               <div className="mb-2 inline-flex items-center rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-xs font-medium text-amber-200">
                 Cuckymode-Steuerung
@@ -87,7 +114,10 @@ export default async function EinstellungenPage({
         )}
 
         {(isDomOrSwitcher || isAdmin) && (
-          <section id="rollenwerkzeuge" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
+          <section
+            id="rollenwerkzeuge"
+            className="scroll-mt-28 rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6 lg:scroll-mt-40"
+          >
             <div className="mb-4 border-b border-white/10 pb-4">
               <div className="mb-2 inline-flex items-center rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
                 Rollenbasierte Werkzeuge
@@ -135,7 +165,10 @@ export default async function EinstellungenPage({
           </section>
         )}
 
-        <section id="zugang-konto" className="rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6">
+        <section
+          id="zugang-konto"
+          className="scroll-mt-28 rounded-2xl border border-white/10 bg-card/95 p-5 md:p-6 lg:scroll-mt-40"
+        >
           <div className="mb-4 border-b border-white/10 pb-4">
             <div className="mb-2 inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
               Zugang & Konto
