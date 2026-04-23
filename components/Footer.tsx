@@ -11,49 +11,50 @@ export function Footer({ className }: { className?: string }) {
       )}
     >
       <div className="mx-auto max-w-6xl px-4 py-9 pb-[max(2.25rem,env(safe-area-inset-bottom))] sm:px-6">
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-start">
-          <p className="max-w-md text-center text-sm leading-relaxed text-gray-500 sm:text-left">
+        <div className="flex flex-col items-center justify-between gap-6 lg:flex-row lg:items-start">
+          <p className="max-w-md shrink-0 text-center text-sm leading-relaxed text-gray-500 lg:text-left">
             © {new Date().getFullYear()} BoundTime – Cuckold Community
           </p>
-          <nav className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:justify-end sm:gap-x-8">
+          {/* sm/md: eine Zeile (kein flex-wrap), damit AGB nicht allein umbricht; bei Bedarf horizontal scrollen */}
+          <nav className="grid w-full max-w-full grid-cols-2 justify-items-center gap-x-4 gap-y-3 sm:flex sm:w-auto sm:flex-nowrap sm:justify-end sm:gap-x-4 sm:overflow-x-auto sm:pb-0.5 md:gap-x-5 lg:gap-x-7">
             <Link
               href="/community-regeln"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <UsersRound className="h-4 w-4 shrink-0" aria-hidden />
               Community-Regeln
             </Link>
             <Link
               href="/boundtime-features"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
               BoundTime- Features
             </Link>
             <Link
               href="/ueber-uns"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <BookOpen className="h-4 w-4 shrink-0" aria-hidden />
               Über uns
             </Link>
             <Link
               href="/impressum"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <FileText className="h-4 w-4 shrink-0" />
               Impressum
             </Link>
             <Link
               href="/datenschutz"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <Shield className="h-4 w-4 shrink-0" />
               Datenschutz
             </Link>
             <Link
               href="/agb"
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:min-w-0 sm:justify-start"
+              className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <ScrollText className="h-4 w-4 shrink-0" />
               AGB
