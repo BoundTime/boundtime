@@ -360,10 +360,6 @@ export function ProfileEditForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <p className="text-gray-400">
-        Alle Angaben sind freiwillig. Du kannst Felder leer lassen und jederzeit
-        anpassen.
-      </p>
 
       {error && (
         <p className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400 border border-red-500/20">

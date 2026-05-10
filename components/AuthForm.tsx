@@ -223,7 +223,6 @@ function validate(): boolean {
         }
 
         router.push("/dashboard");
-        router.refresh();
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
@@ -237,7 +236,6 @@ function validate(): boolean {
           return;
         }
         router.push("/dashboard");
-        router.refresh();
       }
     } catch (err: unknown) {
       let message = "Ein Fehler ist aufgetreten.";
@@ -291,23 +289,24 @@ function validate(): boolean {
             Möchtest du ein <strong>Paar</strong> oder ein <strong>Singleprofil</strong> anlegen?
           </p>
           <div>
-            <label htmlFor="accountType" className="mb-1 block text-sm font-medium text-gray-300">
-              Account-Typ
-            </label>
-            <select
-              id="accountType"
-              value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
-            >
-              <option value="">— Bitte wählen —</option>
+            <p className="mb-2 text-sm font-medium text-gray-300">Account-Typ</p>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Account-Typ wählen">
               {ACCOUNT_TYPE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => setAccountType(o.value)}
+                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+                    accountType === o.value
+                      ? "border-amber-400/60 bg-amber-950/50 text-amber-50"
+                      : "border-white/12 bg-black/40 text-gray-300 hover:border-amber-400/30 hover:text-white"
+                  }`}
+                >
                   {o.label}
-                </option>
+                </button>
               ))}
-            </select>
-            <p className="mt-1 text-xs text-gray-500">
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
               Paar: Gemeinsamer Account. Später in den Einstellungen: Cuckymode einrichten – z. B. nur Hotwife schreibt, Cucky nur mit Passwort.
             </p>
             {errors.accountType && (
@@ -340,22 +339,23 @@ function validate(): boolean {
                 Welche Art von Paar seid ihr?
               </p>
               <div>
-                <label htmlFor="coupleType" className="mb-1 block text-sm font-medium text-gray-300">
-                  Art des Paars
-                </label>
-                <select
-                  id="coupleType"
-                  value={coupleType}
-                  onChange={(e) => setCoupleType(e.target.value)}
-                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
-                >
-                  <option value="">— Bitte wählen —</option>
+                <p className="mb-2 text-sm font-medium text-gray-300">Art des Paars</p>
+                <div className="grid grid-cols-3 gap-2" role="group" aria-label="Art des Paars wählen">
                   {COUPLE_TYPE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setCoupleType(o.value)}
+                      className={`rounded-xl border px-3 py-3 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+                        coupleType === o.value
+                          ? "border-amber-400/60 bg-amber-950/50 text-amber-50"
+                          : "border-white/12 bg-black/40 text-gray-300 hover:border-amber-400/30 hover:text-white"
+                      }`}
+                    >
                       {o.label}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
                 {errors.coupleType && (
                   <p className="mt-1 text-sm text-red-400">{errors.coupleType}</p>
                 )}
@@ -367,43 +367,45 @@ function validate(): boolean {
                 Dein Geschlecht und deine Rolle in der Community.
               </p>
               <div>
-                <label htmlFor="gender" className="mb-1 block text-sm font-medium text-gray-300">
-                  Geschlecht
-                </label>
-                <select
-                  id="gender"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
-                >
-                  <option value="">— Bitte wählen —</option>
+                <p className="mb-2 text-sm font-medium text-gray-300">Geschlecht</p>
+                <div className="grid grid-cols-3 gap-2" role="group" aria-label="Geschlecht wählen">
                   {GENDER_OPTIONS.map((g) => (
-                    <option key={g} value={g}>
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setGender(g)}
+                      className={`rounded-xl border px-3 py-3 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+                        gender === g
+                          ? "border-amber-400/60 bg-amber-950/50 text-amber-50"
+                          : "border-white/12 bg-black/40 text-gray-300 hover:border-amber-400/30 hover:text-white"
+                      }`}
+                    >
                       {g}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
                 {errors.gender && (
                   <p className="mt-1 text-sm text-red-400">{errors.gender}</p>
                 )}
               </div>
               <div>
-                <label htmlFor="role" className="mb-1 block text-sm font-medium text-gray-300">
-                  Rolle
-                </label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full rounded-xl border border-white/12 bg-black/40 px-4 py-3 text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/20"
-                >
-                  <option value="">— Bitte wählen —</option>
+                <p className="mb-2 text-sm font-medium text-gray-300">Rolle</p>
+                <div className="grid grid-cols-4 gap-2" role="group" aria-label="Rolle wählen">
                   {ROLE_OPTIONS.map((r) => (
-                    <option key={r} value={r}>
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setRole(r)}
+                      className={`rounded-xl border px-2 py-3 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] ${
+                        role === r
+                          ? "border-amber-400/60 bg-amber-950/50 text-amber-50"
+                          : "border-white/12 bg-black/40 text-gray-300 hover:border-amber-400/30 hover:text-white"
+                      }`}
+                    >
                       {r}
-                    </option>
+                    </button>
                   ))}
-                </select>
+                </div>
                 {errors.role && (
                   <p className="mt-1 text-sm text-red-400">{errors.role}</p>
                 )}
@@ -680,22 +682,28 @@ function validate(): boolean {
       )}
 
       {isRegister && registerStep === 3 ? (
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => setRegisterStep(2)}
-            className="flex-1 rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 font-medium text-gray-200 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
-          >
-            Zurück
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 rounded-xl border border-amber-400/45 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:scale-100"
-          >
-            {loading ? "Bitte warten …" : "Registrieren"}
-          </button>
-        </div>
+        <>
+          <p className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-xs leading-relaxed text-gray-400">
+            <strong className="text-gray-200">Tipp:</strong> Deinen Wohnort kannst du nach der Anmeldung im Profil ergänzen – das hilft anderen Mitgliedern, dich in der Nähe zu finden.
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setRegisterStep(2)}
+              className="flex-1 rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 font-medium text-gray-200 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+            >
+              Zurück
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 rounded-xl border border-amber-400/45 bg-amber-950/40 px-4 py-3 font-semibold text-amber-50 transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/55 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:scale-100"
+            >
+              {loading ? "Bitte warten …" : "Registrieren"}
+            </button>
+          </div>
+        </>
+      
       ) : (
         <button
           type="submit"
