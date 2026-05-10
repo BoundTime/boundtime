@@ -604,6 +604,16 @@ function validate(): boolean {
         {errors.password && (
           <p className="mt-1 text-sm text-red-400">{errors.password}</p>
         )}
+        {!isRegister && (
+          <div className="mt-1 text-right">
+            <Link
+              href="/passwort-vergessen"
+              className="text-xs text-gray-400 transition-colors duration-150 hover:text-amber-200/85 hover:underline"
+            >
+              Passwort vergessen?
+            </Link>
+          </div>
+        )}
       </div>
 
       {isRegister && registerStep === 3 && (

@@ -6,7 +6,7 @@ export function getSiteUrl(): string {
   const raw =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.SITE_URL?.trim() ||
-    "https://boundtime.de";
+    "https://www.boundtime.de";
   return raw.replace(/\/+$/, "");
 }
 

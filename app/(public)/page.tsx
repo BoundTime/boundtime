@@ -6,6 +6,8 @@ import { Shield, FileCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { ExpiredLinkBanner } from "@/components/landing/ExpiredLinkBanner";
+import { Hero3D } from "@/components/visual/Hero3D";
+import { MotionStagger, MotionItem } from "@/components/visual/MotionPage";
 import { getSiteUrl, SITE_DESCRIPTION_DEFAULT, SITE_NAME, SITE_TITLE_DEFAULT } from "@/lib/seo/site-config";
 
 export const metadata: Metadata = {
@@ -47,6 +49,18 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_100%_60%,rgba(127,31,43,0.08),transparent_50%)]" />
         </div>
 
+        <Hero3D />
+
+        <div
+          className="pointer-events-none absolute -bottom-24 left-[8%] h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(244,179,90,0.42)_0%,rgba(194,84,26,0.16)_45%,transparent_75%)] blur-2xl motion-safe:animate-candle-pulse"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -bottom-28 right-[10%] h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(244,179,90,0.36)_0%,rgba(127,31,43,0.18)_50%,transparent_75%)] blur-2xl motion-safe:animate-candle-pulse-slow"
+          style={{ animationDelay: "1.4s" }}
+          aria-hidden
+        />
+
         <Container className="relative">
           <div className="mx-auto max-w-3xl text-center">
             <div className="relative mx-auto w-full max-w-[min(100%,28rem)] sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
@@ -64,7 +78,7 @@ export default async function HomePage() {
                   src="/landing-brand-hero.png"
                   alt="BoundTime"
                   fill
-                  className="object-contain object-center drop-shadow-[0_12px_48px_rgba(0,0,0,0.55)] [filter:drop-shadow(0_0_40px_rgba(180,140,60,0.12))]"
+                  className="object-contain object-center drop-shadow-[0_12px_48px_rgba(0,0,0,0.55)] [filter:drop-shadow(0_0_40px_rgba(180,140,60,0.12))] motion-safe:animate-hero-breathe"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 48rem"
                   priority
                 />
@@ -81,15 +95,23 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
                 href="/register"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-400/45 bg-amber-950/35 px-8 py-3.5 text-center text-sm font-semibold text-amber-50 shadow-[0_16px_40px_-24px_rgba(180,140,60,0.35)] transition-[transform,background-color,border-color] duration-200 hover:border-amber-300/55 hover:bg-amber-950/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] motion-reduce:transform-none sm:min-w-[200px]"
+                className="group relative inline-flex min-h-[48px] items-center justify-center overflow-hidden rounded-xl border border-bronze-300/55 bg-gradient-to-b from-bronze-700/45 to-bronze-900/55 px-8 py-3.5 text-center text-sm font-semibold text-bronze-50 shadow-[0_18px_42px_-22px_rgba(194,134,46,0.55)] ring-1 ring-bronze-200/10 transition-[transform,background-color,border-color,box-shadow] duration-200 ease-leather hover:border-bronze-200/65 hover:from-bronze-600/55 hover:to-bronze-800/65 hover:shadow-candle focus:outline-none focus-visible:ring-2 focus-visible:ring-bronze-300/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px active:shadow-bronze-press motion-reduce:transform-none sm:min-w-[200px]"
               >
-                Kostenlos registrieren
+                <span className="relative z-10">Kostenlos registrieren</span>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 -inset-x-12 -translate-x-full bg-[linear-gradient(110deg,transparent_0%,rgba(244,179,90,0.0)_30%,rgba(244,179,90,0.45)_50%,rgba(244,179,90,0.0)_70%,transparent_100%)] transition-transform duration-700 ease-leather group-hover:translate-x-full motion-reduce:hidden"
+                />
               </Link>
               <Link
                 href="/login"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] px-8 py-3.5 text-center text-sm font-medium text-gray-100 transition-colors duration-200 hover:border-white/25 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:min-w-[160px]"
+                className="group relative inline-flex min-h-[48px] items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-white/[0.05] px-8 py-3.5 text-center text-sm font-medium text-gray-100 transition-[transform,background-color,border-color] duration-200 ease-leather hover:border-bronze-200/35 hover:bg-white/[0.08] focus:outline-none focus-visible:ring-2 focus-visible:ring-bronze-300/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px sm:min-w-[160px]"
               >
-                Anmelden
+                <span className="relative z-10">Anmelden</span>
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 -inset-x-10 -translate-x-full bg-[linear-gradient(110deg,transparent_0%,rgba(244,179,90,0.0)_30%,rgba(244,179,90,0.18)_50%,rgba(244,179,90,0.0)_70%,transparent_100%)] transition-transform duration-700 ease-leather group-hover:translate-x-full motion-reduce:hidden"
+                />
               </Link>
             </div>
 
@@ -108,29 +130,39 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <Link
-                href="/community-regeln"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
-              >
-                <FileCheck className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
-                Community-Regeln
-              </Link>
-              <Link
-                href="/boundtime-features"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
-              >
-                <Sparkles className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
-                Funktionen &amp; Ablauf
-              </Link>
-              <Link
-                href="/datenschutz"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
-              >
-                <Shield className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
-                Datenschutz
-              </Link>
-            </div>
+            <MotionStagger
+              className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-2 sm:gap-3"
+              delay={0.2}
+              staggerChildren={0.1}
+            >
+              <MotionItem>
+                <Link
+                  href="/community-regeln"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
+                >
+                  <FileCheck className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                  Community-Regeln
+                </Link>
+              </MotionItem>
+              <MotionItem>
+                <Link
+                  href="/boundtime-features"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                  Funktionen &amp; Ablauf
+                </Link>
+              </MotionItem>
+              <MotionItem>
+                <Link
+                  href="/datenschutz"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-4 py-2 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors hover:border-amber-400/25 hover:text-white sm:text-sm"
+                >
+                  <Shield className="h-3.5 w-3.5 text-amber-200/70" strokeWidth={1.5} aria-hidden />
+                  Datenschutz
+                </Link>
+              </MotionItem>
+            </MotionStagger>
           </div>
         </Container>
       </section>
