@@ -29,7 +29,7 @@ export function Footer({ className }: { className?: string }) {
               className="flex min-h-[44px] min-w-0 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm text-gray-400 transition-colors duration-200 hover:text-amber-100/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0f0f] motion-reduce:transition-none sm:min-h-0 sm:justify-start"
             >
               <Sparkles className="h-4 w-4 shrink-0" aria-hidden />
-              BoundTime- Features
+              BoundTime-Features
             </Link>
             <Link
               href="/ueber-uns"

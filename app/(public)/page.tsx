@@ -115,21 +115,6 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-5 flex flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-6">
-              <Link
-                href="/community-regeln"
-                className="text-sm font-medium text-amber-200/85 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
-              >
-                Über BoundTime
-              </Link>
-              <Link
-                href="/boundtime-features"
-                className="text-sm font-medium text-amber-200/85 underline-offset-4 transition-colors hover:text-amber-100 hover:underline"
-              >
-                Was sind BoundTime- Features?
-              </Link>
-            </div>
-
             <MotionStagger
               className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-2 sm:gap-3"
               delay={0.2}

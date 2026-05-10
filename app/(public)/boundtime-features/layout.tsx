@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import { getSiteUrl, SITE_NAME } from "@/lib/seo/site-config";
 
 const desc =
-  "BoundTime- Features: Cuckymode für Paare, Keuschhaltungs-Vereinbarungen und BoundDollars (Fantasywährung) – optional und sachlich erklärt.";
+  "BoundTime-Features: Cuckymode für Paare, Keuschhaltungs-Vereinbarungen und BoundDollars (Fantasywährung) – optional und sachlich erklärt.";
 
 export const metadata: Metadata = {
-  title: "BoundTime- Features",
+  title: "BoundTime-Features",
   description: desc,
   alternates: { canonical: "/boundtime-features" },
   openGraph: {
-    title: `BoundTime- Features · ${SITE_NAME}`,
+    title: `BoundTime-Features · ${SITE_NAME}`,
     description: desc,
     url: `${getSiteUrl()}/boundtime-features`,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `BoundTime- Features · ${SITE_NAME}`,
+    title: `BoundTime-Features · ${SITE_NAME}`,
     description: desc,
   },
 };
@@ -31,7 +31,7 @@ export default function BoundTimeFeaturesLayout({ children }: { children: React.
       {
         "@type": "ListItem",
         position: 2,
-        name: "BoundTime- Features",
+        name: "BoundTime-Features",
         item: `${base}/boundtime-features`,
       },
     ],

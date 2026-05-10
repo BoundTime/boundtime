@@ -9,11 +9,11 @@ export default function BoundTimeFeaturesPage() {
       <section className="relative py-12 sm:py-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(127,31,43,0.22),transparent_60%)]" />
         <Container className="relative">
-          <PublicPageHeader eyebrow="BoundTime" title="Was sind BoundTime- Features?" />
+          <PublicPageHeader eyebrow="BoundTime" title="Was sind BoundTime-Features?" />
 
           <PublicArticle>
             <p>
-              BoundTime- Features (BTF) sind optionale Varianten, die den Besonderheiten einer Cuckoldbeziehung und dem
+              BoundTime-Features (BTF) sind optionale Varianten, die den Besonderheiten einer Cuckoldbeziehung und dem
               Dreieck Hotwife–Cuckold–Bull Rechnung tragen.
             </p>
             <p>BoundTime bietet folgende BTF:</p>

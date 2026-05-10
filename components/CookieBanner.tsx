@@ -6,16 +6,15 @@ import Link from "next/link";
 const STORAGE_KEY = "boundtime_cookie_consent";
 
 export function CookieBanner() {
-  const [mounted, setMounted] = useState(false);
-  const [accepted, setAccepted] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "accepted") setAccepted(true);
+      if (localStorage.getItem(STORAGE_KEY) !== "accepted") {
+        setVisible(true);
+      }
     } catch {
-      // localStorage nicht verfügbar (z. B. privater Modus)
+      setVisible(true);
     }
   }, []);
 
@@ -25,10 +24,10 @@ export function CookieBanner() {
     } catch {
       // ignorieren
     }
-    setAccepted(true);
+    setVisible(false);
   }
 
-  if (!mounted || accepted) return null;
+  if (!visible) return null;
 
   return (
     <>
