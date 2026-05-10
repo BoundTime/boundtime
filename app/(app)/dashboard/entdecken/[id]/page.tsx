@@ -328,7 +328,7 @@ export default async function ProfilDetailPage({
               <div>
                 <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
                   <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
-                  Profil-Identitaet
+                  Profil-Identität
                 </div>
                 <h1 className="flex flex-wrap items-center justify-center gap-2 text-2xl font-bold text-white sm:text-3xl md:justify-start">
               {profile.nick ?? "—"}

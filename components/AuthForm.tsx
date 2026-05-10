@@ -263,9 +263,25 @@ function validate(): boolean {
       className="w-full space-y-5 rounded-[1.25rem] border border-amber-200/10 bg-black/50 p-7 shadow-[0_28px_70px_-40px_rgba(0,0,0,0.9)] ring-1 ring-white/[0.04] backdrop-blur-xl sm:p-8"
     >
       {isRegister ? (
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/60">
-          Schritt {registerStep} von 3
-        </p>
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/60">
+            Schritt {registerStep} von 3
+          </p>
+          <div className="flex gap-1.5" role="progressbar" aria-valuenow={registerStep} aria-valuemin={1} aria-valuemax={3} aria-label={`Schritt ${registerStep} von 3`}>
+            {([1, 2, 3] as const).map((step) => (
+              <div
+                key={step}
+                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  step < registerStep
+                    ? "bg-amber-400"
+                    : step === registerStep
+                      ? "bg-amber-400/70"
+                      : "bg-white/10"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       ) : null}
 
       {submitSuccess && (

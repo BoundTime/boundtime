@@ -1070,18 +1070,18 @@ export function ProfileEditForm() {
             Was erwartet {nick || "…"} von seinem Gesuchten?
           </h3>
           <div className="mt-2">
-            <label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">
-              Deine Angaben
-            </label>
-            <textarea
-              id="expectations_text"
-              value={expectationsText}
-              onChange={(e) => setExpectationsText(e.target.value)}
-              maxLength={MAX_TEXT_LENGTH}
-              rows={3}
-              placeholder="z. B. Ein Dom beschreibt, wofür der Sub zur Verfügung stehen soll …"
-              className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
-            />
+<label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">
+  Was erwartest du von deinem Partner?
+</label>
+<textarea
+  id="expectations_text"
+  value={expectationsText}
+  onChange={(e) => setExpectationsText(e.target.value)}
+  maxLength={MAX_TEXT_LENGTH}
+  rows={3}
+  placeholder="z. B. Welche Dynamik wünschst du dir? Was ist dir wichtig? Worauf legst du Wert?"
+  className="w-full rounded-lg border border-gray-600 bg-background px-4 py-3 text-white"
+/>
             <p className="mt-1 text-xs text-gray-500">
               {expectationsText.length}/{MAX_TEXT_LENGTH} Zeichen
             </p>

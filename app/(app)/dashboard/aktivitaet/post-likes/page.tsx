@@ -83,7 +83,7 @@ export default async function AktivitaetPostLikesPage() {
       <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
           <Heart className="h-6 w-6 text-gray-400" />
-          Wer hat deine Posts geliked
+          Wer hat deine Posts gemocht
         </h1>
         <p className="mt-1 text-sm text-gray-400">Alle Likes auf deine Posts</p>
       </div>
@@ -122,7 +122,7 @@ export default async function AktivitaetPostLikesPage() {
                         <OnlineIndicator lastSeenAt={p?.last_seen_at ?? null} variant="text" />
                       </p>
                       <p className="text-sm text-gray-400">
-                        hat deinen Post geliked · {formatTimeAgo(new Date(l.liked_at))}
+                        hat deinen Post gemocht · {formatTimeAgo(new Date(l.liked_at))}
                       </p>
                       {post?.content && (
                         <p className="mt-0.5 truncate text-xs text-gray-500" title={post.content}>
@@ -136,7 +136,7 @@ export default async function AktivitaetPostLikesPage() {
             })}
           </ul>
         ) : (
-          <p className="text-gray-400">Noch hat niemand deine Posts geliked.</p>
+          <p className="text-gray-400">Noch hat niemand deine Posts gemocht.</p>
         )}
       </div>
     </Container>

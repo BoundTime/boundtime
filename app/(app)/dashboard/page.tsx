@@ -374,7 +374,7 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent px-4 py-3">
             <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
-              Wer hat dein Profil geliked
+              Wer hat dein Profil gemocht
             </h3>
           </div>
           <div className="min-h-[140px] rounded-b-2xl border-t border-white/10 bg-card p-4 sm:p-6">
@@ -393,7 +393,7 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-center bg-gradient-to-b from-white/[0.06] to-transparent px-4 py-3">
             <h3 className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
               <Heart className="h-4 w-4 text-gray-400" />
-              Wer hat deine Posts geliked
+              Wer hat deine Posts gemocht
             </h3>
           </div>
           <div className="min-h-[140px] rounded-b-2xl border-t border-white/10 bg-card p-4 sm:p-6">

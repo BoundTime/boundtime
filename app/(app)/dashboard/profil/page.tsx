@@ -210,7 +210,7 @@ export default async function ProfilPage({
               <div>
                 <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
                   <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
-                  Profil-Identitaet
+                  Profil-Identität
                 </div>
                 <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
                 <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-gray-400 md:justify-start">
@@ -529,7 +529,7 @@ export default async function ProfilPage({
               <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-gray-300">Interaktion</h2>
                 <p className="mt-1 text-sm text-gray-400">
-                  Relevante Rueckmeldungen zu deinem Profil auf einen Blick.
+                  Relevante Rückmeldungen zu deinem Profil auf einen Blick.
                 </p>
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   <ProfileViewsBlock embeddedInLink />

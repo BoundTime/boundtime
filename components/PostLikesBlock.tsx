@@ -66,7 +66,7 @@ export function PostLikesBlock({
       {!hideTitle && (
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
           <Heart className="h-4 w-4" />
-          Wer hat deine Posts geliked
+          Wer hat deine Posts gemocht
         </h3>
       )}
       {displayList.length > 0 ? (
@@ -114,7 +114,7 @@ export function PostLikesBlock({
           )}
         </>
       ) : (
-        <p className="text-xs text-gray-500">Noch hat niemand deine Posts geliked.</p>
+        <p className="text-xs text-gray-500">Noch hat niemand deine Posts gemocht.</p>
       )}
     </Wrapper>
   );

@@ -513,6 +513,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
             <>
               <Link
                 href="/"
+                aria-label="BoundTime – Startseite"
                 className="flex shrink-0 text-lg font-semibold tracking-tight text-white transition-colors duration-150 hover:text-accent"
               >
                 BoundTime
@@ -542,6 +543,12 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                 className={`inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-sm font-medium text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] hover:text-white ${navFocus}`}
               >
                 Datenschutz
+              </Link>
+              <Link
+                href="/impressum"
+                className={`inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-sm font-medium text-gray-300 transition-colors hover:border-white/10 hover:bg-white/[0.06] hover:text-white ${navFocus}`}
+              >
+                Impressum
               </Link>
               <Link
                 href="/login"
@@ -674,7 +681,11 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                       </span>
                     </RefreshNavLink>
                   )}
-                  <div className="mt-auto border-t border-white/10 pt-4">
+                  <div className="mt-auto border-t border-white/10 pt-4 space-y-2">
+                    <div className="flex gap-3 px-1 text-xs text-gray-600">
+                      <Link href="/impressum" onClick={closeMenu} className="hover:text-gray-400 hover:underline">Impressum</Link>
+                      <Link href="/datenschutz" onClick={closeMenu} className="hover:text-gray-400 hover:underline">Datenschutz</Link>
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
@@ -693,6 +704,7 @@ export function Navbar({ initialNavData = null, restrictionDotSlot = null, restr
                   <Link href="/boundtime-features" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">BoundTime-Features</Link>
                   <Link href="/ueber-uns" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Über uns</Link>
                   <Link href="/datenschutz" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Datenschutz</Link>
+                  <Link href="/impressum" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Impressum</Link>
                   <Link href="/login" onClick={closeMenu} className="rounded-lg px-4 py-3 text-base text-gray-300 transition-colors duration-150 hover:bg-gray-800 hover:text-white">Login</Link>
                 </>
               )}

@@ -7,23 +7,23 @@
 
 ## 🔴 Kritisch – Offen
 
-- [ ] **„Was sucht" & „Wen sucht" nicht auf dem Profil sichtbar** – Im Profil-Editor kann man einstellen wen und was man sucht (Mann, Beziehung, Treffen vor Ort usw.), aber diese Angaben erscheinen nirgendwo auf der öffentlichen Profilseite. Andere User sehen also nicht, wen jemand sucht – auf einer Dating-/Community-Plattform ist das ein zentraler Mangel. Fix: Info-Sektion auf dem Profil ergänzen (z. B. „Sucht: Mann · Beziehung · Langzeit").
+- [x] **„Was sucht" & „Wen sucht" nicht auf dem Profil sichtbar** – Im Profil-Editor kann man einstellen wen und was man sucht (Mann, Beziehung, Treffen vor Ort usw.), aber diese Angaben erscheinen nirgendwo auf der öffentlichen Profilseite. Andere User sehen also nicht, wen jemand sucht – auf einer Dating-/Community-Plattform ist das ein zentraler Mangel. Fix: Info-Sektion auf dem Profil ergänzen (z. B. „Sucht: Mann · Beziehung · Langzeit").
 
-- [ ] **Rolle nicht änderbar ohne Erklärung** – Das Feld „Rolle" im Profil-Editor ist grau/read-only, ohne jeden Hinweis warum oder wo man sie ändern kann. User, die ihre Rolle korrigieren wollen (z. B. von Dom zu Switcher), finden keine Möglichkeit. Fix: Entweder Rolle editierbar machen oder Tooltip/Link ergänzen: „Rolle kann unter Einstellungen geändert werden."
+- [x] **Rolle nicht änderbar ohne Erklärung** – Das Feld „Rolle" im Profil-Editor ist grau/read-only, ohne jeden Hinweis warum oder wo man sie ändern kann. User, die ihre Rolle korrigieren wollen (z. B. von Dom zu Switcher), finden keine Möglichkeit. Fix: Entweder Rolle editierbar machen oder Tooltip/Link ergänzen: „Rolle kann unter Einstellungen geändert werden."
 
-- [ ] **Keine geführte Profilkompletion nach Registrierung** – Nach der E-Mail-Bestätigung landen neue User direkt auf dem leeren Profil ohne jede Orientierung. Es gibt keinen Onboarding-Flow, keinen Fortschrittsbalken, keine Checkliste. Gerade für eine Nischen-Community wo Profiltiefe entscheidend ist, ist das ein kritisches UX-Problem. Fix: Nach erstem Login einen Step-by-Step Profilassistenten anzeigen (Foto, Ort, Rolle, Vorlieben, Über mich), der abgehakt werden kann.
+- [x] **Keine geführte Profilkompletion nach Registrierung** – Nach der E-Mail-Bestätigung landen neue User direkt auf dem leeren Profil ohne jede Orientierung. Es gibt keinen Onboarding-Flow, keinen Fortschrittsbalken, keine Checkliste. Gerade für eine Nischen-Community wo Profiltiefe entscheidend ist, ist das ein kritisches UX-Problem. Fix: Nach erstem Login einen Step-by-Step Profilassistenten anzeigen (Foto, Ort, Rolle, Vorlieben, Über mich), der abgehakt werden kann.
 
 ---
 
 ## 🟠 Mittel – Offen
 
-- [ ] **„Was sucht"-Optionen logisch inkonsistent** – Im Abschnitt „Was sucht Hotwife_2019?" werden zwei grundverschiedene Dinge vermischt: Rollen die man bei anderen sucht (z. B. „Sklave/Sklavin") und Absichten/Formate (z. B. „Beziehung", „Treffen vor Ort"). Dazu kommen Optionen die beschreiben was man selbst anbietet (z. B. „Keuschhalten anbieten (Keyholder)"). Das ist für neue User extrem verwirrend. Fix: Klare Trennung in zwei Untersektionen: „Ich suche jemanden, der…" (Rolle des anderen) und „Ich suche…" (Kontaktformat/Ziel).
+- [x] **„Was sucht"-Optionen logisch inkonsistent** – Im Abschnitt „Was sucht Hotwife_2019?" werden zwei grundverschiedene Dinge vermischt: Rollen die man bei anderen sucht (z. B. „Sklave/Sklavin") und Absichten/Formate (z. B. „Beziehung", „Treffen vor Ort"). Dazu kommen Optionen die beschreiben was man selbst anbietet (z. B. „Keuschhalten anbieten (Keyholder)"). Das ist für neue User extrem verwirrend. Fix: Klare Trennung in zwei Untersektionen: „Ich suche jemanden, der…" (Rolle des anderen) und „Ich suche…" (Kontaktformat/Ziel).
 
-- [ ] **„Neigung" nicht auf Profil sichtbar** – Die sexuelle Orientierung (Hetero/Bi/etc.) wird im Editor gesetzt, aber auf dem öffentlichen Profil nicht angezeigt. Für viele User ist das eine wichtige Filterinformation. Fix: Neigung in der Profil-Info-Sektion anzeigen.
+- [x] **„Neigung" nicht auf Profil sichtbar** – Die sexuelle Orientierung (Hetero/Bi/etc.) wird im Editor gesetzt, aber auf dem öffentlichen Profil nicht angezeigt. Für viele User ist das eine wichtige Filterinformation. Fix: Neigung in der Profil-Info-Sektion anzeigen.
 
-- [ ] **Profilbild-Einrichtung nicht intuitiv** – Um ein Profilbild zu setzen, muss man erst ins Hauptalbum navigieren, dort ein Foto hochladen und dann „Als Profilbild" klicken. Das ist ein 3-Schritte-Umweg, der nirgendwo erklärt wird. Der Profil-Editor verweist nur mit einem kleinen Link auf das „Hauptalbum". Fix: Direkt-Upload im Profil-Editor oder zumindest eine klar sichtbare Erklärung mit Link und konkreten Schritten.
+- [x] **Profilbild-Einrichtung nicht intuitiv** – Um ein Profilbild zu setzen, muss man erst ins Hauptalbum navigieren, dort ein Foto hochladen und dann „Als Profilbild" klicken. Das ist ein 3-Schritte-Umweg, der nirgendwo erklärt wird. Der Profil-Editor verweist nur mit einem kleinen Link auf das „Hauptalbum". Fix: Direkt-Upload im Profil-Editor oder zumindest eine klar sichtbare Erklärung mit Link und konkreten Schritten.
 
-- [ ] **Kein Profil-Vollständigkeits-Indikator** – Es gibt keine Prozentanzeige oder Checkliste die zeigt wie vollständig das Profil ist. User wissen nicht, was noch fehlt. Fix: Completion-Bar oder To-do-Liste im Profil-Editor (z. B. „5 von 8 Felder ausgefüllt").
+- [x] **Kein Profil-Vollständigkeits-Indikator** – Es gibt keine Prozentanzeige oder Checkliste die zeigt wie vollständig das Profil ist. User wissen nicht, was noch fehlt. Fix: Completion-Bar oder To-do-Liste im Profil-Editor (z. B. „5 von 8 Felder ausgefüllt").
 
 ---
 

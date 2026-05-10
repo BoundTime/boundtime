@@ -72,9 +72,9 @@ export default async function AktivitaetProfilLikesPage() {
       <div className="overflow-hidden rounded-t-xl border border-b-0 border-gray-700 bg-gradient-to-b from-gray-800/80 to-card p-6">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
           <Heart className="h-6 w-6 text-gray-400" />
-          Wer hat dein Profil geliked
+          Wer hat dein Profil gemocht
         </h1>
-        <p className="mt-1 text-sm text-gray-400">Alle, die dein Profil geliked haben</p>
+        <p className="mt-1 text-sm text-gray-400">Alle, die dein Profil gemocht haben</p>
       </div>
 
       <div className="rounded-b-xl border border-t-0 border-gray-700 bg-card p-6 shadow-sm">
@@ -113,7 +113,7 @@ export default async function AktivitaetProfilLikesPage() {
             })}
           </ul>
         ) : (
-          <p className="text-gray-400">Noch hat niemand dein Profil geliked.</p>
+          <p className="text-gray-400">Noch hat niemand dein Profil gemocht.</p>
         )}
       </div>
     </Container>

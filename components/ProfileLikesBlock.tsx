@@ -62,7 +62,7 @@ export function ProfileLikesBlock({
       {!hideTitle && (
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
           <Heart className="h-4 w-4" />
-          Wer hat dein Profil geliked
+          Wer hat dein Profil gemocht
         </h3>
       )}
       {displayList.length > 0 ? (
@@ -104,7 +104,7 @@ export function ProfileLikesBlock({
           )}
         </>
       ) : (
-        <p className="text-xs text-gray-500">Noch hat niemand dein Profil geliked.</p>
+        <p className="text-xs text-gray-500">Noch hat niemand dein Profil gemocht.</p>
       )}
     </Wrapper>
   );
