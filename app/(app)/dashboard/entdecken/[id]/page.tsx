@@ -712,6 +712,50 @@ export default async function ProfilDetailPage({
                 )}
                 </div>
               </section>
+
+              {/* Suche & Neigung */}
+              {(() => {
+                const lfg = (profile as { looking_for_genders?: string[] }).looking_for_genders;
+                const lf = profile.looking_for as string[] | null;
+                const hasAny = profile.orientation || (Array.isArray(lfg) && lfg.length > 0) || (Array.isArray(lf) && lf.length > 0) || (profile.expectations_text && String(profile.expectations_text).trim());
+                if (!hasAny) return null;
+                return (
+                  <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                    <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">Suche &amp; Neigung</h4>
+                    <dl className="space-y-4 text-sm">
+                      {profile.orientation && (
+                        <div className="flex gap-3">
+                          <dt className="w-28 shrink-0 text-gray-400">Neigung</dt>
+                          <dd className="text-white">{getOrientationLabel(profile.orientation)}</dd>
+                        </div>
+                      )}
+                      {Array.isArray(lfg) && lfg.length > 0 && (
+                        <div className="flex gap-3">
+                          <dt className="w-28 shrink-0 text-gray-400">Wen gesucht</dt>
+                          <dd className="text-white">{lfg.join(", ")}</dd>
+                        </div>
+                      )}
+                      {Array.isArray(lf) && lf.length > 0 && (
+                        <div>
+                          <dt className="mb-2 text-gray-400">Was gesucht</dt>
+                          <dd className="flex flex-wrap gap-2">
+                            {lf.map((item) => (
+                              <span key={item} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">{item}</span>
+                            ))}
+                          </dd>
+                        </div>
+                      )}
+                      {profile.expectations_text && String(profile.expectations_text).trim() && (
+                        <div>
+                          <dt className="mb-1 text-gray-400">Erwartungen</dt>
+                          <dd className="whitespace-pre-wrap leading-relaxed text-gray-300">{String(profile.expectations_text).trim()}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </section>
+                );
+              })()}
+
               {profile.role === "Bull" && (
                 <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
                   <BullRatingsSection

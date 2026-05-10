@@ -373,17 +373,55 @@ export function ProfileEditForm() {
         </p>
       )}
 
+      {/* Profil-Vollständigkeit */}
+      {(() => {
+        const slots = [
+          !!currentAvatarUrl,
+          !!(postalCode || city),
+          !!orientation,
+          !!(aboutMe && aboutMe.trim()),
+          lookingForGenders.length > 0,
+          lookingFor.length > 0,
+        ];
+        const filled = slots.filter(Boolean).length;
+        const pct = Math.round((filled / slots.length) * 100);
+        const color = pct < 40 ? "bg-red-500" : pct < 75 ? "bg-amber-400" : "bg-green-500";
+        return (
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
+            <div className="mb-2 flex items-center justify-between text-xs text-gray-400">
+              <span>Profil-Vollständigkeit</span>
+              <span className={pct >= 100 ? "text-green-400 font-semibold" : ""}>{pct} %</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+              <div className={`h-full rounded-full transition-all duration-500 ${color}`} style={{ width: `${pct}%` }} />
+            </div>
+            {pct < 100 && (
+              <p className="mt-2 text-xs text-gray-500">
+                Fehlend:{" "}
+                {[
+                  !currentAvatarUrl && "Profilbild",
+                  !(postalCode || city) && "Wohnort",
+                  !orientation && "Neigung",
+                  !(aboutMe && aboutMe.trim()) && "Über mich",
+                  lookingForGenders.length === 0 && "Wen gesucht",
+                  lookingFor.length === 0 && "Was gesucht",
+                ].filter(Boolean).join(" · ")}
+              </p>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Rolle (nur Anzeige bei Single; Bull kann nur durch Support geändert werden) */}
       {!isCouple && role && (
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-300">Rolle</label>
           <p className="rounded-lg border border-gray-600 bg-gray-800/50 px-4 py-2 text-sm text-white">
             {role}
-            {role === "Bull" && (
-              <span className="mt-1 block text-xs text-gray-400">
-                Rolle kann nur durch Support geändert werden.
-              </span>
-            )}
+            <span className="mt-1 block text-xs text-gray-400">
+              Rolle kann nur durch den Support geändert werden. Schreib uns unter{" "}
+              <a href="mailto:support@boundtime.de" className="text-accent hover:underline">support@boundtime.de</a>.
+            </span>
           </p>
         </div>
       )}
@@ -920,13 +958,39 @@ export function ProfileEditForm() {
               ))}
             </div>
           </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-300">
-              Was sucht {nick || "…"}? (Mehrfachauswahl)
-            </label>
-            <div className="max-h-80 overflow-y-auto rounded-lg border border-gray-600 bg-background/50 p-2">
-              <div className="flex flex-wrap gap-2">
-                {LOOKING_FOR_OPTIONS.map((option) => (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-300">Was sucht {nick || "…"}? (Mehrfachauswahl)</p>
+
+            <div>
+              <p className="mb-1 text-xs font-medium text-gray-400">Kontaktformat / Ziel</p>
+              <div className="flex flex-wrap gap-2 rounded-lg border border-gray-600 bg-background/50 p-2">
+                {(["Treffen vor Ort", "Langzeit", "Kurzzeit", "Beziehung", "Kontakt / Austausch", "Spielpartner", "Finanziell"] as const).map((option) => (
+                  <label
+                    key={option}
+                    className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={lookingFor.includes(option)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setLookingFor((prev) => [...prev, option]);
+                        } else {
+                          setLookingFor((prev) => prev.filter((x) => x !== option));
+                        }
+                      }}
+                      className="rounded border-gray-600 bg-background text-accent focus:ring-accent"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-1 text-xs font-medium text-gray-400">Person / Dynamik</p>
+              <div className="flex flex-wrap gap-2 rounded-lg border border-gray-600 bg-background/50 p-2">
+                {(["Online Domina / Dom", "Sklave / Sklavin", "Keusch gehalten werden (Keyholderin/Keyholder suchen)", "Keuschhalten anbieten (Keyholder)"] as const).map((option) => (
                   <label
                     key={option}
                     className="flex cursor-pointer items-center gap-1.5 rounded border border-gray-600 bg-background px-2 py-1 text-xs text-gray-300 hover:border-gray-500"
@@ -1100,13 +1164,11 @@ export function ProfileEditForm() {
             <img src={currentAvatarUrl} alt="Profilbild" className="h-full w-full object-cover" />
           </div>
         )}
-        <p className="text-sm text-gray-400">
-          Profilbild im{" "}
-          <Link href="/dashboard/alben" className="text-accent underline hover:text-accent-hover">
-            Hauptalbum
-          </Link>{" "}
-          festlegen. Wähle dort ein Foto aus und klicke auf „Als Profilbild“.
-        </p>
+        <ol className="mt-1 list-none space-y-1 text-sm text-gray-400">
+          <li><span className="font-medium text-gray-300">1.</span> Gehe zu{" "}<Link href="/dashboard/alben" className="text-accent underline hover:text-accent-hover">Alben → Hauptalbum</Link></li>
+          <li><span className="font-medium text-gray-300">2.</span> Lade ein Foto hoch</li>
+          <li><span className="font-medium text-gray-300">3.</span> Klicke beim gewünschten Foto auf <strong className="text-gray-200">„Als Profilbild“</strong></li>
+        </ol>
       </div>
 
       <button

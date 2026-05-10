@@ -507,11 +507,55 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Profil-Fortschritt dezent */}
-      {progress < 100 && (
-        <p className="mt-6 text-center text-xs text-gray-600">
-          Profil zu {progress} % ·{" "}
-          <Link href="/dashboard/profil" className="text-accent/80 hover:text-accent hover:underline">
+      {/* Onboarding-Karte für neue / unvollständige Profile */}
+      {progress < 50 && (
+        <div className="mt-8 rounded-2xl border border-amber-400/20 bg-amber-950/20 p-6">
+          <h2 className="text-base font-semibold text-amber-100">Profil vervollständigen</h2>
+          <p className="mt-1 text-sm text-gray-400">
+            Dein Profil ist zu <strong className="text-amber-200">{progress} %</strong> ausgefüllt. Je vollständiger dein Profil, desto mehr Verbindungen findest du.
+          </p>
+          <ul className="mt-4 space-y-2 text-sm">
+            {!(profile?.avatar_url || profile?.avatar_photo_id) && (
+              <li className="flex items-center gap-2 text-gray-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400/70 shrink-0" />
+                <Link href="/dashboard/alben" className="text-accent hover:underline">Profilbild hochladen</Link>
+                <span className="text-gray-500">→ Alben → Hauptalbum → Foto hochladen → „Als Profilbild"</span>
+              </li>
+            )}
+            {!(profile?.postal_code || profile?.city) && (
+              <li className="flex items-center gap-2 text-gray-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400/70 shrink-0" />
+                <Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Wohnort ergänzen</Link>
+                <span className="text-gray-500">– wichtig für die Suche „in der Nähe"</span>
+              </li>
+            )}
+            {!(profile?.looking_for) && (
+              <li className="flex items-center gap-2 text-gray-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400/70 shrink-0" />
+                <Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Suche ausfüllen</Link>
+                <span className="text-gray-500">– wen und was suchst du?</span>
+              </li>
+            )}
+            {!profile?.about_me && (
+              <li className="flex items-center gap-2 text-gray-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400/70 shrink-0" />
+                <Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Über mich schreiben</Link>
+                <span className="text-gray-500">– stell dich kurz vor</span>
+              </li>
+            )}
+          </ul>
+          <Link
+            href="/dashboard/profil/bearbeiten"
+            className="mt-5 inline-block rounded-xl border border-amber-400/40 bg-amber-950/40 px-5 py-2.5 text-sm font-semibold text-amber-50 transition-colors hover:bg-amber-950/60"
+          >
+            Profil bearbeiten →
+          </Link>
+        </div>
+      )}
+      {progress >= 50 && progress < 100 && (
+        <p className="mt-6 text-center text-xs text-gray-500">
+          Profil zu {progress} % vollständig ·{" "}
+          <Link href="/dashboard/profil/bearbeiten" className="text-accent/80 hover:text-accent hover:underline">
             vervollständigen
           </Link>
         </p>

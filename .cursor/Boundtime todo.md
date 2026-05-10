@@ -5,50 +5,79 @@
 
 ---
 
-## 🔴 Kritisch
+## 🔴 Kritisch – Offen
 
-- [ ] **Dropdowns Schritt 2 reagieren nicht auf Mausklick** – Die `<select>`-Felder für Geschlecht und Rolle lassen sich per Mausklick nicht stabil befüllen: Auswahl springt zurück auf „Bitte wählen" oder überspringt Optionen. Ursache: React-State wird durch native DOM-Events nicht aktualisiert. Nur Tastatur-Navigation (ArrowKeys) funktioniert. Auf Mobilgeräten bricht das komplett. Fix: `onChange`-Handler korrekt verdrahten oder Custom-Select-Komponente verwenden.
+- [ ] **„Was sucht" & „Wen sucht" nicht auf dem Profil sichtbar** – Im Profil-Editor kann man einstellen wen und was man sucht (Mann, Beziehung, Treffen vor Ort usw.), aber diese Angaben erscheinen nirgendwo auf der öffentlichen Profilseite. Andere User sehen also nicht, wen jemand sucht – auf einer Dating-/Community-Plattform ist das ein zentraler Mangel. Fix: Info-Sektion auf dem Profil ergänzen (z. B. „Sucht: Mann · Beziehung · Langzeit").
 
-- [ ] **Kein Redirect nach Login** – Nach erfolgreichem Login bleibt die URL auf `/login`. Die Navbar aktualisiert sich zwar (zeigt den eingeloggten Nutzer), aber es erfolgt kein automatischer Redirect zum Dashboard. Nutzer müssen manuell navigieren. Fix: nach erfolgreicher Authentifizierung `router.push('/dashboard')` o.ä. aufrufen.
+- [ ] **Rolle nicht änderbar ohne Erklärung** – Das Feld „Rolle" im Profil-Editor ist grau/read-only, ohne jeden Hinweis warum oder wo man sie ändern kann. User, die ihre Rolle korrigieren wollen (z. B. von Dom zu Switcher), finden keine Möglichkeit. Fix: Entweder Rolle editierbar machen oder Tooltip/Link ergänzen: „Rolle kann unter Einstellungen geändert werden."
 
----
-
-## 🟠 Mittel
-
-- [x] **Falscher Link „Über BoundTime"** – Auf der Startseite (`/`) linkt „Über BoundTime" auf `/community-regeln`. Sollte auf `/ueber-uns` zeigen.
-
-- [x] **Cookie-Banner erscheint bei jeder Navigation** – `localStorage`-Check für den dismissten Banner funktioniert nicht korrekt. Beim Seitenwechsel wird der Banner erneut angezeigt, obwohl er bereits weggeklickt wurde.
-
-- [x] **Schreibfehler „BoundTime- Features"** – In Navigation, Footer und Seitentiteln steht durchgehend ein Leerzeichen vor dem Bindestrich. Korrigieren zu: `BoundTime-Features`.
-
-- [x] **Redundante Quick-Links auf Startseite** – Die 5 Quick-Links im Hauptinhalt (Über BoundTime, Was sind BoundTime-Features?, Community-Regeln, Funktionen & Ablauf, Datenschutz) duplizieren die Navigation. Entweder entfernen oder durch sinnvollen Content/Teaser ersetzen.
-
-- [ ] **Kein Standortfeld im Registrierungsprozess** – Ort/PLZ wird während der Registrierung nicht abgefragt, obwohl Standort für eine Dating-/Community-Plattform zentral ist. Nutzer wissen nicht, dass sie das nachträglich im Profil ergänzen müssen. Entweder in Schritt 3 ergänzen oder nach der Registrierung einen klaren Hinweis/Redirect zur Profilkompletion zeigen.
-
-- [ ] **Doppelter Hinweistext im Profil-Editor** – Auf `/dashboard/profil/bearbeiten` erscheint zweimal hintereinander fast derselbe Satz: „Alle Angaben sind freiwillig. Nur du entscheidest, was du preisgibst." und direkt darunter „Alle Angaben sind freiwillig. Du kannst Felder leer lassen und jederzeit anpassen." Einen der beiden Sätze entfernen oder zu einem zusammenfassen.
+- [ ] **Keine geführte Profilkompletion nach Registrierung** – Nach der E-Mail-Bestätigung landen neue User direkt auf dem leeren Profil ohne jede Orientierung. Es gibt keinen Onboarding-Flow, keinen Fortschrittsbalken, keine Checkliste. Gerade für eine Nischen-Community wo Profiltiefe entscheidend ist, ist das ein kritisches UX-Problem. Fix: Nach erstem Login einen Step-by-Step Profilassistenten anzeigen (Foto, Ort, Rolle, Vorlieben, Über mich), der abgehakt werden kann.
 
 ---
 
-## 🟡 Klein / Nice-to-have
+## 🟠 Mittel – Offen
 
-- [ ] **Hamburger-Menü auf Desktop** – Button „Menü öffnen" ist auf Desktop-Breiten sichtbar neben der vollständigen Nav. Auf Desktop per CSS ausblenden (`hidden md:hidden` o.ä. prüfen).
+- [ ] **„Was sucht"-Optionen logisch inkonsistent** – Im Abschnitt „Was sucht Hotwife_2019?" werden zwei grundverschiedene Dinge vermischt: Rollen die man bei anderen sucht (z. B. „Sklave/Sklavin") und Absichten/Formate (z. B. „Beziehung", „Treffen vor Ort"). Dazu kommen Optionen die beschreiben was man selbst anbietet (z. B. „Keuschhalten anbieten (Keyholder)"). Das ist für neue User extrem verwirrend. Fix: Klare Trennung in zwei Untersektionen: „Ich suche jemanden, der…" (Rolle des anderen) und „Ich suche…" (Kontaktformat/Ziel).
 
-- [ ] **Google Fonts Self-Hosting** – Plus Jakarta Sans wird aktuell von Google-Servern geladen, noch vor Cookie-Consent. Font lokal hosten (z. B. via `next/font` oder statisches self-hosting) um DSGVO-konform zu sein.
+- [ ] **„Neigung" nicht auf Profil sichtbar** – Die sexuelle Orientierung (Hetero/Bi/etc.) wird im Editor gesetzt, aber auf dem öffentlichen Profil nicht angezeigt. Für viele User ist das eine wichtige Filterinformation. Fix: Neigung in der Profil-Info-Sektion anzeigen.
 
-- [ ] **Aria-Label für Logo-Link** – Der Logo-Link `href="/"` hat keinen Linktext für Screen Reader. `aria-label="BoundTime – Startseite"` ergänzen.
+- [ ] **Profilbild-Einrichtung nicht intuitiv** – Um ein Profilbild zu setzen, muss man erst ins Hauptalbum navigieren, dort ein Foto hochladen und dann „Als Profilbild" klicken. Das ist ein 3-Schritte-Umweg, der nirgendwo erklärt wird. Der Profil-Editor verweist nur mit einem kleinen Link auf das „Hauptalbum". Fix: Direkt-Upload im Profil-Editor oder zumindest eine klar sichtbare Erklärung mit Link und konkreten Schritten.
 
-- [ ] **Impressum & AGB in der Hauptnavigation** – Aktuell nur im Footer verlinkt. Für rechtliche Sichtbarkeit zumindest „Impressum" in die Header-Nav oder prominent auf der Startseite verlinken.
-
-- [ ] **Nick-Feld fehlt im Accessibility Tree** – Das Nick-Inputfeld (`id="nick"`, `type="text"`) taucht nicht als interaktives Element im Accessibility Tree auf. Screen Reader könnten das Feld übersehen. `aria-label` oder korrektes `<label for="nick">` sicherstellen.
-
-- [ ] **Keine visuelle Fortschrittsanzeige bei Registrierung** – Der Schritt-Counter ist nur Text („SCHRITT 1 VON 3"). Eine visuelle Step-Indicator-Leiste (z. B. 3 Punkte/Linien) würde die UX deutlich verbessern.
-
-- [ ] **Geburtsdatum: Widerspruch zwischen Darstellung und Input-Typ** – Das Feld zeigt den Placeholder `tt.mm.jjjj` (deutsches Format), ist aber `type="date"` (ISO-Format intern `YYYY-MM-DD`). Der Browser rendert je nach System unterschiedlich. Sicherstellen dass das Format konsistent deutsch angezeigt wird, oder auf ein Text-Input mit Validierung wechseln.
-
-- [ ] **Schreibfehler „Profil-Identitaet"** – Das Badge auf der Profilseite zeigt „Profil-Identitaet" ohne Umlaut. Korrigieren zu „Profil-Identität".
+- [ ] **Kein Profil-Vollständigkeits-Indikator** – Es gibt keine Prozentanzeige oder Checkliste die zeigt wie vollständig das Profil ist. User wissen nicht, was noch fehlt. Fix: Completion-Bar oder To-do-Liste im Profil-Editor (z. B. „5 von 8 Felder ausgefüllt").
 
 ---
 
-## 📋 Noch offen / zu besprechen
+## 🟡 Klein – Offen
 
-*(Weitere Punkte folgen nach Login-Analyse des Mitgliederbereichs)*
+- [ ] **Hamburger-Menü auf Desktop** – Button „Menü öffnen" ist auf Desktop-Breiten sichtbar neben der vollständigen Nav. Auf Desktop per CSS ausblenden.
+
+- [ ] **Google Fonts Self-Hosting** – Plus Jakarta Sans wird aktuell von Google-Servern geladen, noch vor Cookie-Consent. Font lokal hosten (z. B. via next/font) um DSGVO-konform zu sein.
+
+- [ ] **Aria-Label für Logo-Link** – Der Logo-Link href="/" hat keinen Linktext für Screen Reader. aria-label="BoundTime – Startseite" ergänzen.
+
+- [ ] **Impressum & AGB in der Hauptnavigation** – Aktuell nur im Footer verlinkt. Für rechtliche Sichtbarkeit zumindest „Impressum" in die Header-Nav ergänzen.
+
+- [ ] **Nick-Feld fehlt im Accessibility Tree** – Das Nick-Inputfeld (id="nick") taucht nicht als interaktives Element im Accessibility Tree auf. aria-label oder korrektes label for="nick" sicherstellen.
+
+- [ ] **Keine visuelle Fortschrittsanzeige bei Registrierung** – Der Schritt-Counter ist nur Text („SCHRITT 1 VON 3"). Eine visuelle Step-Indicator-Leiste würde die UX deutlich verbessern.
+
+- [ ] **Geburtsdatum: Widerspruch Darstellung vs. Input-Typ** – Placeholder zeigt tt.mm.jjjj (DE-Format), Input ist aber type="date" (ISO intern). Fix: konsistentes deutsches Format sicherstellen oder auf Text-Input mit Validierung wechseln.
+
+- [ ] **Schreibfehler „Profil-Identitaet"** – Badge zeigt „Profil-Identitaet". Korrigieren zu „Profil-Identität".
+
+- [ ] **Schreibfehler „Relevante Rueckmeldungen"** – Im INTERAKTION-Tab steht „Rueckmeldungen" statt „Rückmeldungen".
+
+- [ ] **„GELIKED" als Anglizismus** – „WER HAT DEIN PROFIL GELIKED" klingt holprig. Besser: „WER HAT DEIN PROFIL GEMOCHT".
+
+- [ ] **Label „Deine Angaben" zu generisch** – Das Textarea-Feld für Erwartungen ist mit „Deine Angaben" beschriftet – nichtssagend. Fix: umbenennen zu „Was erwartest du von deinem Partner?" und Placeholder anpassen.
+
+---
+
+## 📋 Noch zu prüfen
+
+*(MyBound, Entdecken, Forum, Nachrichten, Keuschhaltung, Einstellungen noch nicht geprüft)*
+
+---
+---
+
+## ✅ Erledigt
+
+### 🔴 Kritisch
+
+- [x] **Dropdowns Schritt 2 reagieren nicht auf Mausklick** – React onChange-Handler korrekt verdrahtet.
+
+- [x] **Kein Redirect nach Login** – Nach Login wird nun auf das Dashboard weitergeleitet.
+
+### 🟠 Mittel
+
+- [x] **Falscher Link „Über BoundTime"** – Startseite linkt nun korrekt auf /ueber-uns.
+
+- [x] **Cookie-Banner erscheint bei jeder Navigation** – localStorage-Check korrigiert.
+
+- [x] **Schreibfehler „BoundTime- Features"** – Korrigiert zu BoundTime-Features.
+
+- [x] **Redundante Quick-Links auf Startseite** – Von 5 auf 3 sinnvolle Links reduziert.
+
+- [x] **Kein Standortfeld im Registrierungsprozess** – Hinweis/Redirect zur Profilkompletion ergänzt.
+
+- [x] **Doppelter Hinweistext im Profil-Editor** – Einer der zwei identischen Sätze entfernt.
