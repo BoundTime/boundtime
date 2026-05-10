@@ -1067,7 +1067,7 @@ export function ProfileEditForm() {
 
         <section>
           <h3 className="text-sm font-semibold text-white">
-            Was erwartet {nick || "…"} von seinem Gesuchten?
+            Was erwartet {nick || "…"} von {gender === "Frau" ? "ihrer" : gender === "Divers" ? "ihrer" : "seinem"} gesuchten Person?
           </h3>
           <div className="mt-2">
 <label htmlFor="expectations_text" className="mb-1 block text-sm text-gray-300">

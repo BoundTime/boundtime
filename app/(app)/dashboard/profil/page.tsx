@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
-import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay, getOrientationLabel } from "@/lib/profile-utils";
+import { getAgeFromDateOfBirth, getGenderSymbol, getExperienceLabel, getLookingForGenderDisplay, getOrientationLabel, getProfileProgress } from "@/lib/profile-utils";
 import { ProfileAlbumsSection } from "@/components/albums/ProfileAlbumsSection";
 import { RoleIcon } from "@/components/RoleIcon";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -307,6 +307,52 @@ export default async function ProfilPage({
         </div>
       </div>
 
+      {/* Onboarding-Karte für unvollständige Profile */}
+      {(() => {
+        const progress = getProfileProgress(profile as Record<string, unknown>);
+        if (progress >= 50) return null;
+        return (
+          <div className="mt-6 rounded-2xl border border-amber-400/20 bg-amber-950/20 p-5">
+            <h2 className="text-sm font-semibold text-amber-100">Profil vervollständigen – {progress} % fertig</h2>
+            <p className="mt-1 text-xs text-gray-400">
+              Je vollständiger dein Profil, desto mehr Verbindungen findest du in der Community.
+            </p>
+            <ul className="mt-3 space-y-1.5 text-xs">
+              {!(profile.avatar_url || profile.avatar_photo_id) && (
+                <li className="flex items-start gap-2 text-gray-300">
+                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400/70" />
+                  <span><Link href="/dashboard/alben" className="text-accent hover:underline">Profilbild hochladen</Link> – Alben → Hauptalbum → Foto hochladen → „Als Profilbild"</span>
+                </li>
+              )}
+              {!(profile.postal_code || profile.city) && (
+                <li className="flex items-start gap-2 text-gray-300">
+                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400/70" />
+                  <span><Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Wohnort ergänzen</Link> – für die Suche „in der Nähe"</span>
+                </li>
+              )}
+              {!(profile as { looking_for?: unknown }).looking_for && (
+                <li className="flex items-start gap-2 text-gray-300">
+                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400/70" />
+                  <span><Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Suche ausfüllen</Link> – wen und was suchst du?</span>
+                </li>
+              )}
+              {!profile.about_me && (
+                <li className="flex items-start gap-2 text-gray-300">
+                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400/70" />
+                  <span><Link href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Über mich schreiben</Link></span>
+                </li>
+              )}
+            </ul>
+            <Link
+              href="/dashboard/profil/bearbeiten"
+              className="mt-4 inline-block rounded-xl border border-amber-400/40 bg-amber-950/40 px-4 py-2 text-xs font-semibold text-amber-50 transition-colors hover:bg-amber-950/60"
+            >
+              Profil bearbeiten →
+            </Link>
+          </div>
+        );
+      })()}
+
       <div className="mt-6 rounded-2xl border border-white/10 bg-card/95 shadow-sm">
         <div className="flex border-b border-white/10">
           {TABS.map((t) => (
@@ -549,6 +595,58 @@ export default async function ProfilPage({
                 )}
                 </div>
               </section>
+
+              {/* Suche & Neigung (auch auf eigenem Profil sichtbar) */}
+              {(() => {
+                const lfg = (p as { looking_for_genders?: string[] }).looking_for_genders;
+                const lf = (p as { looking_for?: string[] | null }).looking_for;
+                const orient = (p as { orientation?: string | null }).orientation;
+                const expText = (p as { expectations_text?: string | null }).expectations_text;
+                const hasAny = orient || (Array.isArray(lfg) && lfg.length > 0) || (Array.isArray(lf) && lf.length > 0) || (expText && String(expText).trim());
+                if (!hasAny) return (
+                  <div className="rounded-xl border border-dashed border-white/10 p-4 text-center text-sm text-gray-500">
+                    Noch keine Suche & Neigung angegeben.{" "}
+                    <a href="/dashboard/profil/bearbeiten" className="text-accent hover:underline">Jetzt ergänzen →</a>
+                  </div>
+                );
+                return (
+                  <section className="rounded-xl border border-white/10 bg-black/20 p-4 md:p-5">
+                    <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">Suche &amp; Neigung</h4>
+                    <dl className="space-y-4 text-sm">
+                      {orient && (
+                        <div className="flex gap-3">
+                          <dt className="w-28 shrink-0 text-gray-400">Neigung</dt>
+                          <dd className="text-white">{getOrientationLabel(orient)}</dd>
+                        </div>
+                      )}
+                      {Array.isArray(lfg) && lfg.length > 0 && (
+                        <div className="flex gap-3">
+                          <dt className="w-28 shrink-0 text-gray-400">Wen gesucht</dt>
+                          <dd className="text-white">{lfg.join(", ")}</dd>
+                        </div>
+                      )}
+                      {Array.isArray(lf) && lf.length > 0 && (
+                        <div>
+                          <dt className="mb-2 text-gray-400">Was gesucht</dt>
+                          <dd className="flex flex-wrap gap-2">
+                            {lf.map((item) => (
+                              <span key={item} className="rounded-full bg-accent/20 px-3 py-1 text-sm text-accent">{item}</span>
+                            ))}
+                          </dd>
+                        </div>
+                      )}
+                      {expText && String(expText).trim() && (
+                        <div>
+                          <dt className="mb-1 text-gray-400">Erwartungen</dt>
+                          <dd className="whitespace-pre-wrap leading-relaxed text-gray-300">{String(expText).trim()}</dd>
+                        </div>
+                      )}
+                    </dl>
+                    <a href="/dashboard/profil/bearbeiten" className="mt-4 inline-block text-xs text-gray-500 hover:text-accent hover:underline">bearbeiten →</a>
+                  </section>
+                );
+              })()}
+
               </div>
             );
           })()}
