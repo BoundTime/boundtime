@@ -18,7 +18,10 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { ChastityLockDuration } from "@/components/chastity/ChastityLockDuration";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 import { getProfileProgress } from "@/lib/profile-utils";
-import { MyBoundSignatureHero } from "@/components/dashboard/MyBoundSignatureHero";
+import { MyBoundWelcomeBar } from "@/components/dashboard/MyBoundWelcomeBar";
+import { KeuschhaltungWidget } from "@/components/dashboard/home/KeuschhaltungWidget";
+import { SuggestionsCard } from "@/components/dashboard/home/SuggestionsCard";
+import { VisitorsCard } from "@/components/dashboard/home/VisitorsCard";
 
 function formatTimeAgo(date: Date): string {
   const now = new Date();
@@ -54,6 +57,22 @@ export default async function DashboardPage() {
   const role = profile?.role ?? null;
   const progress = getProfileProgress(profile as Record<string, unknown> | null);
 
+  const berlinToday = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" });
+  const { data: recentViews } = await supabase
+    .from("profile_views")
+    .select("viewed_at")
+    .eq("profile_id", user.id)
+    .gte("viewed_at", new Date(Date.now() - 2 * 86400000).toISOString())
+    .order("viewed_at", { ascending: false })
+    .limit(1000);
+  const visitsToday = (recentViews ?? []).filter(
+    (r) =>
+      new Date(r.viewed_at).toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" }) === berlinToday
+  ).length;
+
+  const { data: unreadRpc } = await supabase.rpc("get_unread_message_count");
+  const unreadMessages = Number(unreadRpc ?? 0);
+
   await supabase.rpc("create_deadline_soon_notifications").then(() => {});
 
   const { data: activeArrangements } = await supabase
@@ -63,6 +82,16 @@ export default async function DashboardPage() {
     .eq("status", "active");
 
   const asSubArrangement = activeArrangements?.find((a) => a.sub_id === user.id) ?? null;
+
+  let daysBound = 0;
+  if (asSubArrangement?.locked_at) {
+    daysBound = Math.max(
+      0,
+      Math.floor((Date.now() - new Date(asSubArrangement.locked_at).getTime()) / 86400000)
+    );
+  }
+
+  const boundDollarsDisplay = Math.round(Number(profile?.bound_dollars ?? 0));
   const asDomArrangements = activeArrangements?.filter((a) => a.dom_id === user.id) ?? [];
   const subIds = asDomArrangements.map((a) => a.sub_id);
   const { data: subProfiles } = await supabase
@@ -233,13 +262,82 @@ export default async function DashboardPage() {
       )
     : [];
 
-  return (
-    <Container className="py-10 md:py-14">
-      <MyBoundSignatureHero />
+  // Rechte Spalte: Suggestions (nicht-gefolgte Profile)
+  const { data: suggestionsRaw } = await supabase
+    .from("profiles")
+    .select("id, nick, role, city")
+    .neq("id", user.id)
+    .not("id", "in", followingIds.length > 0 ? `(${followingIds.join(",")})` : `('${user.id}')`)
+    .order("nick")
+    .limit(3);
+  const suggestions = (suggestionsRaw ?? []).slice(0, 3);
 
-      <div className="mt-4 flex items-center justify-center">
-        <div className="h-px w-full max-w-3xl bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-      </div>
+  // Rechte Spalte: Profilbesucher (letzte 3 unique Besucher)
+  const { data: recentViewsForWidget } = await supabase
+    .from("profile_views")
+    .select("viewer_id, viewed_at")
+    .eq("profile_id", user.id)
+    .not("viewer_id", "is", null)
+    .order("viewed_at", { ascending: false })
+    .limit(30);
+
+  const seenViewerIds = new Set<string>();
+  const uniqueVisitors: { viewerId: string; viewedAt: string }[] = [];
+  for (const v of recentViewsForWidget ?? []) {
+    if (!seenViewerIds.has(v.viewer_id) && v.viewer_id !== user.id) {
+      seenViewerIds.add(v.viewer_id);
+      uniqueVisitors.push({ viewerId: v.viewer_id, viewedAt: v.viewed_at });
+    }
+    if (uniqueVisitors.length >= 3) break;
+  }
+  const visitorIds = uniqueVisitors.map((v) => v.viewerId);
+  const { data: visitorProfiles } = visitorIds.length > 0
+    ? await supabase.from("profiles").select("id, nick, last_seen_at").in("id", visitorIds)
+    : { data: [] };
+  const visitorProfileById = new Map((visitorProfiles ?? []).map((p) => [p.id, p]));
+  const visitorsForWidget = uniqueVisitors.map((v) => {
+    const p = visitorProfileById.get(v.viewerId);
+    return {
+      id: v.viewerId,
+      nick: p?.nick ?? null,
+      lastSeenAt: p?.last_seen_at ?? null,
+      viewedAt: v.viewedAt,
+    };
+  });
+
+  // Keuschhaltungs-Widget Daten (als Sub)
+  const keuschhaltungWidgetData = asSubArrangement
+    ? (() => {
+        const partnerNick =
+          activeArrangements?.find((a) => a.id === asSubArrangement.id)
+            ? (subProfiles ?? []).find((p) => p.id === asSubArrangement.dom_id)?.nick ?? "Dom"
+            : "Dom";
+        const daysTotal = asSubArrangement.reward_goal_bound_dollars
+          ? Math.round(asSubArrangement.reward_goal_bound_dollars / 10)
+          : 30;
+        return {
+          arrangementId: asSubArrangement.id,
+          partnerNick,
+          daysBound,
+          daysTotal,
+          boundDollars: asSubArrangement.bound_dollars ?? 0,
+        };
+      })()
+    : null;
+
+  return (
+    <Container className="py-6 md:py-8">
+      <MyBoundWelcomeBar
+        nick={profile?.nick ?? ""}
+        visitsToday={visitsToday}
+        unreadMessages={unreadMessages}
+        daysBound={daysBound}
+        boundDollars={boundDollarsDisplay}
+      />
+
+      {/* Zwei-Spalten-Grid */}
+      <div className="mt-6 grid gap-5 md:grid-cols-[1fr_268px]">
+        <div className="min-w-0 space-y-5">
 
       {/* 1. Chastity-Status oben (nur für Sub oder Dom ohne Keuschlinge – Dom mit Keuschlingen sehen den Block „Ihre Keuschlinge“) */}
       {!(isDomOrSwitcher && asDomWithSub.length > 0) && (
@@ -560,6 +658,18 @@ export default async function DashboardPage() {
           </Link>
         </p>
       )}
+
+        </div>{/* end left column */}
+
+        {/* Rechte Seiten-Spalte */}
+        <div className="space-y-4">
+          {keuschhaltungWidgetData && (
+            <KeuschhaltungWidget {...keuschhaltungWidgetData} />
+          )}
+          <SuggestionsCard suggestions={suggestions} />
+          <VisitorsCard visitors={visitorsForWidget} />
+        </div>
+      </div>{/* end grid */}
 
       <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
         <Link href="/community-regeln" className="text-accent transition-colors duration-150 hover:underline hover:text-accent-hover">

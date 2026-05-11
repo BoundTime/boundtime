@@ -184,121 +184,163 @@ export default async function ProfilPage({
 
   const baseUrl = "/dashboard/profil";
 
-  return (
-    <Container className="py-10 md:py-14">
-      <Link
-        href="/dashboard"
-        className="mb-6 inline-block text-sm text-gray-400 hover:text-white"
-      >
-        ← Zurück zu MyBound
-      </Link>
+  // Tage gebunden für Stats-Leiste
+  const { data: activeArrForStats } = await supabase
+    .from("chastity_arrangements")
+    .select("locked_at")
+    .eq("sub_id", user.id)
+    .eq("status", "active")
+    .maybeSingle();
+  const daysBoundForStats = activeArrForStats?.locked_at
+    ? Math.max(0, Math.floor((Date.now() - new Date(activeArrForStats.locked_at).getTime()) / 86400000))
+    : 0;
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#232323] via-[#1a1a1a] to-[#141414] shadow-[0_28px_60px_-40px_rgba(0,0,0,0.9)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(212,175,55,0.12),transparent_40%),radial-gradient(circle_at_85%_100%,rgba(122,31,43,0.14),transparent_35%)]" />
-        <div className="relative flex flex-col gap-6 p-6 md:p-8">
-          <div className="flex flex-col items-center gap-5 text-center md:flex-row md:items-end md:justify-between md:text-left">
-            <div className="flex flex-col items-center gap-4 md:flex-row md:items-end">
-          <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-2 border-gray-700 bg-background shadow-lg sm:h-28 sm:w-28">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <span className="flex h-full w-full items-center justify-center text-2xl font-semibold text-accent sm:text-3xl">
-                {initials}
-              </span>
-            )}
-          </div>
-              <div>
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-xs font-medium text-amber-100">
-                  <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
-                  Profil-Identität
-                </div>
-                <h1 className="text-2xl font-bold text-white sm:text-3xl">{profile.nick ?? "—"}</h1>
-                <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-gray-400 md:justify-start">
-                  <OnlineIndicator lastSeenAt={lastSeenAt} variant="text" />
-                  {memberSinceLabel ? <span className="text-gray-500">{memberSinceLabel}</span> : null}
-                </div>
-                <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-gray-100">
-                  <BadgeCheck className={`h-3.5 w-3.5 ${myProfile?.verified ? "text-emerald-300" : "text-gray-400"}`} strokeWidth={1.8} />
-                  <span>{myProfile?.verified ? "Verifiziert" : "Nicht verifiziert"}</span>
-                </div>
-                <p className="mt-1 text-gray-300">
-              {(profile as { account_type?: string }).account_type === "couple" ? (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">Paar</span>
-              ) : (
-                <>
-                  {roleLabel && (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-sm">
-                      <RoleIcon role={profile.role} size={16} className="text-gray-300" />
-                      {roleLabel}
-                    </span>
-                  )}
-                  {getAgeFromDateOfBirth(profile.date_of_birth) != null && (roleLabel ? " · " : "")}
-                  {getAgeFromDateOfBirth(profile.date_of_birth) != null && (
-                    <span>{getAgeFromDateOfBirth(profile.date_of_birth)} Jahre</span>
-                  )}
-                  {getGenderSymbol(profile.gender) && (
-                    <span> {getGenderSymbol(profile.gender)}</span>
-                  )}
-                </>
-              )}
-            </p>
-            {(profile.city || profile.postal_code) && (
-                  <p className="mt-2 text-sm text-gray-400">
-                {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
-              </p>
-            )}
-            {(profile as { current_postal_code?: string | null; current_city?: string | null }).current_postal_code || (profile as { current_city?: string | null }).current_city ? (
-                  <p className="mt-1 text-sm text-gray-400">
-                <span className="text-gray-300">Aktuell hier: </span>
-                {[(profile as { current_postal_code?: string | null }).current_postal_code, (profile as { current_city?: string | null }).current_city].filter(Boolean).join(" ")}
-              </p>
-            ) : null}
+  return (
+    <Container className="py-6 md:py-8">
+      {/* Cover + Profil-Header */}
+      <div className="overflow-hidden rounded-2xl border border-white/10" style={{ background: "#141414" }}>
+        {/* Cover Photo Area */}
+        <div
+          className="relative"
+          style={{
+            height: 160,
+            background: "linear-gradient(135deg, #1a0808, #2d0f0f)",
+            backgroundImage: `linear-gradient(135deg, #1a0808, #2d0f0f), repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(200,169,81,0.06) 10px, rgba(200,169,81,0.06) 11px)`,
+          }}
+        >
+          {/* Diagonales Muster */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              opacity: 0.06,
+              backgroundImage: `repeating-linear-gradient(45deg, #C8A951 0px, #C8A951 1px, transparent 1px, transparent 14px)`,
+            }}
+          />
+        </div>
+
+        {/* Profil-Header */}
+        <div className="relative border-b border-white/[0.06] px-5 pb-4" style={{ background: "#141414" }}>
+          {/* Avatar (schwebend über Cover) */}
+          <div className="absolute" style={{ top: -40, left: 20 }}>
+            <div className="relative">
+              <div
+                className="overflow-hidden rounded-full"
+                style={{ width: 80, height: 80, border: "3px solid #141414", background: "#1a1a1a" }}
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center text-xl font-semibold text-[#7B1111]">
+                    {initials}
+                  </span>
+                )}
               </div>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
-              <Link
-                href="/dashboard/profil/bearbeiten"
-                className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
-              >
-                <Pencil className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-                Profil bearbeiten
-              </Link>
-              <Link
-                href="/dashboard/alben"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-gray-100 transition-colors hover:bg-white/10"
-              >
-                <Images className="h-4 w-4" strokeWidth={1.5} aria-hidden />
-                Meine Alben
-              </Link>
+              <span
+                className="absolute bottom-0.5 right-0.5 rounded-full"
+                style={{ width: 14, height: 14, background: "#22C55E", border: "2.5px solid #141414" }}
+              />
             </div>
           </div>
-          <div className="grid gap-3 border-t border-white/10 pt-5 md:grid-cols-3">
+
+          {/* Actions-Reihe */}
+          <div className="flex items-center justify-end gap-2 pt-3">
+            <Link
+              href="/dashboard/alben"
+              className="flex items-center gap-1.5 rounded-lg border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[12px] text-gray-300 hover:text-white transition-colors"
+            >
+              <Images className="h-3.5 w-3.5" />
+              Alben
+            </Link>
+            <Link
+              href="/dashboard/profil/bearbeiten"
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-white transition-colors hover:opacity-90"
+              style={{ background: "#7B1111" }}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Profil bearbeiten
+            </Link>
+          </div>
+
+          {/* Name-Reihe (Platz für schwebenden Avatar) */}
+          <div style={{ marginTop: 44 }}>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-[18px] font-medium text-white">{profile.nick ?? "—"}</h1>
+              {myProfile?.verified && (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px]"
+                  style={{ background: "rgba(91,168,255,0.1)", border: "1px solid rgba(91,168,255,0.3)", color: "#5BA8FF" }}
+                >
+                  <BadgeCheck className="h-3 w-3" />
+                  Verifiziert
+                </span>
+              )}
+              {roleLabel && (
+                <span
+                  className="rounded-full px-2 py-0.5 text-[11px] font-medium"
+                  style={{ background: "rgba(123,17,17,0.1)", color: "#7B1111", border: "1px solid rgba(123,17,17,0.2)" }}
+                >
+                  {roleLabel}
+                </span>
+              )}
+            </div>
+
+            {/* Meta-Zeile */}
+            <div className="flex flex-wrap items-center gap-3 mt-1.5">
+              {(profile.city || profile.postal_code) && (
+                <span className="flex items-center gap-1 text-[12px] text-gray-500">
+                  📍 {[profile.postal_code, profile.city].filter(Boolean).join(" ")}
+                </span>
+              )}
+              {getAgeFromDateOfBirth(profile.date_of_birth) != null && (
+                <span className="text-[12px] text-gray-500">
+                  📅 {getAgeFromDateOfBirth(profile.date_of_birth)} Jahre
+                </span>
+              )}
+              {memberSinceLabel && (
+                <span className="text-[12px] text-gray-500">
+                  🕐 {memberSinceLabel}
+                </span>
+              )}
+              <OnlineIndicator lastSeenAt={lastSeenAt} variant="text" />
+            </div>
+          </div>
+
+          {/* Statistik-Leiste */}
+          <div className="mt-4 inline-flex overflow-hidden rounded-md border border-white/[0.06]">
             <Link
               href="/dashboard/profil/follower"
-              className="block rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center transition-colors hover:border-white/20 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]"
-              aria-label="Follower anzeigen"
+              className="flex flex-col items-center px-4 py-2 hover:bg-white/[0.04] transition-colors border-r border-white/[0.06]"
             >
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Follower</p>
-              <p className="mt-1 text-xl font-semibold text-white">{followerCount ?? 0}</p>
+              <span className="text-[15px] font-medium text-white">{followerCount ?? 0}</span>
+              <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-0.5">Follower</span>
             </Link>
             <Link
               href="/dashboard/profil/folgt"
-              className="block rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center transition-colors hover:border-white/20 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]"
-              aria-label="Accounts anzeigen, denen du folgst"
+              className="flex flex-col items-center px-4 py-2 hover:bg-white/[0.04] transition-colors border-r border-white/[0.06]"
             >
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Folgt</p>
-              <p className="mt-1 text-xl font-semibold text-white">{followingCount ?? 0}</p>
+              <span className="text-[15px] font-medium text-white">{followingCount ?? 0}</span>
+              <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-0.5">Folgt</span>
             </Link>
-            <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center">
-              <p className="text-xs uppercase tracking-[0.08em] text-gray-400">Vertrauen</p>
-              <p className="mt-1 text-sm font-medium text-white">{myProfile?.verified ? "Verifiziertes Profil" : "Verifizierung ausstehend"}</p>
-            </div>
+            <Link
+              href="/dashboard/aktivitaet/besucher"
+              className="flex flex-col items-center px-4 py-2 hover:bg-white/[0.04] transition-colors border-r border-white/[0.06]"
+            >
+              <span className="text-[15px] font-medium text-white">—</span>
+              <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-0.5">Besucher</span>
+            </Link>
+            {daysBoundForStats > 0 && (
+              <div className="flex flex-col items-center px-4 py-2">
+                <span className="text-[15px] font-medium" style={{ color: "#7B1111" }}>{daysBoundForStats}</span>
+                <span className="text-[10px] uppercase tracking-wider text-gray-500 mt-0.5">Tage Bound</span>
+              </div>
+            )}
           </div>
+
           {!myProfile?.verified && (
-            <div className="border-t border-white/10 pt-5">
+            <div className="mt-3">
               <Link
                 href="/dashboard/verifizierung"
-                className="inline-flex rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-1.5 text-sm text-amber-200 transition-colors hover:bg-amber-500/20"
+                className="inline-flex rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-1.5 text-[12px] text-amber-200 transition-colors hover:bg-amber-500/20"
               >
                 Verifizierung beantragen
               </Link>
