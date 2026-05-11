@@ -41,7 +41,9 @@ export default function BoundTimeFeaturesPage() {
               bestimmen.
             </p>
 
-            <h2>2. Keuschhaltungs-Vereinbarungen und BoundDollars</h2>
+            <h2 id="keuschhaltung-bounddollars" className="scroll-mt-28 lg:scroll-mt-36">
+              2. Keuschhaltungs-Vereinbarungen und BoundDollars
+            </h2>
             <p>
               Ziel der Keuschheitsvereinbarung ist es, andere Mitglieder an der Dynamik der eigenen Cuckoldbeziehung
               teilhaben zu lassen.

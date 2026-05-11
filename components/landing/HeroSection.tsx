@@ -27,7 +27,7 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative flex min-h-screen items-center overflow-hidden"
+      className="relative flex items-center overflow-hidden"
       style={{ background: "var(--bg-base)" }}
     >
       {/* Glow blobs */}
@@ -58,7 +58,7 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-7xl px-5 py-32 md:py-40 md:px-8 lg:py-48">
+      <div className="relative mx-auto w-full max-w-7xl px-5 pt-24 pb-16 md:px-8 md:pt-28 md:pb-16 lg:pt-32 lg:pb-16">
         <div className="grid items-center gap-16 lg:grid-cols-2">
           {/* Left: Text */}
           <div>

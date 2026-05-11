@@ -1,83 +1,54 @@
-# BoundTime.de – Cursor To-do Liste
-
-> Gesammelt aus der Website-Analyse. Punkte werden laufend ergänzt.
+# BoundTime — TODO-Liste für Cursor
+> Punkte werden hier gesammelt und gebündelt an Cursor übergeben.
 > Status: [ ] offen | [x] erledigt
 
 ---
 
-## 🔴 Kritisch – Offen
+## LANDING PAGE
 
-- [x] **„Was sucht" & „Wen sucht" nicht auf dem Profil sichtbar** – Im Profil-Editor kann man einstellen wen und was man sucht (Mann, Beziehung, Treffen vor Ort usw.), aber diese Angaben erscheinen nirgendwo auf der öffentlichen Profilseite. Andere User sehen also nicht, wen jemand sucht – auf einer Dating-/Community-Plattform ist das ein zentraler Mangel. Fix: Info-Sektion auf dem Profil ergänzen (z. B. „Sucht: Mann · Beziehung · Langzeit").
-
-- [x] **Rolle nicht änderbar ohne Erklärung** – Das Feld „Rolle" im Profil-Editor ist grau/read-only, ohne jeden Hinweis warum oder wo man sie ändern kann. User, die ihre Rolle korrigieren wollen (z. B. von Dom zu Switcher), finden keine Möglichkeit. Fix: Entweder Rolle editierbar machen oder Tooltip/Link ergänzen: „Rolle kann unter Einstellungen geändert werden."
-
-- [x] **Keine geführte Profilkompletion nach Registrierung** – Nach der E-Mail-Bestätigung landen neue User direkt auf dem leeren Profil ohne jede Orientierung. Es gibt keinen Onboarding-Flow, keinen Fortschrittsbalken, keine Checkliste. Gerade für eine Nischen-Community wo Profiltiefe entscheidend ist, ist das ein kritisches UX-Problem. Fix: Nach erstem Login einen Step-by-Step Profilassistenten anzeigen (Foto, Ort, Rolle, Vorlieben, Über mich), der abgehakt werden kann.
-
----
-
-## 🟠 Mittel – Offen
-
-- [x] **„Was sucht"-Optionen logisch inkonsistent** – Im Abschnitt „Was sucht Hotwife_2019?" werden zwei grundverschiedene Dinge vermischt: Rollen die man bei anderen sucht (z. B. „Sklave/Sklavin") und Absichten/Formate (z. B. „Beziehung", „Treffen vor Ort"). Dazu kommen Optionen die beschreiben was man selbst anbietet (z. B. „Keuschhalten anbieten (Keyholder)"). Das ist für neue User extrem verwirrend. Fix: Klare Trennung in zwei Untersektionen: „Ich suche jemanden, der…" (Rolle des anderen) und „Ich suche…" (Kontaktformat/Ziel).
-
-- [x] **„Neigung" nicht auf Profil sichtbar** – Die sexuelle Orientierung (Hetero/Bi/etc.) wird im Editor gesetzt, aber auf dem öffentlichen Profil nicht angezeigt. Für viele User ist das eine wichtige Filterinformation. Fix: Neigung in der Profil-Info-Sektion anzeigen.
-
-- [x] **Profilbild-Einrichtung nicht intuitiv** – Um ein Profilbild zu setzen, muss man erst ins Hauptalbum navigieren, dort ein Foto hochladen und dann „Als Profilbild" klicken. Das ist ein 3-Schritte-Umweg, der nirgendwo erklärt wird. Der Profil-Editor verweist nur mit einem kleinen Link auf das „Hauptalbum". Fix: Direkt-Upload im Profil-Editor oder zumindest eine klar sichtbare Erklärung mit Link und konkreten Schritten.
-
-- [x] **Kein Profil-Vollständigkeits-Indikator** – Es gibt keine Prozentanzeige oder Checkliste die zeigt wie vollständig das Profil ist. User wissen nicht, was noch fehlt. Fix: Completion-Bar oder To-do-Liste im Profil-Editor (z. B. „5 von 8 Felder ausgefüllt").
+### TODO-001 — Hero: Stat-Block "500+ Verifizierte Mitglieder" entfernen
+**Datei:** `components/landing/HeroSection.tsx`  
+**Problem:** Die angezeigte Zahl "500+" entspricht nicht der tatsächlichen Mitgliederzahl und ist damit irreführend.  
+**Aufgabe:** Den gesamten Stat-Block (Element 6 aus der Spec — die drei Zahlen "500+", "3 Länder", "100%") vollständig entfernen. Keine Ersatz-Zahlen einbauen. Der Bereich unter den CTA-Buttons bleibt leer bzw. der vertikale Abstand wird entsprechend angepasst (`mb-0` statt `mt-12`).  
+**Status:** [x] Bereits in der Live-Version umgesetzt
 
 ---
 
-## 🟡 Klein – Offen
-
-- [ ] **Hamburger-Menü auf Desktop** – Button „Menü öffnen" ist auf Desktop-Breiten sichtbar neben der vollständigen Nav. Auf Desktop per CSS ausblenden.
-
-- [ ] **Google Fonts Self-Hosting** – Plus Jakarta Sans wird aktuell von Google-Servern geladen, noch vor Cookie-Consent. Font lokal hosten (z. B. via next/font) um DSGVO-konform zu sein.
-
-- [ ] **Aria-Label für Logo-Link** – Der Logo-Link href="/" hat keinen Linktext für Screen Reader. aria-label="BoundTime – Startseite" ergänzen.
-
-- [ ] **Impressum & AGB in der Hauptnavigation** – Aktuell nur im Footer verlinkt. Für rechtliche Sichtbarkeit zumindest „Impressum" in die Header-Nav ergänzen.
-
-- [ ] **Nick-Feld fehlt im Accessibility Tree** – Das Nick-Inputfeld (id="nick") taucht nicht als interaktives Element im Accessibility Tree auf. aria-label oder korrektes label for="nick" sicherstellen.
-
-- [ ] **Keine visuelle Fortschrittsanzeige bei Registrierung** – Der Schritt-Counter ist nur Text („SCHRITT 1 VON 3"). Eine visuelle Step-Indicator-Leiste würde die UX deutlich verbessern.
-
-- [ ] **Geburtsdatum: Widerspruch Darstellung vs. Input-Typ** – Placeholder zeigt tt.mm.jjjj (DE-Format), Input ist aber type="date" (ISO intern). Fix: konsistentes deutsches Format sicherstellen oder auf Text-Input mit Validierung wechseln.
-
-- [ ] **Schreibfehler „Profil-Identitaet"** – Badge zeigt „Profil-Identitaet". Korrigieren zu „Profil-Identität".
-
-- [ ] **Schreibfehler „Relevante Rueckmeldungen"** – Im INTERAKTION-Tab steht „Rueckmeldungen" statt „Rückmeldungen".
-
-- [ ] **„GELIKED" als Anglizismus** – „WER HAT DEIN PROFIL GELIKED" klingt holprig. Besser: „WER HAT DEIN PROFIL GEMOCHT".
-
-- [ ] **Label „Deine Angaben" zu generisch** – Das Textarea-Feld für Erwartungen ist mit „Deine Angaben" beschriftet – nichtssagend. Fix: umbenennen zu „Was erwartest du von deinem Partner?" und Placeholder anpassen.
+### TODO-002 — Hero: Floating Card "Paar_Berlin" entfernen
+**Datei:** `components/landing/HeroSection.tsx`  
+**Problem:** Die Floating Card "Paar_Berlin / Verifiziert / Trat gerade bei" (unten links am Hero-Bild) zeigt einen fiktiven Nutzer — das ist nicht authentisch und wirkt unglaubwürdig.  
+**Aufgabe:** Die gesamte Floating Karte 2 (untere Karte, "Paar_Berlin") vollständig aus dem JSX entfernen. Die obere Floating Card ("Keuschhaltung aktiv / Bound: 14 Tage") bleibt bestehen — sie zeigt ein Feature, keinen Nutzer.  
+**Status:** [x] Bereits in der Live-Version umgesetzt
 
 ---
 
-## 📋 Noch zu prüfen
+### TODO-003 — Alle Abrechnungs- und Pricing-Hinweise entfernen
+**Betroffene Dateien:** `components/landing/DiscretionSection.tsx`, `components/landing/FinalCTA.tsx`, gesamte Landing Page  
+**Problem:** BoundTime ist derzeit vollständig kostenlos. Jegliche Erwähnung von Abrechnung, Kosten oder Pricing ist nicht zutreffend und soll nicht erscheinen.  
+**Aufgabe:** Folgende Elemente vollständig entfernen:
 
-*(MyBound, Entdecken, Forum, Nachrichten, Keuschhaltung, Einstellungen noch nicht geprüft)*
+1. `DiscretionSection.tsx` — Feature-Punkt "Diskrete Abrechnung" (inkl. Icon, H4 und Beschreibungstext) komplett entfernen. Die verbleibenden 3 Diskretions-Features rücken nach oben, Abstände anpassen (`space-y-6` bleibt).
+
+2. `FinalCTA.tsx` — Mini-Trust-Item "Keine Kreditkarte nötig" entfernen. Die zwei verbleibenden Trust-Items lauten exakt: "Kostenlos registrieren" und "Kein Abo nötig".
+
+3. Gesamte Landing Page — Alle Begriffe suchen und entfernen die Kosten implizieren: "Premium", "Upgrade", "Plan", "Abonnement", "Abrechnung", "Zahlung", "kündbar", "Kreditkarte". Keine dieser Wörter darf auf der Landing Page erscheinen.
+
+**Status:** [x] Bereits in der Live-Version korrekt umgesetzt
 
 ---
+
+### TODO-004 — Hero: Großes Leerareal zwischen CTA-Buttons und Trust Bar
+**Datei:** `components/landing/HeroSection.tsx`  
+**Problem:** Zwischen dem "Bereits Mitglied? Anmelden →" Text und der Trust Bar klafft ein sehr großer leerer schwarzer Bereich. Der Stat-Block (TODO-001) wurde entfernt aber der vertikale Abstand nicht angepasst — die Hero-Section hat dadurch zu viel ungenutzten Leerraum.  
+**Aufgabe:** Den vertikalen Padding/Margin unter dem "Bereits Mitglied"-Text reduzieren. Konkret: `mt-12` oder `pb-32` auf `mt-4` bzw. `pb-16` reduzieren bis die Section kompakt wirkt und nahtlos in die Trust Bar übergeht. Kein unnötiger schwarzer Leerraum.  
+**Status:** [x] `min-h-screen` entfernt, unteres Padding reduziert (`pb-16` statt großer symmetrischer `py-*`)
+
 ---
 
-## ✅ Erledigt
+### TODO-005 — BoundDollars & Keuschhaltungs-Sektion fehlt
+**Datei:** `components/landing/FeatureShowcase.tsx`  
+**Problem:** Die BoundDollars & Keuschhaltungs-Sektion (Feature 2 aus der Spec, Abschnitt 6.3) ist auf der Live-Seite nicht vorhanden. Nach dem Cuckymode-Block kommt direkt die Entdecken/Filter-Sektion — der BoundDollars-Block fehlt komplett.  
+**Aufgabe:** Die BoundDollars-Sektion gemäß Abschnitt 6.3 der `LANDING_PAGE_SPEC.md` vollständig implementieren und zwischen dem Cuckymode-Block (6.2) und der Entdecken-Sektion (6.4) einfügen. Layout gespiegelt (Text rechts, Mockup links).  
+**Status:** [x] Bereits in `FeatureShowcase.tsx` (Mockup links, Text rechts); ergänzt: CTA-Link zu `/boundtime-features#keuschhaltung-bounddollars` und Anker auf der Features-Seite
 
-### 🔴 Kritisch
-
-- [x] **Dropdowns Schritt 2 reagieren nicht auf Mausklick** – React onChange-Handler korrekt verdrahtet.
-
-- [x] **Kein Redirect nach Login** – Nach Login wird nun auf das Dashboard weitergeleitet.
-
-### 🟠 Mittel
-
-- [x] **Falscher Link „Über BoundTime"** – Startseite linkt nun korrekt auf /ueber-uns.
-
-- [x] **Cookie-Banner erscheint bei jeder Navigation** – localStorage-Check korrigiert.
-
-- [x] **Schreibfehler „BoundTime- Features"** – Korrigiert zu BoundTime-Features.
-
-- [x] **Redundante Quick-Links auf Startseite** – Von 5 auf 3 sinnvolle Links reduziert.
-
-- [x] **Kein Standortfeld im Registrierungsprozess** – Hinweis/Redirect zur Profilkompletion ergänzt.
-
-- [x] **Doppelter Hinweistext im Profil-Editor** – Einer der zwei identischen Sätze entfernt.
+---

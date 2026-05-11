@@ -351,6 +351,11 @@ export function FeatureShowcase() {
               <FeatureCheck text="Dreiecksvereinbarungen: Hotwife + Bull + Cuckold" />
               <FeatureCheck text="Öffentlicher BD-Status zeigt Gehorsam des Cuckolds" />
             </div>
+            <div className="mt-8">
+              <ButtonGhost href="/boundtime-features#keuschhaltung-bounddollars" size="sm">
+                Mehr zu Keuschhaltung &amp; BoundDollars
+              </ButtonGhost>
+            </div>
           </motion.div>
         </div>
 
