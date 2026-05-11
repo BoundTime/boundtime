@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardTopbar } from "@/components/dashboard/DashboardTopbar";
+import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +19,16 @@ export default async function DashboardLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("nick, role, city")
+    .select("nick, role, city, avatar_url, avatar_photo_id")
     .eq("id", user.id)
     .single();
+
+  const avatarUrl = profile
+    ? await resolveProfileAvatarUrl(
+        { avatar_url: profile.avatar_url, avatar_photo_id: profile.avatar_photo_id },
+        supabase
+      )
+    : null;
 
   const { data: unreadRpc } = await supabase.rpc("get_unread_message_count");
   const unreadMessages = Number(unreadRpc ?? 0);
@@ -64,6 +72,7 @@ export default async function DashboardLayout({
         nick={profile?.nick ?? ""}
         role={profile?.role ?? null}
         city={profile?.city ?? null}
+        avatarUrl={avatarUrl}
         unreadMessages={unreadMessages}
         hasActiveKeuschhaltung={hasActiveKeuschhaltung}
         activeKeuschhaltung={activeKeuschhaltung}

@@ -201,9 +201,8 @@ export default async function ProfilPage({
       <div className="overflow-hidden rounded-2xl border border-white/10" style={{ background: "#141414" }}>
         {/* Cover Photo Area */}
         <div
-          className="relative"
+          className="relative h-[90px] md:h-[160px]"
           style={{
-            height: 160,
             background: "linear-gradient(135deg, #1a0808, #2d0f0f)",
             backgroundImage: `linear-gradient(135deg, #1a0808, #2d0f0f), repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(200,169,81,0.06) 10px, rgba(200,169,81,0.06) 11px)`,
           }}
@@ -220,8 +219,28 @@ export default async function ProfilPage({
 
         {/* Profil-Header */}
         <div className="relative border-b border-white/[0.06] px-5 pb-4" style={{ background: "#141414" }}>
-          {/* Avatar (schwebend über Cover) */}
-          <div className="absolute" style={{ top: -40, left: 20 }}>
+          {/* Avatar (schwebend über Cover) — 56px auf Mobile, 80px auf Desktop */}
+          <div className="absolute" style={{ top: -28, left: 16 }}>
+            <div className="relative md:hidden">
+              <div
+                className="overflow-hidden rounded-full"
+                style={{ width: 56, height: 56, border: "3px solid #141414", background: "#1a1a1a" }}
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center text-base font-semibold text-[#7B1111]">
+                    {initials}
+                  </span>
+                )}
+              </div>
+              <span
+                className="absolute bottom-0.5 right-0.5 rounded-full"
+                style={{ width: 12, height: 12, background: "#22C55E", border: "2px solid #141414" }}
+              />
+            </div>
+          </div>
+          <div className="absolute hidden md:block" style={{ top: -40, left: 20 }}>
             <div className="relative">
               <div
                 className="overflow-hidden rounded-full"
@@ -262,7 +281,7 @@ export default async function ProfilPage({
           </div>
 
           {/* Name-Reihe (Platz für schwebenden Avatar) */}
-          <div style={{ marginTop: 44 }}>
+          <div className="mt-6 md:mt-[44px]">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-[18px] font-medium text-white">{profile.nick ?? "—"}</h1>
               {myProfile?.verified && (
@@ -306,7 +325,7 @@ export default async function ProfilPage({
           </div>
 
           {/* Statistik-Leiste */}
-          <div className="mt-4 inline-flex overflow-hidden rounded-md border border-white/[0.06]">
+          <div className="mt-4 flex overflow-x-auto overflow-hidden rounded-md border border-white/[0.06] max-w-full">
             <Link
               href="/dashboard/profil/follower"
               className="flex flex-col items-center px-4 py-2 hover:bg-white/[0.04] transition-colors border-r border-white/[0.06]"

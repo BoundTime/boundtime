@@ -66,7 +66,7 @@ export function FilterBar({ roleFilter, verifiedOnly, radiusKm, view }: Props) {
   }
 
   const pillBase =
-    "flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors cursor-pointer shrink-0";
+    "flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] md:px-3 md:py-1.5 md:text-[12px] font-medium transition-colors cursor-pointer shrink-0";
   const pillActive =
     "bg-[rgba(123,17,17,0.08)] border-[rgba(123,17,17,0.3)] text-[#7B1111]";
   const pillInactive =

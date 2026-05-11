@@ -66,7 +66,7 @@ export function ProfileCard({ profile, isFollowing = false }: Props) {
       className="group relative cursor-pointer overflow-hidden rounded-lg border border-white/[0.08] hover:border-[rgba(123,17,17,0.4)] transition-[border-color] duration-200"
     >
       {/* Bild-Bereich */}
-      <div className="relative overflow-hidden" style={{ height: 148 }}>
+      <div className="relative overflow-hidden h-[90px] md:h-[148px]">
         {profile.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

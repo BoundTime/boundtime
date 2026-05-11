@@ -69,7 +69,7 @@ export function MyBoundWelcomeBar({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-medium tracking-tight text-white md:text-[19px]">
+        <h1 className="text-[15px] font-medium tracking-tight text-white md:text-[19px]">
           {greeting}, {displayName}
         </h1>
         <p className="mt-0.5 text-sm text-gray-400">

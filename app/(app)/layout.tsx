@@ -38,8 +38,8 @@ export default async function AppLayout({
     <RestrictionProvider initialRestrictionBlocking={initialRestrictionBlocking}>
       <UpdateLastSeen />
       <RestrictionBanner />
-      {/* Abstand zur Bottom-Nav inkl. Safe Area (Home-Indikator) */}
-      <div className="pb-[calc(5.25rem+env(safe-area-inset-bottom,0px))] md:pb-0">{children}</div>
+      {/* Abstand zur Bottom-Nav inkl. Safe Area */}
+      <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">{children}</div>
       <BottomNav />
     </RestrictionProvider>
   );

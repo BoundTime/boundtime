@@ -50,7 +50,7 @@ export function MessagesLayoutClient({
     : list;
 
   return (
-    <div className="flex h-[calc(100vh-50px)] overflow-hidden">
+    <div className="flex h-[calc(100vh-44px)] md:h-[calc(100vh-56px)] overflow-hidden">
       {/* Konversationsliste */}
       <aside
         className={`${

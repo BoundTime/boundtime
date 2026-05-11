@@ -209,8 +209,7 @@ export default async function EntdeckenPage({
         <section aria-label="Profile">
           {filteredProfiles.length > 0 ? (
             <div
-              className="grid gap-3"
-              style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}
+              className="grid gap-3 grid-cols-2 md:[grid-template-columns:repeat(auto-fill,minmax(180px,1fr))]"
             >
               {filteredProfiles.map((profile) => (
                 <ProfileCard

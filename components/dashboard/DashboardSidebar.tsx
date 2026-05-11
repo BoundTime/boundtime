@@ -30,6 +30,7 @@ type SidebarProps = {
   nick: string;
   role: string | null;
   city: string | null;
+  avatarUrl?: string | null;
   unreadMessages: number;
   hasActiveKeuschhaltung: boolean;
   activeKeuschhaltung?: {
@@ -52,6 +53,7 @@ export function DashboardSidebar({
   nick,
   role,
   city,
+  avatarUrl,
   unreadMessages,
   hasActiveKeuschhaltung,
   activeKeuschhaltung,
@@ -130,12 +132,21 @@ export function DashboardSidebar({
         className="flex items-center gap-3 px-4 py-3 border-b border-white/10 hover:bg-white/[0.04] transition-colors"
       >
         <div className="relative shrink-0">
-          <div
-            className="flex items-center justify-center rounded-full text-white text-xs font-semibold"
-            style={{ width: 36, height: 36, background: "#7B1111" }}
-          >
-            {initials}
-          </div>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={nick || "Avatar"}
+              className="rounded-full object-cover"
+              style={{ width: 36, height: 36 }}
+            />
+          ) : (
+            <div
+              className="flex items-center justify-center rounded-full text-white text-xs font-semibold"
+              style={{ width: 36, height: 36, background: "#7B1111" }}
+            >
+              {initials}
+            </div>
+          )}
           <span
             className="absolute bottom-0 right-0 rounded-full border-2 border-[#0f0f0f]"
             style={{ width: 9, height: 9, background: "#22C55E" }}

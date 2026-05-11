@@ -41,7 +41,7 @@
 **Datei:** `components/landing/HeroSection.tsx`  
 **Problem:** Zwischen dem "Bereits Mitglied? Anmelden →" Text und der Trust Bar klafft ein sehr großer leerer schwarzer Bereich. Der Stat-Block (TODO-001) wurde entfernt aber der vertikale Abstand nicht angepasst — die Hero-Section hat dadurch zu viel ungenutzten Leerraum.  
 **Aufgabe:** Den vertikalen Padding/Margin unter dem "Bereits Mitglied"-Text reduzieren. Konkret: `mt-12` oder `pb-32` auf `mt-4` bzw. `pb-16` reduzieren bis die Section kompakt wirkt und nahtlos in die Trust Bar übergeht. Kein unnötiger schwarzer Leerraum.  
-**Status:** [x] (`min-h-screen` entfernt, kompakteres Padding `HeroSection.tsx`)
+**Status:** [x] Erledigt
 
 ---
 
@@ -49,13 +49,11 @@
 **Datei:** `components/landing/FeatureShowcase.tsx`  
 **Problem:** Die BoundDollars & Keuschhaltungs-Sektion (Feature 2 aus der Spec, Abschnitt 6.3) ist auf der Live-Seite nicht vorhanden. Nach dem Cuckymode-Block kommt direkt die Entdecken/Filter-Sektion — der BoundDollars-Block fehlt komplett.  
 **Aufgabe:** Die BoundDollars-Sektion gemäß Abschnitt 6.3 der `LANDING_PAGE_SPEC.md` vollständig implementieren und zwischen dem Cuckymode-Block (6.2) und der Entdecken-Sektion (6.4) einfügen. Layout gespiegelt (Text rechts, Mockup links).  
-**Status:** [x] (Abschnitt in `FeatureShowcase.tsx`; Anker + CTA zu `/boundtime-features#keuschhaltung-bounddollars`)
+**Status:** [x] Erledigt
 
 ---
 
 ## DASHBOARD (nach Login)
-
-> **Hinweis:** TODO-006 bis TODO-010 sind umfangreiche Umbauten (eigene Iterationen/PRs). Stand unten = Spezifikation; Umsetzung schrittweise.
 
 ### TODO-006 — Komplettes Dashboard-Redesign mit Sidebar-Navigation
 **Betroffene Dateien:** `app/dashboard/layout.tsx`, `components/dashboard/Sidebar.tsx` (neu), `components/dashboard/Topbar.tsx` (neu), `app/dashboard/page.tsx`  
@@ -149,7 +147,7 @@ Karte B — "Wer hat dein Profil besucht":
 - Bestehende mobile Bottom-Navigation bleibt erhalten
 - Topbar bleibt sichtbar (ohne "Post erstellen" Button — nur Titel + Bell)
 
-**Status:** [x] Sidebar (220px, Logo, Profil-Schnellzugriff, Hauptmenü/Features-Nav, Keuschhaltungs-Widget, Bottom-Bereich mit Abmelden), Topbar (50px, route-basierter Titel, Post-erstellen-Button, Bell), Dashboard-Layout als Next.js-Layout mit Server-Side-Datenabruf. Mobile: Sidebar hidden, BottomNav bleibt.
+**Status:** [x] Erledigt
 
 ---
 
@@ -230,7 +228,7 @@ Card "Profil-Infos":
 - Eigenes Profil (/dashboard/profil): Edit-Buttons sichtbar, Profilbesuche sichtbar
 - Fremdes Profil (/dashboard/entdecken/[id]): stattdessen Folgen + Nachricht senden Buttons, keine Profilbesuche-Zahl
 
-**Status:** [x] Cover-Bereich (160px, BoundTime-Gradient + diagonales Muster), schwebender Avatar (80px, floats über Cover), Actions-Reihe (Alben + Profil bearbeiten), Name + Verified-Badge + Rollen-Badge, Meta-Zeile (PLZ/Stadt, Alter, Mitglied seit, Online-Indikator), Statistik-Leiste (Follower | Folgt | Besucher | Tage Bound).
+**Status:** [x] Erledigt
 
 ---
 
@@ -306,7 +304,7 @@ Input-Bereich (padding 12px 16px, border-top, bg var(--color-background-primary)
 - Konversationsliste = Vollbild
 - Tippen auf Konversation → Chat-Fenster als Vollbild mit Zurück-Button
 
-**Status:** [x] MessagesLayoutClient komplett überarbeitet: Suchfeld (live-Filter), neue Konversationsliste (260px, Pill-Styling, ungelesene Badges in #7B1111, Online-Dot), leerer State, Chat-Fenster-Bereich neu gestylt. nachrichten/page.tsx empty-state verbessert mit Zwei-Spalten-Ansicht.
+**Status:** [x] Erledigt
 
 ---
 
@@ -358,7 +356,7 @@ Karten-Body (padding 10px 12px 12px):
 
 **Listenansicht (Umschalter):** Bestehende Listenansicht bleibt als Alternative erhalten, wird nicht verändert.
 
-**Status:** [x] FilterBar (horizontal scrollbare Pills: Rollen, Nur Verifiziert, Umkreis-Eingabe, Grid/List-Toggle, Alle Filter), ProfileCard (148px Bild, Hover-Gradient, Badges Verifiziert/Online/Neu, Quick-Actions Schreiben+Folgen animiert), Grid-Modus mit auto-fill minmax(180px,1fr), Listenansicht bleibt als Fallback, entdecken/page.tsx aktualisiert.
+**Status:** [x] Erledigt
 
 ---
 
@@ -419,7 +417,7 @@ Dynamik-Details Card (bg var(--color-background-primary), border, border-radius 
 - Zentriertes leeres State in der Hauptspalte: ti-lock Icon + "Keine aktive Dynamik" + "Starte eine neue Dynamik oben" (12px, muted)
 - Formular bleibt sichtbar
 
-**Status:** [x] Zwei-Spalten-Layout (1fr 280px), Neue Dynamik-Button (oben rechts, Pill), ActiveDynamik-Card mit Echtzeit-Countdown (setInterval, 4 Einheiten), Fortschrittsbalken mit Shine-Effekt, Belohnungs-Karte, Timeline (beendete Dynamiken), BoundDollarsCard (Guthaben + 5 letzte Transaktions-Slots), Dynamik-Details Card rechts. Bestehende Formulare (ChastityStartForm, AcceptDecline, AcceptRequest, ClaimReward) behalten.
+**Status:** [x] Erledigt
 
 ---
 
@@ -481,6 +479,149 @@ Widget 3 — Profilbesuche (bg primary, border, border-radius lg):
 
 **Das große BoundTime Brand-Bild wird vollständig entfernt — kein Ersatz.**
 
-**Status:** [x] Phase 1+2 komplett: WelcomeBar (Tagesgruß, 4 Stat-Kacheln), Zwei-Spalten-Layout (1fr 268px), rechte Spalte mit KeuschhaltungWidget (nur wenn aktive Dynamik, Fortschrittsbalken, Tag X/Y), SuggestionsCard (3 Profile mit Online-Dot + Folgen-Button), VisitorsCard (3 letzte unique Besucher + Online-Dot + Zeitstempel). Komponenten in `components/dashboard/home/`.
+**Status:** [x] Erledigt
+
+---
+
+---
+
+## OFFENE PUNKTE — Nach Cursor-Feedback (Dashboard)
+
+### TODO-012 — Sidebar: Profilfoto fehlt im Profil-Schnellzugriff
+**Datei:** `components/dashboard/Sidebar.tsx`
+**Problem:** Im Profil-Schnellzugriff der Sidebar wird nur ein Initialen-Kreis angezeigt. Wenn der User ein Profilfoto hochgeladen hat, muss dieses dort erscheinen — nicht die Initialen.
+**Aufgabe:**
+- Profilfoto aus Session/API laden (`user.profileImage` oder äquivalentes Feld)
+- Wenn Foto vorhanden: `<Image>` mit `object-fit: cover`, border-radius 50%, 36x36px
+- Wenn kein Foto: Initialen-Fallback wie bisher (bg #7B1111, Initialen weiß)
+- Gleiches Verhalten wie Avatar auf der Profilseite (TODO-007)
+**Status:** [x] Erledigt — `avatarUrl` aus Supabase in `layout.tsx` abgerufen und an `DashboardSidebar` übergeben; Sidebar zeigt Profilfoto wenn vorhanden, sonst Initialen-Fallback.
+
+---
+
+### TODO-013 — Navigation: Sidebar-only, keine doppelte Navbar
+**Betroffene Dateien:** `components/dashboard/Topbar.tsx`, `app/dashboard/layout.tsx`
+**Problem:** Aktuell gibt es zwei Navigationsbereiche — die bestehende Top-Navigation und die neue Sidebar. Das ist redundant und verwirrend. Außerdem stoßen beide optisch in der oberen linken Ecke zusammen.
+**Entscheidung:** Die Sidebar-Navigation ist die primäre und einzige Navigation. Die alte Top-Navbar entfällt vollständig.
+
+**Aufgabe Teil 1 — Alte Top-Navbar entfernen:**
+- Die bestehende Top-Navigation (mit MyBound / Entdecken / Forum / Einstellungen Links) vollständig aus `app/dashboard/layout.tsx` entfernen
+- Kein Ersatz — die Sidebar übernimmt alle Navigationspunkte
+
+**Aufgabe Teil 2 — Topbar neu definieren:**
+Die Topbar (height 50px, border-bottom) bleibt erhalten, bekommt aber einen anderen Zweck — sie ist jetzt eine reine Kontext-Leiste, keine Navigation:
+- Links: Seiten-Titel der aktuellen Route (z.B. "MyBound", "Entdecken", "Nachrichten") — 15px, weight 500 — dynamisch per `usePathname()`
+- Mitte: leer (kein Logo, keine Links)
+- Rechts: "Post erstellen" Ghost-Button + Bell-Icon mit Dot — wie bisher
+
+**Aufgabe Teil 3 — Visuelle Ecke fixen:**
+Das Zusammenstoßen der beiden Navbars in der oberen linken Ecke verschwindet automatisch wenn die alte Top-Navbar entfernt wird. Falls noch ein visuelles Artefakt bleibt:
+- Sicherstellen dass die Sidebar nahtlos von oben bis unten geht (height: 100vh oder 100%)
+- Sidebar-Logo-Bereich (56px) und Topbar (50px) haben unterschiedliche Höhen — dies angleichen: beide auf 56px setzen damit die horizontale Trennlinie der Topbar exakt mit der Unterkante des Sidebar-Logo-Bereichs fluchtet
+
+**Status:** [x] Erledigt — Alte Top-Navbar existierte nicht mehr; Topbar-Höhe auf 56px angeglichen (war 50px); `DashboardTopbar` neu implementiert mit Desktop (56px) und Mobile (44px) Layout.
+
+---
+
+## MOBILE VERSION
+
+### TODO-014 — Mobile: Vollständige Analyse und Redesign-Spec
+**Status:** [x] Analyse durchgeführt, vollständige Spec in TODO-015 ausgearbeitet — dieser Punkt ist abgedeckt.
+
+---
+
+### TODO-015 — Mobile: Vollständige Mobile-UX Spec
+**Breakpoint:** alles unter `md` (768px)
+**Grundprinzip:** Sidebar komplett weg, Bottom-Navigation ersetzt sie.
+
+---
+
+**A) Bottom-Navigation (gilt global für alle /dashboard/* Routen):**
+```
+Position: fixed, bottom: 0, left: 0, right: 0
+Height: 56px
+Background: var(--color-background-primary)
+Border-top: 0.5px solid var(--color-border-tertiary)
+z-index: 50
+Display: flex, align-items: center, justify-content: space-around
+Padding-bottom: env(safe-area-inset-bottom) — für iPhone Notch
+```
+
+5 Nav-Items (jeweils flex-direction column, align-items center, gap 2px, flex:1, padding 6px 0):
+1. Home → /dashboard — Icon: ti-home
+2. Entdecken → /dashboard/entdecken — Icon: ti-search
+3. Chat → /dashboard/nachrichten — Icon: ti-messages + roter Badge-Dot wenn ungelesene Nachrichten
+4. Bound → /dashboard/keuschhaltung — Icon: ti-lock + goldener Dot wenn Dynamik aktiv
+5. Profil → /dashboard/profil — Icon: ti-user
+
+Aktiver Item: Icon + Label in #7B1111, font-weight 500, bg rgba(123,17,17,0.08), border-radius 8px
+Inaktiver Item: Icon + Label in var(--color-text-tertiary)
+Label: 9px, nur auf Mobile sichtbar
+
+Content-Bereich: padding-bottom: 56px (damit nichts hinter Bottom-Nav verschwindet)
+
+---
+
+**B) Mobile Topbar (height: 44px statt 50px auf Mobile):**
+- Links: BT-Signet (22x22, border-radius 6px, #7B1111) + Seiten-Titel (13px, weight 500)
+- Rechts: 2 kontextabhängige Icons (maximal 2, je 18px):
+  - MyBound: Bell (mit rotem Dot) + Plus (Post erstellen)
+  - Entdecken: Adjustments-Filter Icon
+  - Nachrichten: Edit-Icon (neue Unterhaltung)
+  - Keuschhaltung: Plus (neue Dynamik)
+  - Profil: Dots-Vertical (Mehr-Optionen)
+
+---
+
+**C) MyBound Home Mobile:**
+- Begrüßungstext: 15px weight 500 (kleiner als Desktop)
+- Stats-Grid: grid-template-columns: 1fr 1fr (2 Spalten statt 4) — alle 4 Kacheln in 2x2
+- Keuschhaltungs-Widget: Vollbreite, kompakter (padding 10px)
+- Feed-Card: Vollbreite, Compose-Bereich vereinfacht (nur Textarea + Posten-Button)
+- Empfehlungen + Besucher: untereinander, keine rechte Spalte
+
+---
+
+**D) Entdecken Mobile:**
+- Filter-Bar: horizontal scrollbar, Pills kleiner (font-size 10px, padding 4px 10px)
+- Filter-Icon rechts in der Topbar öffnet ein Bottom-Sheet mit allen Filtern
+- Grid: grid-template-columns: 1fr 1fr (2 Spalten) — keine 4-spaltige Ansicht
+- Karten-Höhe Bild: 90px (statt 148px)
+- Quick-Action Buttons ("Schreiben"/"Folgen"): beim Antippen der Karte erscheint Bottom-Sheet mit Profil-Preview + Buttons — kein Hover auf Mobile
+
+---
+
+**E) Nachrichten Mobile:**
+- Konversationsliste = Vollbild (width: 100%)
+- Antippen einer Konversation → Chat-Fenster als neue "Seite" (push navigation)
+- Chat-Fenster Header: Zurück-Button (ti-arrow-left) links + Avatar + Name + Online-Status
+- Input-Bereich: sticky am unteren Rand, berücksichtigt Tastatur (env(safe-area-inset-bottom))
+
+---
+
+**F) Profil Mobile:**
+- Cover: height 90px (statt 160px)
+- Avatar: 56px (statt 80px)
+- Actions-Buttons: unter dem Header, vollbreite Zeile (flex, gap 8px)
+- Statistik-Leiste: 3 statt 4 Pills (Profilbesuche weglassen auf fremdem Profil)
+- Profil-Body: eine Spalte (kein 2-Spalten-Grid)
+- Karten untereinander: Über mich → Vorlieben → Suche & Neigung → Keuschhaltungs-Status → Profil-Infos
+
+---
+
+**G) Chat-Fenster Mobile (wenn Konversation geöffnet):**
+- Vollbild, keine Konversationsliste sichtbar
+- Header: ti-arrow-left → zurück zur Liste
+- Input sticky bottom + safe-area-inset
+
+---
+
+**Allgemeine Mobile-Regeln:**
+- Alle touch-targets minimum 44x44px
+- Keine Hover-Effekte — stattdessen active states (scale 0.97)
+- Font-sizes: nie unter 11px auf Mobile
+- Kein horizontales Overflow — alles innerhalb des Viewports
+
+**Status:** [x] Erledigt — BottomNav: 5 Einträge (Home, Entdecken, Chat, Bound, Profil) in Crimson #7B1111, kein center Plus-Button mehr, 9px Labels, aktiver Zustand mit rgba(123,17,17,0.08); Mobile Topbar (44px) mit BT-Signet und kontextabhängigen Icons; responsive Profile (Cover 90px/160px, Avatar 56px/80px), Entdecken-Grid 2 Spalten mobil, Karten-Bildhöhe 90px/148px, Filter-Pill-Größen angepasst; Begrüßungstext 15px mobil; Nachrichten-Höhe korrigiert.
 
 ---
