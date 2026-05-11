@@ -5,10 +5,10 @@ import { PublicArticle } from "@/components/public/PublicArticle";
 
 export default function BoundTimeFeaturesPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative z-10 min-h-screen bg-background">
       <section className="relative py-12 sm:py-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(127,31,43,0.22),transparent_60%)]" />
-        <Container className="relative">
+        <Container className="relative z-10">
           <PublicPageHeader eyebrow="BoundTime" title="Was sind BoundTime-Features?" />
 
           <PublicArticle>

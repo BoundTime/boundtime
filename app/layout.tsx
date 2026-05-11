@@ -8,6 +8,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RestrictionDot, RestrictionDotMobile } from "@/components/RestrictionDot";
 import { CookieBanner } from "@/components/CookieBanner";
+import { HideOnLanding, AppShell } from "@/components/LandingPageGuard";
 import { Analytics } from "@vercel/analytics/next";
 import { createClient } from "@/lib/supabase/server";
 import { resolveProfileAvatarUrl } from "@/lib/avatar-utils";
@@ -18,6 +19,7 @@ export const dynamic = "force-dynamic";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -128,15 +130,16 @@ export default async function RootLayout({
       >
         <JsonLdRoot />
         <NextIntlClientProvider messages={messages}>
-          <Navbar
-            initialNavData={initialNavData}
-            restrictionDotSlot={showRestrictionDot ? <RestrictionDot enabled={restrictionEnabled} /> : null}
-            restrictionDotMobileSlot={showRestrictionDot ? <RestrictionDotMobile enabled={restrictionEnabled} /> : null}
-          />
-          <div className="relative z-10 flex flex-1 flex-col origin-top" style={{ zoom: 0.9 }}>
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <HideOnLanding>
+            <Navbar
+              initialNavData={initialNavData}
+              restrictionDotSlot={showRestrictionDot ? <RestrictionDot enabled={restrictionEnabled} /> : null}
+              restrictionDotMobileSlot={showRestrictionDot ? <RestrictionDotMobile enabled={restrictionEnabled} /> : null}
+            />
+          </HideOnLanding>
+          <AppShell footer={<Footer />}>
+            {children}
+          </AppShell>
           <CookieBanner />
           <Analytics />
         </NextIntlClientProvider>

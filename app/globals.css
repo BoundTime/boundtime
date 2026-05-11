@@ -2,6 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Landing Page Design System — Original BoundTime Farben ─────────────── */
+.landing-page {
+  /* Hintergründe */
+  --bg-base:        #0C0608;
+  --bg-surface:     #150D0F;
+  --bg-elevated:    #1E1214;
+  --bg-overlay:     rgba(21, 13, 15, 0.88);
+
+  /* Akzentfarben */
+  --accent-gold:         #C8A951;
+  --accent-gold-dim:     #8A6D2E;
+  --accent-crimson:      #7B1111;
+  --accent-crimson-hover:#9B1515;
+  --accent-crimson-glow: rgba(123, 17, 17, 0.25);
+
+  /* Textfarben */
+  --text-primary:   #FFFFFF;
+  --text-secondary: #B8A8B0;
+  --text-muted:     #6B5860;
+  --text-gold:      #C8A951;
+
+  /* Borders */
+  --border-subtle:  rgba(200, 169, 81, 0.12);
+  --border-default: rgba(200, 169, 81, 0.28);
+  --border-strong:  rgba(200, 169, 81, 0.55);
+  --border-crimson: rgba(123, 17, 17, 0.35);
+
+  /* Buttons */
+  --btn-primary-bg:      #7B1111;
+  --btn-primary-bg-hover:#9B1515;
+  --btn-primary-text:    #FFFFFF;
+  --btn-ghost-border:    rgba(200, 169, 81, 0.35);
+  --btn-ghost-text:      #C8A951;
+  --btn-ghost-bg-hover:  rgba(200, 169, 81, 0.06);
+
+  /* Glows */
+  --glow-crimson-color: rgba(123, 17, 17, 0.20);
+  --glow-gold-color:    rgba(200, 169, 81, 0.06);
+
+  /* Status */
+  --verified:        #5BA8FF;
+  --online-color:    #22C55E;
+  --nav-active-color:#C8A951;
+
+  /* Fonts — Plus Jakarta Sans für alles */
+  --font-display: var(--font-sans), system-ui, sans-serif;
+  --font-body:    var(--font-sans), system-ui, sans-serif;
+}
+
+/* Charakteristischer roter Seitenglow */
+.page-bg {
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(ellipse 60% 50% at 0% 50%, rgba(123,17,17,0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(123,17,17,0.22) 0%, transparent 70%);
+}
+
+@keyframes lp-pulse-glow {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(201,168,76,0.4); }
+  50%       { box-shadow: 0 0 14px 3px rgba(201,168,76,0.7); }
+}
+@keyframes lp-cursor-blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-float, .lp-float-card { animation: none !important; }
+}
+
 :root {
   --background: #0f0f0f;
   --card: #1a1a1a;

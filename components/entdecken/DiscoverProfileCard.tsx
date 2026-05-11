@@ -48,13 +48,25 @@ export function DiscoverProfileCard({ profile }: Props) {
         <AvatarWithVerified verified={!!profile.verified} size="lg" position="top-right" className="absolute inset-0">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- dynamische Supabase-URLs; next/image scheitert je nach Host/remotePatterns
-            <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt=""
+              className="h-full w-full object-cover blur-[12px] transition-[filter] duration-300 md:group-hover:blur-none"
+            />
           ) : (
             <span className="flex h-full w-full items-center justify-center text-lg font-semibold text-amber-200/80">
               {initials}
             </span>
           )}
         </AvatarWithVerified>
+        {/* 18+ Blur-Overlay — nur sichtbar wenn Avatar vorhanden, auf Desktop beim Hover ausgeblendet */}
+        {avatarUrl && (
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 md:group-hover:opacity-0">
+            <span className="rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white/70 backdrop-blur-sm">
+              18+ · Hover zum Ansehen
+            </span>
+          </div>
+        )}
         <span className="absolute bottom-2 right-2 rounded-full border border-white/10 bg-black/50 p-0.5 backdrop-blur-sm">
           <OnlineIndicator lastSeenAt={profile.last_seen_at ?? null} variant="dot" />
         </span>
